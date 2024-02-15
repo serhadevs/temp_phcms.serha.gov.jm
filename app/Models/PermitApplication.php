@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class PermitApplication extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+
+    protected $table = 'permit_applications';
+
+    protected $fillable = [
+
+        'permit_category_id',
+        'establishment_clinic_id',
+        'appointment_id',
+        'user_id',
+        'permit_no',
+        'firstname',
+        'middlename',
+        'lastname',
+        'address',
+        'date_of_birth',
+        'gender',
+        'permit_type',
+        'cell_phone',
+        'home_phone',
+        'work_phone',
+        'occupation',
+        'employer',
+        'employer_address',
+        'email',
+        'trn',
+        'applied_before',
+        'granted',
+        'reason text',
+        'photo_upload',
+        'sign_off_status',
+        'reprint',
+        'application_date',
+        'no_of_years',
+
+    ];
+
+    public $timestamp = true;
+
+    public function permitCategory(): HasOne
+    {
+        return $this->hasOne(PermitCategories::class, 'id', 'permit_category_id');
+    }
+
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payments::class, 'application_id', 'id');
+    }
+
+    public function appointment(): HasMany
+    {
+        return $this->hasMany(Appointment::class, 'permit_application_id');
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function establishmentClinics(): BelongsTo
+    {
+        return $this->belongsTo(EstablishmentClinics::class, 'establishment_clinic_id', 'id');
+    }
+}

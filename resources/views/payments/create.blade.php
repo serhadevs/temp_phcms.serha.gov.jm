@@ -1,0 +1,186 @@
+@extends('partials.layouts.layout')
+
+@section('title', 'Create Payment')
+
+@section('content')
+    @include('partials.sidebar._sidebar')
+    <div class="main">
+        @include('partials.navbar._navbar')
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    @if ($message = Session::get('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <p class="text-danger font-weight-bold">{{ $message }}</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                    @if (!empty($app_type))
+                        <input type="hidden" {{ $app_type_1 = $app_type ? $app_type : '' }} />
+                        <input type="hidden" {{ $app_id_1 = $app_id ? $app_id : '' }} />
+                    @endif
+                    @if (empty($app_type))
+                        {{ $app_type_1 = '' }}
+                        {{ $app_id_1 = '' }}
+                    @endif
+                    <h2>Create New Payment</h2>
+                    <div class="row">
+                        <div class="col">
+                            <form action="{{ route('payments.create.store') }}" method="POST">
+                                @csrf
+                                @method('POST')
+                                <div class="mt-3">
+                                    <label for="" class="form-label">Application Type</label>
+                                    <select name="application_type_id" class="form-control" id="application_type_id"
+                                        onchange="detPrice()">
+                                        <option readonly disabled selected>Please select application type</option>
+                                        @foreach ($application_types as $application_type)
+                                            <option value="{{ $application_type->application_type_id }}"
+                                                data-price="{{ $application_type->price }}"
+                                                {{ old('application_type_id') == $application_type->application_type_id ? 'selected' : '' }}
+                                                {{ $app_type_1 ? ($app_type_1 == $application_type->application_type_id ? 'selected' : '') : '' }}>
+                                                {{ $application_type->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('application_type_id')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="mt-3">
+                                    <label for="" class="form-label">Application Number</label>
+                                    <input type="text" class="form-control" name="application_id" {{-- value = "{{ old('application_id') == '' ? '' : old('application_id') }}" --}}
+                                        value="{{ $app_id_1 != '' ? $app_id_1 : (old('application_id') == '' ? '' : old('application_id')) }}"
+                                        id="application_id" />
+                                    @error('application_id')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="mt-3">
+                                    <label for="" class="form-label">Total Cost</label>
+                                    <input type="number" class="form-control" id="total_cost" name="total_cost"
+                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}">
+                                    @error('total_cost')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="mt-3">
+                                    <label for="" class="form-label">Amount Paid</label>
+                                    <input type="number" class="form-control" id="amount_paid" name="amount_paid"
+                                        value = "{{ old('amount_paid') == '' ? '' : old('amount_paid') }}"
+                                        onkeyup="calcChange()">
+                                    @error('amount_paid')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="mt-3">
+                                    <label for="" class="form-label">Change</label>
+                                    <input type="number" class="form-control" id= "change_amt" name="change_amt"
+                                        value = "{{ old('change_amt') == '' ? '' : old('change_amt') }}" readonly>
+                                    @error('change_amt')
+                                        <p class="text-danger">Cannot be a negative number</p>
+                                    @enderror
+                                </div>
+                                <div class="mt-4">
+                                    <button class="btn btn-success" type="submit">Submit Payment</button>
+                                    <a class="btn btn-danger" onclick="history.back()">Cancel</a>
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="result">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            function calcChange() {
+                                var total_cost = parseFloat(document.getElementById("total_cost").value);
+                                var amount_paid = parseFloat(document.getElementById("amount_paid").value);
+
+                                var change_amt = amount_paid - total_cost;
+                                // if(change_amt<0 || change_amt === NaN){
+                                //     change_amt = 0.00;
+                                // }
+                                document.getElementById('change_amt').setAttribute('value', parseFloat(change_amt));
+                            }
+                        </script>
+                        <script>
+                            function detPrice() {
+                                var element = document.getElementById('application_type_id');
+                                var tot_cost = element.options[element.selectedIndex].getAttribute("data-price");
+                                document.getElementById('total_cost').setAttribute('value', tot_cost)
+                            }
+                        </script>
+                        <script>
+                            window.onload = () => {
+                                if (document.getElementById('application_type_id').value != "") {
+                                    detPrice();
+                                }
+                                if (document.getElementById('application_id').value != "") {
+                                    var app_id = $('#application_id').val();
+                                    var app_t_id = $('#application_type_id').val();
+                                    if (app_id != '') {
+                                        $('#result').html('');
+                                        $.ajax({
+                                            url: "/payments/search/" + app_id + "/" + app_t_id + "/",
+                                            method: "get",
+                                            data: {
+                                                search: app_id
+                                            },
+                                            dataType: "text",
+                                            success: function(data) {
+                                                $('#result').html(data);
+                                            }
+                                        })
+                                    } else {
+                                        $('#result').html(
+                                            '<h4>Application Information</h4><p class="text-danger">No Application Found</p>'
+                                        );
+                                    }
+                                }
+                            }
+                        </script>
+                        <script>
+                            $(document).ready(function() {
+                                $('#application_id').keyup(function() {
+                                    var txt = $(this).val();
+                                    var app_id = $('#application_id').val();
+                                    var app_t_id = $('#application_type_id').val();
+                                    if (txt != '') {
+                                        $('#result').html('');
+                                        $.ajax({
+                                            url: "/payments/search/" + app_id + "/" + app_t_id + "/",
+                                            method: "get",
+                                            data: {
+                                                search: txt
+                                            },
+                                            dataType: "text",
+                                            success: function(data) {
+                                                $('#result').html(data);
+                                            }
+                                        })
+                                    } else {
+                                        $('#result').html(
+                                            '<h4>Application Information</h4><p class="text-danger">No Application Found</p>'
+                                        );
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const hamBurger = document.querySelector(".toggle-btn");
+
+            hamBurger.addEventListener("click", function() {
+                document.querySelector("#sidebar").classList.toggle("expand");
+            });
+        </script>
+    </div>
+@endsection
