@@ -164,9 +164,9 @@ class PermitApplicationController extends Controller
     public function editApplication(Request $request)
     {
         $edits = $request->validate([
-            'firstname' => "required|regex:/^[aA-zZ\-\']+$/",
-            'middlename' => "nullable|regex:/^[aA-zZ\-\']+$/",
-            'lastname' => "required|regex:/^[aA-zZ\-\']+$/",
+            'firstname' => "required",
+            'middlename' => "nullable",
+            'lastname' => "required",
             'address' => 'required',
             'id' => 'required',
             'date_of_birth' => 'required',
