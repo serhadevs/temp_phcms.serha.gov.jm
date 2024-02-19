@@ -72,8 +72,10 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/sign-off/show-applications/{id}', [SignOffController::class, 'fetchApplications'])->name('show-applications');
      
      //Test Results
-     Route::get('test-center/test-results/permits/{id}/create', [PermitTestResultsController::class, 'permitResults'])->name('test-results.permit');
-     Route::post('test-center/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
+     Route::get('/test-center/test-results/permits/{id}/create', [PermitTestResultsController::class, 'permitResults'])->name('test-results.permit');
+     Route::post('/test-center/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
+     Route::get('/test-center/test-results/permit/filter/{id}', [PermitTestResultsController::class, 'index'])->name('test-results.permit.index');
+     Route::post('/test-center/test-results/permit/filter', [PermitTestResultsController::class, 'customFilterProcessedResults'])->name('test-results.permit.filter.custom');
 
      //Report
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');

@@ -4,9 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PermitTestResults extends Model
 {
+    use HasFactory;
+    use SoftDeletes;
+    
     protected $table = "test_results";
 
     protected $fillable = [
@@ -29,4 +34,7 @@ class PermitTestResults extends Model
 
     public $timestamps = true;
 
+    public function permit_application():HasOne{
+        return $this->hasOne(PermitApplication::class, 'id', 'application_id');
+    }
 }

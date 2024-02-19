@@ -6,6 +6,7 @@ use App\Models\PermitCategory;
 use App\Models\PermitTestResults;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use DateTime;
 
 
 class PermitTestResultsController extends Controller
@@ -15,9 +16,80 @@ class PermitTestResultsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function outstandingResults()
     {
-        
+        $today = new DateTime();
+        $six_months_to_date = date_format(date_modify($today, "-6 months"), "Y-m-d");
+
+        $outstanding_permits = DB::table('payments')
+            ->join('permit_applications', 'payments.application_id', '=', 'permit_applications.id')
+            ->join('permit_categories', 'permit_applications.permit_category_id', '=', 'permit_categories.id')
+            ->join('test_results', 'test_results.application_id', '=', 'payments.application_id', 'left outer')
+            ->where('payments.application_type_id', '=', '1')
+            ->where('payments.facility_id', '=', Auth()->user()->facility_id)
+            ->where('payments.created_at', '>', $six_months_to_date)
+            ->where('test_results.id', '=', NULL)
+            ->selectRaw("permit_applications.id as app_number, permit_categories.name as category, permit_applications.firstname as firstname, permit_applications.middlename as middlename, permit_applications.lastname as lastname, permit_applications.address as address, permit_applications.date_of_birth as date_of_birth, permit_applications.gender as gender, payments.created_at as payment_date, test_results.id as test_id")
+            ->get();
+
+        return json_encode($outstanding_permits);
+    }
+
+    public function index(Request $request)
+    {
+        $test_results = [];
+        date_default_timezone_set('Etc/GMT+5');
+        $filterTimeline = "";
+        $id = $request->route('id');
+        $today = date_format(new Datetime(), "Y-m-d");
+        $tonight = new DateTime($today . " 23:59:59");
+        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
+        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
+        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+
+        // $test_results = PermitTestResults::with('permit_application.permitCategory')->where('facility_id', Auth()->user()->facility_id)->where('created_at', '>', '2023-10-10')->get();
+
+        if ($id == "0") {
+            $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = $yesterday;
+        } else if ($id == "7") {
+            $filterTimeline = $last_week;
+        } else if ($id == "30") {
+            $filterTimeline = $thirty_days;
+        } else if ($id == "90") {
+            $filterTimeline = $last_ninety_days;
+        }
+
+        $test_results =  PermitTestResults::with('permit_application.permitCategory')
+            ->where('facility_id', Auth()->user()->facility_id)
+            ->where('application_type_id', '=', '1')
+            ->whereBetween('created_at', [$filterTimeline, $tonight])
+            ->whereRelation('permit_application', 'deleted_at', '=', NULL)
+            ->get();
+
+        $outstanding = $this->outstandingResults();
+        return view('test_center.food_handlers_permit.index', compact('test_results', 'outstanding'));
+    }
+
+    public function customFilterProcessedResults(Request $request)
+    {
+        date_default_timezone_set('Etc/GMT+5');
+        $timeline = $request->validate([
+            'starting_date' => 'required',
+            'ending_date' => 'required',
+            'interval' => 'nullable|numeric|max:6'
+        ]);
+
+        $test_results =  PermitTestResults::with('permit_application.permitCategory')
+            ->where('facility_id', Auth()->user()->facility_id)
+            ->where('application_type_id', '=', '1')
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']])
+            ->whereRelation('permit_application', 'deleted_at', '=', NULL)
+            ->get();
+        $outstanding = $this->outstandingResults();
+        return view('test_center.food_handlers_permit.index', compact('test_results', 'outstanding'));
     }
 
     /**
@@ -71,7 +143,7 @@ class PermitTestResultsController extends Controller
             return redirect()->route('dashboard')->with(['error' => 'Test Results could not be added']);
         }
 
-        return redirect()->route('dashboard')->with(['success' => 'Test Results successfully added']);
+        return redirect()->route('dashboard.dashboard')->with(['success' => 'Test Results successfully added']);
     }
 
     /**

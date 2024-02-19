@@ -33,7 +33,7 @@
                             <div class="mt-3">
                                 <label for="" class="form-label">Photo</label>
                                 <img src="{{ asset('storage/' . $permit_application->photo_upload) }}" alt="No Image found"
-                                    style="display:block">
+                                    style="display:block; width:30%; height:30vh">
                             </div>
                             <div class="row mt-3">
                                 <div class="col">
@@ -117,6 +117,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     Submit
                                 </button>
+                                <a class="btn btn-danger" onclick="history.back()">
+                                    Cancel
+                                </a>
                             </div>
                         @endforeach
                     </form>
