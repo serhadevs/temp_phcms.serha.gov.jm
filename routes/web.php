@@ -34,11 +34,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+//Users routes for users not logged in
+
+Route::get('/forget-password',[UserController::class, 'forgetPasswordPage'])->name('forget-password');
+Route::post('/forget-password',[UserController::class, 'forgetpassword'])->name('forget.password');
+Route::get('/reset/{token}',[UserController::class,'reset']);
+Route::post('/reset/{token}',[UserController::class,'post_reset']);
+
 Route::group(['middleware' => ['auth']], function () {
 
      //Dashboard Routes
      Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
-
 
      //Application Route
      Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
@@ -83,15 +89,16 @@ Route::group(['middleware' => ['auth']], function () {
 
      //User Routes
 
+     Route::get('/settings/users', [UserController::class, 'index'])->name('users');
+     Route::get('/settings/users/reset-password/{id}',[UserController::class,'resetpassword']);
+     Route::get('/settings/users/restore/{id}',[UserController::class,'restore']);
+
     
-          Route::get('/settings/users', [UserController::class, 'index'])->name('users');
-          ROute::get('/settings/users/reset-password/{id}',[UserController::class,'resetpassword']);
-          ROute::get('/settings/users/restore/{id}',[UserController::class,'restore']);
     
 
      //Establishments Routes
 
-     //      Route::post("/food-establishment/{id}/edit", 'FoodEstablishmentController@edit');
+     //     Route::post("/food-establishment/{id}/edit", 'FoodEstablishmentController@edit');
      //     Route::resource('/food-establishment', 'FoodEstablishmentController');
      //     Route::get("/food-establishment/renew/{id}", "FoodEstablishmentController@renew");
      //     Route::post("/food-establishment/renew/{id}", "FoodEstablishmentController@storeRenewal");

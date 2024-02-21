@@ -12,10 +12,10 @@
                                 $facility = 'St Catherine';
                                 break;
                             case 2:
-                                $facility = 'Kingston and St Andrew';
+                                $facility = 'St Thomas';
                                 break;
                             case 3:
-                                $facility = 'St Thomas';
+                                $facility = 'Kingston and St Andrew';
                                 break;
                             default:
                                 $facility = 'Unknown Facility';

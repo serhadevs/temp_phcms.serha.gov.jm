@@ -1,6 +1,7 @@
+
 @component('mail::message')
 
-<img src="{{ asset('images/serha_logo.png') }}" alt="Your Logo" width="200">
+<img src="{{ asset('/images/serha_logo.png') }}" alt="Your Logo" width="200">
 
 <p>Dear {{ $user->firstname }}</p>
 
