@@ -40,7 +40,7 @@ class PaymentReportController extends Controller
         ->selectRaw("application_types.name as app_type, payments.application_id as app_number, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.created_at as payment_date")
         ->whereBetween('payments.created_at', [$timeline['starting_date'], date_format(new DateTime($timeline['ending_date']." 23:59:59"),'Y-m-d H:m:s')])
         ->where('payments.facility_id',auth()->user()->facility_id)
-        ->whereNull('payments.deleted')
+        ->whereNull('payments.deleted_at')
 
         ->get();
         }else{
@@ -49,7 +49,7 @@ class PaymentReportController extends Controller
             ->selectRaw("application_types.name as app_type, payments.application_id as app_number, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.created_at as payment_date")
             ->whereBetween('payments.created_at', [$timeline['starting_date'], date_format(new DateTime($timeline['ending_date']." 23:59:59"),'Y-m-d H:m:s')])
             ->where('payments.facility_id',auth()->user()->facility_id)
-            ->whereNull('payments.deleted')
+            ->whereNull('payments.deleted_at')
             ->where('cashier_user_id',auth()->user()->id)
             ->get();
 

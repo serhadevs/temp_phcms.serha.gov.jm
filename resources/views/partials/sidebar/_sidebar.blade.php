@@ -25,7 +25,7 @@
         </li>
         <li class="sidebar-item">
             <a href="/sign-off" class="sidebar-link">
-                <i class="lni lni-agenda"></i>
+                <i class="bi bi-clipboard-check"></i>
                 <span>Signoff</span>
             </a>
         </li>
@@ -38,7 +38,7 @@
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                <i class="lni lni-protection"></i>
+                <i class="bi bi-coin"></i>
                 <span>Payment</span>
             </a>
             <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -62,6 +62,19 @@
             <ul id="test-center" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
                     <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
+                <i class="bi bi-journal-check"></i>
+                <span>Reports</span>
+            </a>
+            <ul id="reports" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/report/payment" class="sidebar-link">End of Day Report</a>
                 </li>
             </ul>
         </li>
