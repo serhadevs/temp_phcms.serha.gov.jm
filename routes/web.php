@@ -103,13 +103,17 @@ Route::group(['middleware' => ['auth']], function () {
      //     Route::get("/food-establishment/renew/{id}", "FoodEstablishmentController@renew");
      //     Route::post("/food-establishment/renew/{id}", "FoodEstablishmentController@storeRenewal");
 
-     // Route::get('/food-establishments',[FoodEstablishmentController::class,'index']);
+     Route::get('/food-establishments',[FoodEstablishmentController::class,'index']);
      // Route::get('/food-establishments/view',[FoodEstablishmentController::class,'view']);
      // Route::get('food-establishments',[FoodEstablishmentController::class, 'showApplications']);
 
      //Reports 
 
      // Route::get('/reports/general-report',[ReportController::class,'index']);
+
+     //Test Centre Routes
+
+     //Route::get("/test-centre/test-results/food-establishments",[FoodEstResultController::class,'index']);
 
 
 
