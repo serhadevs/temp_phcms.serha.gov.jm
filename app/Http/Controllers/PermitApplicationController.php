@@ -210,10 +210,11 @@ class PermitApplicationController extends Controller
     public function newApplication()
     {
         $categories = PermitCategory::all();
-        $appointments_available = ExamDates::with('examSites')
-            ->where('facility_id', Auth()->user()->facility_id)
+        $appointments_available = ExamDates::where('facility_id', auth()->user()->facility_id)
             ->where('application_type_id', 1)
             ->get();
+
+            //dd($appointments_available);
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
     }
     /**
@@ -266,7 +267,7 @@ class PermitApplicationController extends Controller
             do {
                 $abbr = DB::table('facilities')
                     ->select('abbr')
-                    ->where('id', Auth()->user()->facility_id)
+                    ->where('id', auth()->user()->facility_id)
                     ->first()->abbr;
 
                 $digit_limit = 4;

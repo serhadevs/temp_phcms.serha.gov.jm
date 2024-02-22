@@ -7,6 +7,7 @@
             <a href="/dashboard">PHCMS</a>
         </div>
     </div>
+   
     <ul class="sidebar-nav">
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -23,6 +24,7 @@
                 </li>
             </ul>
         </li>
+       
         <li class="sidebar-item">
             <a href="/sign-off" class="sidebar-link">
                 <i class="bi bi-clipboard-check"></i>
