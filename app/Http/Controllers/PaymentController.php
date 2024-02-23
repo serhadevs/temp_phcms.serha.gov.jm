@@ -108,6 +108,7 @@ class PaymentController extends Controller
             ->where('application_types.id', $id)
             ->selectRaw('application_types.id, application_types.name, prices.price')
             ->get();
+            //dd($application_type[0]);
         return $application_type[0];
     }
 
