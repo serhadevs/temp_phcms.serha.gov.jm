@@ -90,7 +90,8 @@ class SignOffController extends Controller
                     )
                     ->where('permit_applications.deleted_at', NULL)
                     ->groupBy('health_interviews.id', 'test_results.id', 'travel_history.id', 'establishment_clinics.id')
-                    ->orderBy('establishment_clinics.name', 'permit_applications.sign_off_status', "DESC")
+                    ->orderBy('establishment_clinics.name')
+                    ->orderBy('permit_applications.sign_off_status')
                     ->get();
             } else if ($clinic_mode == "regular") {
                 $applications = DB::table('health_interviews')
