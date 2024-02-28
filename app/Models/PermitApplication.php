@@ -17,7 +17,6 @@ class PermitApplication extends Model
     protected $table = 'permit_applications';
 
     protected $fillable = [
-
         'permit_category_id',
         'establishment_clinic_id',
         'appointment_id',
@@ -74,5 +73,9 @@ class PermitApplication extends Model
     public function establishmentClinics(): BelongsTo
     {
         return $this->belongsTo(EstablishmentClinics::class, 'establishment_clinic_id', 'id');
+    }
+
+    public function healthInterviews():HasOne{
+        return $this->hasOne(HealthInterview::class, 'permit_application_id', 'id');
     }
 }
