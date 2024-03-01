@@ -84,6 +84,7 @@ class SignOffController extends Controller
                         'permit_categories.name as permit_category',
                         DB::raw('group_concat("  ", travel_history.destination, " - " ,travel_history.travel_date) as travel_history'),
                         'test_results.overall_score',
+                        'test_results.critical_score',
                         'health_interviews.*',
                         'health_interviews.id as interview_id',
                         DB::raw('group_concat("  ", symptoms.name) as symptoms')
@@ -139,6 +140,7 @@ class SignOffController extends Controller
                         'permit_categories.name as permit_category',
                         DB::raw('group_concat("  ", travel_history.destination, " - " ,travel_history.travel_date) as travel_history'),
                         'test_results.overall_score',
+                        'test_results.critical_score',
                         'health_interviews.*',
                         'health_interviews.id as interview_id',
                         DB::raw('group_concat("  ", symptoms.name) as symptoms')
@@ -215,6 +217,9 @@ class SignOffController extends Controller
                     'test_results.staff_contact',
                     'establishment_applications.id as est_id',
                     'establishment_applications.*',
+                    'establishment_applications.id as permit_id',
+                    'establishment_applications.establishment_name as est_name',
+                    'establishment_applications.establishment_address as address',
                     'test_results.overall_score',
                     'test_results.comments',
                     'test_results.critical_score',
