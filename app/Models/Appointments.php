@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Appointments extends Model
 {
@@ -28,5 +29,9 @@ class Appointments extends Model
 
     public function applications():BelongsTo{
         return $this->belongsTo(PermitApplication::class, 'permit_application_id', 'id');
+    }
+
+    public function examDate():HasOne{
+        return $this->hasOne(ExamDates::class, 'id', 'exam_date_id');
     }
 }

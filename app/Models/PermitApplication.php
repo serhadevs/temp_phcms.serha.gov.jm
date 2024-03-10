@@ -57,12 +57,14 @@ class PermitApplication extends Model
 
     public function payment(): HasOne
     {
-        return $this->hasOne(Payments::class, 'application_id', 'id');
+        //This was changed
+        return $this->hasOne(Payments::class, 'application_id', 'id')->where('application_type_id', '1');
     }
 
     public function appointment(): HasMany
     {
-        return $this->hasMany(Appointment::class, 'permit_application_id');
+        //This was changed
+        return $this->hasMany(Appointments::class, 'permit_application_id')->orderBy('created_at', 'desc');
     }
 
     public function user(): HasOne
@@ -75,7 +77,8 @@ class PermitApplication extends Model
         return $this->belongsTo(EstablishmentClinics::class, 'establishment_clinic_id', 'id');
     }
 
-    public function healthInterviews():HasOne{
+    public function healthInterviews(): HasOne
+    {
         return $this->hasOne(HealthInterview::class, 'permit_application_id', 'id');
     }
 }

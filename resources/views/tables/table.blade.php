@@ -56,12 +56,11 @@
             </tr>
         </thead>
         <tbody>
-
             @foreach ($applications as $application)
                 <tr>
                     <td>
-                        <input type="checkbox" name="status" id="" class="input" value={{ $application->id }}
-                            {{ $application->sign_off_status ? 'disabled' : '' }}>
+                        <input type="checkbox" name="status" id="" class="input"
+                            value={{ $application->permit_id }} {{ $application->sign_off_status ? 'disabled' : '' }}>
                     </td>
                     @if ($app_type_id == 1)
                         <td>
@@ -81,7 +80,7 @@
                     </td>
                     <td>{{ $application->permit_id }}</td>
                     @if ($app_type_id != 6)
-                        <td>{{ $application->est_name }}</td>
+                        <td>No</td>
                     @endif
                     <td>{{ $application->permit_no }}</td>
                     @if ($app_type_id == 1 || $app_type_id == 2 || $app_type_id == 5)
@@ -114,13 +113,13 @@
             @endforeach
         </tbody>
     </table>
-
     <div>
-        <button class="btn btn-primary" onclick="approveSignOff(1)"> <i class="bi bi-box-arrow-in-right"></i>
+        <button class="btn btn-primary" onclick="approveSignOff({{ json_encode($app_type_id) }})"> <i
+                class="bi bi-box-arrow-in-right"></i>
             Approve</button>
     </div>
 
-    @if ($app_type_id == 1)
+    {{-- @if ($app_type_id == 1)
         @foreach ($applications as $application)
             <div class="modal fade" id="view-application-{{ $application->permit_id }}" tabindex="-1"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -250,13 +249,12 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
             </div>
         @endforeach
-    @endif
+    @endif --}}
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>

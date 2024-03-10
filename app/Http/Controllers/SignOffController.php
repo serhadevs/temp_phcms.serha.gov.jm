@@ -39,6 +39,13 @@ class SignOffController extends Controller
 
     public function fetchApplications(Request $request)
     {
+        $sign_off_params = $request->validate([
+            'app_type_id'=>'required',
+            'exam_date'=>'required_if:app_type_id,1,2',
+            'clinic_mode'=>'required_if:app_type_id,1',
+            'exam_site'=>'required_if:clinic_mode,regular|required_if:app_type_id,2',
+            'date_of_inspection'=>'required_if:app_type_id,3,5,6'
+        ]);
         $app_type_id = $request->route('id');
         $exam_date = Carbon::parse($request->exam_date)->format('Y-m-d');
         $exam_site = $request->exam_site;
@@ -271,21 +278,21 @@ class SignOffController extends Controller
         $app_type_id = $request->data["appTypeId"];
         try {
             foreach ($request->data["selected_items"] as $item) {
-                if ($app_type_id == 1) {
+                if ($app_type_id == "1") {
                     $application = PermitApplication::with('healthInterviews')->find($item);
-                } elseif ($app_type_id == 2) {
+                } elseif ($app_type_id == "2") {
                     $application = HealthCertApplications::find($item);
-                } elseif ($app_type_id = 3) {
+                } elseif ($app_type_id = "3") {
                     $application = EstablishmentApplications::find($item);
-                } elseif ($app_type_id == 5) {
+                } elseif ($app_type_id == "5") {
                     $application = SwimmingPoolsApplications::find($item);
-                } else if ($app_type_id == 6) {
+                } else if ($app_type_id == "6") {
                     $application = TouristEstablishments::find($item);
                 }
                 $exam_date = TestResult::where('application_id', '=', $item)->where('application_type_id', '=', $app_type_id)->first();
+                
 
-                //Check if Health Interview exists
-                if ($app_type_id == 1 || $app_type_id == 2) {
+                if ($app_type_id == "1" || $app_type_id == "2") {
                     $health_interview = HealthInterview::where("permit_application_id", $item)->first();
                     if ($health_interview) {
                         HealthInterview::find($health_interview->id)->update(['sign_off_status' => TRUE]);
@@ -294,7 +301,6 @@ class SignOffController extends Controller
                     }
                 }
 
-                // $application->sign_off_status = TRUE;
                 $application->update(['sign_off_status' => TRUE]);
 
                 $sign_off_exists = SignOff::where('application_id', $item)->where('application_type_id', $app_type_id)->first();

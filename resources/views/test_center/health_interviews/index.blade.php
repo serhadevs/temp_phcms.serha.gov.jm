@@ -1,63 +1,64 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Food Handlers Permit')
+@section('title', 'Health Interviews')
 
 @section('content')
     @include('partials.sidebar._sidebar')
-
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container">
-            @if ($message = Session::get('success'))
-                {{-- <div class="container"> --}}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <p class="text-success"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {{-- </div> --}}
-            @endif
-            @if ($message = Session::get('error'))
-                {{-- <div class="container"> --}}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <p class="text-danger font-weight-bold">{{ $message }}</p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {{-- </div> --}}
-            @endif
             <div class="card">
                 <div class="card-body">
-                    <div class="row justify-content-between mb-2">
+                    <div class="row justify-content-between mb-3">
                         <div class="col">
-                            <h3>Food Handler's Permits</h3>
+                            <h2>
+                                Processed Health Interviews
+                            </h2>
                         </div>
-                        <div class="col-auto">
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Filter Applications
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/permit/filter/0">Today</a></li>
-                                    <li><a class="dropdown-item" href="/permit/filter/1">Yesterday</a></li>
-                                    <li><a class="dropdown-item" href="/permit/filter/7">Last Week</a></li>
-                                    <li><a class="dropdown-item" href="/permit/filter/30">Last Month</a></li>
-                                    <li><a class="dropdown-item" href="/permit/filter/90">Last 3 month</a>
-                                    </li>
-                                    <li><button class="dropdown-item" href="#"
-                                            onclick="showSearchBar()">Custom</button></li>
-                                </ul>
+                        <div class="col-auto no-wrap">
+                            <div class="row">
+                                {{-- <div class="col">
+                                    <button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop">
+                                        Create New Interview
+                                    </button>
+                                </div> --}}
+                                <div class="col">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Filter Interviews
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="/health-interview/filter/0">Today</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="/health-interview/filter/1">Yesterday</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="/health-interview/filter/7">Last
+                                                    Week</a></li>
+                                            <li><a class="dropdown-item" href="/health-interview/filter/30">Last
+                                                    Month</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="/health-interview/filter/90">Last 3
+                                                    month</a>
+                                            </li>
+                                            <li><button class="dropdown-item" href="#"
+                                                    onclick="showSearchBar()">Custom</button></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                     </div>
-                    <form action="{{ route('permit.index.custom') }}" method="POST">
+                    <form action="{{ route('health-interview.processed.custom') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="row text-center justify-content-md-center" id="search-row" style="display:none">
                             <div class="col col-md-3">
                                 <input type="date" class="form-control" placeholder="Starting Date" name="starting_date"
-                                    value="{{ old('starting_date') }}" id="starting_date">
-                                <input type="text" id="interval" class="form-control" name="interval" hidden>
+                                    id="starting_date" value="{{ old('starting_date') }}">
+                                <input type="text" class="form-control" id="interval" name="interval"
+                                    style="display:none" hidden>
                                 @error('starting_date')
                                     <p class="fw-bold text-danger errors">{{ $message }}</p>
                                 @enderror
@@ -68,12 +69,11 @@
                             To
                             <div class="col col-md-3">
                                 <input type="date" class="form-control" placeholder="Ending Date" name="ending_date"
-                                    value="{{ old('ending_date') }}" id="ending_date">
+                                    id="ending_date" value="{{ old('ending_date') }}">
                                 @error('ending_date')
                                     <p class="fw-bold text-danger errors">{{ $message }}</p>
                                 @enderror
                             </div>
-
                             <div class="col col-md-1">
                                 <button class="btn btn-md btn-success" type="submit">
                                     Submit
@@ -81,7 +81,7 @@
                             </div>
                         </div>
                     </form>
-                    @include('partials.tables.food_handlers_permits_table')
+                    @include('partials.tables.processed_health_interviews')
                 </div>
             </div>
         </div>
@@ -129,13 +129,6 @@
                 }
 
             }
-        </script>
-        <script>
-            const hamBurger = document.querySelector(".toggle-btn");
-
-            hamBurger.addEventListener("click", function() {
-                document.querySelector("#sidebar").classList.toggle("expand");
-            });
         </script>
     </div>
 @endsection

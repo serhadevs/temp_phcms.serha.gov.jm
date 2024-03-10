@@ -4,29 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Appointment extends Model
+class TravelHistory extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    protected $table = "appointments";
+    protected $table = "travel_history";
 
     protected $fillable = [
         'id',
-        'appointment_date',
-        'facility_id',
         'permit_application_id',
         'health_cert_application_id',
-        'exam_date_id',
+        'destination',
+        'travel_date',
         'created_at',
         'updated_at',
         'deleted_at'
     ];
 
     public $timestamps = true;
-
-    public function applications():BelongsTo{
-        return $this->belongsTo(PermitApplication::class, 'permit_applications_id', 'id');
-    }
 }

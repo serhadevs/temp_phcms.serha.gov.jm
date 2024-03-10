@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvanceSearchController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\FoodEstablishmentController;
+use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
 use App\Http\Controllers\PermitApplicationController;
@@ -96,8 +97,13 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/change-password',[UserController::class, 'changepasswordMe']);
      Route::post('/password-change',[UserController::class, 'store']);
 
-    
-    
+     //Health Interview Routes
+     Route::get("/health-interview/create/{app_type_id}/{app_id}", [HealthInterviewController::class,'create'])->name('health-interview.create'); 
+     Route::post('/health-interview/store', [HealthInterviewController::class, 'store'])->name('health-interview.store'); 
+     Route::get('/health-interview/filter/{id}', [HealthInterviewController::class, 'index'])->name('health-interview.index');
+     Route::get("/health-interview/outstanding/filter/{app_type_id}/{filter_id}",[HealthInterviewController::class, 'outstandingApplications'])->name('health-interview.outstanding');
+     Route::post("/health-interview/filter", [HealthInterviewController::class, 'customFilterIndex'])->name('health-interview.processed.custom');
+     Route::post("/health-interview/outstanding/", [HealthInterviewController::class, 'customFilterOutstanding'])->name('health-interview.outstanding.custom');
 
      //Establishments Routes
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class HealthInterview extends Model
 {
@@ -37,4 +39,16 @@ class HealthInterview extends Model
     ];
 
     public $timestamp = true;
+
+    public function healthInterviewSymptom():HasMany{
+        return $this->hasMany(HealthInterviewSymptom::class, 'health_interview_id', 'id');
+    }
+
+    public function healthCertApplication():HasOne{
+        return $this->hasOne(HealthCertApplications::class, 'id', 'health_cert_application_id');
+    }
+
+    public function permitApplication():HasOne{
+        return $this->hasOne(PermitApplication::class, 'id', 'permit_application_id');
+    }
 }

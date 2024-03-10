@@ -34,8 +34,7 @@ class PermitApplicationController extends Controller
         $i = 0;
         if ($id == "0") {
             $filterTimeline = $today;
-         
-                
+            
             $all_permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')->where('created_at', '>', $today)->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)->get();
             foreach ($all_permit_applications as $permit_app) {
                 $permit_array[$i]["id"] = $permit_app->id;
