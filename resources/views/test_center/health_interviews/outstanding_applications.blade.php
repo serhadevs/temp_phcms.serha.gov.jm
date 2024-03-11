@@ -16,43 +16,33 @@
                             </h3>
                         </div>
                         <div class="col-auto no-wrap">
-                            <div class="row">
-                                <div class="col">
-                                    <button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">
-                                        Create New Interview
-                                    </button>
-                                </div>
-                                <div class="col">
-                                    <div class="dropdown">
-                                        <button class="btn btn-primary dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            Filter Interviews
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item"
-                                                    href="/health-interview/outstanding/filter/{{ $app_type_id }}/0">Today</a>
-                                            </li>
-                                            <li><a class="dropdown-item"
-                                                    href="/health-interview/outstanding/filter/{{ $app_type_id }}/1">Yesterday</a>
-                                            </li>
-                                            <li><a class="dropdown-item"
-                                                    href="/health-interview/outstanding/filter/{{ $app_type_id }}/7">Last
-                                                    Week</a></li>
-                                            <li><a class="dropdown-item"
-                                                    href="/health-interview/outstanding/filter/{{ $app_type_id }}/30">Last
-                                                    Month</a>
-                                            </li>
-                                            <li><a class="dropdown-item"
-                                                    href="/health-interview/outstanding/filter/{{ $app_type_id }}/90">Last
-                                                    3
-                                                    month</a>
-                                            </li>
-                                            <li><button class="dropdown-item" href="#"
-                                                    onclick="showSearchBar()">Custom</button></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Filter Interviews
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item"
+                                            href="/health-interview/outstanding/filter/{{ $app_type_id }}/0">Today</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="/health-interview/outstanding/filter/{{ $app_type_id }}/1">Yesterday</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="/health-interview/outstanding/filter/{{ $app_type_id }}/7">Last
+                                            Week</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="/health-interview/outstanding/filter/{{ $app_type_id }}/30">Last
+                                            Month</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="/health-interview/outstanding/filter/{{ $app_type_id }}/90">Last
+                                            3
+                                            month</a>
+                                    </li>
+                                    <li><button class="dropdown-item" href="#"
+                                            onclick="showSearchBar()">Custom</button></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
