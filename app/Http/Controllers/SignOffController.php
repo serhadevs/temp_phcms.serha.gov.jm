@@ -40,11 +40,11 @@ class SignOffController extends Controller
     public function fetchApplications(Request $request)
     {
         $sign_off_params = $request->validate([
-            'app_type_id'=>'required',
-            'exam_date'=>'required_if:app_type_id,1,2',
-            'clinic_mode'=>'required_if:app_type_id,1',
-            'exam_site'=>'required_if:clinic_mode,regular|required_if:app_type_id,2',
-            'date_of_inspection'=>'required_if:app_type_id,3,5,6'
+            'app_type_id' => 'required',
+            'exam_date' => 'required_if:app_type_id,1,2',
+            'clinic_mode' => 'required_if:app_type_id,1',
+            'exam_site' => 'required_if:clinic_mode,regular|required_if:app_type_id,2',
+            'date_of_inspection' => 'required_if:app_type_id,3,5,6'
         ]);
         $app_type_id = $request->route('id');
         $exam_date = Carbon::parse($request->exam_date)->format('Y-m-d');
@@ -276,6 +276,7 @@ class SignOffController extends Controller
     public function approve(Request $request)
     {
         $app_type_id = $request->data["appTypeId"];
+        DB::beginTransaction();
         try {
             foreach ($request->data["selected_items"] as $item) {
                 if ($app_type_id == "1") {
@@ -290,7 +291,7 @@ class SignOffController extends Controller
                     $application = TouristEstablishments::find($item);
                 }
                 $exam_date = TestResult::where('application_id', '=', $item)->where('application_type_id', '=', $app_type_id)->first();
-                
+
 
                 if ($app_type_id == "1" || $app_type_id == "2") {
                     $health_interview = HealthInterview::where("permit_application_id", $item)->first();
@@ -323,8 +324,10 @@ class SignOffController extends Controller
                     SignOff::create($sign_off);
                 }
             }
+            DB::commit();
             return "success";
         } catch (Exception $e) {
+            DB::rollBack();
             return $e->getMessage();
         }
     }

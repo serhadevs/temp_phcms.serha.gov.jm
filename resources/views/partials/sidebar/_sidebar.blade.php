@@ -7,7 +7,7 @@
             <a href="/dashboard">PHCMS</a>
         </div>
     </div>
-   
+
     <ul class="sidebar-nav">
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -24,7 +24,7 @@
                 </li>
             </ul>
         </li>
-       
+
         <li class="sidebar-item">
             <a href="/sign-off" class="sidebar-link">
                 <i class="bi bi-clipboard-check"></i>
@@ -64,6 +64,24 @@
             <ul id="test-center" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
                     <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
+                </li>
+            </ul>
+        </li>
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#health_interview" aria-expanded="false" aria-controls="health_interview">
+                <i class="bi bi-person-lines-fill"></i>
+                <span>Health Interview</span>
+            </a>
+            <ul id="health_interview" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/health-interview/filter/0" class="sidebar-link">Processed Interviews</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/health-interview/outstanding/filter/1/0" class="sidebar-link">Outstanding Food Handlers</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/health-interview/outstanding/filter/2/0" class="sidebar-link">Outstanding Health Cert.</a>
                 </li>
             </ul>
         </li>

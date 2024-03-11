@@ -59,7 +59,7 @@
             @foreach ($applications as $application)
                 <tr>
                     <td>
-                        <input type="checkbox" name="status" id="" class="input"
+                        <input type="checkbox" name="status" id="{{ $application->permit_id }}" class="input" onchange="testing(this.checked, this.value)"
                             value={{ $application->permit_id }} {{ $application->sign_off_status ? 'disabled' : '' }}>
                     </td>
                     @if ($app_type_id == 1)
@@ -119,7 +119,7 @@
             Approve</button>
     </div>
 
-    {{-- @if ($app_type_id == 1)
+    @if ($app_type_id == 1)
         @foreach ($applications as $application)
             <div class="modal fade" id="view-application-{{ $application->permit_id }}" tabindex="-1"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -254,7 +254,7 @@
                 </div>
             </div>
         @endforeach
-    @endif --}}
+    @endif
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -288,16 +288,17 @@
         });
 
         var selected_items = [];
-        $(".input[type=checkbox]").on('change', function(event) {
-            if ($(this).is(':checked')) {
-                selected_items.push($(this).val());
-                console.log(selected_items);
-            } else {
-                var index = selected_items.indexOf($(this).val());
-                if (index !== -1) selected_items.splice(index, 1);
-                console.log(selected_items);
+
+        function testing(checkStatus, value){
+            if(checkStatus==true){
+                selected_items.push(value);
+                // console.log(selected_items);
+            }else{
+                var index=selected_items.indexOf(value);
+                if(index!==-1) selected_items.splice(index, 1);
+                // console.log(selected_items);
             }
-        });
+        }
 
         function approveSignOff(appTypeId) {
             swal.fire({
