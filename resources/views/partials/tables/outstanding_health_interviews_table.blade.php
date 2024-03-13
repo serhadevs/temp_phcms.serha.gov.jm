@@ -40,7 +40,7 @@
                 </td>
                 <td>
                     @if ($app_type_id == '1')
-                        {{ $application->establishment_clinic_id == '' ? $application?->appointment->first()->examDate->examSites?->name : $application->establishmentClinic?->proposed_date }}
+                        {{ $application->establishment_clinic_id == '' ? $application?->appointment->first()?->examDate?->examSites?->name : $application->establishmentClinic?->proposed_date }}
                     @endif
                     @if ($app_type_id == '2')
                         {{ $application?->appointment->first()->examDate->examSites?->name }}
