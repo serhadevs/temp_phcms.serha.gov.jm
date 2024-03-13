@@ -174,7 +174,7 @@ class PermitApplicationController extends Controller
             'home_phone' => 'nullable|regex:/^[0-9]{1}\({1}[0-9]{3}\)[0-9]{3}\-[0-9]{4}+$/',
             'work_phone' => 'nullable|regex:/^[0-9]{1}\({1}[0-9]{3}\)[0-9]{3}\-[0-9]{4}+$/',
             'trn' => 'nullable|regex:/^[0-9]{3}\-[0-9]{3}\-[0-9]{3}+$/',
-            'email' => 'required|email',
+            'email' => 'nullable',
             'permit_no' => 'required',
             'photo_upload' => 'nullable'
         ]);
