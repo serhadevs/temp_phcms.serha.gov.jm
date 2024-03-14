@@ -37,4 +37,8 @@ class Payments extends Model
     public function applicationType():HasOne{
         return $this->hasOne(ApplicationType::class, 'id', 'application_type_id');
     }
+
+    public function paymentCancellation():HasOne{
+        return $this->hasOne(PaymentCancellationRequests::class, 'payment_id', 'id');
+    }
 }
