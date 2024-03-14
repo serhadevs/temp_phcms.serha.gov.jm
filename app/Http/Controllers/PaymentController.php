@@ -9,6 +9,7 @@ use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
 use App\Models\Facility;
 use App\Models\HealthCertApplications;
+use App\Models\PaymentCancellationRequests;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\PermitCategories;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DateTime;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class PaymentController extends Controller
 {
@@ -51,9 +53,11 @@ class PaymentController extends Controller
             $filterTimeline = $today;
             $payments = DB::table('payments')
                 ->join('application_types', 'application_types.id', '=', 'payments.application_type_id')
-                ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at')
+                ->join('payment_cancellation_requests', 'payment_cancellation_requests.payment_id', '=', 'payments.id', 'left outer')
+                ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at, payment_cancellation_requests.id as cancellation_id, payment_cancellation_requests.approved as cancellation_approved_status')
                 ->where('payments.created_at', '>', $today)
                 ->where('payments.facility_id', Auth()->user()->facility_id)
+                ->where('payments.deleted_at', NULL)
                 ->get();
 
             $payments_info = json_encode($payments);
@@ -70,9 +74,11 @@ class PaymentController extends Controller
 
         $payments = DB::table('payments')
             ->join('application_types', 'application_types.id', '=', 'payments.application_type_id')
-            ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at')
+            ->join('payment_cancellation_requests', 'payment_cancellation_requests.payment_id', '=', 'payments.id', 'left outer')
+            ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at, payment_cancellation_requests.id as cancellation_id, payment_cancellation_requests.approved as cancellation_approved_status')
             ->whereBetween('payments.created_at', [$filterTimeline, $today])
             ->where('payments.facility_id', Auth()->user()->facility_id)
+            ->where('payments.deleted_at', NULL)
             ->get();
 
         $payments_info = json_encode($payments);
@@ -91,9 +97,11 @@ class PaymentController extends Controller
 
         $payments = DB::table('payments')
             ->join('application_types', 'application_types.id', '=', 'payments.application_type_id')
-            ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at')
+            ->join('payment_cancellation_requests', 'payment_cancellation_requests.payment_id', '=', 'payments.id', 'left outer')
+            ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at, payment_cancellation_requests.id as cancellation_id, payment_cancellation_requests.approved as cancellation_approved_status')
             ->whereBetween('payments.created_at', [$timeline['starting_date'], $timeline['ending_date']])
             ->where('payments.facility_id', Auth()->user()->facility_id)
+            ->where('payments.deleted_at', NULL)
             ->get();
 
         $payments_info = json_encode($payments);
@@ -108,7 +116,7 @@ class PaymentController extends Controller
             ->where('application_types.id', $id)
             ->selectRaw('application_types.id, application_types.name, prices.price')
             ->get();
-            //dd($application_type[0]);
+        //dd($application_type[0]);
         return $application_type[0];
     }
 
@@ -176,6 +184,7 @@ class PaymentController extends Controller
             ->where('users.facility_id', auth()->user()->facility_id)
             ->whereNull('payments.id')
             ->whereBetween('permit_applications.created_at', [$filterTimeline, $today])
+            ->where('permit_applications.deleted_at', NULL)
             ->get();
 
         $json_applications = $this->convertToArray($permit_applications);
@@ -199,6 +208,7 @@ class PaymentController extends Controller
             ->selectRaw('permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, users.firstname')
             ->where('users.facility_id', auth()->user()->facility_id)
             ->whereNull('payments.id')
+            ->where('permit_applications.deleted_at', NULL)
             ->whereBetween('permit_applications.created_at', [$timeline['starting_date'], $timeline['ending_date']])->get();
 
         $json_applications = $this->convertToArray($permit_applications);
@@ -486,6 +496,54 @@ class PaymentController extends Controller
         return '<div class="alert alert-' . $alert_type . '"><b>Payment Status: ' . $alert_text . '</b></div>';
     }
 
+    public function outstandingCancellations()
+    {
+        $paymentCancellations = PaymentCancellationRequests::with('payment.applicationType', 'requester')
+            ->where('facility_id', auth()->user()->facility_id)
+            ->where('approved', NULL)
+            ->get();
+        return view('payments.cancellation_requests.outstanding_approvals', compact('paymentCancellations'));
+    }
+
+    public function requestCancelPayment(Request $request)
+    {
+        $payment_cancellation = $request->data;
+        try {
+            if (Payments::find($payment_cancellation["payment_id"])) {
+                if (PaymentCancellationRequests::where('payment_id', $payment_cancellation["payment_id"])->get()) {
+                    $payment_cancellation["requester_user_id"] = Auth()->user()->id;
+                    $payment_cancellation["facility_id"] = auth()->user()->facility_id;
+                    if (PaymentCancellationRequests::create($payment_cancellation)) {
+                        return "success";
+                    }
+                } else {
+                    throw new Exception('A requests has already been made to cancel' . $request["payment_id"]);
+                }
+            } else {
+                throw new Exception('No payment is associated with this id or it has already been deleted.');
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function approveCancelPaymentRequest(Request $request)
+    {
+        try {
+            if (PaymentCancellationRequests::find($request->data["cancellation_id"])) {
+                if ($request->data["approval_stat"] == "1") {
+                    Payments::find(PaymentCancellationRequests::find($request->data["cancellation_id"])->payment_id)->update(["deleted_at" => new DateTime()]);
+                }
+                PaymentCancellationRequests::find($request->data["cancellation_id"])->update(["approved" => $request->data["approval_stat"], "approver_user_id" => auth()->user()->id]);
+                return "success";
+            } else {
+                throw new Exception("Cancellation request does not exists");
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -541,5 +599,4 @@ class PaymentController extends Controller
     {
         //
     }
-
 }

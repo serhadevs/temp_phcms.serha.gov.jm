@@ -38,6 +38,12 @@
             </a>
         </li>
         <li class="sidebar-item">
+            <a href="/payments/cancellations" class="sidebar-link">
+                <i class="bi bi-slash-circle"></i>
+                <span>Payment Cancel Requests</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
                 <i class="bi bi-coin"></i>
@@ -78,7 +84,8 @@
                     <a href="/health-interview/filter/0" class="sidebar-link">Processed Interviews</a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="/health-interview/outstanding/filter/1/0" class="sidebar-link">Outstanding Food Handlers</a>
+                    <a href="/health-interview/outstanding/filter/1/0" class="sidebar-link">Outstanding Food
+                        Handlers</a>
                 </li>
                 <li class="sidebar-item">
                     <a href="/health-interview/outstanding/filter/2/0" class="sidebar-link">Outstanding Health Cert.</a>

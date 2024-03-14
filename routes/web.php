@@ -71,7 +71,9 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get("/payments/receipt/print/{id}", [PaymentController::class, 'printReceipt'])->name('payment.receipt.print');
      Route::get("/payments/index/filter/{id}", [PaymentController::class, 'filterProcessedPayments'])->name('payments.index.filter');
      Route::post("/payments/index/filter", [PaymentController::class, 'customFilterProcessedPayments'])->name('payments.index.filter.custom');
-     Route::get("/payments/cancel/{id}",[PaymentController::class, 'destroy']);
+     Route::get("/payments/cancellations",[PaymentController::class, 'outstandingCancellations'])->name('payments.cancellation.outstanding');
+     Route::post("/payments/cancellations/request", [PaymentController::class, 'requestCancelPayment'])->name('payments.cancellations.request');
+     Route::post("/payments/cancellations/approve", [PaymentController::class, 'approveCancelPaymentRequest'])->name('payments.cancellations.approve');
 
      //Sign off Routes
      Route::get('/sign-off', [SignOffController::class, 'index'])->name('sign-off');
