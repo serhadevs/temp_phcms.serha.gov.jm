@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class EstablishmentApplications extends Model
 {
@@ -37,4 +38,8 @@ class EstablishmentApplications extends Model
     ];
 
     public $timestamps = true;
+
+    public function establishmentCategory():HasOne{
+        return $this->hasOne(EstablishmentCategories::class, 'id', 'establishment_category_id');
+    }
 }

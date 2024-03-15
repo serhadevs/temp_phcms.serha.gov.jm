@@ -44,6 +44,12 @@
             </a>
         </li>
         <li class="sidebar-item">
+            <a href="/food-establishments" class="sidebar-link">
+                <i class="bi bi-hospital"></i>
+                <span>Food Establishments</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
                 <i class="bi bi-coin"></i>
