@@ -16,7 +16,7 @@
                 <td>{{ $est->establishment_name }}</td>
                 <td>{{ $est->establishment_address }}</td>
                 <td>{{ $est->food_type }}</td>
-                <td>{{ $est->category }}</td>
+                <td>{{ $est->establishmentCategory?->name }}</td>
                 <td class="text-nowrap">
                     <button class="btn btn-primary btn-sm">
                         View

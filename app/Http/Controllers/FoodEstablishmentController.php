@@ -13,7 +13,9 @@ class FoodEstablishmentController extends Controller
 {
     public function index()
     {
-        $food_establishments = EstablishmentApplications::where('created_at', '>', "2024-01-01")->get();
+        $food_establishments = EstablishmentApplications::with('establishmentCategory')
+            ->where('created_at', '>', "2024-01-01")
+            ->get();
 
         return view('establishments.index', compact('food_establishments'));
     }
