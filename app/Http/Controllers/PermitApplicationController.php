@@ -9,6 +9,7 @@ use App\Models\PermitCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DateTime;
+use Exception;
 
 class PermitApplicationController extends Controller
 {
@@ -34,7 +35,7 @@ class PermitApplicationController extends Controller
         $i = 0;
         if ($id == "0") {
             $filterTimeline = $today;
-            
+
             $all_permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')->where('created_at', '>', $today)->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)->get();
             foreach ($all_permit_applications as $permit_app) {
                 $permit_array[$i]["id"] = $permit_app->id;
@@ -50,7 +51,7 @@ class PermitApplicationController extends Controller
                 $i++;
             }
             $json_applications = json_encode($permit_array);
-           return view('food_handlers_permit.index', compact('json_applications'));
+            return view('food_handlers_permit.index', compact('json_applications'));
         } else if ($id == "1") {
             $filterTimeline = $yesterday;
         } else if ($id == "7") {
@@ -146,7 +147,7 @@ class PermitApplicationController extends Controller
         $appointments = DB::table('appointments')
             ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
             ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
-            ->selectRaw('appointments.id as appointment_id, appointments.appointment_date, exam_sites.name as appointment_location, exam_dates.exam_start_time as appointment_time')
+            ->selectRaw('appointments.id as appointment_id, appointments.appointment_date, exam_sites.name as appointment_location, exam_dates.exam_start_time as appointment_time, exam_dates.id as exam_date_id')
             ->where('appointments.facility_id', auth()->user()->facility_id)
             ->where('appointments.permit_application_id', $application_id)
             ->where('exam_dates.application_type_id', 1)
@@ -157,7 +158,16 @@ class PermitApplicationController extends Controller
 
         $json_application = json_encode($permit_application);
 
-        return view('food_handlers_permit.view', compact('json_application', 'json_appointments'));
+        $appointment_available = [];
+
+        foreach (ExamDates::with('examSites', 'permitCategory')
+            ->where('facility_id', auth()->user()->facility_id)
+            ->where('application_type_id', 1)
+            ->get() as $appointment) {
+            $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
+        }
+
+        return view('food_handlers_permit.view', compact('json_application', 'json_appointments', 'appointment_available'));
     }
 
     public function editApplication(Request $request)
@@ -206,6 +216,25 @@ class PermitApplicationController extends Controller
         }
     }
 
+    public function editPermitAppointment(Request $request)
+    {
+        try {
+            if (Appointments::find($request->data["appointment_id"])) {
+                if (Appointments::find($request->data["appointment_id"])->update(
+                    ['appointment_date' => $request->data["appointment_date"], 'exam_date_id' => $request->data["exam_date_id"]]
+                )) {
+                    return "success";
+                }else{
+                    throw new Exception("Problem updating record");
+                }
+            } else {
+                throw new Exception("Appointment does not exist");
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function newApplication()
     {
         $categories = PermitCategory::all();
@@ -213,7 +242,7 @@ class PermitApplicationController extends Controller
             ->where('application_type_id', 1)
             ->get();
 
-            //dd($appointments_available);
+        //dd($appointments_available);
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
     }
     /**

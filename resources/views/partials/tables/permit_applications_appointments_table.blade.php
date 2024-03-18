@@ -13,15 +13,25 @@
             <th>
                 Appointment Time
             </th>
+            <th>
+                Options
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (json_decode($json_appointments) as $appointment)
             <tr>
                 <td>{{ $appointment->appointment_id }}</td>
-                <td>{{ $appointment->appointment_date}}</td>
+                <td>{{ $appointment->appointment_date }}</td>
                 <td>{{ $appointment->appointment_location }}</td>
                 <td>{{ $appointment->appointment_time }}</td>
+                <td>
+                    <button href="" class="btn btn-warning btn-sm"
+                        onclick="editAppointment({{ json_encode($appointment_available) }}, {{ json_encode($appointment->exam_date_id) }}, {{ json_encode($appointment->appointment_date) }}, {{ json_encode($appointment->appointment_id) }})"
+                        type="button">
+                        Edit
+                    </button>
+                </td>
             </tr>
         @endforeach
 
@@ -38,7 +48,73 @@
 
 <script>
     new DataTable('#payment_info', {
-        scrollX:true,
+        scrollX: true,
         // responsive: true;
     });
+
+    function editAppointment(appointments, selected_appointment, appointment_date, appointment_id) {
+        swal.fire({
+                title: "Select the exam day\n and location.",
+                icon: "info",
+                input: 'select',
+                inputOptions: appointments,
+                inputValue: selected_appointment,
+                showCancelButton: true,
+                showConfirmButton: true,
+                confirmButtonText: `Yes, I am sure!`,
+                cancelButtonText: `No, Cancel it!`
+            })
+            .then(result => {
+                if (result.isConfirmed) {
+                    swal.fire({
+                        title: "Update appointment \ndate for exam.",
+                        icon: "info",
+                        input: 'date',
+                        inputValue: appointment_date,
+                        inputAttributes: {
+                            required: true
+                        },
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: `Yes, I am sure!`,
+                        cancelButtonText: `No, Cancel it!`
+                    }).then(result2 => {
+                        if (result2.isConfirmed) {
+                            if (selected_appointment == result.value && appointment_date == result2.value) {
+                                swal.fire(
+                                    "Oops! Something went wrong.",
+                                    "Nothing was changed",
+                                    "error");
+                            } else {
+                                $.post({!! json_encode(url('/permit/application/edit/appointment')) !!}, {
+                                    _method: "POST",
+                                    data: {
+                                        exam_date_id: result.value,
+                                        appointment_date: result2.value,
+                                        appointment_id: appointment_id
+                                    },
+                                    _token: "{{ csrf_token() }}"
+                                }).then(function(data) {
+                                    if (data == "success") {
+                                        swal.fire(
+                                            "Done!",
+                                            "Payment Cancellation has been successfully Requested.",
+                                            "success").then(esc => {
+                                            if (esc) {
+                                                location.reload();
+                                            }
+                                        });
+                                    } else {
+                                        swal.fire(
+                                            "Oops! Something went wrong.",
+                                            data,
+                                            "error");
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            })
+    }
 </script>
