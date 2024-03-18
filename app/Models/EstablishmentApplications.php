@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EstablishmentApplications extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = "establishment_applications";
 
@@ -39,7 +42,18 @@ class EstablishmentApplications extends Model
 
     public $timestamps = true;
 
-    public function establishmentCategory():HasOne{
+    public function establishmentCategory(): HasOne
+    {
         return $this->hasOne(EstablishmentCategories::class, 'id', 'establishment_category_id');
+    }
+
+    public function operators(): HasMany
+    {
+        return $this->hasMany(FoodEstablishmentOperators::class, 'establishment_application_id', 'id');
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 }

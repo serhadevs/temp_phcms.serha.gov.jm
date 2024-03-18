@@ -18,11 +18,14 @@
                 <td>{{ $est->food_type }}</td>
                 <td>{{ $est->establishmentCategory?->name }}</td>
                 <td class="text-nowrap">
-                    <button class="btn btn-primary btn-sm">
+                    <a class="btn btn-primary btn-sm" href="/food-establishments/view/{{ $est->id }}">
                         View
-                    </button>
-                    <button class="btn btn-warning btn-sm">
+                    </a>
+                    <a class="btn btn-warning btn-sm" href="/food-establishments/edit/{{ $est->id }}">
                         Edit
+                    </a>
+                    <button class="btn btn-info btn-sm">
+                        Renew
                     </button>
                 </td>
             </tr>
