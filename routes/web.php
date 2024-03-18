@@ -47,13 +47,14 @@ Route::group(['middleware' => ['auth']], function () {
      //Dashboard Routes
      Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
 
-     //Application Route
+     //Permit Application Route
      Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
      Route::post("/permit/application", [PermitApplicationController::class, 'store'])->name('food_handlers_permit.store');
      Route::get("/permit/filter/{id}", [PermitApplicationController::class, 'index'])->name('permit.index');
      Route::post("/permit/filter", [PermitApplicationController::class, 'customFilterApplications'])->name('permit.index.custom');
      Route::get('/permit/view/{id}', [PermitApplicationController::class, 'viewApplication'])->name('permit.application.view');
      Route::post('/permit/application/edit', [PermitApplicationController::class, 'editApplication'])->name('permit.application.edit');
+     Route::post('/permit/application/edit/appointment', [PermitApplicationController::class, 'editPermitAppointment'])->name('permit.application.edit.appointment');
 
      //Advance Search 
 
