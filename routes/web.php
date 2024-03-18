@@ -114,7 +114,16 @@ Route::group(['middleware' => ['auth']], function () {
      //     Route::get("/food-establishment/renew/{id}", "FoodEstablishmentController@renew");
      //     Route::post("/food-establishment/renew/{id}", "FoodEstablishmentController@storeRenewal");
 
-     Route::get('/food-establishments',[FoodEstablishmentController::class,'index']);
+     Route::get('/food-establishments/filter/{id}',[FoodEstablishmentController::class,'index'])->name('food-establishment.filter');
+     Route::post('/food-establishments/filter', [FoodEstablishmentController::class , 'indexCustom'])->name('food-establishment.filter.custom');
+     Route::get('/food-establishments/create', [FoodEstablishmentController::class , 'create'])->name('food-establishment.create');
+     Route::post('/food-establishments/create', [FoodEstablishmentController::class, 'store'])->name('food-establishment.create.store');
+     Route::get('/food-establishments/view/{id}', [FoodEstablishmentController::class, 'view'])->name('food-establishment.view');
+     Route::post('/food-establishments/edit', [FoodEstablishmentController::class, 'edit'])->name('food-establishment.edit');
+     Route::post('/food-establishments/edit/operators', [FoodEstablishmentController::class, 'editOperators'])->name('food-establishment.edit.operators');
+     Route::post('/food-establishments/delete/operators', [FoodEstablishmentController::class, 'deleteOperator'])->name('food-establishment.delete.operators');
+     Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class,'getEdit']);
+     
      // Route::get('/food-establishments/view',[FoodEstablishmentController::class,'view']);
      // Route::get('food-establishments',[FoodEstablishmentController::class, 'showApplications']);
 

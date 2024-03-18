@@ -44,7 +44,7 @@
             </a>
         </li>
         <li class="sidebar-item">
-            <a href="/food-establishments" class="sidebar-link">
+            <a href="/food-establishments/filter/0" class="sidebar-link">
                 <i class="bi bi-hospital"></i>
                 <span>Food Establishments</span>
             </a>

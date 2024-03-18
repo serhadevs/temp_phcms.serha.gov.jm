@@ -248,7 +248,10 @@ class HealthInterviewController extends Controller
         if (HealthInterview::create($health_interview)) {
             if (count($request->symptoms) > 0) {
                 if ($request->app_type_id == "1") {
-                    $health_interview_id = DB::table('health_interviews')->select('id')->where('permit_application_id', $request->application_id)->get();
+                    $health_interview_id = DB::table('health_interviews')
+                        ->select('id')
+                        ->where('permit_application_id', $request->application_id)
+                        ->get();
                 } else {
                     $health_interview_id = DB::table('health_interviews')->select('id')->where('health_cert_application_id', $request->application_id)->get();
                 }
