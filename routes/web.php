@@ -133,8 +133,10 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/test/downloads', [TestDownloads::class, 'index']);
 
      //Download routes
-     Route::get('/downloads/foodhandlers', [DownloadsController::class, 'food_handlers'])->name('downloads.foodhandlers.index');
+     Route::post('/downloads/foodhandlers', [DownloadsController::class, 'customFilterFHand'])->name('downloads.foodhandlers.custom');
+     Route::get('/downloads/foodhandlers/filter/{id}', [DownloadsController::class, 'food_handlers'])->name('downloads.foodhandlers.filter');
      Route::get('/downloads/food-establishments', [DownloadsController::class, 'food_est'])->name('downloads.food_est.index');
+     
      Route::post('/downloads/package',[DownloadsController::class, 'downloadZip'])->middleware(printerAuthAttempt::class);
      Route::delete('/downloads/deleteAll', [DownloadsController::class, 'deleteAll'])->name('downloads.delete.multiple');
      Route::delete('/downloads/{id}', [DownloadsController::class, 'destroy'])->name('downloads.delete.single');

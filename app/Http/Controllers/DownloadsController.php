@@ -15,15 +15,65 @@ class DownloadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function food_handlers()
+    public function food_handlers(Request $request)
     {
+        $id = $request->route('id');
+        $today = date_format(new Datetime(), "Y-m-d");
+        $tonight = new DateTime($today . " 23:59:59");
+        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
+        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
+        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        $application_type_id = 1;
+
+        $filterTimeline = "";
+
+        if ($id == "0") {
+            $filterTimeline = $today;
+            $downloads = Downloads::with('zippedApplications.payment.facility')
+                ->where('application_type_id', 1)
+                ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+                ->whereBetween('created_at', [$today, $tonight])
+                ->get();
+
+            return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
+        } else if ($id == "1") {
+            $filterTimeline = $yesterday;
+        } else if ($id == "7") {
+            $filterTimeline = $last_week;
+        } else if ($id == "30") {
+            $filterTimeline = $thirty_days;
+        } else if ($id == "90") {
+            $filterTimeline = $last_ninety_days;
+        }
+
         $downloads = Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 1)
             ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
-            ->where('created_at', '>', '2023-12-05')
+            ->whereBetween('created_at', [$filterTimeline, $today])
             ->get();
 
-        $application_type_id = 1;
+        return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
+    }
+
+    public function customFilterFHand(Request $request)
+    {
+        date_default_timezone_set('Etc/GMT+5');
+        $timeline = $request->validate([
+            'starting_date' => 'required',
+            'ending_date' => 'required',
+            'interval' => 'nullable|numeric|max:6'
+        ]);
+
+        $end_date = new DateTime($timeline["ending_date"] . " 23:59:59");
+
+        $downloads = Downloads::with('zippedApplications.payment.facility')
+            ->where('application_type_id', 1)
+            ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+            ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
+            ->get();
+
+        $application_type_id=1;
 
         return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
     }

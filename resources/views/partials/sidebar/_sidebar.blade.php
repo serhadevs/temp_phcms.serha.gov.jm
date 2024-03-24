@@ -106,7 +106,7 @@
             </a>
             <ul id="downloads" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="/downloads/foodhandlers" class="sidebar-link">Food Handlers Permits</a>
+                    <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
                 </li>
                 <li class="sidebar-item">
                     <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
