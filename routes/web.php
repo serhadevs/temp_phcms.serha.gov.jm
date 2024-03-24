@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdvanceSearchController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard;
+use App\Http\Controllers\DownloadsController;
 use App\Http\Controllers\FoodEstablishmentController;
 use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\PaymentController;
@@ -11,7 +12,10 @@ use App\Http\Controllers\PermitApplicationController;
 use App\Http\Controllers\PermitTestResultsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SignOffController;
+use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\printerAuthAttempt;
+use App\Models\Downloads;
 use App\Models\PermitTestResults;
 use Illuminate\Support\Facades\Route;
 
@@ -124,6 +128,16 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/food-establishments/edit/operators', [FoodEstablishmentController::class, 'editOperators'])->name('food-establishment.edit.operators');
      Route::post('/food-establishments/delete/operators', [FoodEstablishmentController::class, 'deleteOperator'])->name('food-establishment.delete.operators');
      Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class,'getEdit']);
+
+     //Test Exports
+     Route::get('/test/downloads', [TestDownloads::class, 'index']);
+
+     //Download routes
+     Route::get('/downloads/foodhandlers', [DownloadsController::class, 'food_handlers'])->name('downloads.foodhandlers.index');
+     Route::get('/downloads/food-establishments', [DownloadsController::class, 'food_est'])->name('downloads.food_est.index');
+     Route::post('/downloads/package',[DownloadsController::class, 'downloadZip'])->middleware(printerAuthAttempt::class);
+     Route::delete('/downloads/deleteAll', [DownloadsController::class, 'deleteAll'])->name('downloads.delete.multiple');
+     Route::delete('/downloads/{id}', [DownloadsController::class, 'destroy'])->name('downloads.delete.single');
      
      // Route::get('/food-establishments/view',[FoodEstablishmentController::class,'view']);
      // Route::get('food-establishments',[FoodEstablishmentController::class, 'showApplications']);
