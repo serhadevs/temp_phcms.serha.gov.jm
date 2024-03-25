@@ -23,6 +23,6 @@ class printerAuthAttempt
                 return $next($request);
             }
         }
-        return $request->application_type == "1" ? redirect()->route('downloads.foodhandlers.index')->with('error', 'Incorrect Credentials or Permissions') : redirect()->route('downloads.foodest.index')->with('error', 'Incorrect Credentials or Permissions');
+        return $request->application_type == "1" ? redirect()->route('downloads.foodhandlers.filter', ['id'=>0])->with('error', 'Incorrect Credentials or Permissions') : redirect()->route('downloads.foodest.index')->with('error', 'Incorrect Credentials or Permissions');
     }
 }
