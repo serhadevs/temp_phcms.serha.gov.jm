@@ -246,17 +246,19 @@ class HealthInterviewController extends Controller
         $health_interview["facility_id"] = Auth()->user()->facility_id;
 
         if (HealthInterview::create($health_interview)) {
-            if (count($request->symptoms) > 0) {
-                if ($request->app_type_id == "1") {
-                    $health_interview_id = DB::table('health_interviews')
-                        ->select('id')
-                        ->where('permit_application_id', $request->application_id)
-                        ->get();
-                } else {
-                    $health_interview_id = DB::table('health_interviews')->select('id')->where('health_cert_application_id', $request->application_id)->get();
-                }
-                for ($i = 0; $i < count($request->symptoms); $i++) {
-                    HealthInterviewSymptom::create(['symptom_id' => $request->symptoms[$i], 'health_interview_id' => $health_interview_id[0]->id]);
+            if ($request->symptoms) {
+                if (count($request->symptoms) > 0) {
+                    if ($request->app_type_id == "1") {
+                        $health_interview_id = DB::table('health_interviews')
+                            ->select('id')
+                            ->where('permit_application_id', $request->application_id)
+                            ->get();
+                    } else {
+                        $health_interview_id = DB::table('health_interviews')->select('id')->where('health_cert_application_id', $request->application_id)->get();
+                    }
+                    for ($i = 0; $i < count($request->symptoms); $i++) {
+                        HealthInterviewSymptom::create(['symptom_id' => $request->symptoms[$i], 'health_interview_id' => $health_interview_id[0]->id]);
+                    }
                 }
             }
 
@@ -289,7 +291,7 @@ class HealthInterviewController extends Controller
                         'facility_id' => auth()->user()->facility_id
                     ]
                 )) {
-                    return view('dashboard.dashboard')->with('success', 'Health Interview and Test Results have been entered successfully for');
+                    return redirect()->route('dashboard.dashboard')->with('success', 'Health Interview and Test Results have been entered successfully for App Number '.$request->application_id);
                 }
             }
 

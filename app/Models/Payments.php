@@ -34,6 +34,10 @@ class Payments extends Model
         return $this->belongsTo(PermitApplication::class, 'application_id', 'id');
     }
 
+    public function facility():HasOne{
+        return $this->hasOne(Facility::class, 'id', 'facility_id');
+    }
+
     public function applicationType():HasOne{
         return $this->hasOne(ApplicationType::class, 'id', 'application_type_id');
     }

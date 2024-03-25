@@ -81,4 +81,13 @@ class PermitApplication extends Model
     {
         return $this->hasOne(HealthInterview::class, 'permit_application_id', 'id');
     }
+
+    public function signOffs(): HasOne
+    {
+        return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', '1');
+    }
+
+    public function testResults():HasOne{
+        return $this->hasOne(TestResult::class, 'application_id', 'id')->where('application_type_id', '1');
+    }
 }

@@ -42,7 +42,7 @@ class HealthCertApplications extends Model
 
     public $timestamps = true;
 
-    public function appointments(): HasMany
+    public function appointment(): HasMany
     {
         return $this->hasMany(Appointments::class, 'health_cert_application_id', 'id');
     }

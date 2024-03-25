@@ -98,7 +98,24 @@
                 </li>
             </ul>
         </li>
-
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#downloads" aria-expanded="false" aria-controls="reports">
+                <i class="bi bi-cloud-arrow-down"></i>
+                <span>Downloads</span>
+            </a>
+            <ul id="downloads" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/report/payment" class="sidebar-link">Tourist Establishments</a>
+                </li>
+            </ul>
+        </li>
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
