@@ -82,7 +82,7 @@ class DownloadsController extends Controller
     {
         $downloads = Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 3)
-            ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+            ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
             ->where('created_at', '>', '2024-01-01')
             ->get();
 

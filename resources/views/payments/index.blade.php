@@ -9,7 +9,7 @@
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                    <div class="row justify-content-between">
+                    <div class="row justify-content-between mb-3">
                         <div class="col">
                             <h3>Processed Payments</h3>
                         </div>
@@ -17,7 +17,7 @@
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    Filter Applications
+                                    Filter Payments
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="/payments/index/filter/0">Today</a></li>

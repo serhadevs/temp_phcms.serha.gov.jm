@@ -44,7 +44,7 @@
                                         <div class="dropdown">
                                             <button class="btn btn-primary dropdown-toggle" type="button"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                                Filter Interviews
+                                                Filter Establishments
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="/food-establishments/filter/0">Today</a>
