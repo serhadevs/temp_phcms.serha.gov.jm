@@ -20,7 +20,7 @@
                                 <div class="mt-3 text-center">
                                     <div class="mt-3">
                                         @if ($permit_application->photo_upload)
-                                            <img src="{{ asset('storage/' . $permit_application->photo_upload) }}"
+                                            <img src="{{ asset('storage/photo_uploads' . $permit_application->photo_upload) }}"
                                                 alt="No Image found" style="display:block" class="mx-auto rounded w-100"
                                                 id="applicant_img">
                                         @endif
