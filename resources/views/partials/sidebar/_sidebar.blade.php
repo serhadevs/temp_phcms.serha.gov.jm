@@ -112,7 +112,7 @@
                     <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="/report/payment" class="sidebar-link">Tourist Establishments</a>
+                    <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist Establishments</a>
                 </li>
             </ul>
         </li>

@@ -135,10 +135,13 @@ Route::group(['middleware' => ['auth']], function () {
      //Download routes
      Route::post('/downloads/foodhandlers', [DownloadsController::class, 'customFilterFHand'])->name('downloads.foodhandlers.custom');
      Route::get('/downloads/foodhandlers/filter/{id}', [DownloadsController::class, 'food_handlers'])->name('downloads.foodhandlers.filter');
-     Route::get('/downloads/food-establishments', [DownloadsController::class, 'food_est'])->name('downloads.food_est.index');
-     
+     Route::get('/downloads/food-establishments/filter/{id}', [DownloadsController::class, 'food_est'])->name('downloads.food_est.index');
+     Route::post('/downloads/food-establishments/filter', [DownloadsController::class, 'customFilterFoodEst'])->name('downloads.food_est.custom');
+     Route::get('/downloads/tourist-establishments/filter/{id}', [DownloadsController::class, 'tourist_est'])->name('downloads.tourist_est');
+     Route::post('downloads/tourist-establishments/filter', [DownloadsController::class , 'customFilterTourEst'])->name('downloads.tourist_est.custom');
      Route::post('/downloads/package',[DownloadsController::class, 'downloadZip'])->middleware(printerAuthAttempt::class);
      Route::delete('/downloads/deleteAll', [DownloadsController::class, 'deleteAll'])->name('downloads.delete.multiple');
+     Route::delete('/downloads/delete/{id}/{app_type}', [DownloadsController::class, 'destroyPrintable'])->name('downloads.delete.printable.applications');
      Route::delete('/downloads/{id}', [DownloadsController::class, 'destroy'])->name('downloads.delete.single');
      
      // Route::get('/food-establishments/view',[FoodEstablishmentController::class,'view']);
