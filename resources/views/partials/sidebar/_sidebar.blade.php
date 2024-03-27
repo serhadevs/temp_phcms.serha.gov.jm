@@ -170,14 +170,16 @@
                 <span>User Settings</span>
             </a>
         </li>
-        @endif
-
+        @else
         <li class="sidebar-item">
             <a href="#" class="sidebar-link">
                 <i class="lni lni-cog"></i>
                 <span>Settings</span>
             </a>
         </li>
+        @endif
+
+        
     </ul>
 </aside>
 
