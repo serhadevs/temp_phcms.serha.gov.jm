@@ -165,7 +165,7 @@
 
         @if(in_array(auth()->user()->role_id,[1]))
         <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
+            <a href="/settings/users" class="sidebar-link">
                 <i class="lni lni-cog"></i>
                 <span>User Settings</span>
             </a>
