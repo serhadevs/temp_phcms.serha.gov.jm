@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Dashboard')
+@section('title', 'Add User')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -15,7 +15,7 @@
                     <h3 class="fw-bold fs-4 mb-3">Add A User</h3>
                     <div class="row">
                         <div class="col">
-                           
+                           @include('partials.forms._addUserForm')
                         </div>
                     </div>
 
