@@ -15,7 +15,13 @@
                     <h3 class="fw-bold fs-4 mb-3">Add A User</h3>
                     <div class="row">
                         <div class="col">
-                           @include('partials.forms._addUserForm')
+                            <div class="card">
+                                <div class="card-header">This form helps you to add a user</div>
+                                <div class="card-body">
+                                    @include('partials.forms._addUserForm')
+                                </div>
+                            </div>
+                           
                         </div>
                     </div>
 
