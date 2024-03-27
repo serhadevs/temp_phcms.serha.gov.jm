@@ -31,6 +31,9 @@ class UserController extends Controller
     }
 
 
+    
+
+
 
     //Forget Password Page View
     //Route: /forget-password
