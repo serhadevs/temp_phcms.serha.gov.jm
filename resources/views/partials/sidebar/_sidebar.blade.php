@@ -116,6 +116,40 @@
                 </li>
             </ul>
         </li>
+        {{-- Multiple level dropdown --}}
+        {{-- <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
+                <i class="bi bi-cloud-arrow-down"></i>
+                <span>Testing</span>
+            </a>
+            <ul id="downloads2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
+                        <span>Downloads</span>
+                    </a>
+                    <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item">
+                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist
+                                Establishments</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist Establishments</a>
+                </li>
+            </ul>
+        </li> --}}
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#reports" aria-expanded="false" aria-controls="reports">

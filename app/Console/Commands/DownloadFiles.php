@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\PermitJob;
+use App\Jobs\TouristEstJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -30,5 +31,7 @@ class DownloadFiles extends Command
     public function handle()
     {
         PermitJob::dispatch();
+        TouristEstJob::dispatch();
+        TouristEstJob::dispatch();
     }
 }
