@@ -31,6 +31,9 @@ class UserController extends Controller
     }
 
 
+    
+
+
 
     //Forget Password Page View
     //Route: /forget-password
@@ -182,6 +185,39 @@ class UserController extends Controller
         } else {
             return redirect()->back()->with('error', "Unable to find user");
         }
+    }
+
+    public function createuser(){
+        return view('users.create');
+    }
+
+    public function addUser(Request $request)
+    {
+
+        if ($request->user()->role_id !== 1) {
+            return redirect()->route('users.create')->with('error', 'You are not authorized to perform this action.');
+        }
+        
+        $incomingFields = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'facility_id' => 'required',
+            'telephone' => 'nullable',
+            'email' => 'required|email|unique:users',
+            'role_id' => 'required',
+
+        ]);
+
+        $incomingFields['password'] = bcrypt('password123');
+        $incomingFields['status'] = 1;
+
+        $user = User::create($incomingFields);
+
+        if (!$user) {
+            return redirect()->route('users.create')->with('error', 'Unable to add the user');
+        }
+
+        return redirect()->route('users.index')->with('success', 'User was added');
     }
     
 }

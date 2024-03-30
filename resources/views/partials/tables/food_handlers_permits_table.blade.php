@@ -22,17 +22,21 @@
                 <td>{{ $permit_application->permit_no }}</td>
                 <td>{{ $permit_application->firstname }}</td>
                 <td>{{ $permit_application->lastname }}</td>
-                <td>{{ $permit_application->permit_type }}</td>
+                <td>{{ strtoupper($permit_application->permit_type) }}</td>
                 <td>{{ $permit_application->category }}</td>
-                <td><span class="badge text-bg-{{ $permit_application->payment_status == ""? 'danger' :  'success'}}">{{ $permit_application->payment_status == ""? 'Not Paid' :  'Paid'}}</span></td>
-                <td><i class="bi bi-{{ $permit_application->sign_off_status==1? 'check2-circle' : 'x-circle-fill' }}"></i></td>
+                <td><span
+                        class="badge text-bg-{{ $permit_application->payment_status == '' ? 'danger' : 'success' }}">{{ $permit_application->payment_status == '' ? 'Not Paid' : 'Paid' }}</span>
+                </td>
+                <td><i
+                        class="bi bi-{{ $permit_application->sign_off_status == 1 ? 'check2-circle' : 'x-circle-fill' }}"></i>
+                </td>
                 <td>{{ $permit_application->trn }}</td>
                 {{-- <td><i class="bi bi-{{ $permit_application->granted==1? 'check2-circle' : 'x-circle-fill' }}"></i></td> --}}
                 <td>
                     {{-- <a href="" class="btn btn-success btn-sm">Renew</a> --}}
                     <a href="" class="btn btn-warning btn-sm">Edit</a>
                     <a href="" class="btn btn-danger btn-sm">Remove</a>
-                    <a href="/permit/view/{{  $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
+                    <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
                 </td>
             </tr>
         @endforeach

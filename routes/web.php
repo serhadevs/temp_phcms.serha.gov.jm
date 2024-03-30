@@ -103,11 +103,14 @@ Route::group(['middleware' => ['auth']], function () {
 
      //User Routes
 
+     
      Route::get('/settings/users', [UserController::class, 'index'])->name('users');
      Route::get('/settings/users/reset-password/{id}',[UserController::class,'resetpassword']);
      Route::get('/settings/users/restore/{id}',[UserController::class,'restore']);
      Route::get('/change-password',[UserController::class, 'changepasswordMe']);
      Route::post('/password-change',[UserController::class, 'store']);
+     Route::get('/settings/user/create',[UserController::class, 'createuser'])->name('user.create');
+     Route::post('/settings/user/add',[UserController::class, 'addUser'])->name('user.add');
 
      //Health Interview Routes
      Route::get("/health-interview/create/{app_type_id}/{app_id}", [HealthInterviewController::class,'create'])->name('health-interview.create'); 

@@ -162,12 +162,24 @@
                 </li>
             </ul>
         </li>
+
+        @if(in_array(auth()->user()->role_id,[1]))
+        <li class="sidebar-item">
+            <a href="/settings/users" class="sidebar-link">
+                <i class="lni lni-cog"></i>
+                <span>User Settings</span>
+            </a>
+        </li>
+        @else
         <li class="sidebar-item">
             <a href="#" class="sidebar-link">
                 <i class="lni lni-cog"></i>
-                <span>Setting</span>
+                <span>Settings</span>
             </a>
         </li>
+        @endif
+
+        
     </ul>
 </aside>
 
