@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DownloadsController;
 use App\Http\Controllers\FoodEstablishmentController;
+use App\Http\Controllers\FoodEstTestResultController;
 use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
@@ -91,6 +92,10 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/test-center/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
      Route::get('/test-center/test-results/permit/filter/{id}', [PermitTestResultsController::class, 'index'])->name('test-results.permit.index');
      Route::post('/test-center/test-results/permit/filter', [PermitTestResultsController::class, 'customFilterProcessedResults'])->name('test-results.permit.filter.custom');
+
+     Route::get('/test-center/test-results/food-establishments', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');
+     Route::get('/test-center/test-results/food-establishments/create/{id}', [FoodEstTestResultController::class, 'create'])->name('test-results.food-est.create');
+     Route::get('/test-center/test-results/food-establishments/outstanding', [FoodEstTestResultController::class, 'outstanding'])->name('test-results.food-est.outstanding');
 
      //Report
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');

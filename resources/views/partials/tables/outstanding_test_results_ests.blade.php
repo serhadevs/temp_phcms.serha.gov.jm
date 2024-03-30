@@ -7,16 +7,12 @@
                 <th>Category</th>
             @endif
             <th>Address</th>
+            <th>Permit No.</th>
+            <th class="text-nowrap">App Date</th>
+            <th>TRN</th>
             @if ($app_type_id == '3')
-                <th>Visit Purpose</th>
+                <th>Operators</th>
             @endif
-            @if ($app_type_id == '6')
-                <th>Bed Capacity</th>
-            @endif
-            <th>Overall Score</th>
-            <th>Critical Score</th>
-            <th>Comments</th>
-            <th>Inspection Date</th>
             <th>Options</th>
         </tr>
     </thead>
@@ -43,20 +39,18 @@
                         {{ $application->swimming_pool_address }}
                     @endif
                 </td>
+                <td>{{ $application->permit_no }}</td>
+                <td>{{ $application->application_date }}</td>
+                <td>{{ $application->trn }}</td>
                 @if ($app_type_id == '3')
-                    <td>{{ $application->testResults?->visit_purpose }}</td>
+                    <td>
+                        @foreach($application->operators as $operator)
+                            {{ $operator->name_of_operator." " }}
+                        @endforeach
+                    </td>
                 @endif
-                @if ($app_type_id == '6')
-                    <td>{{ $application->bed_capacity }}</td>
-                @endif
-                <td>{{ $application->testResults?->overall_score }}</td>
-                <td>{{ $application->testResults?->critical_score }}</td>
-                <td>{{ $application->testResults?->comments }}</td>
-                <td>{{ $application->testResults?->test_date }}</td>
                 <td>
-                    <a href="" class="btn btn-warning btn-sm">
-                        Edit
-                    </a>
+                    <a href="" class="btn btn-primary btn-sm">Select</a>
                 </td>
             </tr>
         @endforeach
@@ -75,6 +69,6 @@
 <script>
     new DataTable('#outstanding_results', {
         scrollX: true,
-        responsive: true
+        // responsive: true
     });
 </script>

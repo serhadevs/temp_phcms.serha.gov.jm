@@ -54,7 +54,7 @@
                             </div>
                         </div>
                     </div>
-                    <form action="{{ route('downloads.tourist_est.custom') }}" method="POST">
+                    <form action="{{ route('') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="row text-center justify-content-md-center" id="search-row" style="display:none">

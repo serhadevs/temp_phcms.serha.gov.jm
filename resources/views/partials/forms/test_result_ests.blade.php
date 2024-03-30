@@ -1,9 +1,15 @@
-<form action="{{ }}">
+<form action="">
     <form action="">
         @if ($app_type_id == '3')
             <div class="mt-3">
                 <label for="" class="form-label">Purpose of Visit</label>
-                <select name="" id="" class="form-control"></select>
+                <select name="" id="" class="form-control">
+                    <option value="">Select Visit Purpose</option>
+                    <option value="routine">Routine</option>
+                    <option value="compliance">Compliance</option>
+                    <option value="reinspection">Re-inspection</option>
+                    <option value="complaint">Complaint</option>
+                </select>
             </div>
         @endif
         <div class="row mt-3">
@@ -13,7 +19,8 @@
             </div>
             <div class="col">
                 <label for="" class="form-label">Inspection Location</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control"
+                    value="{{ $app_type_id == '5' ? $application->swimming_pool_address : $application->establishment_address }}">
             </div>
         </div>
         <div class="mt-3">
@@ -36,5 +43,8 @@
 
             </textarea>
         </div>
+        <button class="btn btn-primary mt-3">
+            Submit
+        </button>
     </form>
 </form>
