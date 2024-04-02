@@ -7,10 +7,11 @@
 
     <div class="main">
         @include('partials.navbar._navbar')
-        @include('partials.messages.messages')
+        
 
         <main class="content px-3 py-4">
             <div class="container-fluid">
+                @include('partials.messages.messages')
                 <div class="mb-3">
                     <h3 class="fw-bold fs-4 mb-3">Add A User</h3>
                     <div class="row">

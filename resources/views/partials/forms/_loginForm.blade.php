@@ -15,7 +15,7 @@
     <div class="row justify-content-center mb-4">
         <img src="images/serha_logo.png" alt="Serha Logo" class="w-25" />
         <div class="col-12 text-center">
-            <h6>Public Certificate Management System</h6>
+            <h6>Public Health Certificate Management System (PHCMS)</h6>
         </div>
     </div>
     <form method="post" action="/login" >
@@ -51,8 +51,15 @@
         <div class="text-center mt-3">
             <a href="{{ route('forget-password') }}" style="text-decoration: none;">Forgot your password?</a>
         </div>
+
+        <div>
+            <input type="hidden" name="userAgent" id="userAgent" value="">
+            <input type="hidden" name="userPlatform" id="userPlatform" value="">
+        </div>
     </form>
 </div>
+
+
 
 <script>
     function togglePasswordFieldVisibility(field) {
@@ -70,4 +77,9 @@
      togglePasswordBtn.addEventListener("click", () => {
         togglePasswordFieldVisibility(passwordField);
     });
+
+   //Get the User Agent 
+
+   document.getElementById("userAgent").value = navigator.userAgent;
+document.getElementById("userPlatform").value = navigator.platform;
 </script>

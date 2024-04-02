@@ -13,21 +13,47 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\ForgetPasswordMail;
+use App\Models\Facility;
+use App\Models\Role;
 
 class UserController extends Controller
 {
 
     //Show Users that are currently registered on the system
+    //Shows currently logged in users
     //Route: /settings/users
     public function index()
     {
 
         if (Auth::user()->role_id == 1) {
             $users = DB::table('users')->get();
+
         } elseif (Auth::user()->role_id == 2) {
             $users = User::where('facility_id', Auth::user()->facility_id)->get();
+            
         }
-        return view('users.index', compact('users'));
+
+        $currentUsers = User::select("*")
+        ->whereNotNull('last_seen')
+        ->orderBy('last_seen', 'DESC')
+        ->get();
+       
+    
+
+        //dd($currentUsers);
+
+        
+        return view('users.index', compact('users','currentUsers'));
+    }
+
+    //Shows currently logged in users
+    public function onlineUsers(Request $request){
+        $currentUsers = User::whereNotNull('last_seen')
+        ->whereNotNull('last_seen')
+        ->orderBy('last_seen', 'DESC')
+        ->get();
+
+        return view('users.onlineusers', compact('currentUsers'));
     }
 
 
@@ -188,36 +214,55 @@ class UserController extends Controller
     }
 
     public function createuser(){
-        return view('users.create');
+       //Role 2 which is an admin will not be able to add a superadmin
+        if(in_array(auth()->user()->role_id,[2])){
+            $roles = Role::where('name', '!=', 'Super Admin')->get();
+            return view('users.create',compact('roles'));
+        }else{
+            $roles = Role::all();
+            return view('users.create',compact('roles'));
+        }
+       
     }
 
     public function addUser(Request $request)
-    {
 
-        if ($request->user()->role_id !== 1) {
-            return redirect()->route('users.create')->with('error', 'You are not authorized to perform this action.');
-        }
+    {
+        //Only the superadmin and admins can add users
+        // if (in_array($request->user()->role_id,[3,4,5,6,7,8,9,10])) {
+        //     return redirect()->route('user.create')->with('error', 'You are not authorized to perform this action.');
+        // }
         
         $incomingFields = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
             'facility_id' => 'required',
-            'telephone' => 'nullable',
+            'telephone' => 'required',
             'email' => 'required|email|unique:users',
             'role_id' => 'required',
 
         ]);
 
-        $incomingFields['password'] = bcrypt('password123');
+        //dd($incomingFields);
+       
         $incomingFields['status'] = 1;
+        $incomingFields['password'] = bcrypt('password123');
+
+      
 
         $user = User::create($incomingFields);
 
+        //dd($user);
+
         if (!$user) {
-            return redirect()->route('users.create')->with('error', 'Unable to add the user');
+            return redirect()->route('user.index')->with('error', 'Unable to add the user');
         }
 
         return redirect()->route('users.index')->with('success', 'User was added');
+    }
+
+    public function currentLoggedInUsers(){
+        
     }
     
 }

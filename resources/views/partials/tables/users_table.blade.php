@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card shadow">
     <div class="card-body">
         <div class="row g-3 mt-2 mb-2">
             <table id="users" class="display table nowrap table-sm table-bordered" style="width:100%;max-width:100%">
@@ -23,7 +23,9 @@
                             
                             <td>{{ $user->firstname}}</td>
                             <td>{{ $user->lastname }}</td>
-                            <td>{{ $user->facility_id}}</td>
+                            <td>
+                                {{ $user->facility_id = 1 }}
+                            </td>
                             <td>{{ $user->role_id }}</td>
                             <td>{{ $user->telephone }}</td>
                             <td>{{ $user->email }}</td>
