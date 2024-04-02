@@ -25,12 +25,14 @@
             </ul>
         </li>
 
+        @if(in_array(auth()->user()->role_id,[5,10]))
         <li class="sidebar-item">
             <a href="/sign-off" class="sidebar-link">
                 <i class="bi bi-clipboard-check"></i>
                 <span>Signoff</span>
             </a>
         </li>
+        @endif
         <li class="sidebar-item">
             <a href="/advance-search/create" class="sidebar-link">
                 <i class="lni lni-search-alt"></i>
@@ -49,6 +51,7 @@
                 <span>Food Establishments</span>
             </a>
         </li>
+
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
@@ -98,7 +101,7 @@
                 </li>
             </ul>
         </li>
-        @if(in_array(auth()->user()->role_id,[6]))
+        @if(in_array(auth()->user()->role_id,[6,10]))
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#downloads" aria-expanded="false" aria-controls="reports">
