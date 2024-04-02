@@ -25,13 +25,13 @@
             </ul>
         </li>
 
-        @if(in_array(auth()->user()->role_id,[1,5]))
-        <li class="sidebar-item">
-            <a href="/sign-off" class="sidebar-link">
-                <i class="bi bi-clipboard-check"></i>
-                <span>Signoff</span>
-            </a>
-        </li>
+        @if (in_array(auth()->user()->role_id, [1, 5]))
+            <li class="sidebar-item">
+                <a href="/sign-off" class="sidebar-link">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Signoff</span>
+                </a>
+            </li>
         @endif
         <li class="sidebar-item">
             <a href="/advance-search/create" class="sidebar-link">
@@ -39,13 +39,13 @@
                 <span>Advance Search</span>
             </a>
         </li>
-        @if(in_array(auth()->user()->role_id,[1,9]))
-        <li class="sidebar-item">
-            <a href="/payments/cancellations" class="sidebar-link">
-                <i class="bi bi-slash-circle"></i>
-                <span>Payment Cancel Requests</span>
-            </a>
-        </li>
+        @if (in_array(auth()->user()->role_id, [1, 9]))
+            <li class="sidebar-item">
+                <a href="/payments/cancellations" class="sidebar-link">
+                    <i class="bi bi-slash-circle"></i>
+                    <span>Payment Cancel Requests</span>
+                </a>
+            </li>
         @endif
         <li class="sidebar-item">
             <a href="/food-establishments/filter/0" class="sidebar-link">
@@ -72,7 +72,7 @@
                 </li>
             </ul>
         </li>
-        <li class="sidebar-item">
+        {{-- <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#test-center" aria-expanded="false" aria-controls="test-center">
                 <i class="bi bi-file-earmark-medical"></i>
@@ -82,6 +82,80 @@
                 <li class="sidebar-item">
                     <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
                 </li>
+            </ul>
+        </li> --}}
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
+                <i class="bi bi-file-earmark-medical"></i>
+                <span>Test Results</span>
+            </a>
+            <ul id="downloads2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
+                        <span>Food Establishments</span>
+                    </a>
+                    <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download4" aria-expanded="false" aria-controls="reports">
+                        <span>Swimming Pool</span>
+                    </a>
+                    <ul id="download4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download5" aria-expanded="false" aria-controls="reports">
+                        <span>Tourist Establishment</span>
+                    </a>
+                    <ul id="download5" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download6" aria-expanded="false" aria-controls="reports">
+                        <span>Barber/Cosmet. etc.</span>
+                    </a>
+                    <ul id="download6" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
+                {{-- <li class="sidebar-item">
+                    <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
+                </li> --}}
+                {{-- <li class="sidebar-item">
+                    <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist Establishments</a>
+                </li> --}}
             </ul>
         </li>
         <li class="sidebar-item">
@@ -99,64 +173,32 @@
                         Handlers</a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="/health-interview/outstanding/filter/2/0" class="sidebar-link">Outstanding Health Cert.</a>
+                    <a href="/health-interview/outstanding/filter/2/0" class="sidebar-link">Outstanding Health
+                        Cert.</a>
                 </li>
             </ul>
         </li>
-        @if(in_array(auth()->user()->role_id,[1,6]))
-        <li class="sidebar-item">
-            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#downloads" aria-expanded="false" aria-controls="reports">
-                <i class="bi bi-cloud-arrow-down"></i>
-                <span>Downloads</span>
-            </a>
-            <ul id="downloads" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item">
-                    <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist Establishments</a>
-                </li>
-            </ul>
-        </li>
+        @if (in_array(auth()->user()->role_id, [1, 6]))
+            <li class="sidebar-item">
+                <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#downloads" aria-expanded="false" aria-controls="reports">
+                    <i class="bi bi-cloud-arrow-down"></i>
+                    <span>Downloads</span>
+                </a>
+                <ul id="downloads" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist
+                            Establishments</a>
+                    </li>
+                </ul>
+            </li>
         @endif
-        {{-- Multiple level dropdown --}}
-        {{-- <li class="sidebar-item">
-            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
-                <i class="bi bi-cloud-arrow-down"></i>
-                <span>Testing</span>
-            </a>
-            <ul id="downloads2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item">
-                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
-                        <span>Downloads</span>
-                    </a>
-                    <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
-                        <li class="sidebar-item">
-                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist
-                                Establishments</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist Establishments</a>
-                </li>
-            </ul>
-        </li> --}}
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
@@ -170,23 +212,23 @@
             </ul>
         </li>
 
-        @if(in_array(auth()->user()->role_id,[1]))
-        <li class="sidebar-item">
-            <a href="/settings/users" class="sidebar-link">
-                <i class="lni lni-cog"></i>
-                <span>User Settings</span>
-            </a>
-        </li>
+        @if (in_array(auth()->user()->role_id, [1]))
+            <li class="sidebar-item">
+                <a href="/settings/users" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>User Settings</span>
+                </a>
+            </li>
         @else
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-cog"></i>
-                <span>Settings</span>
-            </a>
-        </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
         @endif
 
-        
+
     </ul>
 </aside>
 
