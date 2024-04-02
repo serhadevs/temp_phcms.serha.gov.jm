@@ -329,6 +329,8 @@ class PaymentController extends Controller
 
         // dd($register_new_payment->getOriginal()["id"]);
 
+        //Email Reciept 
+        
         return redirect()->route('payment.receipt.print', ['id' => $register_new_payment->getOriginal()["id"]])->with(['success' => 'Payment has been process successfully. The receipt number is ' . $new_payment["receipt_no"] . '']);
     }
 
