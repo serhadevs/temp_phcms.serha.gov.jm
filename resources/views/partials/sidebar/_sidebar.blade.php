@@ -98,6 +98,7 @@
                 </li>
             </ul>
         </li>
+        @if(in_array(auth()->user()->role_id,[6]))
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#downloads" aria-expanded="false" aria-controls="reports">
@@ -116,6 +117,7 @@
                 </li>
             </ul>
         </li>
+        @endif
         {{-- Multiple level dropdown --}}
         {{-- <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
