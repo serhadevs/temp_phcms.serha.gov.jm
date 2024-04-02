@@ -164,6 +164,9 @@ Route::group(['middleware' => ['auth']], function () {
 
      //Route::get("/test-centre/test-results/food-establishments",[FoodEstResultController::class,'index']);
 
+     //Switch Locations
+     
+
 
 
      //Logout Routes
