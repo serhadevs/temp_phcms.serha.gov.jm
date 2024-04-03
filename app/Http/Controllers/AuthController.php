@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoginActivity;
 use App\Models\LoginLocation;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -10,11 +11,13 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
 
-   public function index()
+    public function index()
     {
         return view('auth.login');
     }
@@ -26,9 +29,13 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        $userAgent = $request->input('userAgent');
+        $userPlatform = $request->input('userPlatform');
+
+
 
         try {
-          
+
             // Attempt to log in the user
             if (!Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
                 return redirect('/')->with('error', 'Invalid credentials');
@@ -43,9 +50,31 @@ class AuthController extends Controller
             $user = Auth::user();
             $request->session()->regenerate();
             Auth::login($user, $request->get('remember_token'));
-                
+            
+            //Generate the session id
+
+            // $session_id = rand(10000000,9999999);
+
+            $session_id = Str::random(20);
+            //Store it in a session 
+
+            session(['session_id' => $session_id]);
+
+            $location = LoginActivity::create([
+                'login_time' => now(),
+                'user_id' => Auth::user()->id,
+                'facility_id' => Auth::user()->facility_id,
+                'user_agent' => $userAgent,
+                'platform' => $userPlatform,
+                'session_id' => $session_id,
+                'ip_address' => $request->ip()
+            ]);
+
+            if (!$location) {
+                return redirect('/')->with('error', 'Unable to store login information');
+            }
+
             return redirect()->intended('/dashboard')->with('success', 'User logged in successfully!');
-          
         } catch (\Exception $e) {
             return redirect('/')
                 ->with('error', 'An error occurred during login: ' . $e->getMessage());
@@ -53,10 +82,24 @@ class AuthController extends Controller
     }
 
 
-   
+
 
     public function logout(Request $request)
     {
+        // $userId = Auth::id();
+         //Find the user in the database that matches the id
+         $sessionId = Session::get('session_id');
+
+         //dd($sessionId);
+         $location = LoginActivity::where('session_id',$sessionId)->first();
+ 
+         //dd($location);
+ 
+         if ($location) {
+             $location->update([
+                 'logout_time' => now()
+             ]);
+         }
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
