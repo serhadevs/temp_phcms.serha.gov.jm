@@ -63,19 +63,19 @@ class AuthController extends Controller
 
             session(['session_id' => $session_id]);
 
-            // $location = LoginActivity::create([
-            //     'login_time' => now(),
-            //     'user_id' => Auth::user()->id,
-            //     'facility_id' => Auth::user()->facility_id,
-            //     'user_agent' => $userAgent,
-            //     'platform' => $userPlatform,
-            //     'session_id' => $session_id,
-            //     'ip_address' => $request->ip()
-            // ]);
+            $location = LoginActivity::create([
+                'login_time' => now(),
+                'user_id' => Auth::user()->id,
+                'facility_id' => Auth::user()->facility_id,
+                'user_agent' => $userAgent,
+                'platform' => $userPlatform,
+                'session_id' => $session_id,
+                'ip_address' => $request->ip()
+            ]);
 
-            // if (!$location) {
-            //     return redirect('/')->with('error', 'Unable to store login information');
-            // }
+            if (!$location) {
+                return redirect('/')->with('error', 'Unable to store login information');
+            }
 
             return redirect()->intended('/dashboard')->with('success', 'User logged in successfully!');
         } catch (\Exception $e) {
@@ -91,18 +91,18 @@ class AuthController extends Controller
     {
         // $userId = Auth::id();
          //Find the user in the database that matches the id
-        //  $sessionId = Session::get('session_id');
+         $sessionId = Session::get('session_id');
 
-        //  //dd($sessionId);
-        //  $location = LoginActivity::where('session_id',$sessionId)->first();
+         //dd($sessionId);
+         $location = LoginActivity::where('session_id',$sessionId)->first();
  
-        //  //dd($location);
+         //dd($location);
  
-        //  if ($location) {
-        //      $location->update([
-        //          'logout_time' => now()
-        //      ]);
-        //  }
+         if ($location) {
+             $location->update([
+                 'logout_time' => now()
+             ]);
+         }
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
