@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\ForgetPasswordMail;
 use App\Models\Facility;
+use App\Models\LoginActivity;
 use App\Models\Role;
 
 class UserController extends Controller
@@ -54,6 +55,16 @@ class UserController extends Controller
         ->get();
 
         return view('users.onlineusers', compact('currentUsers'));
+    }
+
+    //Shows the logged in locations of each user
+
+    public function loginUsersLocations(){
+        $loginUsers = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->get();
+
+        //dd($loginUsers);
+        return view('users.loggedusers',compact('loginUsers'));
+
     }
 
 
