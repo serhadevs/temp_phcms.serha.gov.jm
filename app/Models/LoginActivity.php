@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LoginActivity extends Model
 {
     use HasFactory;
-    protected $table = "login_location";
+    protected $table = "login_activity";
 
     protected $fillable = [
         'login_time',
