@@ -7,6 +7,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Facility</th>
                     <th>Firstname</th>
                     <th>Lastname</th>
                     <th>Login Time</th>
@@ -19,6 +20,7 @@
                 @foreach ($loginUsers as $user)
                     <tr>
                         <td>{{ $user->id }}</td>
+                        <td>{{ $user->facility_id }}</td>
                         <td>{{ $user->firstname }}</td>
                         <td>{{ $user->lastname }}</td>
                         <td>{{ $user->login_time }}</td>
