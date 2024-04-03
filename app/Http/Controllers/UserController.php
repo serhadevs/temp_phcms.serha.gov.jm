@@ -60,7 +60,7 @@ class UserController extends Controller
 
     public function loginUsersLocations()
     {
-        $loginUsers = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->get();
+        $loginUsers = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->whereNull('logout_time')->get();
         $loginUsersCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->count();
         $ksaCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
             ->where('login_activity.facility_id', '3')->whereNull('logout_time')->count();
