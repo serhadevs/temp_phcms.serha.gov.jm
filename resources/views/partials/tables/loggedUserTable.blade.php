@@ -9,6 +9,18 @@ $facilities = [
 <div class="card">
     <div class="card-header">
         List of users logged in
+        <div class="row">
+            <div class="col">
+                KSA Users: <span class="badge text-bg-success">{{ $ksaCount }}</span>
+            </div>
+            <div class="col">
+                St Thomas Users: <span class="badge text-bg-success">{{ $sttCount }}</span>
+            </div>
+            <div class="col">
+                St Catherine Users: <span class="badge text-bg-success">{{ $stcCount }}</span>
+            </div>
+            
+        </div>
     </div>
     <div class="card-body">
         <table id="loginUsers" class="display table nowrap table-sm table-bordered" style="width:100%;max-width:100%">

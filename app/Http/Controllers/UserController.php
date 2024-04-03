@@ -28,47 +28,53 @@ class UserController extends Controller
 
         if (Auth::user()->role_id == 1) {
             $users = DB::table('users')->get();
-
         } elseif (Auth::user()->role_id == 2) {
             $users = User::where('facility_id', Auth::user()->facility_id)->get();
-            
         }
 
         $currentUsers = User::select("*")
-        ->whereNotNull('last_seen')
-        ->orderBy('last_seen', 'DESC')
-        ->get();
-       
-    
+            ->whereNotNull('last_seen')
+            ->orderBy('last_seen', 'DESC')
+            ->get();
+
+
 
         //dd($currentUsers);
 
-        
-        return view('users.index', compact('users','currentUsers'));
+
+        return view('users.index', compact('users', 'currentUsers'));
     }
 
     //Shows currently logged in users
-    public function onlineUsers(Request $request){
+    public function onlineUsers(Request $request)
+    {
         $currentUsers = User::whereNotNull('last_seen')
-        ->whereNotNull('last_seen')
-        ->orderBy('last_seen', 'DESC')
-        ->get();
+            ->whereNotNull('last_seen')
+            ->orderBy('last_seen', 'DESC')
+            ->get();
 
         return view('users.onlineusers', compact('currentUsers'));
     }
 
     //Shows the logged in locations of each user
 
-    public function loginUsersLocations(){
+    public function loginUsersLocations()
+    {
         $loginUsers = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->get();
+        $loginUsersCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->count();
+        $ksaCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
+            ->where('login_activity.facility_id', '3')->count();
+            $sttCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
+            ->where('login_activity.facility_id', '2')->count();
+            $stcCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
+            ->where('login_activity.facility_id', '1')->count();
 
         //dd($loginUsers);
-        return view('users.loggedusers',compact('loginUsers'));
-
+        return view('users.loggedusers', compact('loginUsers', 'loginUsersCount','ksaCount','sttCount','stcCount'));
     }
 
 
-    
+
 
 
 
@@ -207,33 +213,33 @@ class UserController extends Controller
             "password" => "required",
             "confirm_password" => "required|same:password"
         ]);
-    
+
         $password = $incomingFields['password'];
-    
+
         // Find user in the database
         $user = User::find(auth()->user()->id);
-    
+
         if (!empty($user)) {
             // Change the user password
             $user->password = Hash::make($password);
             $user->save();
-    
+
             return redirect()->route("dashboard.dashboard")->with("success", "Your password was reset successfully");
         } else {
             return redirect()->back()->with('error', "Unable to find user");
         }
     }
 
-    public function createuser(){
-       //Role 2 which is an admin will not be able to add a superadmin
-        if(in_array(auth()->user()->role_id,[2])){
+    public function createuser()
+    {
+        //Role 2 which is an admin will not be able to add a superadmin
+        if (in_array(auth()->user()->role_id, [2])) {
             $roles = Role::where('name', '!=', 'Super Admin')->get();
-            return view('users.create',compact('roles'));
-        }else{
+            return view('users.create', compact('roles'));
+        } else {
             $roles = Role::all();
-            return view('users.create',compact('roles'));
+            return view('users.create', compact('roles'));
         }
-       
     }
 
     public function addUser(Request $request)
@@ -243,7 +249,7 @@ class UserController extends Controller
         // if (in_array($request->user()->role_id,[3,4,5,6,7,8,9,10])) {
         //     return redirect()->route('user.create')->with('error', 'You are not authorized to perform this action.');
         // }
-        
+
         $incomingFields = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
@@ -255,11 +261,11 @@ class UserController extends Controller
         ]);
 
         //dd($incomingFields);
-       
+
         $incomingFields['status'] = 1;
         $incomingFields['password'] = bcrypt('password123');
 
-      
+
 
         $user = User::create($incomingFields);
 
@@ -272,8 +278,7 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User was added');
     }
 
-    public function currentLoggedInUsers(){
-        
+    public function currentLoggedInUsers()
+    {
     }
-    
 }
