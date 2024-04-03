@@ -1,3 +1,11 @@
+@php
+$facilities = [
+    1 => "STC",
+    2 => "STT",
+    3 => "KSA"
+];
+@endphp
+
 <div class="card">
     <div class="card-header">
         List of users logged in
@@ -20,7 +28,7 @@
                 @foreach ($loginUsers as $user)
                     <tr>
                         <td>{{ $user->id }}</td>
-                        <td>{{ $user->facility_id }}</td>
+                        <td>{{ $facilities[$user->facility_id] ?? "Unknown Location" }}</td>
                         <td>{{ $user->firstname }}</td>
                         <td>{{ $user->lastname }}</td>
                         <td>{{ $user->login_time }}</td>

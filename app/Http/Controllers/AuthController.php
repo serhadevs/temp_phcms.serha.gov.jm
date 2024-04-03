@@ -63,6 +63,10 @@ class AuthController extends Controller
 
             session(['session_id' => $session_id]);
 
+            $clientIP = $request->header('X-Real-IP');
+
+            //dd($clientIP);
+
             $location = LoginActivity::create([
                 'login_time' => now(),
                 'user_id' => Auth::user()->id,
