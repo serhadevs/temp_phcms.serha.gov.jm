@@ -28,9 +28,9 @@
                         <td>{{ $user->ip_address }}</td>
                         <td>
                             @if ($user->logout_time)
-                                Offline
+                            <span class="badge text-bg-danger">Offline</span>
                             @else
-                           Online
+                            <span class="badge text-bg-success">Online</span>
                             @endif
                         </td>
                     </tr>
