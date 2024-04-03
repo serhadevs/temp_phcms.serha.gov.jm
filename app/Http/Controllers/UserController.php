@@ -63,11 +63,11 @@ class UserController extends Controller
         $loginUsers = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->get();
         $loginUsersCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->count();
         $ksaCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
-            ->where('login_activity.facility_id', '3')->count();
+            ->where('login_activity.facility_id', '3')->whereNull('logout_time')->count();
             $sttCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
-            ->where('login_activity.facility_id', '2')->count();
+            ->where('login_activity.facility_id', '2')->whereNull('logout_time')->count();
             $stcCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
-            ->where('login_activity.facility_id', '1')->count();
+            ->where('login_activity.facility_id', '1')->whereNull('logout_time')->count();
 
         //dd($loginUsers);
         return view('users.loggedusers', compact('loginUsers', 'loginUsersCount','ksaCount','sttCount','stcCount'));
