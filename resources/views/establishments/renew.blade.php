@@ -10,9 +10,9 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-muted">
-                        Create Food Establishment Licence
+                        Renew Food Establishment Licence
                     </h2>
-                    <form action="{{ route('food-establishment.create.store') }}" method="POST">
+                    <form action="{{ route('food-establishment.renew') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="mt-3">
@@ -23,7 +23,7 @@
                                 Establishment Name
                             </label>
                             <input type="text" class="form-control" name="establishment_name"
-                                value="{{ old('establishment_name') }}">
+                                value="{{ old('establishment_name') ? old('establishment_name') : $application->establishment_name }}">
                             @error('establishment_name')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -39,8 +39,7 @@
                                 <label for="" class="form-check-label">New</label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" class="form-check-input" name="new_est" value="0"
-                                    {{ old('new_est') == '0' ? 'checked' : '' }}>
+                                <input type="radio" class="form-check-input" name="new_est" value="0" checked>
                                 <label for="" class="form-check-label">Renewal</label>
                             </div>
                         </div>
@@ -53,7 +52,7 @@
                                     Establishment Operator (1)
                                 </label>
                                 <input type="text" class="form-control" name="establishment_operator[]"
-                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[0] ? old('establishment_operator')[0] : '') : '' }}"
+                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[0] ? old('establishment_operator')[0] : '') : $application?->operators[0]->name_of_operator }}"
                                     required>
                                 @error('establishment_operator')
                                     <p class="text-danger">{{ $message }}</p>
@@ -62,17 +61,17 @@
                             <div class="col">
                                 <label for="" class="form-label">Establishment Operator (2)</label>
                                 <input type="text" class="form-control" name="establishment_operator[]"
-                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[1] != '' ? old('establishment_operator')[1] : '') : '' }}">
+                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[1] != '' ? old('establishment_operator')[1] : '') : (count($application?->operators) >= 2 ? $application?->operators[1]->name_of_operator : '') }}">
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Establishment Operator (3)</label>
                                 <input type="text" class="form-control" name="establishment_operator[]"
-                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[2] ? old('establishment_operator')[2] : '') : '' }}">
+                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[2] ? old('establishment_operator')[2] : '') : (count($application?->operators) >= 3 ? $application?->operators[2]->name_of_operator : '') }}">
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Establishment Operator (4)</label>
                                 <input type="text" class="form-control" name="establishment_operator[]"
-                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[3] ? old('establishment_operator')[3] : '') : '' }}">
+                                    value="{{ old('establishment_operator') ? (old('establishment_operator')[3] ? old('establishment_operator')[3] : '') : (count($application?->operators) >= 4 ? $application?->operators[3]->name_of_operator : '') }}">
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -84,7 +83,7 @@
                                     Establishment Address
                                 </label>
                                 <input type="text" class="form-control" name="establishment_address"
-                                    value="{{ old('establishment_address') }}">
+                                    value="{{ old('establishment_address') ? old('establishment_address') : $application->establishment_address }}">
                                 @error('establishment_address')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -97,7 +96,8 @@
                                     Type of Food proposed to be sold in Foodhandling
                                     Establishment
                                 </label>
-                                <input type="text" class="form-control" name="food_type" value="{{ old('food_type') }}">
+                                <input type="text" class="form-control" name="food_type"
+                                    value="{{ old('food_type') ? old('food_type') : $application->food_type }}">
                                 @error('food_type')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -106,14 +106,16 @@
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">Tax Registration No. (TRN)</label>
-                                <input type="text" class="form-control" name="trn" value="{{ old('trn') }}">
+                                <input type="text" class="form-control" name="trn"
+                                    value="{{ old('trn') ? old('trn') : $application->trn }}">
                                 @error('trn')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Email</label>
-                                <input type="text" class="form-control" name="email" value="{{ old('email') }}">
+                                <input type="text" class="form-control" name="email"
+                                    value="{{ old('email') ? old('email') : $application->email }}">
                                 @error('email')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -129,7 +131,8 @@
                                     Telephone
                                 </label>
                                 <input type="text" class="form-control" name="telephone"
-                                    value="{{ old('telephone') }}" id="telephone">
+                                    value="{{ old('telephone') ? old('telephone') : $application->telephone }}"
+                                    id="telephone">
                                 @error('telephone')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -137,7 +140,8 @@
                             <div class="col">
                                 <label for="" class="form-label">Alternative Telephone</label>
                                 <input type="text" class="form-control" name="alt_telephone"
-                                    value="{{ old('alt_telephone') }}" id="alt_telephone">
+                                    value="{{ old('alt_telephone') ? old('alt_telephone') : $application->alt_telephone }}"
+                                    id="alt_telephone">
                                 @error('alt_telephone')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -155,7 +159,7 @@
                                     - - - - - - - - - -</option>
                                 @foreach ($establishment_categories as $category)
                                     <option value="{{ $category->id }}"
-                                        {{ old('establishment_category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ old('establishment_category_id') ? (old('establishment_category_id') == $category->id ? 'selected' : '') : ($application->establishment_category_id == $category->id ? 'selected' : '') }}>
                                         {{ $category->name }}</option>
                                 @endforeach
                             </select>
@@ -170,7 +174,8 @@
                                 </span>
                                 Zone
                             </label>
-                            <input type="text" class="form-control" name="zone" value="{{ old('zone') }}">
+                            <input type="text" class="form-control" name="zone"
+                                value="{{ old('zone') ? old('zone') : $application->zone }}">
                             @error('zone')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -242,23 +247,25 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
+                        <input type="text" class="form-control mt-3" name="old_application_id"
+                            value="{{ $application->id }}" hidden>
                         <button class="btn btn-primary mt-4" type="submit">
                             Submit Application
                         </button>
                     </form>
                 </div>
             </div>
-            <script src="https://unpkg.com/imask"></script>
-            <script>
-                const telephone = document.getElementById('telephone');
-                const alt_telephone = document.getElementById('alt_telephone');
-                const maskOptions = {
-                    mask: '+1(000)000-0000'
-                }
-
-                const mask1 = IMask(telephone, maskOptions);
-                const mask2 = IMask(alt_telephone, maskOptions);
-            </script>
         </div>
+        <script src="https://unpkg.com/imask"></script>
+        <script>
+            const telephone = document.getElementById('telephone');
+            const alt_telephone = document.getElementById('alt_telephone');
+            const maskOptions = {
+                mask: '+1(000)000-0000'
+            }
+
+            const mask1 = IMask(telephone, maskOptions);
+            const mask2 = IMask(alt_telephone, maskOptions);
+        </script>
     </div>
 @endsection

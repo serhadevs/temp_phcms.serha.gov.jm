@@ -104,6 +104,8 @@ Route::group(['middleware' => ['auth']], function () {
      //Renewals
      Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class , 'renewal'])->name('food_handlers_permit.renewal');
      Route::post('/permit/application/renewal', [PermitApplicationController::class, 'storeRenewal'])->name('food_handlers_permit.renew');
+     Route::get('/food-establishments/renewal/{id}', [FoodEstablishmentController::class, 'renewal'])->name('food-establishment.renewal');
+     Route::post('/food-establishments/renewal', [FoodEstablishmentController::class , 'storeRenewal'])->name('food-establishment.renew');
 
      
      Route::get('/settings/users', [UserController::class, 'index'])->name('users');

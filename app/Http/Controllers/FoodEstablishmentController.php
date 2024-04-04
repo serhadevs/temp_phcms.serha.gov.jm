@@ -7,11 +7,13 @@ use App\Models\EstablishmentCategories;
 use App\Models\FoodEstablishment;
 use App\Models\FoodEstablishmentOperators;
 use App\Models\PermitApplication;
+use App\Models\Renewals;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use DateTime;
+use Dflydev\DotAccessData\Data;
 use Exception;
 
 class FoodEstablishmentController extends Controller
@@ -102,7 +104,7 @@ class FoodEstablishmentController extends Controller
             'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
             'alt_telephone' => 'nullable|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
             'food_type' => 'required',
-            'zone' => 'numeric|min:1|max:6|required',
+            'zone' => 'required',
             'establishment_name' => 'required',
             'establishment_category_id' => 'required',
             'establishment_address' => 'required',
@@ -137,6 +139,61 @@ class FoodEstablishmentController extends Controller
         return redirect()->route('food-establishment.filter', 0)->with('error', 'There was an error processing your application');
     }
 
+    public function storeRenewal(Request $request)
+    {
+        $food_est_application = $request->validate([
+            'current_est_closed' => 'required',
+            // 'new_est' => 'accepted:1',
+            'prev_est_closed' => 'required',
+            'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
+            'alt_telephone' => 'nullable|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
+            'food_type' => 'required',
+            'zone' => 'required',
+            'establishment_name' => 'required',
+            'establishment_category_id' => 'required',
+            'establishment_address' => 'required',
+            'establishment_operator.0' => 'required',
+            'establishment_operator.1' => 'nullable',
+            'establishment_operator.2' => 'nullable',
+            'establishment_operator.3' => 'nullable',
+            'application_date' => 'required|date',
+            'trn' => 'nullable|regex:/^[0-9]{3}+\-+[0-9]{3}+\-+[0-9]{3}+$/',
+            'email' => 'nullable|email',
+            'closure_date' => 'required_if:current_est_closed,1|required_if:prev_est_closed,1'
+        ]);
+
+        $old_application = EstablishmentApplications::find($request->old_application_id);
+
+        $food_est_application['user_id'] = auth()->user()->id;
+        $food_est_application['permit_no'] = $old_application->permit_no;
+
+        if (EstablishmentApplications::create($food_est_application)) {
+            $est_application_id = EstablishmentApplications::where('permit_no', $food_est_application['permit_no'])->orderBy('created_at', 'DESC')->first()->id;
+            for ($i = 0; $i < count($request->establishment_operator); $i++) {
+                if ($request->establishment_operator[$i] != null && $request->establishment_operator[$i] != "null") {
+                    FoodEstablishmentOperators::create(
+                        [
+                            'establishment_application_id' => $est_application_id,
+                            'name_of_operator' => $request->establishment_operator[$i]
+                        ]
+                    );
+                }
+            }
+
+            Renewals::create([
+                'new_application_id' => $est_application_id,
+                'application_type_id' => 3,
+                'old_application_id' => $old_application->id,
+            ]);
+
+            $old_application->update([
+                'deleted_at' => new DateTime()
+            ]);
+
+            return redirect()->route('food-establishment.filter', 0)->with('success', 'Food Establishment application for renewal has been entered successfully. The Est App ID : ' . $est_application_id);
+        }
+    }
+
     public function view(Request $request)
     {
         $est_application = EstablishmentApplications::with('operators')->find($request->route('id'));
@@ -145,43 +202,13 @@ class FoodEstablishmentController extends Controller
         return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature'));
     }
 
-    // public function view()
-    // {
-    //     //Fetch all certificates 
+    public function renewal(Request $request)
+    {
+        $application = EstablishmentApplications::with('operators')->find($request->route('id'));
+        $establishment_categories = EstablishmentCategories::all();
 
-    //     $certificate = FoodEstablishment::join('food_est_operators', 'food_est_operators.establishment_application_id', '=', 'establishment_applications.id')
-    //         ->join('establishment_categories', 'establishment_categories.id', '=', 'establishment_applications.establishment_category_id')
-    //         ->leftJoin('sign_offs', function ($join) {
-    //             $join->on('sign_offs.application_id', '=', 'establishment_applications.id')
-    //                 ->where('application_type_id', '=', 3);
-    //         })
-    //         ->join('users', 'users.id', '=', 'establishment_applications.user_id')
-    //         ->leftJoin('payments', function ($join) {
-    //             $join->on('payments.application_id', '=', 'establishment_applications.id')
-    //                 ->where('payments.deleted_at', '=', null)
-    //                 ->where('payments.application_type_id', '=', 3)
-    //                 ->where('payments.facility_id', '=', auth()->user()->facility_id);
-    //         })
-    //         ->select(
-    //             'establishment_applications.*',
-    //             'food_est_operators.name_of_operator as operators',
-    //             'establishment_categories.name as categories',
-    //             'payments.created_at as payment',
-    //             'sign_offs.expiry_date',
-    //             'users.firstname',
-    //             'users.lastname'
-    //         )
-    //         ->whereIn('establishment_applications.user_id', User::facilityUsers()->pluck('id')->flatten())
-    //         ->where('establishment_applications.deleted_at', '=', null)
-    //         //->groupBy('establishment_applications.id')
-    //         ->orderBy('establishment_applications.application_date', 'desc')
-    //         ->distinct('establishment_applications.id')
-    //         ->get();
-
-    //     //dd($certificate);
-
-    //     return view('establishments.view', compact('certificate'));
-    // }
+        return view('establishments.renew', compact('establishment_categories', 'application'));
+    }
 
     public function editOperators(Request $request)
     {
