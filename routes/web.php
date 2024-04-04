@@ -163,7 +163,8 @@ Route::group(['middleware' => ['auth']], function () {
 
      //Reports 
 
-     // Route::get('/reports/general-report',[ReportController::class,'index']);
+     Route::get('/reports/general-report',[ReportController::class,'index']);
+     Route::post('/reports/general-report',[ReportController::class, 'generalReport'])->name('reports.general');
 
      //Test Centre Routes
 
