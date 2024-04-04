@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointments;
 use App\Models\ExamDates;
+use App\Models\HealthInterview;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
+use App\Models\Renewals;
+use App\Models\TestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DateTime;
@@ -224,7 +227,7 @@ class PermitApplicationController extends Controller
                     ['appointment_date' => $request->data["appointment_date"], 'exam_date_id' => $request->data["exam_date_id"]]
                 )) {
                     return "success";
-                }else{
+                } else {
                     throw new Exception("Problem updating record");
                 }
             } else {
@@ -244,6 +247,18 @@ class PermitApplicationController extends Controller
 
         //dd($appointments_available);
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
+    }
+
+    public function renewal(Request $request)
+    {
+        $categories = PermitCategory::all();
+        $appointments_available = ExamDates::where('facility_id', auth()->user()->facility_id)
+            ->where('application_type_id', 1)
+            ->get();
+
+        $application = PermitApplication::find($request->route('id'));
+
+        return view('food_handlers_permit.renew', compact('categories', 'appointments_available', 'application'));
     }
     /**
      * Show the form for creating a new resource.
@@ -333,6 +348,85 @@ class PermitApplicationController extends Controller
         } else {
             return redirect()->route('dashboard.dashboard')->with(['error' => 'Application was not created successfully']);
         }
+    }
+
+    public function storeRenewal(Request $request)
+    {
+        $permit_application = $request->validate([
+            'permit_category_id' => 'required',
+            'firstname' => "required",
+            'middlename' => "nullable",
+            'lastname' => "required",
+            'address' => 'required',
+            'date_of_birth' => 'required',
+            'gender' => 'required',
+            'permit_type' => 'required',
+            'no_of_years' => 'required_if:permit_type,=,student',
+            'cell_phone' => 'nullable',
+            'home_phone' => 'nullable',
+            'work_phone' => 'nullable',
+            'occupation' => 'nullable',
+            'employer' => 'nullable',
+            'employer_address' => 'nullable',
+            'email' => 'nullable|email',
+            'trn' => 'nullable',
+            'applied_before' => 'required',
+            'granted' => 'required_if:applied_before,=,1',
+            'reason' => 'nullable',
+            'photo_upload' => 'nullable',
+            'exam_date' => 'required',
+            'exam_session' => 'required',
+            'application_date' => 'required',
+        ]);
+
+        $old_permit = PermitApplication::find($request->old_application_id);
+        DB::beginTransaction();
+        $permit_application['permit_no'] = $old_permit->permit_no;
+
+        $permit_application['user_id'] = Auth()->user()->id;
+        if ($request->file('photo_upload')) {
+            $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
+            $permit_application['photo_upload'] = $path;
+        } else {
+            $permit_application['photo_upload'] = $old_permit->photo_upload;
+        }
+
+        if (PermitApplication::create($permit_application)) {
+            HealthInterview::where('permit_application_id', $request->old_application_id)->update([
+                'deleted_at' => new DateTime()
+            ]);
+
+            TestResult::where('application_id', $request->old_application_id)->where('application_type_id', 1)->update([
+                'deleted_at' => new DateTime()
+            ]);
+
+            Appointments::where('permit_application_id', $request->old_application_id)->update([
+                'deleted_at' => new DateTime()
+            ]);
+
+            $new_application = PermitApplication::where('permit_no', $old_permit->permit_no)->orderBy('created_at', 'DESC')->first();
+
+            if (Appointments::create(
+                [
+                    'facility_id' => auth()->user()->facility_id,
+                    'permit_application_id' => $new_application->id,
+                    'appointment_date' => $permit_application['exam_date'],
+                    'exam_date_id' => $permit_application['exam_session']
+                ]
+            )) {
+                Renewals::create([
+                    'new_application_id' => $new_application->id,
+                    'application_type_id' => 1,
+                    'old_application_id' => $old_permit->id,
+                ]);
+
+                $old_permit->update([
+                    'deleted_at' => new DateTime()
+                ]);
+            }
+        }
+        DB::commit();
+        return redirect()->route('permit.index', ['id'=>0])->with('success', 'Renewal has been completed successfully. The Application Id is'.$new_application->id);
     }
 
     /**

@@ -101,7 +101,9 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');
      Route::post('/report/payment', [PaymentReportController::class, 'showReport'])->name('reports.payment.show');
 
-     //User Routes
+     //Renewals
+     Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class , 'renewal'])->name('food_handlers_permit.renewal');
+     Route::post('/permit/application/renewal', [PermitApplicationController::class, 'storeRenewal'])->name('food_handlers_permit.renew');
 
      
      Route::get('/settings/users', [UserController::class, 'index'])->name('users');

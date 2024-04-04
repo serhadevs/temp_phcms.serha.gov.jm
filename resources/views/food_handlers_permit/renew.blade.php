@@ -10,11 +10,11 @@
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('food_handlers_permit.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('food_handlers_permit.renew') }}" enctype="multipart/form-data">
                         @method('POST')
                         @csrf
                         <h3>
-                            Create Food Handler Application
+                            Renew Food Handler's Application
                         </h3>
                         <hr>
                         <div class="mt-3">
@@ -25,17 +25,17 @@
                             </label>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="permit_type" value="regular"
-                                    {{ old('permit_type') == 'regular' ? 'checked' : '' }}>
+                                    {{ old('permit_type') ? (old('permit_type') == 'regular' ? 'checked' : '') : ($application->permit_type == 'regular' ? 'checked' : '') }}>
                                 <label for="" class="form-check-label">Regular</label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="permit_type" value="student"
-                                    {{ old('permit_type') == 'student' ? 'checked' : '' }}>
+                                    {{ old('permit_type') ? (old('permit_type') == 'student' ? 'checked' : '') : ($application->permit_type == 'student' ? 'checked' : '') }}>
                                 <label for="" class="form-check-label">Student</label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="permit_type" value="teacher"
-                                    {{ old('permit_type') == 'teacher' ? 'checked' : '' }}>
+                                    {{ old('permit_type') ? (old('permit_type') == 'teacher' ? 'checked' : '') : ($application->permit_type == 'teacher' ? 'checked' : '') }}>
                                 <label for="" class="form-check-label">Teacher</label>
                             </div>
                             @error('permit_type')
@@ -46,7 +46,7 @@
                             <span class="text-danger">*</span>
                             <label for="" class="form-label">Number of Years</label>
                             <input type="text" class="form-control" name="no_of_years"
-                                value="{{ old('no_of_years') }}" />
+                                value="{{ old('no_of_years') ? old('no_of_years') : $application->no_of_years }}" />
                             @error('no_of_years')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -60,7 +60,7 @@
                                 <option readonly disabled selected>Please select a category</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}"
-                                        {{ old('permit_category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ old('permit_category_id') ? (old('permit_category_id') == $category->id ? 'selected' : '') : ($application->permit_category_id == $category->id ? 'selected' : '') }}>
                                         {{ $category->name }}</option>
                                 @endforeach
                             </select>
@@ -74,7 +74,9 @@
                                     <span class="text-danger">*</span>
                                     First Name
                                 </label>
-                                <input type="text" class="form-control" name="firstname" value="{{ old('firstname') }}" oninput="this.value = this.value.toUpperCase()">
+                                <input type="text" class="form-control" name="firstname"
+                                    value="{{ old('firstname') ? old('firstname') : $application->firstname }}"
+                                    oninput="this.value = this.value.toUpperCase()">
 
                                 @error('firstname')
                                     <p class="text-danger">{{ $message }}</p>
@@ -85,14 +87,17 @@
                                     Middle Name
                                 </label>
                                 <input type="text" class="form-control" name="middlename"
-                                    value="{{ old('middlename') }}" oninput="this.value = this.value.toUpperCase()">
+                                    value="{{ old('middlename') ? old('middlename') : $application->middlename }}"
+                                    oninput="this.value = this.value.toUpperCase()">
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">
                                     <span class="text-danger">*</span>
                                     Last Name
                                 </label>
-                                <input type="text" class="form-control" name="lastname" value="{{ old('lastname') }}" oninput="this.value = this.value.toUpperCase()">
+                                <input type="text" class="form-control" name="lastname"
+                                    value="{{ old('lastname') ? old('lastname') : $application->lastname }}"
+                                    oninput="this.value = this.value.toUpperCase()">
                                 @error('lastname')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -103,10 +108,16 @@
                                 <span class="text-danger">*</span>
                                 Address
                             </label>
-                            <input type="text" class="form-control" name="address" value="{{ old('address') }}" oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" class="form-control" name="address"
+                                value="{{ old('address') ? old('address') : $application->address }}"
+                                oninput="this.value = this.value.toUpperCase()">
                             @error('address')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
+                        </div>
+                        <div class="mt-3">
+                            <img src="{{ asset('storage/' . $application->photo_upload) }}" alt=""
+                                style="height:30vh;width:40%">
                         </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Upload Photo</label>
@@ -120,12 +131,12 @@
                                 </label>
                                 <div class="form-check">
                                     <input type="radio" class="form-check-input" name="gender" value="Male"
-                                        {{ old('gender') == 'Male' ? 'checked' : '' }}>
+                                        {{ old('gender') ? (old('gender') == 'Male' ? 'checked' : '') : (strtoupper($application->gender) == 'MALE' ? 'checked' : '') }}>
                                     <label for="" class="form-check-label">Male</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" class="form-check-input" name="gender" value="Female"
-                                        {{ old('gender') == 'Female' ? 'checked' : '' }}>
+                                        {{ old('gender') ? (old('gender') == 'Female' ? 'checked' : '') : (strtoupper($application->gender) == 'FEMALE' ? 'checked' : '') }}>
                                     <label for="" class="form-check-label">Female</label>
                                 </div>
                                 @error('gender')
@@ -138,7 +149,7 @@
                                     Date of Birth
                                 </label>
                                 <input type="date" class="form-control" name="date_of_birth"
-                                    value="{{ old('date_of_birth') }}">
+                                    value="{{ old('date_of_birth') ? old('date_of_birth') : $application->date_of_birth }}">
                                 @error('date_of_birth')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -148,7 +159,8 @@
                             <div class="col">
                                 <label for="" class="form-label">Cell Phone</label>
                                 <input type="text" class="form-control" name="cell_phone"
-                                    value="{{ old('cell_phone') }}" id="cell_phone">
+                                    value="{{ old('cell_phone') ? old('cell_phone') : $application->cell_phone }}"
+                                    id="cell_phone">
                                 @error('cell_phone')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -156,7 +168,8 @@
                             <div class="col">
                                 <label for="" class="form-label">Home Phone</label>
                                 <input type="text" class="form-control" name="home_phone"
-                                    value="{{ old('home_phone') }}" id="home_phone">
+                                    value="{{ old('home_phone') ? old('home_phone') : $application->home_phone }}"
+                                    id="home_phone">
                                 @error('home_phone')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -164,7 +177,8 @@
                             <div class="col">
                                 <label for="" class="form-label">Work Phone</label>
                                 <input type="text" class="form-control" name="work_phone"
-                                    value="{{ old('work_phone') }}" id="work_phone">
+                                    value="{{ old('work_phone') ? old('work_phone') : $application->work_phone }}"
+                                    id="work_phone">
                                 @error('work_phone')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -173,15 +187,16 @@
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">Tax Registration Number</label>
-                                <input type="text" class="form-control" name="trn" value="{{ old('trn') }}"
-                                    id="trn">
+                                <input type="text" class="form-control" name="trn"
+                                    value="{{ old('trn') ? old('trn') : $application->trn }}" id="trn">
                                 @error('trn')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Email</label>
-                                <input type="text" class="form-control" name="email" value="{{ old('email') }}"
+                                <input type="text" class="form-control" name="email"
+                                    value="{{ old('email') ? old('email') : $application->email }}"
                                     oninput="this.value = this.value.toUpperCase()">
                                 @error('email')
                                     <p class="text-danger">{{ $message }}</p>
@@ -192,17 +207,19 @@
                             <div class="col">
                                 <label for="" class="form-label">Occupation</label>
                                 <input type="text" class="form-control" name="occupation"
-                                    value="{{ old('occupation') }}" oninput="this.value = this.value.toUpperCase()">
+                                    value="{{ old('occupation') ? old('occupation') : $application->occupation }}"
+                                    oninput="this.value = this.value.toUpperCase()">
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Name of Employer</label>
                                 <input type="text" class="form-control" name="employer"
-                                    value="{{ old('employer') }}" oninput="this.value = this.value.toUpperCase()">
+                                    value="{{ old('employer') ? old('employer') : $application->employer }}"
+                                    oninput="this.value = this.value.toUpperCase()">
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Business Address of Employer</label>
                                 <input type="text" class="form-control" name="employer_address"
-                                    value="{{ old('employer_address') }}"
+                                    value="{{ old('employer_address') ? old('employer_address') : $application->employer_address }}"
                                     oninput="this.value = this.value.toUpperCase()">
                             </div>
                         </div>
@@ -285,6 +302,8 @@
                             @error('application_date')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
+                            <input type="text" class="form-control mt-3" value="{{ $application->id }}"
+                                name="old_application_id" hidden>
                         </div>
                         <div class="mt-4">
                             <button class="btn btn-primary">
@@ -298,9 +317,9 @@
         <script src="https://unpkg.com/imask"></script>
         <script>
             const trn = document.getElementById('trn');
-            const cell_phone=document.getElementById('cell_phone');
-            const work_phone=document.getElementById('work_phone');
-            const home_phone=document.getElementById('home_phone');
+            const cell_phone = document.getElementById('cell_phone');
+            const work_phone = document.getElementById('work_phone');
+            const home_phone = document.getElementById('home_phone');
 
             const maskOptions = {
                 mask: '000-000-000'

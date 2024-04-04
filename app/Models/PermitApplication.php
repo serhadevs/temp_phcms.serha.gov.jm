@@ -44,8 +44,10 @@ class PermitApplication extends Model
         'sign_off_status',
         'reprint',
         'application_date',
+        'created_at',
+        'updated_at',
+        'deleted_at',
         'no_of_years',
-
     ];
 
     public $timestamp = true;

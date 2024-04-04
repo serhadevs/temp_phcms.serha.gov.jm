@@ -33,7 +33,7 @@
                 <td>{{ $permit_application->trn }}</td>
                 {{-- <td><i class="bi bi-{{ $permit_application->granted==1? 'check2-circle' : 'x-circle-fill' }}"></i></td> --}}
                 <td>
-                    {{-- <a href="" class="btn btn-success btn-sm">Renew</a> --}}
+                    <a class="btn btn-success btn-sm" href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
                     <a href="" class="btn btn-warning btn-sm">Edit</a>
                     <a href="" class="btn btn-danger btn-sm">Remove</a>
                     <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
