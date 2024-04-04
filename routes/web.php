@@ -114,6 +114,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/settings/user/create',[UserController::class, 'createuser'])->name('user.create');
      Route::post('/settings/user/add',[UserController::class, 'addUser'])->name('users.add');
      Route::get('/settings/users/online',[UserController::class, 'onlineUsers'])->name('users.online');
+     Route::get('/settings/users/loginusers',[UserController::class, 'loginUsersLocations']);
 
      //Health Interview Routes
      Route::get("/health-interview/create/{app_type_id}/{app_id}", [HealthInterviewController::class,'create'])->name('health-interview.create'); 

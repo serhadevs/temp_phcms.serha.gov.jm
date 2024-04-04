@@ -207,9 +207,16 @@
             </a>
             <ul id="reports" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="/report/payment" class="sidebar-link">End of Day Report</a>
+                    <a href="/report/general-report" class="sidebar-link">General Report</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                 </li>
             </ul>
+            
         </li>
 
         @if (in_array(auth()->user()->role_id, [1]))
