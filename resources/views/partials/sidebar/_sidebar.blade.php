@@ -94,7 +94,7 @@
                 <li class="sidebar-item">
                     <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
                 </li>
-                <li class="sidebar-item">
+                {{-- <li class="sidebar-item">
                     <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
                         <span>Food Establishments</span>
@@ -149,12 +149,6 @@
                             <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
                         </li>
                     </ul>
-                </li>
-                {{-- <li class="sidebar-item">
-                    <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
-                </li> --}}
-                {{-- <li class="sidebar-item">
-                    <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist Establishments</a>
                 </li> --}}
             </ul>
         </li>
