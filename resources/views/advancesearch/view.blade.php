@@ -76,7 +76,7 @@
                     </div>
                     <div class="modal-body">
                         @if ($permit->photo_upload)
-                            <img src="storage/{{ $permit->photo_upload }}" alt="No Image found"
+                            <img src ="{{ asset('storage/' . $permit->photo_upload) }}"alt="No Image found"
                                 style="display:block" class="mx-auto rounded w-100">
                         @endif
                         @if (!$permit->photo_upload)
