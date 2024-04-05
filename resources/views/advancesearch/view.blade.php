@@ -32,7 +32,7 @@
                                 <tr>
                                     <td>
                                         @if(!empty($permit->photo_upload))             
-                                        <button class="btn btn-sm btn-success">Photo</button>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $permit->id }}">Photo</button>
                                        @else
                                        <span class="badge text-bg-danger">MISSING</span>      
                                        @endif
@@ -61,6 +61,27 @@
             </div>
         </div>
     </div>
+
+@foreach ($permits as $permit)
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal{{ $permit->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">{{ $permit->firstname }} {{ $permit->lastname }}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="{{ $permit->photo_upload }}" alt="">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+@endforeach
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
