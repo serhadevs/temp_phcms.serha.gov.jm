@@ -42,11 +42,11 @@ class PermitJob implements ShouldQueue
             ->where('photo_upload', '<>', NULL)
             ->has('signOffs')
             ->has('testResults')
-            ->where('created_at', '>', '2023-10-01')
+            // ->where('created_at', '>', '2023-10-01')
             ->where('id', '209703')
             ->get();
 
-        // dd($permit_applications);
+        dd($permit_applications);
 
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
 
