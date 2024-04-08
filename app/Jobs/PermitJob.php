@@ -39,11 +39,13 @@ class PermitJob implements ShouldQueue
     public function handle()
     {
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs')
-            ->where('photo_upload', '<>', NULL)
+            // ->where('photo_upload', '<>', NULL)
             ->has('signOffs')
             ->has('testResults')
             ->where('created_at', '>', '2024-01-01')
             ->get();
+
+            dd($permit_applications);
 
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
 
