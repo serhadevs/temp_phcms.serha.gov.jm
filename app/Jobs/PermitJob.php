@@ -46,7 +46,7 @@ class PermitJob implements ShouldQueue
             ->where('id', '209703')
             ->get();
 
-        dd($permit_applications);
+        // dd($permit_applications);
 
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
 
