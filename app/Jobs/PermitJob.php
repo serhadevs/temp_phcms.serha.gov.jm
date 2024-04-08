@@ -191,7 +191,7 @@ class PermitJob implements ShouldQueue
                             $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
 
                             $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
-                            dd($photo_exists);
+                            // dd($photo_exists);
 
                             if ($photo_exists) {
                                 if ($folder_date_exist) {
