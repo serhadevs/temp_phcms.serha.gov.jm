@@ -54,7 +54,7 @@ class PermitApplication extends Model
 
     public function permitCategory(): HasOne
     {
-        return $this->hasOne(PermitCategories::class, 'id', 'permit_category_id');
+        return $this->hasOne(PermitCategory::class, 'id', 'permit_category_id');
     }
 
     public function payment(): HasOne

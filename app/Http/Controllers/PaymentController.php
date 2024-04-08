@@ -12,7 +12,6 @@ use App\Models\HealthCertApplications;
 use App\Models\PaymentCancellationRequests;
 use App\Models\Payments;
 use App\Models\PermitApplication;
-use App\Models\PermitCategories;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
