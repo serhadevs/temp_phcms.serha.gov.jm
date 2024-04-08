@@ -42,7 +42,7 @@ class PermitJob implements ShouldQueue
             // ->where('photo_upload', '<>', NULL)
             ->has('signOffs')
             ->has('testResults')
-            ->where('created_at', '>', '2024-01-01')
+            ->where('created_at', '>', '2023-11-01')
             ->get();
 
         dd($permit_applications);
