@@ -43,6 +43,7 @@ class PermitJob implements ShouldQueue
             ->has('signOffs')
             ->has('testResults')
             ->where('created_at', '>', '2023-10-01')
+            ->where('id', '209703')
             ->get();
 
         // dd($permit_applications);
@@ -190,6 +191,7 @@ class PermitJob implements ShouldQueue
                             $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
 
                             $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
+                            dd($photo_exists);
 
                             if ($photo_exists) {
                                 if ($folder_date_exist) {
