@@ -27,9 +27,9 @@
                         <hr>
                         @if (isset($clinic_permit))
                             <input type="text" class="form-control" name="establishment_clinic_id"
-                                value="{{ $clinic_permit_data['clinic_app_id'] }}">
+                                value="{{ $clinic_permit_data['clinic_app_id'] }}" hidden>
                             <input type="text" class="form-control" name="exam_date"
-                                value="{{ $clinic_permit->proposed_date }}">
+                                value="{{ $clinic_permit->proposed_date }}" hidden>
                         @endif
                         <div class="mt-3">
                             <label for="" class="form-label">
