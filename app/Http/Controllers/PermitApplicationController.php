@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointments;
+use App\Models\EstablishmentClinics;
 use App\Models\ExamDates;
 use App\Models\HealthInterview;
+use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
 use App\Models\Renewals;
@@ -13,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DateTime;
 use Exception;
+// use Faker\Provider\ar_EG\Payment;
 
 class PermitApplicationController extends Controller
 {
@@ -305,6 +308,10 @@ class PermitApplicationController extends Controller
             'application_date' => 'required',
         ]);
 
+        if ($request->establishment_clinic_id) {
+            $permit_application['establishment_clinic_id'] = $request->establishment_clinic_id;
+        }
+
         function generatePermitNo()
         {
             do {
@@ -335,16 +342,42 @@ class PermitApplicationController extends Controller
         $new_permit_application = PermitApplication::create($permit_application);
 
         if ($new_permit_application) {
-            $appointment['appointment_date'] = $request->exam_date;
-            $appointment['facility_id'] = Auth()->user()->facility_id;
-            $appointment['permit_application_id'] = DB::table('permit_applications')->where('permit_no', $permit_application['permit_no'])->first()->id;
-            $appointment['exam_date_id'] = $request->exam_session;
-            $new_appointment = Appointments::create($appointment);
-            if (!$new_appointment) {
-                return redirect()->route('dashboard')->with(['error' => 'Appointment was not created successfully']);
+            if ($request->establishment_clinic_id) {
+                $est_clinic = EstablishmentClinics::withCount('permits')
+                    ->where('id', $request->establishment_clinic_id)
+                    ->first();
+
+                $clinic_payment = Payments::where('application_id', $request->establishment_clinic_id)->where('application_type_id', 4)->first();
+                Payments::create(
+                    [
+                        'application_type_id' => 1,
+                        'application_id' => $new_permit_application->id,
+                        'facility_id' => auth()->user()->id,
+                        'receipt_no' => $clinic_payment->receipt_no,
+                        'amount_paid' => 0,
+                        'total_cost' => 0,
+                        'change_amt' => 0.0,
+                        'cashier_user_id' => $clinic_payment->cashier_user_id
+                    ]
+                );
+            } else {
+                $appointment['appointment_date'] = $request->exam_date;
+                $appointment['facility_id'] = Auth()->user()->facility_id;
+                $appointment['permit_application_id'] = DB::table('permit_applications')->where('permit_no', $permit_application['permit_no'])->first()->id;
+                $appointment['exam_date_id'] = $request->exam_session;
+                $new_appointment = Appointments::create($appointment);
+                if (!$new_appointment) {
+                    return redirect()->route('permit.index', ['id' => 0])->with('error', 'Appointment was not created successfully');
+                }
             }
 
-            return redirect()->route('dashboard.dashboard')->with(['success' => 'Application has been processed successfully. The Application ID is: ' . $appointment['permit_application_id'] . '']);
+            if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
+                return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
+            } else {
+                return redirect()
+                    ->route('food-handlers-clinic.permit.application', ['clinic_app_id' => $request->establishment_clinic_id])
+                    ->with('success', 'The application was entered successfully. The Application ID is: ' . $new_permit_application->id);
+            }
         } else {
             return redirect()->route('dashboard.dashboard')->with(['error' => 'Application was not created successfully']);
         }
@@ -426,7 +459,7 @@ class PermitApplicationController extends Controller
             }
         }
         DB::commit();
-        return redirect()->route('permit.index', ['id'=>0])->with('success', 'Renewal has been completed successfully. The Application Id is'.$new_application->id);
+        return redirect()->route('permit.index', ['id' => 0])->with('success', 'Renewal has been completed successfully. The Application Id is' . $new_application->id);
     }
 
     /**

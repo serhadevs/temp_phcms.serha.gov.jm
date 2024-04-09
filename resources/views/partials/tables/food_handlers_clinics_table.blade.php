@@ -1,0 +1,71 @@
+<table class="table table-striped no-warp" id="food_clinics" style="width:100%">
+    <thead>
+        <tr>
+            <th>App #</th>
+            <th>Est. Name</th>
+            <th>Address</th>
+            <th>Telphone No.</th>
+            <th>Payment Staus</th>
+            {{-- Enter after logic has been implemented --}}
+            {{-- <th>No. of Permits</th> --}}
+            <th>No. of Employees</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($food_clinics as $application)
+            <tr>
+                <td>
+                    {{ $application->id }}
+                </td>
+                <td>
+                    {{ $application->name }}
+                </td>
+                <td>
+                    {{ $application->address }}
+                </td>
+                <td>
+                    {{ $application->telephone }}
+                </td>
+                <td>
+                    @if (empty($application->payment))
+                        <span class="badge text-bg-danger">Not Paid</span>
+                    @endif
+                    @if (!empty($application->payment))
+                        <span class="badge text-bg-success">Paid</span>
+                    @endif
+                </td>
+                {{-- <td>
+                    {{ $application-> }}
+                </td> --}}
+                <td>
+                    {{ $application->no_of_employees }}
+                </td>
+                <td class="text-nowrap">
+                    <a href="/food-handlers-clinics/edit/{{ $application->id }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="/food-handlers-clinics/view/{{ $application->id }}" class="btn btn-primary btn-sm" >View</a>
+                    @if (!empty($application->payment))
+                        <a href="/food-handlers-clinics/permit/application/{{ $application->id }}" class="btn btn-info btn-sm">Add Employees</a>
+                    @endif
+                    <a href="" class="btn btn-success btn-sm">Renew</a>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+
+<script>
+    new DataTable('#food_clinics', {
+        scrollX: true,
+        responsive: true
+    })
+</script>

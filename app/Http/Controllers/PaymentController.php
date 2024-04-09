@@ -372,7 +372,7 @@ class PaymentController extends Controller
                     }
                     $output .= "<p>Appointment Date: " . $app_date . "<p>";
                     $output .= "<p>Appointment Location: " . $app_location_name . "<p>";
-                    $output .= $this->paymentStatus($application_id);
+                    $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
                 echo $output;
             }
@@ -394,7 +394,7 @@ class PaymentController extends Controller
                     $output .= "<p>Gender: " . $result->sex . "</p>";
                     $output .= "<p>Date of Birth :" . $result->date_of_birth . "</p>";
                     $output .= "<p>Address: " . $result->address . "</p>";
-                    $output .= $this->paymentStatus($application_id);
+                    $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
                 echo $output;
             }
@@ -417,7 +417,7 @@ class PaymentController extends Controller
                     $output .= "<p>Food Type : $result->food_type</p>";
                     $output .= "<p>Establishment Category: $result->name</p>";
                     $output .= "<p>Operator Names: </p>";
-                    $output .= $this->paymentStatus($application_id);
+                    $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
                 echo $output;
             }
@@ -439,7 +439,7 @@ class PaymentController extends Controller
                     $output .= "<p>Contact Person: $result->contact_person</p>";
                     $output .= "<p>Number of Employees: $result->no_of_employees</p>";
                     $output .= "<p>Proposed Date & Time: $result->proposed_date $result->proposed_time</p>";
-                    $output .= $this->paymentStatus($application_id);
+                    $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
                 echo $output;
             }
@@ -459,7 +459,7 @@ class PaymentController extends Controller
                     $output .= "<p>First Name: $result->firstname</p>";
                     $output .= "<p>Last Name: $result->lastname</p>";
                     $output .= "<p>Pool Address: $result->swimming_pool_address</p>";
-                    $output .= $this->paymentStatus($application_id);
+                    $output .= $this->paymentStatus($application_id , $application_type_id);
                 }
                 echo $output;
             }
@@ -480,17 +480,18 @@ class PaymentController extends Controller
                     $output .= "<p>Officer First Name: $result->officer_firstname</p>";
                     $output .= "<p>Officer Last Name: $result->officer_lastname</p>";
                     $output .= "<p>Est Address: $result->establishment_address</p>";
-                    $output .= $this->paymentStatus($application_id);
+                    $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
                 echo $output;
             }
         }
     }
 
-    public function paymentStatus(int $app_id)
+    public function paymentStatus(int $app_id, $app_type_id)
     {
         $payment = DB::table('payments')
             ->where('application_id', '=', $app_id)
+            ->where('application_type_id', $app_type_id)
             ->get();
         $payment->isEmpty() ? $alert_type = "success" : $alert_type = "danger";
         $payment->isEmpty() ? $alert_text = "Payment Outstanding" : $alert_text = "Already Paid";

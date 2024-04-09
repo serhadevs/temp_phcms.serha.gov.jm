@@ -8,6 +8,26 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <p class="text-success"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if (isset($clinic_permit_data))
+                <h4 class="text-muted">
+                    Application
+                    {{ $clinic_permit_data['completed_permits_total'] + 1 }}
+                    of
+                    {{ $clinic_permit_data['no_of_employees'] }}
+                </h4>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <form method="POST" action="{{ route('food_handlers_permit.store') }}" enctype="multipart/form-data">
@@ -17,6 +37,12 @@
                             Create Food Handler Application
                         </h3>
                         <hr>
+                        @if (isset($clinic_permit))
+                            <input type="text" class="form-control" name="establishment_clinic_id"
+                                value="{{ $clinic_permit_data['clinic_app_id'] }}" hidden>
+                            <input type="text" class="form-control" name="exam_date"
+                                value="{{ $clinic_permit->proposed_date }}" hidden>
+                        @endif
                         <div class="mt-3">
                             <label for="" class="form-label">
                                 <span class="text-danger">*</span>
@@ -74,7 +100,8 @@
                                     <span class="text-danger">*</span>
                                     First Name
                                 </label>
-                                <input type="text" class="form-control" name="firstname" value="{{ old('firstname') }}" oninput="this.value = this.value.toUpperCase()">
+                                <input type="text" class="form-control" name="firstname" value="{{ old('firstname') }}"
+                                    oninput="this.value = this.value.toUpperCase()">
 
                                 @error('firstname')
                                     <p class="text-danger">{{ $message }}</p>
@@ -92,7 +119,8 @@
                                     <span class="text-danger">*</span>
                                     Last Name
                                 </label>
-                                <input type="text" class="form-control" name="lastname" value="{{ old('lastname') }}" oninput="this.value = this.value.toUpperCase()">
+                                <input type="text" class="form-control" name="lastname"
+                                    value="{{ old('lastname') }}" oninput="this.value = this.value.toUpperCase()">
                                 @error('lastname')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -103,7 +131,8 @@
                                 <span class="text-danger">*</span>
                                 Address
                             </label>
-                            <input type="text" class="form-control" name="address" value="{{ old('address') }}" oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" class="form-control" name="address" value="{{ old('address') }}"
+                                oninput="this.value = this.value.toUpperCase()">
                             @error('address')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -252,16 +281,22 @@
                                 <span class="text-danger">*</span>
                                 <label for="" class="form-label">Schedule Appointment</label>
                                 <select id="" class="form-control" name="exam_session">
-                                    <option disabled selected>Please select an exam session</option>
-                                    @foreach ($appointments_available as $appointment_avaiable)
-                                        <option value="{{ $appointment_avaiable->id }}"
-                                            {{ old('exam_session') == $appointment_avaiable->id ? 'selected' : '' }}>
-                                            {{ $appointment_avaiable->permitCategory?->name }}
-                                            - {{ $appointment_avaiable->exam_day }}
-                                            {{ $appointment_avaiable->exam_start_time }}
-                                            -{{ $appointment_avaiable->examSites?->name }}
+                                    @if (isset($clinic_permit))
+                                        <option value="{{ $clinic_permit->id }}">
+                                            {{ $clinic_permit->address }} - {{ $clinic_permit->proposed_time }}
                                         </option>
-                                    @endforeach
+                                    @else
+                                        <option disabled selected>Please select an exam session</option>
+                                        @foreach ($appointments_available as $appointment_avaiable)
+                                            <option value="{{ $appointment_avaiable->id }}"
+                                                {{ old('exam_session') == $appointment_avaiable->id ? 'selected' : '' }}>
+                                                {{ $appointment_avaiable->permitCategory?->name }}
+                                                - {{ $appointment_avaiable->exam_day }}
+                                                {{ $appointment_avaiable->exam_start_time }}
+                                                -{{ $appointment_avaiable->examSites?->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                                 @error('exam_session')
                                     <p class="text-danger">{{ $message }}</p>
@@ -271,7 +306,8 @@
                                 <span class="text-danger">*</span>
                                 <label for="" class="form-label">Exam Date</label>
                                 <input type="date" class="form-control" name="exam_date"
-                                    value="{{ old('exam_date') }}">
+                                    value="{{ old('exam_date') ? old('exam_date') : (isset($clinic_permit) ? $clinic_permit->proposed_date : '') }}"
+                                    {{ isset($clinic_permit) ? 'readonly' : '' }}>
                                 @error('exam_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -298,9 +334,9 @@
         <script src="https://unpkg.com/imask"></script>
         <script>
             const trn = document.getElementById('trn');
-            const cell_phone=document.getElementById('cell_phone');
-            const work_phone=document.getElementById('work_phone');
-            const home_phone=document.getElementById('home_phone');
+            const cell_phone = document.getElementById('cell_phone');
+            const work_phone = document.getElementById('work_phone');
+            const home_phone = document.getElementById('home_phone');
 
             const maskOptions = {
                 mask: '000-000-000'

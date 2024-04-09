@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class EstablishmentClinics extends Model
 {
@@ -29,4 +31,19 @@ class EstablishmentClinics extends Model
     ];
 
     public $timestamps = true;
+
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payments::class, 'application_id', 'id')->where('application_type_id', 4);
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function permits(): HasMany
+    {
+        return $this->hasMany(PermitApplication::class, 'establishment_clinic_id', 'id');
+    }
 }

@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AdvanceSearchController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClinicPermitApplicationController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DownloadsController;
 use App\Http\Controllers\FoodEstablishmentController;
 use App\Http\Controllers\FoodEstTestResultController;
+use App\Http\Controllers\FoodHandlersClinicController;
 use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
@@ -65,6 +67,16 @@ Route::group(['middleware' => ['auth']], function () {
 
      Route::get("/advance-search/create", [AdvanceSearchController::class, 'create'])->name('advance-search');
      Route::post("/advance-search/show", [AdvanceSearchController::class, 'show']);
+
+     //Food Clinics Routes
+     Route::get('/food-handlers-clinics/create', [FoodHandlersClinicController::class, 'create'])->name('food-handlers-clinic.create');
+     Route::post('/food-handlers-clinics/create', [FoodHandlersClinicController::class , 'store'])->name('food-handlers-clinic.store');
+     Route::get('/food-handlers-clinics/filter/{id}', [FoodHandlersClinicController::class , 'index'])->name('food-handlers-clinic.index');
+     Route::post('/food-handlers-clinics/filter/custom', [FoodHandlersClinicController::class, 'customFilter'])->name('food-handlers-clinic.custom.filter');
+     Route::get('/food-handlers-clinics/view/{id}', [FoodHandlersClinicController::class, 'show'])->name('food-handlers-clinics.view');
+     Route::get('/food-handlers-clinics/edit/{id}', [FoodHandlersClinicController::class, 'edit'])->name('food-handlers-clinics.edit');
+     Route::get('/food-handlers-clinics/permit/application/{clinic_app_id}', [ClinicPermitApplicationController::class , 'create'])->name('food-handlers-clinic.permit.application');
+     Route::post('/food-handlers-clinics/update', [FoodHandlersClinicController::class, 'update'])->name('food-handlers-clinic.update');
 
      //Payment Routes
      Route::get("/payments/create", [PaymentController::class, 'create'])->name('payments.create');
