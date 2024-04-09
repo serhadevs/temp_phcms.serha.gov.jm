@@ -130,9 +130,13 @@ class FoodHandlersClinicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-        //
+        $application = EstablishmentClinics::find($request->route('id'));
+
+        $edit_mode = 1;
+
+        return view('food_handlers_clinic.view', compact('application', 'edit_mode'));
     }
 
     /**
@@ -142,9 +146,34 @@ class FoodHandlersClinicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $food_handlers_clinic = $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'contact_person' => 'required|string',
+            'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
+            'fax_no' => 'nullable|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
+            'no_of_employees' => 'numeric|required',
+            'proposed_date' => 'required',
+            'proposed_time' => 'required',
+            'application_date' => 'required|date'
+        ]);
+
+        if (EstablishmentClinics::find($request->id)->update(
+            [
+                'name' => $food_handlers_clinic['name'],
+                'address' => $food_handlers_clinic['address'],
+                'contact_person' => $food_handlers_clinic['contact_person'],
+                'telephone' => $food_handlers_clinic['telephone'],
+                'fax_no' => $food_handlers_clinic['fax_no'],
+                'proposed_date' => $food_handlers_clinic['proposed_date'],
+                'proposed_time' => $food_handlers_clinic['proposed_time'],
+                'application_date' => $food_handlers_clinic['application_date']
+            ]
+        )) {
+            return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Application ID: ' . $request->id . ' has been updated successfully.');
+        }
     }
 
     /**

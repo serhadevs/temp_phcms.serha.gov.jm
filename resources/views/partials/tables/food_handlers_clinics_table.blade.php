@@ -42,7 +42,7 @@
                     {{ $application->no_of_employees }}
                 </td>
                 <td class="text-nowrap">
-                    <a href="" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="/food-handlers-clinics/edit/{{ $application->id }}" class="btn btn-warning btn-sm">Edit</a>
                     <a href="/food-handlers-clinics/view/{{ $application->id }}" class="btn btn-primary btn-sm" >View</a>
                     @if (!empty($application->payment))
                         <a href="/food-handlers-clinics/permit/application/{{ $application->id }}" class="btn btn-info btn-sm">Add Employees</a>
