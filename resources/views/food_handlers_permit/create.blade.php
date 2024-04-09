@@ -8,6 +8,18 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <p class="text-success"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             @if (isset($clinic_permit_data))
                 <h4 class="text-muted">
                     Application
@@ -107,8 +119,8 @@
                                     <span class="text-danger">*</span>
                                     Last Name
                                 </label>
-                                <input type="text" class="form-control" name="lastname" value="{{ old('lastname') }}"
-                                    oninput="this.value = this.value.toUpperCase()">
+                                <input type="text" class="form-control" name="lastname"
+                                    value="{{ old('lastname') }}" oninput="this.value = this.value.toUpperCase()">
                                 @error('lastname')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
