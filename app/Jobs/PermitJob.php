@@ -42,7 +42,7 @@ class PermitJob implements ShouldQueue
             ->where('photo_upload', '<>', NULL)
             ->has('signOffs')
             ->has('testResults')
-            ->where('created_at', '>', '2024-01-01')
+            ->whereRelation('signOffs', 'created_at', '>', '2024-01-01')
             ->get();
 
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
@@ -93,13 +93,13 @@ class PermitJob implements ShouldQueue
                                     . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
                                     . "S1" . "\t"
                                     . "SCHD" . "\t"
-                                    . strtoupper($index->permit_category) . "\t"
+                                    . strtoupper($index->permitCategory?->name) . "\t"
                                     . Carbon::parse($key)->format('m/d/Y') . "\t"
                                     . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
                                     . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
                                     . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
                                     . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
-                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "STC-" . explode('-', $index->signOffs->sign_off_date)[0] . "-" . "\r\n";
+                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "STC-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
 
                                 $counter++;
                             }
@@ -188,6 +188,7 @@ class PermitJob implements ShouldQueue
                             $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
 
                             $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
+                            // dd($photo_exists);
 
                             if ($photo_exists) {
                                 if ($folder_date_exist) {
@@ -210,13 +211,13 @@ class PermitJob implements ShouldQueue
                                     . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
                                     . "S1" . "\t"
                                     . "STHD" . "\t"
-                                    . strtoupper($index->permit_category) . "\t"
+                                    . strtoupper($index->permitCategory?->name) . "\t"
                                     . Carbon::parse($key)->format('m/d/Y') . "\t"
                                     . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
                                     . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
                                     . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
                                     . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
-                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "STT-" . explode('-', $index->signOffs->sign_off_date)[0] . "-" . "\r\n";
+                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "STT-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
 
                                 $counter++;
                             }
@@ -327,13 +328,13 @@ class PermitJob implements ShouldQueue
                                     . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
                                     . "S1" . "\t"
                                     . "KSAHD" . "\t"
-                                    . strtoupper($index->permit_category) . "\t"
+                                    . strtoupper($index->permitCategory?->name) . "\t"
                                     . Carbon::parse($key)->format('m/d/Y') . "\t"
                                     . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
                                     . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
                                     . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
                                     . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
-                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "KSA-" . explode('-', $index->signOffs->sign_off_date)[0] . "-" . "\r\n";
+                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "KSA-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
 
                                 $counter++;
                             }

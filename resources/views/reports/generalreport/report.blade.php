@@ -1,16 +1,16 @@
 @extends("partials.layouts.layout")
 
-@section("title", "Payment Report")
+@section("title", "General Report")
 
 @section("content")
     @include("partials.sidebar._sidebar")
     <div class="main">
         @include("partials.navbar._navbar")
         <div class="container">
-            <h1>Payment Report</h1>
+            <h1>General Report</h1>
             <div class="card">
                 <div class="card-body">
-                    @include("partials.tables.payment_report_table")
+                    {{ $data }}
                 </div>
             </div>
         </div>

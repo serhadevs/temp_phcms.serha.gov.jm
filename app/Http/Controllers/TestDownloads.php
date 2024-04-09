@@ -17,14 +17,15 @@ class TestDownloads extends Controller
      */
     public function index()
     {
-        try{
+        // try{
             PermitJob::dispatch();
-            FoodEstJob::dispatch();
-            TouristEstJob::dispatch();
-            return 'success';
-        }catch(Exception $e){
-            return $e->getMessage();
-        }
+            // FoodEstJob::dispatch();
+            // TouristEstJob::dispatch();
+
+            // return 'success';
+        // }catch(Exception $e){
+        //     return $e->getMessage();
+        // }
     }
 
     /**
