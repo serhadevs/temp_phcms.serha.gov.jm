@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EstablishmentClinics;
 use App\Models\PermitApplication;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -16,6 +19,7 @@ class AdvanceSearchController extends Controller
 
     public function create()
     {
+
         return view('advancesearch.create');
     }
 
@@ -103,14 +107,47 @@ class AdvanceSearchController extends Controller
                     ->distinct()
                     ->orderBy('permit_created_at', 'desc')
                     ->get();
+            } else if ($module == 2) {
+                $onsite_id = $request->onsite_id;
+                $establishment_no = $request->establishment_no;
+
+                
+                $permits = DB::table('establishment_clinics')
+                    ->join('payments', 'payments.application_id', '=', 'establishment_clinics.id')
+                    ->join('users', 'users.id', '=', 'establishment_clinics.user_id')
+                    ->whereIn('establishment_clinics.user_id', User::facilityUsers()
+                        ->pluck('id')->flatten())
+                    ->leftJoin('permit_applications', function ($join) {
+                        $join->on('establishment_clinics.id', '=', 'permit_applications.establishment_clinic_id')
+                            ->where('permit_applications.deleted_at', '=', null);
+                    })
+                    ->where('payments.application_type_id', 4)
+                    ->where('permit_applications.deleted_at', '=', null)
+                    ->where('payments.facility_id', '=', auth()->user()->facility_id)
+                    ->select(
+                        'establishment_clinics.*',
+                        DB::raw('concat(" ",establishment_clinics.proposed_date,"  ",establishment_clinics.proposed_time) as proposed_date'),
+                        'users.firstname',
+                        'users.lastname',
+                        'payments.receipt_no as payment_status',
+                        //DB::raw('count(permit_applications.establishment_clinic_id) as permit_count ')
+                    )
+                    ->when($onsite_id, function ($query) use ($onsite_id) {
+                        return $query->where('establishment_clinics.id', '=', $onsite_id);
+                    })
+                    ->when($establishment_no, function ($query) use ($establishment_no) {
+                        return $query->where('establishment_clinics.name', '=', $establishment_no);
+                    })->latest()->get();
+
+                // dd($permits);
             }
 
             //dd($permits);
 
 
-            return view('advancesearch.view',compact('permits'));
+            return view('advancesearch.view', compact('permits'));
         } catch (\Exception $e) {
-            return view('advancesearch.create')->with('error',"Unknown error" . $e);
+            return view('advancesearch.create')->with('error', "Unknown error" . $e);
         }
     }
 }

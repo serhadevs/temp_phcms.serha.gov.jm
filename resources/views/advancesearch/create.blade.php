@@ -120,19 +120,19 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label for="Application Number">Application Number</label>
+                                        <label for="Application Number">Application Number ONSITE</label>
                                         <input type="text" class="form-control" placeholder="Application Number"
-                                            aria-label="Application Number">
+                                            aria-label="Application Number" name = "onsite_id">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="establishment">Establishment Name</label>
-                                        {{-- <input type="text" class="form-control" placeholder="Establishment Name" aria-label="Establishment Name"> --}}
-                                        <select class="form-select" aria-label="Default select example">
+                                        <input type="text" class="form-control" placeholder="Establishment Name" aria-label="Establishment Name" name ="establishment_no">
+                                        {{-- <select class="form-select" aria-label="Default select example">
                                             <option selected disabled>Select an Establishment</option>
                                             <option value="1">One</option>
                                             <option value="2">Two</option>
                                             <option value="3">Three</option>
-                                        </select>
+                                        </select> --}}
                                     </div>
                                 </div>
                             </div>
