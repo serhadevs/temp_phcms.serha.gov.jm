@@ -59,7 +59,7 @@
                                 <div class="mt-3">
                                     <label for="" class="form-label">Total Cost</label>
                                     <input type="number" class="form-control" id="total_cost" name="total_cost"
-                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}">
+                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}" readonly>
                                     @error('total_cost')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
