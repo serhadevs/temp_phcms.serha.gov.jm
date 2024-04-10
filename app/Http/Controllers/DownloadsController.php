@@ -35,9 +35,10 @@ class DownloadsController extends Controller
             $filterTimeline = $today;
             $downloads = Downloads::with('zippedApplications.payment.facility')
                 ->where('application_type_id', 1)
-                ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
-                ->whereBetween('created_at', [$today, $tonight])
+                // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+                ->where('created_at', '>', $today)
                 ->get();
+                dd($downloads);
 
             return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
         } else if ($id == "1") {

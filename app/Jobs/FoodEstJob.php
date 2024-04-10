@@ -73,7 +73,7 @@ class FoodEstJob implements ShouldQueue
                                 Storage::disk("public")->put("downloads/establishment-txts/" . $key . "/" . "STC" . "/" . "STC" . "-" . $key . "-Food_Establishment.txt", $content);
                             }
 
-                            ZippedApplications::create([
+                            $create_download = ZippedApplications::create([
                                 'application_type_id' => 3,
                                 'application_id' => $item->id,
                                 'download_id' => 0
@@ -88,7 +88,7 @@ class FoodEstJob implements ShouldQueue
                             $download_url = "downloads/establishment-archives/" . "STC-" . $key . ".zip";
                         }
 
-                        Downloads::create([
+                        $create_download = Downloads::create([
                             'application_type_id' => 3,
                             'application_amount' => $counter,
                             'category' => "Food Establishment",
@@ -101,7 +101,7 @@ class FoodEstJob implements ShouldQueue
                                 ->first()
                                 ->update(
                                     [
-                                        'download_id' => Downloads::where('download_url', $download_url)->first()->id
+                                        'download_id' => $create_download->id
                                     ]
                                 );
                         }
@@ -168,7 +168,7 @@ class FoodEstJob implements ShouldQueue
                             $download_url = "downloads/establishment-archives/" . "STT-" . $key . ".zip";
                         }
 
-                        Downloads::create([
+                        $create_download = Downloads::create([
                             'application_type_id' => 3,
                             'application_amount' => $counter,
                             'category' => "Food Establishment",
@@ -181,7 +181,7 @@ class FoodEstJob implements ShouldQueue
                                 ->first()
                                 ->update(
                                     [
-                                        'download_id' => Downloads::where('download_url', $download_url)->first()->id
+                                        'download_id' => $create_download->id
                                     ]
                                 );
                         }
@@ -247,7 +247,7 @@ class FoodEstJob implements ShouldQueue
                             $download_url = "downloads/establishment-archives/" . "KSA-" . $key . ".zip";
                         }
 
-                        Downloads::create([
+                        $create_download = Downloads::create([
                             'application_type_id' => 3,
                             'application_amount' => $counter,
                             'category' => "Food Establishment",
@@ -260,7 +260,7 @@ class FoodEstJob implements ShouldQueue
                                 ->first()
                                 ->update(
                                     [
-                                        'download_id' => Downloads::where('download_url', $download_url)->first()->id
+                                        'download_id' => $create_download->id
                                     ]
                                 );
                         }

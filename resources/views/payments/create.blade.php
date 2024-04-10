@@ -125,9 +125,11 @@
                                 if (checked_stat) {
                                     document.getElementById('backlog_1').style.display = "";
                                     document.getElementById('backlog_2').style.display = "";
+                                    document.getElementById('total_cost').removeAttribute('readonly');
                                 } else {
                                     document.getElementById('backlog_1').style.display = "none";
                                     document.getElementById('backlog_2').style.display = "none";
+                                    document.getElementById('total_cost').setAttribute('readonly', true);
                                 }
                             }
 

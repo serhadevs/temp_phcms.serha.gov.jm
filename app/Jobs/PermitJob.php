@@ -129,7 +129,7 @@ class PermitJob implements ShouldQueue
                             $download_url = "downloads/archives/" . "STC-" . $key . ".zip";
                         }
 
-                        Downloads::create(
+                        $create_download = Downloads::create(
                             [
                                 'application_type_id' => 1,
                                 'application_amount' => $counter,
@@ -141,7 +141,7 @@ class PermitJob implements ShouldQueue
                         foreach ($sch_permit as $each_permit) {
                             ZippedApplications::where('application_id', $each_permit->id)->where('application_type_id', 1)->first()->update(
                                 [
-                                    'download_id' => Downloads::where('download_url', $download_url)->first()->id
+                                    'download_id' => $create_download->id
                                 ]
                             );
                         }
@@ -247,7 +247,7 @@ class PermitJob implements ShouldQueue
                             $download_url = "downloads/archives/" . "STT-" . $key . ".zip";
                         }
 
-                        Downloads::create(
+                        $create_download = Downloads::create(
                             [
                                 'application_type_id' => 1,
                                 'application_amount' => $counter,
@@ -259,7 +259,7 @@ class PermitJob implements ShouldQueue
                         foreach ($stt_permit as $each_permit) {
                             ZippedApplications::where('application_id', $each_permit->id)->where('application_type_id', 1)->first()->update(
                                 [
-                                    'download_id' => Downloads::where('download_url', $download_url)->first()->id
+                                    'download_id' => $create_download->id
                                 ]
                             );
                         }
@@ -364,7 +364,7 @@ class PermitJob implements ShouldQueue
                             $download_url = "downloads/archives/" . "KSA-" . $key . ".zip";
                         }
 
-                        Downloads::create(
+                        $create_download = Downloads::create(
                             [
                                 'application_type_id' => 1,
                                 'application_amount' => $counter,
@@ -376,7 +376,7 @@ class PermitJob implements ShouldQueue
                         foreach ($ksa_permit as $each_permit) {
                             ZippedApplications::where('application_id', $each_permit->id)->where('application_type_id', 1)->first()->update(
                                 [
-                                    'download_id' => Downloads::where('download_url', $download_url)->first()->id
+                                    'download_id' => $create_download->id
                                 ]
                             );
                         }
