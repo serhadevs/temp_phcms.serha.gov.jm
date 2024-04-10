@@ -81,6 +81,30 @@
                                         <p class="text-danger">Cannot be a negative number</p>
                                     @enderror
                                 </div>
+                                <div class="mt-3">
+                                    <div class="mt-3" style="display:none" id="backlog_1">
+                                        <label for="" class="form-label">Receipt No of manual receipt</label>
+                                        <input type="text" class="form-control" name="manual_receipt_no"
+                                            value="{{ old('manual_receipt_no') }}">
+                                        @error('manual_receipt_no')
+                                            <p class="text-danger">This is required if this payment is a part of backlog.</p>
+                                        @enderror
+                                    </div>
+                                    <div class="mt-3" style="display:none" id="backlog_2">
+                                        <label for="" class="form-label">Manual Receipt Date</label>
+                                        <input type="date" class="form-control" name="manual_receipt_date"
+                                            value="{{ old('manual_receipt_date') }}">
+                                        @error('manual_receipt_date')
+                                            <p class="text-danger">This is required if this payment is a part of backlog.</p>
+                                        @enderror
+                                    </div>
+                                    <div class="form-check form-switch mt-3">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                            onchange="backlog(this.checked)" value="1" name="is_backlog"
+                                            {{ old('is_backlog') == '1' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Backlog Payment</label>
+                                    </div>
+                                </div>
                                 <div class="mt-4">
                                     <button class="btn btn-success" type="submit">Submit Payment</button>
                                     <a class="btn btn-danger" onclick="history.back()">Cancel</a>
@@ -97,14 +121,21 @@
                             </div>
                         </div>
                         <script>
+                            function backlog(checked_stat) {
+                                if (checked_stat) {
+                                    document.getElementById('backlog_1').style.display = "";
+                                    document.getElementById('backlog_2').style.display = "";
+                                } else {
+                                    document.getElementById('backlog_1').style.display = "none";
+                                    document.getElementById('backlog_2').style.display = "none";
+                                }
+                            }
+
                             function calcChange() {
                                 var total_cost = parseFloat(document.getElementById("total_cost").value);
                                 var amount_paid = parseFloat(document.getElementById("amount_paid").value);
 
                                 var change_amt = amount_paid - total_cost;
-                                // if(change_amt<0 || change_amt === NaN){
-                                //     change_amt = 0.00;
-                                // }
                                 document.getElementById('change_amt').setAttribute('value', parseFloat(change_amt));
                             }
                         </script>
@@ -120,6 +151,12 @@
                                 if (document.getElementById('application_type_id').value != "") {
                                     detPrice();
                                 }
+
+                                if (document.getElementById('flexSwitchCheckDefault').checked) {
+                                    document.getElementById('backlog_1').style.display = "";
+                                    document.getElementById('backlog_2').style.display = "";
+                                }
+
                                 if (document.getElementById('application_id').value != "") {
                                     var app_id = $('#application_id').val();
                                     var app_t_id = $('#application_type_id').val();

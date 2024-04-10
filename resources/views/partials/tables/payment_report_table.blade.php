@@ -8,6 +8,7 @@
             <th>Amount Paid</th> {{-- THERE --}}
             <th>Change</th>{{-- THERE --}}
             <th>Paymnent Date</th>{{-- THERE --}}
+            <th>Manual Receipt Number</th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +24,7 @@
                 <td>{{ $json_payment?->amount_paid }}</td>
                 <td>{{ $json_payment?->change_amt }}</td>
                 <td>{{ Carbon\Carbon::parse($json_payment->payment_date)->format('F j, Y, g:i a') }}</td>
+                <td>{{ $json_payment->manual_receipt_no }}</td>
             </tr>
         @endforeach
     </tbody>

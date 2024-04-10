@@ -25,24 +25,30 @@ class Payments extends Model
         'change_amt',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'manual_receipt_no',
+        'manual_receipt_date'
     ];
 
     public $timestamps = true;
 
-    public function applications():BelongsTo{
+    public function applications(): BelongsTo
+    {
         return $this->belongsTo(PermitApplication::class, 'application_id', 'id');
     }
 
-    public function facility():HasOne{
+    public function facility(): HasOne
+    {
         return $this->hasOne(Facility::class, 'id', 'facility_id');
     }
 
-    public function applicationType():HasOne{
+    public function applicationType(): HasOne
+    {
         return $this->hasOne(ApplicationType::class, 'id', 'application_type_id');
     }
 
-    public function paymentCancellation():HasOne{
+    public function paymentCancellation(): HasOne
+    {
         return $this->hasOne(PaymentCancellationRequests::class, 'payment_id', 'id');
     }
 }
