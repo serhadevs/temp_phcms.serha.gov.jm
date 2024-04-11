@@ -34,6 +34,7 @@ $facilities = [
                     <th>Logout Time</th>
                     <th>Ip Address</th>
                     <th>Status</th>
+                    <th>Options</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +56,7 @@ $facilities = [
                             <span class="badge text-bg-success">Online</span>
                             @endif
                         </td>
+                        <td><a href="/users/logout/{{ $user->id }}" class="btn btn-success btn-sm">Logout</a></td>
                     </tr>
                 @endforeach
             </tbody>

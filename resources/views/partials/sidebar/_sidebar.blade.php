@@ -59,6 +59,7 @@
             </a>
         </li>
 
+        @if (in_array(auth()->user()->role_id, [1, 9]))
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
@@ -77,6 +78,7 @@
                 </li>
             </ul>
         </li>
+        @endif
         {{-- <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#test-center" aria-expanded="false" aria-controls="test-center">
