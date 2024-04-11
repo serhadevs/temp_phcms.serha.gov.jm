@@ -261,11 +261,11 @@ class PaymentController extends Controller
 
     public function create()
     {
-        $application_types = DB::table('application_types')
-            ->join('prices', 'prices.application_type_id', '=', 'application_types.id')
-            ->select()
+        $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
+            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher", application_types.name))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
-        return view('payments.create', compact('application_types'));
+
+        return view('payments.create', compact('prices'));
     }
 
     public function createFromApplication(Request $request)
@@ -287,10 +287,8 @@ class PaymentController extends Controller
             $price_id = Prices::where('application_type_id', $app_type)->first()->id;
         }
 
-        dd($price_id);
-
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
-            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher", application_types.name))) as app_type_name, prices.application_type_id, prices.price')
+            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher", application_types.name))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
         return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id'));
@@ -353,7 +351,7 @@ class PaymentController extends Controller
         //Check if receipt number exists => New Schema for this
         $new_payment = $request->validate(
             [
-                'application_type_id' => 'required',
+                'price_id' => 'required',
                 'application_id' => 'required',
                 'amount_paid' => 'required',
                 'total_cost' => 'required',
@@ -363,12 +361,12 @@ class PaymentController extends Controller
             ]
         );
         $app_id = $new_payment['application_id'];
-        $app_type = $new_payment['application_type_id'];
+        $app_type = Prices::find($new_payment['price_id'])->application_type_id;
 
-        $id_exists = $app_type == 1 ? PermitApplication::find($app_id) : ($app_type == 2 ? HealthCertApplications::find($app_id) : ($app_type == 3 ? EstablishmentApplications::find($app_id) : ($app_type == 4 ? EstablishmentClinics::find($app_id) : ($app_type == 5 ? SwimmingPoolsApplications::find($app_id) : ($app_type == 6 ? TouristEstablishments::find($app_id) : ($app_type == 7 ? BarbershopHairSalons::find($app_id) : ($app_type == 8 ? PermitApplication::find($app_id) : PermitApplication::find($app_id))))))));
+        $id_exists = $app_type == 1 ? PermitApplication::find($app_id) : ($app_type == 2 ? HealthCertApplications::find($app_id) : ($app_type == 3 ? EstablishmentApplications::find($app_id) : ($app_type == 4 ? EstablishmentClinics::find($app_id) : ($app_type == 5 ? SwimmingPoolsApplications::find($app_id) : ($app_type == 6 ? TouristEstablishments::find($app_id) : ($app_type == 7 ? BarbershopHairSalons::find($app_id) : ''))))));
 
         $app_paid = Payments::where('application_type_id', $app_type)->where('application_id', $app_id)->get();
-        // dd($app_paid);
+
         if (!$id_exists) {
             return redirect()->back()->with(['error' => 'This application number does not exist in the system.']);
         }
@@ -377,8 +375,7 @@ class PaymentController extends Controller
             return redirect()->back()->with(['error' => 'This application has already been paid for.']);
         }
 
-        //Another Check for facility id.-
-
+        $new_payment['application_type_id'] = $app_type;
         $new_payment['facility_id'] = Auth()->user()->facility_id;
         $new_payment['cashier_user_id'] = Auth()->user()->id;
         $new_payment['receipt_no'] = rand(1000000, 9999999);
@@ -386,11 +383,6 @@ class PaymentController extends Controller
 
         if (!$register_new_payment) {
         }
-
-        // dd($register_new_payment->getOriginal()["id"]);
-
-        //Email Reciept 
-
         return redirect()->route('payment.receipt.print', ['id' => $register_new_payment->getOriginal()["id"]])->with(['success' => 'Payment has been process successfully. The receipt number is ' . $new_payment["receipt_no"] . '']);
     }
 

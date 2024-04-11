@@ -28,7 +28,7 @@
                                         @foreach ($prices as $price)
                                             <option value="{{ $price->id }}" data-price="{{ $price->price }}"
                                                 {{ old('price_id')
-                                                    ? (old('price_id') == $price->application_type_id
+                                                    ? (old('price_id') == $price->id
                                                         ? 'selected'
                                                         : '')
                                                     : (isset($price_id)
@@ -158,11 +158,11 @@
 
                                 if (document.getElementById('application_id').value != "") {
                                     var app_id = $('#application_id').val();
-                                    var app_t_id = $('#application_type_id').val();
+                                    var price_id = $('#prices').val();
                                     if (app_id != '') {
                                         $('#result').html('');
                                         $.ajax({
-                                            url: "/payments/search/" + app_id + "/" + app_t_id + "/",
+                                            url: "/payments/search/" + app_id + "/" + price_id + "/",
                                             method: "get",
                                             data: {
                                                 search: app_id
