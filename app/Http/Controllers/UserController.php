@@ -239,7 +239,7 @@ class UserController extends Controller
             // return view('users.create', compact('roles'));
         // } else {
             $roles = DB::table('roles')->get();
-            dd($roles);
+            //dd($roles);
             return view('users.create', compact('roles'));
         //}
     }
