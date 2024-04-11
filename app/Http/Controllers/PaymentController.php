@@ -12,6 +12,7 @@ use App\Models\HealthCertApplications;
 use App\Models\PaymentCancellationRequests;
 use App\Models\Payments;
 use App\Models\PermitApplication;
+use App\Models\Prices;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
@@ -108,40 +109,38 @@ class PaymentController extends Controller
         return view('payments.index', compact('payments_info'));
     }
 
-    public function detApplicationType($id)
-    {
-        $application_type = DB::table('application_types')
-            ->join('prices', 'prices.application_type_id', '=', 'application_types.id')
-            ->where('application_types.id', $id)
-            ->selectRaw('application_types.id, application_types.name, prices.price')
-            ->get();
-        //dd($application_type[0]);
-        return $application_type[0];
-    }
+    // public function detApplicationType($id)
+    // {
+    //     $application_type = DB::table('application_types')
+    //         ->join('prices', 'prices.application_type_id', '=', 'application_types.id')
+    //         ->where('application_types.id', $id)
+    //         ->selectRaw('application_types.id, application_types.name, prices.price')
+    //         ->get();
+    //     //dd($application_type[0]);
+    //     return $application_type[0];
+    // }
 
-    public function convertToArray($permit_applications)
-    {
-        $applications = [];
-        $i = 0;
-        foreach ($permit_applications as $application) {
-            $applications[$i]["app_number"] = $application->app_number;
-            $applications[$i]["name"] = $application->name;
-            $applications[$i]["permit_no"] = $application->permit_no;
-            $applications[$i]["trn"] = $application->trn;
-            $applications[$i]["price"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->price : ($application->permit_type == "student" ? $this->detApplicationType(8)->price : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->price : ""));
-            $applications[$i]["app_type"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->name : ($application->permit_type == "student" ? $this->detApplicationType(8)->name : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->name : ""));
-            $applications[$i]["app_type_id"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->id : ($application->permit_type == "student" ? $this->detApplicationType(8)->id : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->id : ""));
-            $i++;
-        }
+    // public function convertToArray($permit_applications)
+    // {
+    //     $applications = [];
+    //     $i = 0;
+    //     foreach ($permit_applications as $application) {
+    //         $applications[$i]["app_number"] = $application->app_number;
+    //         $applications[$i]["name"] = $application->name;
+    //         $applications[$i]["permit_no"] = $application->permit_no;
+    //         $applications[$i]["trn"] = $application->trn;
+    //         $applications[$i]["price"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->price : ($application->permit_type == "student" ? $this->detApplicationType(8)->price : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->price : ""));
+    //         $applications[$i]["app_type"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->name : ($application->permit_type == "student" ? $this->detApplicationType(8)->name : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->name : ""));
+    //         $applications[$i]["app_type_id"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->id : ($application->permit_type == "student" ? $this->detApplicationType(8)->id : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->id : ""));
+    //         $i++;
+    //     }
 
-        return json_encode($applications);
-    }
+    //     return json_encode($applications);
+    // }
 
 
     public function filterOutstandingPayments(Request $request)
     {
-        //Union with all the types of applications
-
         $applications = [];
         date_default_timezone_set('Etc/GMT+5');
         $today = date_format(new Datetime(), "Y-m-d");
@@ -152,20 +151,36 @@ class PaymentController extends Controller
 
         $filterTimeline = "";
         $id = $request->route('id');
+        $prices = Prices::all();
+        $application_type = ApplicationType::all();
 
         if ($id == "0") {
             $filterTimeline = $today;
-            $permit_applications = DB::table('permit_applications')
-                ->join('users', 'users.id', '=', 'permit_applications.user_id')
-                ->join('payments', 'payments.application_id', '=', 'permit_applications.id', 'left outer')
-                ->selectRaw('permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, users.firstname')
-                ->where('users.facility_id', auth()->user()->facility_id)
-                ->whereNull('payments.id')
-                ->where('permit_applications.created_at', '>', $today)
+            $permit_applications = PermitApplication::with('payment', 'user')
+                ->selectRaw('"1" as application_type_id, concat("' . $application_type->where('id', 1)->first()->name . '", " - ", permit_applications.permit_type) as app_type, permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, if(permit_applications.permit_type="regular", ' . $prices[0]->price . ', (if(permit_applications.permit_type="student", ' . $prices[6]->price . ',' . $prices[7]->price . '  ))) as price')
+                ->doesntHave('payment')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->where('created_at', '>', $today);
+
+            $est_applications = EstablishmentApplications::with('payment', 'user')
+                ->selectRaw('"3" as application_type_id, "' . $application_type->where('id', 3)->first()->name . '" as app_type, establishment_applications.id as app_number, establishment_name as name, establishment_applications.permit_no, establishment_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 3)->first()->price . '')
+                ->doesntHave('payment')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->where('created_at', '>', $today);
+
+            $clinic_application = EstablishmentClinics::with('payment', 'user')
+                ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
+                ->doesntHave('payment')
+                ->doesntHave('payment')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->where('created_at', '>', $today);
+
+            $applications = $permit_applications
+                ->union($est_applications)
+                ->union($clinic_application)
                 ->get();
 
-            $json_applications = $this->convertToArray($permit_applications);
-            return view('payments.applications', compact('json_applications'));
+            return view('payments.applications', compact('applications'));
         } else if ($id == "1") {
             $filterTimeline = $yesterday;
         } else if ($id == "7") {
@@ -176,21 +191,32 @@ class PaymentController extends Controller
             $filterTimeline = $last_ninety_days;
         }
 
-        $permit_applications = DB::table('permit_applications')
-            ->join('users', 'users.id', '=', 'permit_applications.user_id')
-            ->join('payments', 'payments.application_id', '=', 'permit_applications.id', 'left outer')
-            ->selectRaw('permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, users.firstname')
-            ->where('users.facility_id', auth()->user()->facility_id)
-            ->whereNull('payments.id')
-            ->whereBetween('permit_applications.created_at', [$filterTimeline, $today])
-            ->where('permit_applications.deleted_at', NULL)
+        $permit_applications = PermitApplication::with('payment', 'user')
+            ->selectRaw('"1" as application_type_id, concat("' . $application_type->where('id', 1)->first()->name . '", " - ", permit_applications.permit_type) as app_type, permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, if(permit_applications.permit_type="regular", ' . $prices[0]->price . ', (if(permit_applications.permit_type="student", ' . $prices[6]->price . ',' . $prices[7]->price . '  ))) as price')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$filterTimeline, $today]);
+
+        $est_applications = EstablishmentApplications::with('payment', 'user')
+            ->selectRaw('"3" as application_type_id, "' . $application_type->where('id', 3)->first()->name . '" as app_type, establishment_applications.id as app_number, establishment_name as name, establishment_applications.permit_no, establishment_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 3)->first()->price . '')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$filterTimeline, $today]);
+
+        $clinic_application = EstablishmentClinics::with('payment', 'user')
+            ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
+            ->doesntHave('payment')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$filterTimeline, $today]);
+
+        $applications = $permit_applications
+            ->union($est_applications)
+            ->union($clinic_application)
             ->get();
 
-        $json_applications = $this->convertToArray($permit_applications);
-        return view('payments.applications', compact('json_applications'));
+        return view('payments.applications', compact('applications'));
     }
-
-
 
     public function customFilterOutstandingPayments(Request $request)
     {
@@ -201,18 +227,36 @@ class PaymentController extends Controller
             'interval' => 'nullable|numeric|max:6'
         ]);
 
-        $permit_applications = DB::table('permit_applications')
-            ->join('users', 'users.id', '=', 'permit_applications.user_id')
-            ->join('payments', 'payments.application_id', '=', 'permit_applications.id', 'left outer')
-            ->selectRaw('permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, users.firstname')
-            ->where('users.facility_id', auth()->user()->facility_id)
-            ->whereNull('payments.id')
-            ->where('permit_applications.deleted_at', NULL)
-            ->whereBetween('permit_applications.created_at', [$timeline['starting_date'], $timeline['ending_date']])->get();
+        $prices = Prices::all();
+        $application_type = ApplicationType::all();
 
-        $json_applications = $this->convertToArray($permit_applications);
+        $timeline['ending_date'] = $timeline['ending_date'] . " 23:59:59";
 
-        return view('payments.applications', compact('json_applications'));
+        $permit_applications = PermitApplication::with('payment', 'user')
+            ->selectRaw('"1" as application_type_id, concat("' . $application_type->where('id', 1)->first()->name . '", " - ", permit_applications.permit_type) as app_type, permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, if(permit_applications.permit_type="regular", ' . $prices[0]->price . ', (if(permit_applications.permit_type="student", ' . $prices[6]->price . ',' . $prices[7]->price . '  ))) as price')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
+
+        $est_applications = EstablishmentApplications::with('payment', 'user')
+            ->selectRaw('"3" as application_type_id, "' . $application_type->where('id', 3)->first()->name . '" as app_type, establishment_applications.id as app_number, establishment_name as name, establishment_applications.permit_no, establishment_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 3)->first()->price . '')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
+
+        $clinic_application = EstablishmentClinics::with('payment', 'user')
+            ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
+            ->doesntHave('payment')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
+
+        $applications = $permit_applications
+            ->union($est_applications)
+            ->union($clinic_application)
+            ->get();
+
+        return view('payments.applications', compact('applications'));
     }
 
     public function create()
@@ -228,13 +272,15 @@ class PaymentController extends Controller
     {
         $app_id = $request->route('app_id');
         $app_type = $request->route('app_t_id');
-        // dd($app_id, $app_type);
-
-        $application_types = DB::table('application_types')
-            ->join('prices', 'prices.application_type_id', '=', 'application_types.id')
-            ->select()
+        $permit_type = "";
+        if ($app_type == "1") {
+            $permit_type = PermitApplication::find($app_id)->permit_type;
+        }
+        $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
+            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher", application_types.name))) as app_type_name, prices.application_type_id, prices.price')
             ->get();
-        return view('payments.create', compact('application_types', 'app_id', 'app_type'));
+
+        return view('payments.create', compact('prices', 'app_id', 'app_type', 'permit_type'));
     }
 
     public function printReceipt(Request $request)
@@ -300,7 +346,7 @@ class PaymentController extends Controller
                 'total_cost' => 'required',
                 'change_amt' => 'required|numeric|min:0',
                 'manual_receipt_no' => 'required_if:is_backlog,1',
-                'manual_receipt_date'=>'required_if:is_backlog,1'
+                'manual_receipt_date' => 'required_if:is_backlog,1'
             ]
         );
         $app_id = $new_payment['application_id'];
@@ -331,16 +377,18 @@ class PaymentController extends Controller
         // dd($register_new_payment->getOriginal()["id"]);
 
         //Email Reciept 
-        
+
         return redirect()->route('payment.receipt.print', ['id' => $register_new_payment->getOriginal()["id"]])->with(['success' => 'Payment has been process successfully. The receipt number is ' . $new_payment["receipt_no"] . '']);
     }
 
     public function searchApplication(Request $request)
     {
         $application_id = $request->route('app_id');
-        $application_type_id = $request->route('app_t_id');
+        $price_id = $request->route('price_id');
 
-        if ($application_type_id == 1 || $application_type_id == 8 || $application_type_id == 9) {
+        $application_type_id = Prices::find($price_id)->application_type_id;
+
+        if ($application_type_id == 1) {
             $output = "";
             $results = DB::table('permit_applications')
                 ->join('permit_categories', 'permit_categories.id', '=', 'permit_applications.permit_category_id')
@@ -461,7 +509,7 @@ class PaymentController extends Controller
                     $output .= "<p>First Name: $result->firstname</p>";
                     $output .= "<p>Last Name: $result->lastname</p>";
                     $output .= "<p>Pool Address: $result->swimming_pool_address</p>";
-                    $output .= $this->paymentStatus($application_id , $application_type_id);
+                    $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
                 echo $output;
             }

@@ -15,14 +15,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    @if (!empty($app_type))
-                        <input type="hidden" {{ $app_type_1 = $app_type ? $app_type : '' }} />
-                        <input type="hidden" {{ $app_id_1 = $app_id ? $app_id : '' }} />
-                    @endif
-                    @if (empty($app_type))
-                        {{ $app_type_1 = '' }}
-                        {{ $app_id_1 = '' }}
-                    @endif
                     <h2>Create New Payment</h2>
                     <div class="row">
                         <div class="col">
@@ -31,26 +23,31 @@
                                 @method('POST')
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
-                                    <select name="application_type_id" class="form-control" id="application_type_id"
-                                        onchange="detPrice()">
+                                    <select name="price_id" class="form-control" id="prices" onchange="detPrice()">
                                         <option readonly disabled selected>Please select application type</option>
-                                        @foreach ($application_types as $application_type)
-                                            <option value="{{ $application_type->application_type_id }}"
-                                                data-price="{{ $application_type->price }}"
-                                                {{ old('application_type_id') == $application_type->application_type_id ? 'selected' : '' }}
-                                                {{ $app_type_1 ? ($app_type_1 == $application_type->application_type_id ? 'selected' : '') : '' }}>
-                                                {{ $application_type->name }}
+                                        @foreach ($prices as $price)
+                                            <option value="{{ $price->id }}" data-price="{{ $price->price }}"
+                                                {{ old('price_id')
+                                                    ? (old('price_id') == $price->application_type_id
+                                                        ? 'selected'
+                                                        : '')
+                                                    : (isset($price_id)
+                                                        ? ($price_id == $price->id
+                                                            ? 'selected'
+                                                            : '')
+                                                        : '') }}>
+                                                {{ $price->app_type_name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('application_type_id')
+                                    @error('price_id')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Number</label>
-                                    <input type="text" class="form-control" name="application_id" {{-- value = "{{ old('application_id') == '' ? '' : old('application_id') }}" --}}
-                                        value="{{ $app_id_1 != '' ? $app_id_1 : (old('application_id') == '' ? '' : old('application_id')) }}"
+                                    <input type="text" class="form-control" name="application_id" {{-- value="{{ $app_id_1 != '' ? $app_id_1 : (old('application_id') == '' ? '' : old('application_id')) }}" --}}
+                                        value="{{ old('application_id') ? old('application_id') : (isset($app_id) ? $app_id : '') }}"
                                         id="application_id" />
                                     @error('application_id')
                                         <p class="text-danger">{{ $message }}</p>
@@ -143,14 +140,14 @@
                         </script>
                         <script>
                             function detPrice() {
-                                var element = document.getElementById('application_type_id');
+                                var element = document.getElementById('prices');
                                 var tot_cost = element.options[element.selectedIndex].getAttribute("data-price");
-                                document.getElementById('total_cost').setAttribute('value', tot_cost)
+                                document.getElementById('total_cost').value = tot_cost;
                             }
                         </script>
                         <script>
                             window.onload = () => {
-                                if (document.getElementById('application_type_id').value != "") {
+                                if (document.getElementById('prices').value != "") {
                                     detPrice();
                                 }
 
@@ -188,11 +185,11 @@
                                 $('#application_id').keyup(function() {
                                     var txt = $(this).val();
                                     var app_id = $('#application_id').val();
-                                    var app_t_id = $('#application_type_id').val();
+                                    var price_id = $('#prices').val();
                                     if (txt != '') {
                                         $('#result').html('');
                                         $.ajax({
-                                            url: "/payments/search/" + app_id + "/" + app_t_id + "/",
+                                            url: "/payments/search/" + app_id + "/" + price_id + "/",
                                             method: "get",
                                             data: {
                                                 search: txt
