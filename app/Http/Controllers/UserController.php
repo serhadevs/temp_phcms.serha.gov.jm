@@ -266,9 +266,7 @@ class UserController extends Controller
 
         $incomingFields['status'] = 1;
         $incomingFields['password'] = bcrypt('password123');
-
-
-
+        $incomingFields['last_seen'] = date('Y-m-d H:i:s');
         $user = User::create($incomingFields);
 
         //dd($user);
