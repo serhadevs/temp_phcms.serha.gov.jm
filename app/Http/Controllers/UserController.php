@@ -233,13 +233,15 @@ class UserController extends Controller
     public function createuser()
     {
         //Role 2 which is an admin will not be able to add a superadmin
-        if (in_array(auth()->user()->role_id, [2])) {
-            $roles = Role::where('name', '!=', 'Super Admin')->get();
-            return view('users.create', compact('roles'));
-        } else {
+      
+            // $roles = Role::where('name', '!=', 'Super Admin')->get();
+            // dd($roles);
+            // return view('users.create', compact('roles'));
+        // } else {
             $roles = Role::all();
+            //dd($roles);
             return view('users.create', compact('roles'));
-        }
+        //}
     }
 
     public function addUser(Request $request)
