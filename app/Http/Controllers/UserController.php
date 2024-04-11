@@ -275,7 +275,7 @@ class UserController extends Controller
             return redirect()->route('user.index')->with('error', 'Unable to add the user');
         }
 
-        return redirect()->route('users.index')->with('success', 'User was added');
+        return redirect()->route('users')->with('success', 'User was added');
     }
 
     public function currentLoggedInUsers()
