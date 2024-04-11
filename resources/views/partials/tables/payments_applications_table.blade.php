@@ -2,9 +2,9 @@
     <thead>
         {{-- Only shows your facility --}}
         <tr>
-            <th>App #</th>{{-- THERE --}}
+            <th class="text-nowrap">App #</th>{{-- THERE --}}
             <th>Name</th>{{-- THERE --}}
-            <th>Permit Number</th>{{-- THERE --}}
+            <th class="text-nowrap">Permit Number</th>{{-- THERE --}}
             <th>App Type</th>
             <th>TRN</th>
             <th>Price</th>{{-- THERE --}}
@@ -12,23 +12,23 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (json_decode($json_applications) as $permit_application)
+        @foreach ($applications as $application)
             <tr>
-                <td>{{ $permit_application?->app_number }}</td>
-                <td>{{ $permit_application?->name }}</td>
-                <td>{{ $permit_application?->permit_no }}</td>
+                <td>{{ $application?->app_number }}</td>
+                <td>{{ strtoupper($application?->name) }}</td>
+                <td>{{ $application?->permit_no }}</td>
                 <td>
-                    {{ $permit_application?->app_type }}
+                    {{ strtoupper($application?->app_type) }}
                 </td>
-                <td>{{ $permit_application?->trn }}</td>
+                <td>{{ $application?->trn }}</td>
                 <td>$
-                    {{ $permit_application?->price }}
+                    {{ $application?->price }}
                 </td>
                 <td>
                     {{-- <button href="" class="btn btn-primary btn-sm" onclick="" data-bs-toggle="modal"
                         data-bs-target="#view-payment-{{ $permit_application->app_number }}">View</button> --}}
-                    <a href="/payments/create/{{ $permit_application->app_number }}/{{ $permit_application->app_type_id }}"
-                        class="btn btn-sm btn-success">Register Payment</a>
+                    <a href="/payments/create/{{ $application->app_number }}/{{ $application->application_type_id }}"
+                        class="btn btn-sm btn-success text-nowrap">Register Payment</a>
                 </td>
             </tr>
         @endforeach

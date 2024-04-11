@@ -42,6 +42,11 @@ class EstablishmentApplications extends Model
 
     public $timestamps = true;
 
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payments::class, 'application_id', 'id')->where('application_type_id', 3);
+    }
+
     public function establishmentCategory(): HasOne
     {
         return $this->hasOne(EstablishmentCategories::class, 'id', 'establishment_category_id');
