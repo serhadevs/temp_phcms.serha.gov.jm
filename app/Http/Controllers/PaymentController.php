@@ -273,14 +273,27 @@ class PaymentController extends Controller
         $app_id = $request->route('app_id');
         $app_type = $request->route('app_t_id');
         $permit_type = "";
+
         if ($app_type == "1") {
             $permit_type = PermitApplication::find($app_id)->permit_type;
+            if ($permit_type == "regular") {
+                $price_id = 1;
+            } else if ($permit_type == "student") {
+                $price_id = 7;
+            } else if ($permit_type == "teacher") {
+                $price_id = 8;
+            }
+        } else {
+            $price_id = Prices::where('application_type_id', $app_type)->first()->id;
         }
+
+        dd($price_id);
+
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
             ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher", application_types.name))) as app_type_name, prices.application_type_id, prices.price')
             ->get();
 
-        return view('payments.create', compact('prices', 'app_id', 'app_type', 'permit_type'));
+        return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id'));
     }
 
     public function printReceipt(Request $request)
