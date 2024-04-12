@@ -233,13 +233,15 @@ class UserController extends Controller
     public function createuser()
     {
         //Role 2 which is an admin will not be able to add a superadmin
-        if (in_array(auth()->user()->role_id, [2])) {
-            $roles = Role::where('name', '!=', 'Super Admin')->get();
+      
+            // $roles = Role::where('name', '!=', 'Super Admin')->get();
+            // dd($roles);
+            // return view('users.create', compact('roles'));
+        // } else {
+            $roles = DB::table('roles')->get();
+            //dd($roles);
             return view('users.create', compact('roles'));
-        } else {
-            $roles = Role::all();
-            return view('users.create', compact('roles'));
-        }
+        //}
     }
 
     public function addUser(Request $request)
@@ -264,9 +266,7 @@ class UserController extends Controller
 
         $incomingFields['status'] = 1;
         $incomingFields['password'] = bcrypt('password123');
-
-
-
+        $incomingFields['last_seen'] = date('Y-m-d H:i:s');
         $user = User::create($incomingFields);
 
         //dd($user);
@@ -275,7 +275,7 @@ class UserController extends Controller
             return redirect()->route('user.index')->with('error', 'Unable to add the user');
         }
 
-        return redirect()->route('users.index')->with('success', 'User was added');
+        return redirect()->route('users')->with('success', 'User was added');
     }
 
     public function currentLoggedInUsers()
