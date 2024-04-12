@@ -38,7 +38,7 @@ class DownloadsController extends Controller
                 // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
                 ->where('created_at', '>', $today)
                 ->get();
-                dd($downloads);
+                //dd($downloads);
 
             return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
         } else if ($id == "1") {
