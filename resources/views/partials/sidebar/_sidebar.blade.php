@@ -9,6 +9,7 @@
     </div>
 
     <ul class="sidebar-nav">
+        @if(in_array(auth()->user()->role_id[9]))
         <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#permit" aria-expanded="false" aria-controls="permit">
@@ -37,6 +38,7 @@
                 <span>Appointments</span>
             </a>
         </li>
+        @endif
         @if (in_array(auth()->user()->role_id, [1, 5]))
             <li class="sidebar-item">
                 <a href="/sign-off" class="sidebar-link">
