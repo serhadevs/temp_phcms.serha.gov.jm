@@ -82,6 +82,10 @@ body {
     animation: fadeIn .25s ease;
 }
 
+.container{
+    max-width: 100% !important;
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
