@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Advance Search')
+@section('title', 'Advanced Search')
 
 @php
 
@@ -10,10 +10,10 @@
 
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container">
+        <div class="container-fluid">
 
 
-            <h2>Advance Search</h2>
+            <h2>Advanced Search</h2>
 
             @if ($message = Session::get('success'))
                 <div class="container">

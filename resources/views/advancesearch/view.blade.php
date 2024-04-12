@@ -7,7 +7,7 @@
 
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container">
+        <div class="container-fluid">
             <h2>Search Food Handlers Permits</h2>
             <div class="card shadow my-2">
                 <div class="card-header">Results</div>
