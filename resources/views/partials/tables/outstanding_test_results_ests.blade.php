@@ -44,13 +44,14 @@
                 <td>{{ $application->trn }}</td>
                 @if ($app_type_id == '3')
                     <td>
-                        @foreach($application->operators as $operator)
-                            {{ $operator->name_of_operator." " }}
+                        @foreach ($application->operators as $operator)
+                            {{ $operator->name_of_operator . ' ' }}
                         @endforeach
                     </td>
                 @endif
                 <td>
-                    <a href="" class="btn btn-primary btn-sm">Select</a>
+                    <a href="{{ $app_type_id == '3' ? '/test-center/test-results/food-establishments/create/' . $application->id : '' }}"
+                        class="btn btn-primary btn-sm">Select</a>
                 </td>
             </tr>
         @endforeach

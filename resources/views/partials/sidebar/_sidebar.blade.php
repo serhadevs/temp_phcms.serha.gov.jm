@@ -60,24 +60,24 @@
         </li>
 
         @if (in_array(auth()->user()->role_id, [1, 9]))
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                <i class="bi bi-coin"></i>
-                <span>Payment</span>
-            </a>
-            <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item">
-                    <a href="/payments/index/filter/0" class="sidebar-link">Processed Payments</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/payments/applications/filter/0" class="sidebar-link">Outstanding Applications</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/payments/create" class="sidebar-link">Create New</a>
-                </li>
-            </ul>
-        </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
+                    <i class="bi bi-coin"></i>
+                    <span>Payment</span>
+                </a>
+                <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="/payments/index/filter/0" class="sidebar-link">Processed Payments</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/payments/applications/filter/0" class="sidebar-link">Outstanding Applications</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/payments/create" class="sidebar-link">Create New</a>
+                    </li>
+                </ul>
+            </li>
         @endif
         {{-- <li class="sidebar-item">
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -101,17 +101,18 @@
                 <li class="sidebar-item">
                     <a href="/test-center/test-results/permit/filter/0" class="sidebar-link">Food Handlers Results</a>
                 </li>
-                {{-- <li class="sidebar-item">
+                <li class="sidebar-item">
                     <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
                         <span>Food Establishments</span>
                     </a>
                     <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
                         <li class="sidebar-item mx-3">
-                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
+                            <a href="/test-center/test-results/food-establishments/outstanding"
+                                class="sidebar-link">Outstanding</a>
                         </li>
                         <li class="sidebar-item mx-3">
-                            <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
+                            <a href="/test-center/test-results/food-establishments" class="sidebar-link">Processed</a>
                         </li>
                     </ul>
                 </li>
@@ -156,7 +157,7 @@
                             <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
                         </li>
                     </ul>
-                </li> --}}
+                </li>
             </ul>
         </li>
         <li class="sidebar-item">

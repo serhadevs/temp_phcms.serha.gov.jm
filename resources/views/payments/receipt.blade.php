@@ -77,6 +77,7 @@
                     <button class="btn btn-success mt-4" onClick="printReceipt({{ json_encode($receipt_info) }})">
                         Print Receipt
                     </button>
+                    <a href="/payments/applications/filter/0" class="btn btn-danger mt-4">Back to Dashboard</a>
                 </div>
             </div>
         </div>
