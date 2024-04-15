@@ -16,7 +16,7 @@
     <tbody>
         @foreach (json_decode($outstanding) as $application)
             <tr>
-                <td><a href="/test-center/test-results/permits/{{ $application->app_number }}/create" class="btn btn-primary btn-sm">Select</a></td>
+                <td><a href="/test-results/permits/{{ $application->app_number }}/create" class="btn btn-primary btn-sm">Select</a></td>
                 <td>{{ $application->app_number }}</td>
                 <td>{{ $application->category }}</td>
                 <td>{{ $application->firstname }}</td>

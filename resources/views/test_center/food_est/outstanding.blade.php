@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', "Outstanding Food Establishment Results")
+@section('title', 'Outstanding Food Establishment Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -32,29 +32,33 @@
                                 <div class="dropdown">
                                     <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                        Filter Results
+                                        Filter Applications
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/0">Today</a>
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/food-establishments/outstanding/filter/0">Today</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/1">Yesterday</a>
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/food-establishments/outstanding/filter/1">Yesterday</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/7">Last
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/food-establishments/outstanding/filter/7">Last
                                                 Week</a></li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/30">Last
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/food-establishments/outstanding/filter/30">Last
                                                 Month</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/90">Last 3
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/food-establishments/outstanding/filter/90">Last 3
                                                 month</a>
                                         </li>
-                                        <li><button class="dropdown-item" href="#"
-                                                onclick="showSearchBar()">Custom</button></li>
+                                        <li><button class="dropdown-item" onclick="showSearchBar()">Custom</button></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <form action="{{ route('downloads.tourist_est.custom') }}" method="POST">
+                    <form action="{{ route('test-results.food-est.outstanding.custom.filter') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="row text-center justify-content-md-center" id="search-row" style="display:none">

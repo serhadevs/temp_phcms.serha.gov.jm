@@ -33,16 +33,16 @@
                                             Filter Applications
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="/test-center/test-results/permit/filter/0">Today</a>
+                                            <li><a class="dropdown-item" href="/test-results/permit/filter/0">Today</a>
                                             </li>
                                             <li><a class="dropdown-item"
-                                                    href="/test-center/test-results/permit/filter/1">Yesterday</a></li>
-                                            <li><a class="dropdown-item" href="/test-center/test-results/permit/filter/7">Last
+                                                    href="/test-results/permit/filter/1">Yesterday</a></li>
+                                            <li><a class="dropdown-item" href="/test-results/permit/filter/7">Last
                                                     Week</a></li>
-                                            <li><a class="dropdown-item" href="/test-center/test-results/permit/filter/30">Last
+                                            <li><a class="dropdown-item" href="/test-results/permit/filter/30">Last
                                                     Month</a>
                                             </li>
-                                            <li><a class="dropdown-item" href="/test-center/test-results/permit/filter/90">Last 3
+                                            <li><a class="dropdown-item" href="/test-results/permit/filter/90">Last 3
                                                     month</a>
                                             </li>
                                             <li><button class="dropdown-item" href="#"

@@ -35,8 +35,8 @@ class PermitApplicationController extends Controller
         $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
         $filterTimeline = "";
-        $start_date = "2023-10-12";
-        $end_date = new DateTime();
+        // $start_date = "2023-10-12";
+        // $end_date = new DateTime();
 
         $i = 0;
         if ($id == "0") {

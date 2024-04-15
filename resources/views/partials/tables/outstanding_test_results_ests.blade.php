@@ -50,7 +50,7 @@
                     </td>
                 @endif
                 <td>
-                    <a href="{{ $app_type_id == '3' ? '/test-center/test-results/food-establishments/create/' . $application->id : '' }}"
+                    <a href="{{ $app_type_id == '3' ? '/test-results/food-establishments/create/' . $application->id : '' }}"
                         class="btn btn-primary btn-sm">Select</a>
                 </td>
             </tr>

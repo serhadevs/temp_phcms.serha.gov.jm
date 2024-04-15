@@ -101,15 +101,17 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/sign-off/approve', [SignOffController::class, 'approve'])->name('sign-off.approve');
 
      //Test Results
-     Route::get('/test-center/test-results/permits/{id}/create', [PermitTestResultsController::class, 'permitResults'])->name('test-results.permit');
-     Route::post('/test-center/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
-     Route::get('/test-center/test-results/permit/filter/{id}', [PermitTestResultsController::class, 'index'])->name('test-results.permit.index');
-     Route::post('/test-center/test-results/permit/filter', [PermitTestResultsController::class, 'customFilterProcessedResults'])->name('test-results.permit.filter.custom');
+     Route::get('/test-results/permits/{id}/create', [PermitTestResultsController::class, 'permitResults'])->name('test-results.permit');
+     Route::post('/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
+     Route::get('/test-results/permit/filter/{id}', [PermitTestResultsController::class, 'index'])->name('test-results.permit.index');
+     Route::post('/test-results/permit/filter', [PermitTestResultsController::class, 'customFilterProcessedResults'])->name('test-results.permit.filter.custom');
 
-     Route::get('/test-center/test-results/food-establishments', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');
-     Route::get('/test-center/test-results/food-establishments/create/{id}', [FoodEstTestResultController::class, 'create'])->name('test-results.food-est.create');
-     Route::get('/test-center/test-results/food-establishments/outstanding', [FoodEstTestResultController::class, 'outstanding'])->name('test-results.food-est.outstanding');
-     Route::post('/test-center/text-results/food-establishments', [FoodEstTestResultController::class, 'store'])->name('test-results.food-est.store');
+     Route::get('/test-results/food-establishments/filter/{id}', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');
+     Route::post('/test-results/food-establishments/filter', [FoodEstTestResultController::class, 'customIndex'])->name('test-results.food-est.custom.filter');
+     Route::get('/test-results/food-establishments/create/{id}', [FoodEstTestResultController::class, 'create'])->name('test-results.food-est.create');
+     Route::get('/test-results/food-establishments/outstanding/filter/{id}', [FoodEstTestResultController::class, 'outstanding'])->name('test-results.food-est.outstanding');
+     Route::post('/test-results/food-establishments/outstanding', [FoodEstTestResultController::class, 'outstandingCustom'])->name('test-results.food-est.outstanding.custom.filter');
+     Route::post('/test-results/food-establishments', [FoodEstTestResultController::class, 'store'])->name('test-results.food-est.store');
 
      //Report
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');
