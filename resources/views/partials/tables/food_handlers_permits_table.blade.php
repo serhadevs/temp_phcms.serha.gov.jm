@@ -16,29 +16,31 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (json_decode($json_applications) as $permit_application)
+        @foreach ($permit_applications as $permit_application)
             <tr>
                 <td>{{ $permit_application->id }}</td>
-                <td>{{ $permit_application->permit_no }}</td>
-                <td>{{ $permit_application->firstname }}</td>
-                <td>{{ $permit_application->lastname }}</td>
+                <td>{{ strtoupper($permit_application->permit_no) }}</td>
+                <td>{{ strtoupper($permit_application->firstname) }}</td>
+                <td>{{ strtoupper($permit_application->lastname) }}</td>
                 <td>{{ strtoupper($permit_application->permit_type) }}</td>
-                <td>{{ $permit_application->category }}</td>
+                <td>{{ strtoupper($permit_application->permitCategory?->name) }}</td>
                 <td><span
-                        class="badge text-bg-{{ $permit_application->payment_status == '' ? 'danger' : 'success' }}">{{ $permit_application->payment_status == '' ? 'Not Paid' : 'Paid' }}</span>
+                        class="badge text-bg-{{ empty($permit_application->payment) ? 'danger' : 'success' }}">{{ empty($permit_application->payment) ? 'Not Paid' : 'Paid' }}</span>
                 </td>
                 <td><i
-                        class="bi bi-{{ $permit_application->sign_off_status == 1 ? 'check2-circle' : 'x-circle-fill' }}"></i>
+                        class="bi bi-{{ $permit_application->sign_off_status == '1' ? 'check2-circle' : 'x-circle-fill' }}"></i>
                 </td>
                 <td>{{ $permit_application->trn }}</td>
                 {{-- <td><i class="bi bi-{{ $permit_application->granted==1? 'check2-circle' : 'x-circle-fill' }}"></i></td> --}}
-                <td>
-                    <a class="btn btn-success btn-sm"
-                        href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
+                <td class="text-nowrap">
                     <a href="/permit/application/edit/{{ $permit_application->id }}"
                         class="btn btn-warning btn-sm">Edit</a>
                     <a href="" class="btn btn-danger btn-sm">Remove</a>
                     <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
+                    @if ($permit_application->sign_off_status == '1')
+                        <a class="btn btn-success btn-sm"
+                            href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
+                    @endif
                 </td>
             </tr>
         @endforeach
@@ -70,10 +72,6 @@
 
 <script>
     new DataTable('#food_handlers_permit', {
-        "columnDefs": [{
-            "width": "20%",
-            "targets": 9
-        }],
         initComplete: function() {
             this.api()
                 .columns()
