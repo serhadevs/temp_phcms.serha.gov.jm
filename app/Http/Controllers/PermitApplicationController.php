@@ -176,6 +176,64 @@ class PermitApplicationController extends Controller
         return view('food_handlers_permit.view', compact('json_application', 'json_appointments', 'appointment_available'));
     }
 
+    public function editView(Request $request)
+    {
+        $application_id = $request->route('id');
+        $applicant_info = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics')->find($application_id);
+        $permit_application["firstname"] = $applicant_info->firstname;
+        $permit_application["middlename"] =  $applicant_info->middlename;
+        $permit_application["permit_no"] = $applicant_info->permit_no;
+        $permit_application["lastname"] =  $applicant_info->lastname;
+        $permit_application["date_of_birth"] =  $applicant_info->date_of_birth;
+        $permit_application["gender"] =  $applicant_info->gender;
+        $permit_application["address"] =  $applicant_info->address;
+        $permit_application["cell_phone"] =  $applicant_info->cell_phone;
+        $permit_application["home_phone"] =  $applicant_info->home_phone;
+        $permit_application["work_phone"] =  $applicant_info->work_phone;
+        $permit_application["trn"] =  $applicant_info->trn;
+        $permit_application["email"] =  $applicant_info->email;
+        $permit_application["id"] =  $applicant_info->id;
+        $permit_application["permit_type"] =  $applicant_info->permit_type;
+        $permit_application["permit_category"] =  $applicant_info->permitCategory?->name;
+        $permit_application["expiration_date"] =  $applicant_info->no_of_years;
+        $permit_application["granted"] =  $applicant_info->granted;
+        $permit_application["sign_off_status"] =  $applicant_info->sign_off_status;
+        $permit_application["reason"] =  $applicant_info->reason;
+        $permit_application["applied_before"] =  $applicant_info->applied_before;
+        $permit_application["payment_status"] =  $applicant_info->payment?->id;
+        $permit_application["establishment"] =  $applicant_info->establishmentClinics?->name;
+        $permit_application["added_by"] =  $applicant_info->user?->firstname . ' ' . $applicant_info->user?->lastname;
+        $permit_application["created_at"] = $applicant_info->created_at;
+        $permit_application["photo_upload"] = $applicant_info->photo_upload;
+
+        $appointments = DB::table('appointments')
+            ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
+            ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
+            ->selectRaw('appointments.id as appointment_id, appointments.appointment_date, exam_sites.name as appointment_location, exam_dates.exam_start_time as appointment_time, exam_dates.id as exam_date_id')
+            ->where('appointments.facility_id', auth()->user()->facility_id)
+            ->where('appointments.permit_application_id', $application_id)
+            ->where('exam_dates.application_type_id', 1)
+            ->orderBy('appointments.created_at', 'desc')
+            ->get();
+
+        $json_appointments = json_encode($appointments);
+
+        $json_application = json_encode($permit_application);
+
+        $appointment_available = [];
+
+        foreach (ExamDates::with('examSites', 'permitCategory')
+            ->where('facility_id', auth()->user()->facility_id)
+            ->where('application_type_id', 1)
+            ->get() as $appointment) {
+            $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
+        }
+
+        $edit_mode = 1;
+
+        return view('food_handlers_permit.view', compact('json_application', 'json_appointments', 'appointment_available', 'edit_mode'));
+    }
+
     public function editApplication(Request $request)
     {
         $edits = $request->validate([

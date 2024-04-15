@@ -161,11 +161,13 @@
                                                 @enderror
                                             </div>
                                         </div>
+                                        <input type="text" class="form-control"
+                                            value="{{ isset($edit_mode) ? $edit_mode : '' }}" id="edit_mode" hidden>
                                         <input type="text" class="form-control" name="id"
                                             value="{{ $permit_application->id }}" hidden>
                                         <input type="text" class="form-control" name="permit_no"
                                             value="{{ $permit_application->permit_no }}" hidden>
-                                        
+
                                         <button class="btn btn-primary mt-3" style="display:none" id="updBtn"
                                             type="submit">
                                             <i class="bi bi-pencil-square"></i>
@@ -308,7 +310,9 @@
                     $("#btnEdit").click(() => {
                         allowEdit();
                     });
-
+                    if (document.getElementById('edit_mode').value == "1") {
+                        allowEdit();
+                    }
                 }
             )
 

@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/permit/view/{id}', [PermitApplicationController::class, 'viewApplication'])->name('permit.application.view');
      Route::post('/permit/application/edit', [PermitApplicationController::class, 'editApplication'])->name('permit.application.edit');
      Route::post('/permit/application/edit/appointment', [PermitApplicationController::class, 'editPermitAppointment'])->name('permit.application.edit.appointment');
+     Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
 
      //Advance Search 
 
