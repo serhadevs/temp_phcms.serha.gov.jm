@@ -100,7 +100,7 @@ class PermitApplicationController extends Controller
 
         $permit_array = [];
 
-        $all_permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']])->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)->get();
+        $all_permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)->get();
 
         foreach ($all_permit_applications as $permit_app) {
             $permit_array[$i]["id"] = $permit_app->id;

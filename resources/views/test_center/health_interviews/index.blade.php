@@ -7,6 +7,18 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <p class="text-success"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-between mb-3">
@@ -17,12 +29,6 @@
                         </div>
                         <div class="col-auto no-wrap">
                             <div class="row">
-                                {{-- <div class="col">
-                                    <button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">
-                                        Create New Interview
-                                    </button>
-                                </div> --}}
                                 <div class="col">
                                     <div class="dropdown">
                                         <button class="btn btn-primary dropdown-toggle" type="button"

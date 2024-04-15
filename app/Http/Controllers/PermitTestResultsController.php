@@ -85,7 +85,7 @@ class PermitTestResultsController extends Controller
         $test_results =  PermitTestResults::with('permit_application.permitCategory')
             ->where('facility_id', Auth()->user()->facility_id)
             ->where('application_type_id', '=', '1')
-            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']])
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
             ->whereRelation('permit_application', 'deleted_at', '=', NULL)
             ->get();
         $outstanding = $this->outstandingResults();

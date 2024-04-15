@@ -215,6 +215,8 @@ class HealthInterviewController extends Controller
             'test_date' => 'required_if:test_results_exist,0',
             'overall_score' => 'required_if:test_results_exist,0',
             'staff_contact' => 'required_if:test_results_exist,0',
+            'destination.0' => 'required_if:travel_abroad,1',
+            'travel_date.0' => 'required_if:travel_abroad,1',
             'comments' => 'nullable',
             'literate' => 'required',
             'typhoid' => 'required',
@@ -278,7 +280,7 @@ class HealthInterviewController extends Controller
 
             //Requires testing
             if ($health_interview["test_results_exist"] == "0") {
-                if (TestResult::create(
+                if (!TestResult::create(
                     [
                         'application_id' => $request->application_id,
                         'application_type_id' => '1',
@@ -291,13 +293,12 @@ class HealthInterviewController extends Controller
                         'facility_id' => auth()->user()->facility_id
                     ]
                 )) {
-                    return redirect()->route('dashboard.dashboard')->with('success', 'Health Interview and Test Results have been entered successfully for App Number '.$request->application_id);
+                    return redirect()->route('health-interview.index', ['id' => 0])->with('error', 'Error processing health interview');
                 }
             }
-
-            return redirect()->route('dashboard.dashboard')->with('success', 'Your Health Interview has been processed successfully');
+            return redirect()->route('health-interview.index', ['id' => 0])->with('success', 'Health Interview has been processed successfully.');
         } else {
-            return view('dashboard.dashboard')->with('error', 'Error processing health interview');
+            return redirect()->route('health-interview.index', ['id' => 0])->with('error', 'Error processing health interview');
         }
     }
 

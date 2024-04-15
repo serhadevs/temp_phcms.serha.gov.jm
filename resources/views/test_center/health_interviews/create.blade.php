@@ -182,16 +182,16 @@
                                     <label for="" class="form-label">If yes, where?</label>
                                     <input type="text" class="form-control" name="destination[]"
                                         value="{{ old('destination') ? old('destination')[0] : '' }}">
-                                    @error('destination')
-                                        <p class="text-danger">{{ $message }}</p>
+                                    @error('destination.0')
+                                        <p class="text-danger">This field is required is person has travelled.</p>
                                     @enderror
                                 </div>
                                 <div class="col">
                                     <label for="" class="form-label">If yes, when?</label>
                                     <input type="text" class="form-control" name="travel_date[]"
                                         value="{{ old('travel_date') ? old('travel_date')[0] : '' }}">
-                                    @error('travel_date')
-                                        <p class="text-danger">{{ $message }}</p>
+                                    @error('travel_date.0')
+                                        <p class="text-danger">This field is required is person has travelled.</p>
                                     @enderror
                                 </div>
                             </div>
@@ -332,7 +332,7 @@
                                     value="{{ old('overall_score') ? old('overall_score') : '' }}">
                                 @error('overall_score')
                                     <p class="text-danger">Overall score field is required. Must be in between 0 and 100.</p>
-                                @enderror    
+                                @enderror
                             </div>
                             <div class="row">
                                 <div class="col">
