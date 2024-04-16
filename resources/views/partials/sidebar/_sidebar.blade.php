@@ -20,11 +20,11 @@
                     <li class="sidebar-item">
                         <a href="/permit/filter/0" class="sidebar-link">Applications</a>
                     </li>
-                    @if (in_array(auth()->user()->role_id, [1]))
+                   
                         <li class="sidebar-item">
                             <a href="/permit/application" class="sidebar-link">Create New</a>
                         </li>
-                    @endif
+                  
                 </ul>
             </li>
             <li class="sidebar-item">
