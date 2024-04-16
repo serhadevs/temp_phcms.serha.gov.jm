@@ -40,7 +40,7 @@
                     <span>Appointments</span>
                 </a>
             </li>
-        @endif
+        
 
         @if (in_array(auth()->user()->role_id, [1, 5]))
             <li class="sidebar-item">
