@@ -9,7 +9,7 @@
     </div>
 
     <ul class="sidebar-nav">
-        @if (in_array(auth()->user()->role_id, [1, 3, 7]))
+       
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#permit" aria-expanded="false" aria-controls="permit">
@@ -56,25 +56,25 @@
                 <span>Advance Search</span>
             </a>
         </li>
-        @if (in_array(auth()->user()->role_id, [1, 9]))
+       
             <li class="sidebar-item">
                 <a href="/payments/cancellations" class="sidebar-link">
                     <i class="bi bi-slash-circle"></i>
                     <span>Payment Cancel Requests</span>
                 </a>
             </li>
-        @endif
-        @if (in_array(auth()->user()->role_id, [1, 3, 7]))
+       
+    
             <li class="sidebar-item">
                 <a href="/food-establishments/filter/0" class="sidebar-link">
                     <i class="bi bi-hospital"></i>
                     <span>Food Establishments</span>
                 </a>
             </li>
-        @endif
+    
 
 
-        @if (in_array(auth()->user()->role_id, [1, 4, 9]))
+        
             <li class="sidebar-item">
                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
@@ -88,15 +88,15 @@
                     <li class="sidebar-item">
                         <a href="/payments/applications/filter/0" class="sidebar-link">Outstanding Applications</a>
                     </li>
-                    @if (in_array(auth()->user()->role_id, [1]))
+                   
                         <li class="sidebar-item">
                             <a href="/payments/create" class="sidebar-link">Create New</a>
                         </li>
-                    @endif
+                  
                 </ul>
             </li>
-        @endif
-        @if (in_array(auth()->user()->role_id, [1, 3]))
+       
+      
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
@@ -189,7 +189,7 @@
                     </li>
                 </ul>
             </li>
-        @endif
+      
         @if (in_array(auth()->user()->role_id, [1, 6]))
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
