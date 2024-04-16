@@ -43,7 +43,7 @@
                                                 <a href="#" class="list-group-item list-group-item-action">
                                                     <p class="mb-1">{{ optional($appointment->applications)->firstname }}
                                                         {{ optional($appointment->applications)->lastname }}</p>
-                                                    <small class="text-muted">And some muted small print.</small>
+                                                    {{-- <small class="text-muted">And some muted small print.</small> --}}
                                                 </a>
                                             @endforeach
                                         @else
