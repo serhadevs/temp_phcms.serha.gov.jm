@@ -19,15 +19,15 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (json_decode($json_appointments) as $appointment)
+        @foreach ($appointments as $appointment)
             <tr>
-                <td>{{ $appointment->appointment_id }}</td>
+                <td>{{ $appointment->id }}</td>
                 <td>{{ $appointment->appointment_date }}</td>
-                <td>{{ $appointment->appointment_location }}</td>
-                <td>{{ $appointment->appointment_time }}</td>
+                <td>{{ $appointment->examDate?->examSites?->name }}</td>
+                <td>{{ $appointment->examDate?->exam_start_time }}</td>
                 <td>
                     <button href="" class="btn btn-warning btn-sm"
-                        onclick="editAppointment({{ json_encode($appointment_available) }}, {{ json_encode($appointment->exam_date_id) }}, {{ json_encode($appointment->appointment_date) }}, {{ json_encode($appointment->appointment_id) }})"
+                        onclick="editAppointment({{ json_encode($appointment_available) }}, {{ json_encode($appointment->examDate?->id) }}, {{ json_encode($appointment->appointment_date) }}, {{ json_encode($appointment->id) }})"
                         type="button">
                         Edit
                     </button>

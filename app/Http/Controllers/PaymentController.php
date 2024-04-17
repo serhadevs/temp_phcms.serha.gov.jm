@@ -99,7 +99,7 @@ class PaymentController extends Controller
             ->join('application_types', 'application_types.id', '=', 'payments.application_type_id')
             ->join('payment_cancellation_requests', 'payment_cancellation_requests.payment_id', '=', 'payments.id', 'left outer')
             ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at, payment_cancellation_requests.id as cancellation_id, payment_cancellation_requests.approved as cancellation_approved_status')
-            ->whereBetween('payments.created_at', [$timeline['starting_date'], $timeline['ending_date']])
+            ->whereBetween('payments.created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
             ->where('payments.facility_id', Auth()->user()->facility_id)
             ->where('payments.deleted_at', NULL)
             ->get();

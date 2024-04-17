@@ -9,9 +9,6 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    @php
-                        $permit_application = json_decode($json_application);
-                    @endphp
                     <form action="{{ route('permit.application.edit') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
@@ -53,7 +50,8 @@
                                                 <label for="" class="form-label">First Name</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ old('firstname') == '' ? strtoupper($permit_application->firstname) : old('firstname') }}"
-                                                    disabled id="firstname" name="firstname">
+                                                    disabled id="firstname" name="firstname"
+                                                    oninput="this.value = this.value.toUpperCase()">
                                                 @error('firstname')
                                                     <strong class="text-danger text-bold errors">{{ $message }}</strong>
                                                 @enderror
@@ -62,7 +60,8 @@
                                                 <label for="" class="form-label">Middle Name</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ old('middlename') == '' ? strtoupper($permit_application->middlename) : old('middlename') }}"
-                                                    disabled id="middlename" name="middlename">
+                                                    disabled id="middlename" name="middlename"
+                                                    oninput="this.value = this.value.toUpperCase()">
                                                 @error('middlename')
                                                     <strong class="text-danger text-bold errors">{{ $message }}</strong>
                                                 @enderror
@@ -71,7 +70,8 @@
                                                 <label for="" class="form-label">Last Name</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ old('lastname') == '' ? strtoupper($permit_application->lastname) : old('lastname') }}"
-                                                    disabled id="lastname" name="lastname">
+                                                    disabled id="lastname" name="lastname"
+                                                    oninput="this.value = this.value.toUpperCase()">
                                                 @error('lastname')
                                                     <strong class="text-danger text-bold errors">{{ $message }}</strong>
                                                 @enderror
@@ -107,7 +107,8 @@
                                             <label for="" class="form-label">Address</label>
                                             <input type="text" class="form-control"
                                                 value="{{ old('address') == '' ? strtoupper($permit_application->address) : old('address') }}"
-                                                disabled id="address" name="address" />
+                                                disabled id="address" name="address"
+                                                oninput="this.value = this.value.toUpperCase()" />
                                             @error('address')
                                                 <strong class="text-danger text-bold errors">{{ $message }}</strong>
                                             @enderror
@@ -155,7 +156,8 @@
                                                 <label for="" class="form-label">Email</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ old('email') == '' ? strtoupper($permit_application->email) : old('email') }}"
-                                                    disabled id="email" name="email">
+                                                    disabled id="email" name="email"
+                                                    oninput="this.value = this.value.toUpperCase()">
                                                 @error('email')
                                                     <strong class="text-danger text-bold errors">{{ $message }}</strong>
                                                 @enderror
@@ -167,7 +169,6 @@
                                             value="{{ $permit_application->id }}" hidden>
                                         <input type="text" class="form-control" name="permit_no"
                                             value="{{ $permit_application->permit_no }}" hidden>
-
                                         <button class="btn btn-primary mt-3" style="display:none" id="updBtn"
                                             type="submit">
                                             <i class="bi bi-pencil-square"></i>
@@ -199,12 +200,15 @@
                                         <div class="col">
                                             <label for="" class="form-label">Permit Category</label>
                                             <input type="text" class="form-control"
-                                                value="{{ strtoupper($permit_application->permit_category) }}" disabled>
+                                                value="{{ strtoupper($permit_application->permitCategory?->name) }}"
+                                                disabled>
                                         </div>
                                     </div>
                                     <div class="mt-3">
                                         <label for="" class="form-label">Expiry Date</label>
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control"
+                                            value="{{ !empty($permit_application->signOffs) ? $permit_application->signOffs?->expiry_date : '' }}"
+                                            disabled>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col">
@@ -230,20 +234,22 @@
                                         <div class="col">
                                             <label for="" class="form-label">Payment Status</label>
                                             <input type="text" class="form-control"
-                                                value="{{ $permit_application->payment_status == '' ? 'NOT PAID' : 'PAID' }}"
+                                                value="{{ empty($permit_application->payment) ? 'NOT PAID' : 'PAID' }}"
                                                 disabled>
                                         </div>
                                         <div class="col">
                                             <label for="" class="form-label">Establishment</label>
                                             <input type="text" class="form-control"
-                                                value="{{ strtoupper($permit_application->establishment) }}" disabled>
+                                                value="{{ strtoupper(!empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
+                                                disabled>
                                         </div>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col">
                                             <label for="" class="form-label">Added By</label>
                                             <input type="text" class="form-control"
-                                                value="{{ $permit_application->added_by }}" disabled>
+                                                value="{{ $permit_application->user?->firstname . ' ' . $permit_application?->lastname }}"
+                                                disabled>
                                         </div>
                                         <div class="col">
                                             <label for="" class="form-label">Application Date</label>

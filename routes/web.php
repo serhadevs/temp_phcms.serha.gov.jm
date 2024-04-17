@@ -68,7 +68,7 @@ Route::group(['middleware' => ['auth']], function () {
      //Advance Search 
 
      Route::get("/advance-search/create", [AdvanceSearchController::class, 'create'])->name('advance-search');
-     Route::post("/advance-search/show", [AdvanceSearchController::class, 'show']);
+     Route::post("/advance-search/show", [AdvanceSearchController::class, 'show'])->name('advance.search.show');
 
      //Food Clinics Routes
      Route::get('/food-handlers-clinics/create', [FoodHandlersClinicController::class, 'create'])->name('food-handlers-clinic.create');
