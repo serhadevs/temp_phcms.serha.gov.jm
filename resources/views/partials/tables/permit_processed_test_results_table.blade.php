@@ -10,12 +10,6 @@
             <th>Trainer</th>
             <th>Score</th>
             <th>Options</th>
-            {{-- View --}}
-            {{-- Exam Date
-            Date of birth
-            Address
-            Comments
-            Entry Date --}}
         </tr>
     </thead>
     <tbody>
@@ -30,7 +24,6 @@
                 <td>{{ $result->staff_contact }}</td>
                 <td>{{ $result->overall_score }}</td>
                 <td>
-                    {{-- <a href="" class="btn btn-primary btn-sm">View</a> --}}
                     <button href="" class="btn btn-primary btn-sm" onclick="" data-bs-toggle="modal"
                         data-bs-target="#view-payment-{{ $result->id }}">View</button>
                     <a href="#" class="btn btn-warning btn-sm">Edit</a>

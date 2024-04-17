@@ -32,32 +32,31 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (json_decode($payments_info) as $payment_data)
+        @foreach ($payments_info as $payment_data)
             <tr>
                 <td>
-                    @if ($payment_data->cancellation_id != '')
-                        @if ($payment_data->cancellation_approved_status == '2')
+                    @if (!empty($payment_data->paymentCancellation))
+                        @if ($payment_data->paymentCancellation?->approved == '2')
                             <i class="bi bi-flag-fill text-danger"></i>
                         @endif
-                        @if (!$payment_data->cancellation_approved_status)
+                        @if (!$payment_data->paymentCancellation?->approved)
                             <i class="bi bi-flag text-danger"></i>
                         @endif
                     @endif
                 </td>
-                <td>{{ $payment_data->name }}</td>
+                <td>{{ $payment_data?->applicationType?->name }}</td>
                 <td>{{ $payment_data->application_id }}</td>
                 <td>{{ $payment_data->receipt_no }}</td>
                 <td>{{ $payment_data->total_cost }}</td>
                 <td>{{ $payment_data->amount_paid }}</td>
                 <td>{{ $payment_data->change_amt }}</td>
                 <td>{{ \Carbon\Carbon::parse($payment_data->created_at)->format('d M Y') }}</td>
-                {{-- Insert Here --}}
-                <td></td>
+                <td>{{ substr($payment_data->cashier?->firstname, 0, 1) . '.' . $payment_data->cashier?->lastname }}</td>
                 <td>
                     <button class="btn btn-danger btn-sm"
-                        onclick="sendCancelRequest({{ json_encode($payment_data->payment_id) }})">Request Cancel</button>
-                    <a class="btn btn-primary btn-sm"
-                        href="/payments/receipt/print/{{ $payment_data->payment_id }}">Reprint Receipt</a>
+                        onclick="sendCancelRequest({{ json_encode($payment_data->id) }})">Request Cancel</button>
+                    <a class="btn btn-primary btn-sm" href="/payments/receipt/print/{{ $payment_data->id }}">Reprint
+                        Receipt</a>
                 </td>
             </tr>
         @endforeach

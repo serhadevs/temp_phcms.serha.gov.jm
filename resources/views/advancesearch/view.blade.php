@@ -16,9 +16,20 @@
                 <div class="card-body">
                     @if ($module == '1')
                         @include('partials.tables.food_handlers_permits_table')
-                    @elseif($module == 2)
+                    @elseif($module == '2')
                         @include('partials.tables.food_handlers_clinics_table')
+                    @elseif($module == '3')
+                        @if ($app_type_id == '3')
+                            @include('partials.tables.test_results_est')
+                        @elseif($app_type_id == '1')
+                        @endif
+                    @elseif($module == '5')
+                        @include('partials.tables.processed_payments_table')
                     @endif
+                    <a class="btn btn-danger mt-4" href="/advance-search/create">
+                        <i class="bi bi-box-arrow-left"></i>
+                        Back to Dashboard
+                    </a>
                 </div>
             </div>
         </div>

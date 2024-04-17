@@ -51,4 +51,9 @@ class Payments extends Model
     {
         return $this->hasOne(PaymentCancellationRequests::class, 'payment_id', 'id');
     }
+
+    public function cashier(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'cashier_user_id')->withTrashed();
+    }
 }

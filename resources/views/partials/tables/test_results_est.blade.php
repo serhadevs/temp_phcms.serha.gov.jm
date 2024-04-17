@@ -53,7 +53,14 @@
                 <td>{{ $application->testResults?->critical_score }}</td>
                 <td>{{ $application->testResults?->comments }}</td>
                 <td>{{ $application->testResults?->test_date }}</td>
-                <td>
+                <td class="text-nowrap">
+                    @if (isset($module))
+                        @if (empty($application->testResults))
+                            <a class="btn btn-primary btn-sm mx-2" href="/test-results/food-establishments/create/{{ $application->id }}">
+                                Add
+                            </a>
+                        @endif
+                    @endif
                     <a href="" class="btn btn-warning btn-sm">
                         Edit
                     </a>

@@ -38,7 +38,6 @@ class PaymentController extends Controller
 
     public function filterProcessedPayments(Request $request)
     {
-        $applications = [];
         date_default_timezone_set('Etc/GMT+5');
         $today = date_format(new Datetime(), "Y-m-d");
         $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
@@ -51,16 +50,12 @@ class PaymentController extends Controller
 
         if ($id == "0") {
             $filterTimeline = $today;
-            $payments = DB::table('payments')
-                ->join('application_types', 'application_types.id', '=', 'payments.application_type_id')
-                ->join('payment_cancellation_requests', 'payment_cancellation_requests.payment_id', '=', 'payments.id', 'left outer')
-                ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at, payment_cancellation_requests.id as cancellation_id, payment_cancellation_requests.approved as cancellation_approved_status')
-                ->where('payments.created_at', '>', $today)
-                ->where('payments.facility_id', Auth()->user()->facility_id)
-                ->where('payments.deleted_at', NULL)
+            $payments_info = Payments::with('applicationType', 'paymentCancellation', 'cashier')
+                ->where('created_at', '>', $filterTimeline)
+                ->where('facility_id', auth()->user()->facility_id)
+                ->where('deleted_at', NULL)
                 ->get();
 
-            $payments_info = json_encode($payments);
             return view('payments.index', compact('payments_info'));
         } else if ($id == "1") {
             $filterTimeline = $yesterday;
@@ -72,16 +67,11 @@ class PaymentController extends Controller
             $filterTimeline = $last_ninety_days;
         }
 
-        $payments = DB::table('payments')
-            ->join('application_types', 'application_types.id', '=', 'payments.application_type_id')
-            ->join('payment_cancellation_requests', 'payment_cancellation_requests.payment_id', '=', 'payments.id', 'left outer')
-            ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at, payment_cancellation_requests.id as cancellation_id, payment_cancellation_requests.approved as cancellation_approved_status')
-            ->whereBetween('payments.created_at', [$filterTimeline, $today])
-            ->where('payments.facility_id', Auth()->user()->facility_id)
-            ->where('payments.deleted_at', NULL)
+        $payments_info = Payments::with('applicationType', 'paymentCancellation', 'cashier')
+            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('facility_id', auth()->user()->facility_id)
+            ->where('deleted_at', NULL)
             ->get();
-
-        $payments_info = json_encode($payments);
 
         return view('payments.index', compact('payments_info'));
     }
@@ -95,49 +85,14 @@ class PaymentController extends Controller
             'interval' => 'nullable|numeric|max:6'
         ]);
 
-        $payments = DB::table('payments')
-            ->join('application_types', 'application_types.id', '=', 'payments.application_type_id')
-            ->join('payment_cancellation_requests', 'payment_cancellation_requests.payment_id', '=', 'payments.id', 'left outer')
-            ->selectRaw('application_types.name as name, payments.application_id, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.id as payment_id, payments.created_at, payment_cancellation_requests.id as cancellation_id, payment_cancellation_requests.approved as cancellation_approved_status')
-            ->whereBetween('payments.created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
-            ->where('payments.facility_id', Auth()->user()->facility_id)
-            ->where('payments.deleted_at', NULL)
+        $payments_info = Payments::with('applicationType', 'paymentCancellation', 'cashier')
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
+            ->where('facility_id', auth()->user()->facility_id)
+            ->where('deleted_at', NULL)
             ->get();
-
-        $payments_info = json_encode($payments);
 
         return view('payments.index', compact('payments_info'));
     }
-
-    // public function detApplicationType($id)
-    // {
-    //     $application_type = DB::table('application_types')
-    //         ->join('prices', 'prices.application_type_id', '=', 'application_types.id')
-    //         ->where('application_types.id', $id)
-    //         ->selectRaw('application_types.id, application_types.name, prices.price')
-    //         ->get();
-    //     //dd($application_type[0]);
-    //     return $application_type[0];
-    // }
-
-    // public function convertToArray($permit_applications)
-    // {
-    //     $applications = [];
-    //     $i = 0;
-    //     foreach ($permit_applications as $application) {
-    //         $applications[$i]["app_number"] = $application->app_number;
-    //         $applications[$i]["name"] = $application->name;
-    //         $applications[$i]["permit_no"] = $application->permit_no;
-    //         $applications[$i]["trn"] = $application->trn;
-    //         $applications[$i]["price"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->price : ($application->permit_type == "student" ? $this->detApplicationType(8)->price : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->price : ""));
-    //         $applications[$i]["app_type"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->name : ($application->permit_type == "student" ? $this->detApplicationType(8)->name : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->name : ""));
-    //         $applications[$i]["app_type_id"] = $application->permit_type == "regular" ? $this->detApplicationType(1)->id : ($application->permit_type == "student" ? $this->detApplicationType(8)->id : ($application->permit_type == "teacher" ? $this->detApplicationType(9)->id : ""));
-    //         $i++;
-    //     }
-
-    //     return json_encode($applications);
-    // }
-
 
     public function filterOutstandingPayments(Request $request)
     {

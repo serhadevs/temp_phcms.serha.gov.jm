@@ -312,7 +312,7 @@ class PermitApplicationController extends Controller
                     [
                         'application_type_id' => 1,
                         'application_id' => $new_permit_application->id,
-                        'facility_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
                         'receipt_no' => $clinic_payment->receipt_no,
                         'amount_paid' => 0,
                         'total_cost' => 0,

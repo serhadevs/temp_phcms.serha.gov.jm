@@ -24,7 +24,7 @@ class FoodEstTestResultController extends Controller
             $today = date_format(new Datetime(), "Y-m-d");
             $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
                 ->has('testResults')
-                ->whereRelation('user', 'facility_id', auth()->user()->id)
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereRelation('testResults', 'created_at', '>', $today)
                 ->get();
             return view('test_center.food_est.index', compact('applications', 'app_type_id'));
@@ -40,7 +40,7 @@ class FoodEstTestResultController extends Controller
 
         $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
             ->has('testResults')
-            ->whereRelation('user', 'facility_id', auth()->user()->id)
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
             ->whereRelation('testResults', 'created_at', '<', date_format(new Datetime(), "Y-m-d"))
             ->get();
@@ -61,7 +61,7 @@ class FoodEstTestResultController extends Controller
 
         $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
             ->has('testResults')
-            ->whereRelation('user', 'facility_id', auth()->user()->id)
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereRelation('testResults', 'created_at', '>', $timeline['starting_date'])
             ->whereRelation('testResults', 'created_at', '<', $timeline['ending_date'] . " 23:59:59")
             ->get();
@@ -108,9 +108,9 @@ class FoodEstTestResultController extends Controller
         $food_est["facility_id"] = auth()->user()->facility_id;
 
         if (TestResult::create($food_est)) {
-            return redirect()->route('test-results.food-est.index')->with('success', 'Food Establishment Test Results have been entered successfully for application id: ' . $food_est['application_id'] . '.');
+            return redirect()->route('test-results.food-est.index', ['id' => 0])->with('success', 'Food Establishment Test Results have been entered successfully for application id: ' . $food_est['application_id'] . '.');
         } else {
-            return redirect()->route('test-results.food-est.index')->with('error', 'Error processing results for application id ' . $food_est['application_id']);
+            return redirect()->route('test-results.food-est.index', ['id' => 0])->with('error', 'Error processing results for application id ' . $food_est['application_id']);
         }
     }
 
@@ -172,7 +172,7 @@ class FoodEstTestResultController extends Controller
             ->where('created_at', '<', $timeline['ending_date'] . " 23:59:59")
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->get();
-            
+
         return view('test_center.food_est.outstanding', compact('applications', 'app_type_id'));
     }
 

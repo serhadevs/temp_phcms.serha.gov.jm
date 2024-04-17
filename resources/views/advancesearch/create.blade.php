@@ -77,7 +77,7 @@
                             </div>
                             <div class="col-md-6" id="app_type_div" style="display:none">
                                 <label for="app_type">Application Type</label>
-                                <select class="form-select" aria-label="app_type" name="establishment_name" id="app_type">
+                                <select class="form-select" aria-label="app_type" name="app_type" id="app_type">
                                     <option value="1">Food Handlers</option>
                                     <option value="2">Food Establishment</option>
                                     <option value="3">Barber & Hair Salon</option>
@@ -85,12 +85,12 @@
                             </div>
                             <div class="col-md-6" id="receipt_div" style="display:none">
                                 <label for="Receipt No">Receipt Number</label>
-                                <input type="text" class="form-control" aria-label="Receipt No">
+                                <input type="text" class="form-control" aria-label="Receipt No" name="receipt_no">
                             </div>
                             <div class="col col-md-6" id="food_est_name_div" style="display:none">
                                 <label for="">Food Establishment Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option diabled selected class="text-center">-------------Select a food
+                                <select name="food_est_name" id="" class="form-select">
+                                    <option disabled selected class="text-center">-------------Select a food
                                         establishment name-------------</option>
                                     @foreach ($food_establishments as $food_est)
                                         <option value="{{ $food_est->establishment_name }}">

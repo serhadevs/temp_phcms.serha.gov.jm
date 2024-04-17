@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
+use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,9 +21,15 @@ class AdvanceSearchController extends Controller
 
     public function create()
     {
-        $establishment_clinics = EstablishmentClinics::all();
+        $establishment_clinics = EstablishmentClinics::with('user')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->orderBy('name', 'asc')
+            ->get();
 
-        $food_establishments = EstablishmentApplications::all();
+        $food_establishments = EstablishmentApplications::with('user')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->orderBy('establishment_name', 'asc')
+            ->get();
 
         return view('advancesearch.create', compact('establishment_clinics', 'food_establishments'));
     }
@@ -81,6 +88,43 @@ class AdvanceSearchController extends Controller
                 $module = 2;
 
                 return view('advancesearch.view', compact('food_clinics', 'module'));
+            } else if ($module['module'] == '3') {
+                if ($request->app_type == "1") {
+                    
+                } else if ($request->app_type == "2") {
+                    $app_type_id = 3;
+                    $module = 3;
+                    $est_name = $request->food_est_name;
+                    $application_id = $request->application_number;
+
+                    $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
+                        ->when($est_name, function ($query, string $est_name) {
+                            $query->where('establishment_name', 'like', '%' . $est_name . '%');
+                        })
+                        ->when($application_id, function ($query, string $application_id) {
+                            $query->where('id', '=', $application_id);
+                        })
+                        ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                        ->get();
+
+                    return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
+                }
+            } else if ($module['module'] == '5') {
+                $application_id = $request->application_number;
+                $receipt_no = $request->receipt_no;
+
+                $payments_info = Payments::with('applicationType', 'paymentCancellation', 'cashier')
+                    ->when($application_id, function ($query, string $application_id) {
+                        $query->where('application_id', $application_id);
+                    })
+                    ->when($receipt_no, function ($query, string $receipt_no) {
+                        $query->where('receipt_no', $receipt_no);
+                    })
+                    ->where('facility_id', auth()->user()->facility_id)
+                    ->get();
+
+                $module = 5;
+                return view('advancesearch.view', compact('payments_info', 'module'));
             }
         } catch (Exception $e) {
             return $e->getMessage();
