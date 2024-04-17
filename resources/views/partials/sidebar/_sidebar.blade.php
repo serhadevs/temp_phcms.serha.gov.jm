@@ -212,7 +212,7 @@
             </li>
         @endif
 
-        @if (in_array(auth()->user()->role_id, [1, 7]))
+        
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
@@ -232,7 +232,7 @@
                 </ul>
 
             </li>
-        @endif
+    
 
         @if (in_array(auth()->user()->role_id, [1]))
             <li class="sidebar-item">
