@@ -278,7 +278,8 @@ class UserController extends Controller
         return redirect()->route('users')->with('success', 'User was added');
     }
 
-    public function currentLoggedInUsers()
-    {
-    }
+   public function switchFacility(Request $request){
+        return view("users.switch_facility");
+        
+   }
 }
