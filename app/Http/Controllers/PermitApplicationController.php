@@ -35,31 +35,14 @@ class PermitApplicationController extends Controller
         $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
         $filterTimeline = "";
-        // $start_date = "2023-10-12";
-        // $end_date = new DateTime();
 
         $i = 0;
         if ($id == "0") {
             $filterTimeline = $today;
-
             $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')
                 ->where('created_at', '>', $today)
                 ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
                 ->get();
-            // foreach ($all_permit_applications as $permit_app) {
-            //     $permit_array[$i]["id"] = $permit_app->id;
-            //     $permit_array[$i]["permit_no"] = $permit_app->permit_no;
-            //     $permit_array[$i]["firstname"] = $permit_app->firstname;
-            //     $permit_array[$i]["lastname"] = $permit_app->lastname;
-            //     $permit_array[$i]["category"] = $permit_app->permitCategory?->name;
-            //     $permit_array[$i]["payment_status"] = $permit_app->payment?->id;
-            //     $permit_array[$i]["permit_type"] = $permit_app->permit_type;
-            //     $permit_array[$i]["sign_off_status"] = $permit_app->sign_off_status;
-            //     $permit_array[$i]["trn"] = $permit_app->trn;
-            //     $permit_array[$i]["granted"] = $permit_app->granted;
-            //     $i++;
-            // }
-            // $json_applications = json_encode($permit_array);
             return view('food_handlers_permit.index', compact('permit_applications'));
         } else if ($id == "1") {
             $filterTimeline = $yesterday;

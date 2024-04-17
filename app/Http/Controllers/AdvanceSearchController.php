@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
 use App\Models\PermitApplication;
 use App\Models\User;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-
 class AdvanceSearchController extends Controller
 {
     public function index()
@@ -20,20 +20,67 @@ class AdvanceSearchController extends Controller
 
     public function create()
     {
+        $establishment_clinics = EstablishmentClinics::all();
 
-        return view('advancesearch.create');
+        $food_establishments = EstablishmentApplications::all();
+
+        return view('advancesearch.create', compact('establishment_clinics', 'food_establishments'));
     }
 
     public function show(Request $request)
     {
+        $module = $request->validate([
+            'module' => 'required',
+        ]);
         try {
-            $module = $request->validate([
-                'module' => 'required',
-            ]);
-            if ($module['module'] == 1) {
-                if($request->firstname == "" && $request->lastname=="" && $request->application_nu)
-                $permit_applications = PermitApplication::with('user')
-                    ->where('')
+            if ($module['module'] == '1') {
+                if ($request->firstname == "" && $request->lastname == "" && $request->application_nu) {
+                }
+                $firstname = $request->firstname;
+                $lastname = $request->lastname;
+                $id = $request->application_number;
+                $est_clinic_name = $request->establishment_clinic_name;
+                $permit_applications = PermitApplication::with('user', 'establishmentClinics', 'signOffs')
+                    ->when(
+                        $firstname,
+                        function ($query, string $firstname) {
+                            $query->where('firstname', 'like', "%" . $firstname . "%");
+                        }
+                    )->when(
+                        $lastname,
+                        function ($query, $lastname) {
+                            $query->where('lastname', 'like', "%" . $lastname . "%");
+                        }
+                    )->when(
+                        $id,
+                        function ($query, $id) {
+                            $query->where('id', $id);
+                        }
+                    )->when(
+                        $est_clinic_name,
+                        function ($query, $est_clinic_name) {
+                            $query->whereRelation('establishmentClinics', 'name', 'like', "%" . $est_clinic_name . "%");
+                        }
+                    )
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->get();
+                $module = 1;
+
+                return view('advancesearch.view', compact('permit_applications', 'module'));
+            } else if ($module['module'] == '2') {
+                $id = $request->application_number;
+                $est_clinic_name = $request->establishment_clinic_name;
+                $food_clinics = EstablishmentClinics::with('payment', 'user')
+                    ->when($est_clinic_name, function ($query, string $est_clinic_name) {
+                        $query->where('name', 'like', "%" . $est_clinic_name . "%");
+                    })->when($id, function ($query, string $id) {
+                        $query->where('id', $id);
+                    })->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->get();
+
+                $module = 2;
+
+                return view('advancesearch.view', compact('food_clinics', 'module'));
             }
         } catch (Exception $e) {
             return $e->getMessage();
