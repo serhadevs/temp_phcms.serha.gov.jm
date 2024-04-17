@@ -16,6 +16,7 @@ use App\Http\Controllers\PermitTestResultsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SignOffController;
 use App\Http\Controllers\TestDownloads;
+use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
@@ -135,6 +136,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/settings/users/online', [UserController::class, 'onlineUsers'])->name('users.online');
      Route::get('/settings/users/loginusers', [UserController::class, 'loginUsersLocations']);
      Route::put('/settings/users/loginusers', [UserController::class, 'loginUsersLocations']);
+     Route::get('/settings/users/switch-facility');
 
      //Health Interview Routes
      Route::get("/health-interview/create/{app_type_id}/{app_id}", [HealthInterviewController::class, 'create'])->name('health-interview.create');
@@ -188,7 +190,8 @@ Route::group(['middleware' => ['auth']], function () {
 
      //Route::get("/test-centre/test-results/food-establishments",[FoodEstResultController::class,'index']);
 
-     //Switch Locations
+  //Training Manual Page
+     Route::get('/training-manuals',[TrainingManualsController::class,'index'])->name("training.manuals");
 
 
 

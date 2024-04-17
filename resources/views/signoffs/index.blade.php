@@ -15,6 +15,7 @@
                 <div class="row mb-2">
                     
                     @foreach ($application_type as $app_type )
+                    
                     <div class="col-12 col-md-3 mb-3">
 
                     <div class="card ">
