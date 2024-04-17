@@ -250,6 +250,13 @@
             </li>
         @endif
 
+        <li class="sidebar-item">
+            <a href="/training-manuals" class="sidebar-link">
+                <i class="lni lni-cog"></i>
+                <span>Training Manuals</span>
+            </a>
+        </li>
+
 
     </ul>
 </aside>
