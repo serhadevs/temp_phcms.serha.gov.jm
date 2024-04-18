@@ -16,14 +16,21 @@
         @foreach ($test_results as $result)
             <tr>
                 <td>{{ $result?->id }}</td>
-                <td>{{ $result->permit_application?->permitCategory?->name }}</td>
-                <td>{{ $result->permit_application?->firstname }}</td>
-                <td>{{ $result->permit_application?->middlename }}</td>
-                <td>{{ $result->permit_application?->lastname }}</td>
-                <td>{{ $result->permit_application?->gender }}</td>
-                <td>{{ $result->staff_contact }}</td>
-                <td>{{ $result->overall_score }}</td>
+                <td>{{ $result->permitCategory?->name }}</td>
+                <td>{{ $result?->firstname }}</td>
+                <td>{{ $result?->middlename }}</td>
+                <td>{{ $result?->lastname }}</td>
+                <td>{{ $result?->gender }}</td>
+                <td>{{ $result->testResults?->staff_contact }}</td>
+                <td>{{ $result->testResults?->overall_score }}</td>
                 <td>
+                    @if (isset($module))
+                        @if (empty($result->testResults))
+                            <a href="" class="btn btn-info mx-1 btn-sm">
+                                Add
+                            </a>
+                        @endif
+                    @endif
                     <button href="" class="btn btn-primary btn-sm" onclick="" data-bs-toggle="modal"
                         data-bs-target="#view-payment-{{ $result->id }}">View</button>
                     <a href="#" class="btn btn-warning btn-sm">Edit</a>
@@ -40,63 +47,63 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
-                        {{ strtoupper($result->permit_application->firstname." ".$result->permit_application->middlename." ".$result->permit_application->lastname)}}</h5>
+                        {{ strtoupper($result->firstname . ' ' . $result->middlename . ' ' . $result->lastname) }}
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="">
                         <label for="" class="form-label">Category</label>
                         <input type="text" class="form-control"
-                            value="{{ strtoupper($result->permit_application->permitCategory->name)}}">
+                            value="{{ strtoupper($result->permitCategory?->name) }}">
                     </div>
                     <div class="row mt-3">
                         <div class="col">
                             <label for="" class="form-label">Gender</label>
-                            <label for=""
-                                class="form-control">{{ strtoupper($result->permit_application->gender) }}</label>
+                            <label for="" class="form-control">{{ strtoupper($result->gender) }}</label>
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Date of Birth</label>
-                            <label for=""
-                                class="form-control">{{ $result->permit_application->date_of_birth }}</label>
+                            <label for="" class="form-control">{{ $result->date_of_birth }}</label>
                         </div>
                     </div>
                     <div class="mt-3">
                         <label for="" class="form-label">Address</label>
                         <textarea class="form-control">
-                            {{ strtoupper($result->permit_application->address) }}
+                            {{ strtoupper($result->address) }}
                         </textarea>
                     </div>
                     <div class="row mt-3">
                         <div class="col">
                             <label for="" class="form-label">Trainer</label>
-                            <label for="" class="form-control">{{ strtoupper($result->staff_contact) }}</label>
+                            <label for=""
+                                class="form-control">{{ strtoupper($result->testResults?->staff_contact) }}</label>
                         </div>
                         <div class="col">
                             <label class="form-label">Score</label>
-                            <label for="" class="form-control">{{ $result->overall_score }}</label>
+                            <label for=""
+                                class="form-control">{{ $result->testResults?->overall_score }}</label>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col">
                             <label for="" class="form-label">Exam Date</label>
-                            <label for="" class="form-control">{{ $result->test_date }}</label>
+                            <label for="" class="form-control">{{ $result->testResults?->test_date }}</label>
                         </div>
                         <div class="col">
                             <label class="form-label">Entry Date</label>
-                            <label for="" class="form-control">{{ $result->created_at }}</label>
+                            <label for="" class="form-control">{{ $result->testResults?->created_at }}</label>
                         </div>
                     </div>
                     <div class="mt-3">
                         <label for="" class="form-label">Comments</label>
                         <textarea class="form-control">
-                            {{ strtoupper($result->comments) }}
+                            {{ strtoupper($result->testResults?->comments) }}
                         </textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
                 </div>
             </div>
         </div>

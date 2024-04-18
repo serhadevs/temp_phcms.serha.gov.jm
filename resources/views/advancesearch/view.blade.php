@@ -22,6 +22,7 @@
                         @if ($app_type_id == '3')
                             @include('partials.tables.test_results_est')
                         @elseif($app_type_id == '1')
+                            @include('partials.tables.permit_processed_test_results_table')
                         @endif
                     @elseif($module == '5')
                         @include('partials.tables.processed_payments_table')

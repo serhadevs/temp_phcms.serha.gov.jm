@@ -157,7 +157,7 @@ class FoodEstablishmentController extends Controller
             'establishment_operator.2' => 'nullable',
             'establishment_operator.3' => 'nullable',
             'application_date' => 'required|date',
-            'trn' => 'nullable|regex:/^[0-9]{3}+\-+[0-9]{3}+\-+[0-9]{3}+$/',
+            'trn' => 'nullable',
             'email' => 'nullable|email',
             'closure_date' => 'required_if:current_est_closed,1|required_if:prev_est_closed,1'
         ]);
@@ -266,7 +266,7 @@ class FoodEstablishmentController extends Controller
             'establishment_name' => 'required',
             'establishment_category_id' => 'required',
             'establishment_address' => 'required',
-            'trn' => 'nullable|regex:/^[0-9]{3}+\-+[0-9]{3}+\-+[0-9]{3}+$/',
+            'trn' => 'nullable',
             'email' => 'nullable|email',
             'closure_date' => 'required_if:current_est_closed,1|required_if:prev_est_closed,1'
         ]);

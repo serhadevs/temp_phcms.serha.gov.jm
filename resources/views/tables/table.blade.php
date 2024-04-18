@@ -4,16 +4,6 @@
         <thead>
             <tr>
                 <th class="sorting_disabled"><input type="checkbox" name="selectedCheckbox" id="selectAll"></th>
-                {{-- <th>View</th>
-                <th>Status</th>
-                <th>Application No.</th>
-                <th>Establishment</th>
-                <th>Permit #</th>
-                <th>FirstName</th>
-                <th>MiddleName</th>
-                <th>LastName</th>
-                <th>Critical Score</th>
-                <th>Overall Score</th> --}}
                 @if ($app_type_id == 1)
                     <th>
                         View
@@ -59,48 +49,94 @@
             @foreach ($applications as $application)
                 <tr>
                     <td>
-                        <input type="checkbox" name="status" id="{{ $application->permit_id }}" class="input" onchange="testing(this.checked, this.value)"
-                            value={{ $application->permit_id }} {{ $application->sign_off_status ? 'disabled' : '' }}>
+                        <input type="checkbox" name="status"
+                            id="{{ $app_type_id == 1 ? $application->permitApplication?->id : $application->id }}"
+                            class="input" onchange="testing(this.checked, this.value)"
+                            value={{ $app_type_id == 1 ? $application->permitApplication?->id : $application->id }}
+                            {{ $app_type_id == 1 ? ($application->permitApplication?->sign_off_status ? 'disabled' : '') : ($application->sign_off_status ? 'disabled' : '') }}>
                     </td>
                     @if ($app_type_id == 1)
                         <td>
                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#view-application-{{ $application->permit_id }}">
+                                data-bs-target="#view-application-{{ $application->permitApplication?->id }}">
                                 View
                             </button>
                         </td>
                     @endif
                     <td>
-                        @if ($application->sign_off_status)
-                            <span class="badge bg-success">Approved</span>
-                        @endif
-                        @if (!$application->sign_off_status)
-                            <span class="badge bg-danger">Awaiting</span>
+                        @if ($app_type_id == 1)
+                            @if ($application->permitApplication?->sign_off_status)
+                                <span class="badge bg-success">Approved</span>
+                            @endif
+                            @if (!$application->permitApplication?->sign_off_status)
+                                <span class="badge bg-danger">Awaiting</span>
+                            @endif
+                        @else
+                            @if ($application->sign_off_status)
+                                <span class="badge bg-success">Approved</span>
+                            @endif
+                            @if (!$application->sign_off_status)
+                                <span class="badge bg-danger">Awaiting</span>
+                            @endif
                         @endif
                     </td>
-                    <td>{{ $application->permit_id }}</td>
+                    <td>
+                        @if ($app_type_id == 3)
+                            {{ $application->id }}
+                        @else
+                            {{ $application->permitApplication?->id }}
+                        @endif
+                    </td>
                     @if ($app_type_id != 6)
-                        <td>No</td>
+                        <td>
+                            @if ($app_type_id == 3)
+                                {{ $application->establishment_name }}
+                            @elseif($app_type_id == 1)
+                                {{ $application->permitApplication?->establishmentClinics?->name }}
+                            @endif
+                        </td>
                     @endif
-                    <td>{{ $application->permit_no }}</td>
-                    @if ($app_type_id == 1 || $app_type_id == 2 || $app_type_id == 5)
-                        <td>{{ $application->permit_firstname }}</td>
-                        <td>{{ $application->permit_middlename }}</td>
-                        <td>{{ $application->permit_lastname }}</td>
+                    <td>
+                        @if ($app_type_id == 1)
+                            {{ $application->permitApplication?->permit_no }}
+                        @else
+                            {{ $application->permit_no }}
+                        @endif
+                    </td>
+                    @if ($app_type_id == 2 || $app_type_id == 5)
+                        <td>{{ $application->firstname }}</td>
+                        <td>{{ $application->middlename }}</td>
+                        <td>{{ $application->lastname }}</td>
+                    @elseif($app_type_id == 1)
+                        <td>{{ $application->permitApplication?->firstname }}</td>
+                        <td>{{ $application->permitApplication?->middlename }}</td>
+                        <td>{{ $application->permitApplication?->lastname }}</td>
                     @endif
-                    <td>{{ $application->critical_score }}</td>
-                    <td>{{ $application->overall_score }}</td>
-
+                    @if ($app_type_id == 1)
+                        <td>{{ $application->permitApplication?->testResults?->critical_score }}</td>
+                        <td>{{ $application->permitApplication?->testResults?->overall_score }}</td>
+                    @else
+                        <td>{{ $application->testResults?->critical_score }}</td>
+                        <td>{{ $application->testResults?->overall_score }}</td>
+                    @endif
                     @if ($app_type_id == 3)
-                        <td>{{ $application->est_category }}</td>
-                        <td>{{ $application->operators }}</td>
+                        <td>{{ $application->establishmentCategory?->name }}</td>
+                        <td>
+                            @foreach ($application->operators as $operator)
+                                {{ $operator?->name_of_operator }}
+                            @endforeach
+                        </td>
                         <td>{{ $application->zone }}</td>
                         <td>{{ $application->food_type }}</td>
-                        <td>{{ $application->visit_purpose }}</td>
+                        <td>{{ $application->testResults?->visit_purpose }}</td>
                         <td>{{ $application->closure_date }}</td>
                     @endif
                     @if ($app_type_id == 3 || $app_type_id == 5 || $app_type_id == 6)
-                        <td>{{ $application->address }}</td>
+                        @if ($app_type_id == 3)
+                            <td>{{ $application->establishment_address }}</td>
+                        @else
+                            <td>{{ $application->address }}</td>
+                        @endif
                     @endif
                     @if ($app_type_id == 5 || $app_type_id == 6)
                         <td>{{ $application->staff_contact }}</td>
@@ -121,14 +157,15 @@
 
     @if ($app_type_id == 1)
         @foreach ($applications as $application)
-            <div class="modal fade" id="view-application-{{ $application->permit_id }}" tabindex="-1"
+            <div class="modal fade" id="view-application-{{ $application->permitApplication?->id }}" tabindex="-1"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                {{ $application->permit_firstname . ' ' . $application->permit_lastname }} -
-                                {{ $application->permit_id }}</h1>
+                                {{ $application->permitApplication?->firstname . ' ' . $application->permitApplication?->lastname }}
+                                -
+                                {{ $application->permitApplication?->id }}</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -137,17 +174,17 @@
                                 <div class="col col-md-4">
                                     <div class="mt-3 text-center">
                                         <div class="mt-3">
-                                            @if ($application->photo_upload)
-                                                <img src="{{ asset('storage/' . $application->photo_upload) }}"
+                                            @if ($application->permitApplication?->photo_upload)
+                                                <img src="{{ asset('storage/' . $application->permitApplication?->photo_upload) }}"
                                                     alt="No Image found" style="display:block"
                                                     class="mx-auto rounded w-100" id="applicant_img">
                                             @endif
-                                            @if (!$application->photo_upload)
-                                                @if (strtolower($application->permit_gender) == 'male')
+                                            @if (!$application->permitApplication?->photo_upload)
+                                                @if (strtolower($application->permitApplication?->gender) == 'male')
                                                     <img src="{{ asset('images/male.jpg') }}"
                                                         class="w-100 rounded-circle" />
                                                 @endif
-                                                @if (strtolower($application->permit_gender) == 'female')
+                                                @if (strtolower($application->permitApplication?->gender) == 'female')
                                                     <img src="{{ asset('images/female.jpg') }}"
                                                         class="w-100 rounded-circle" />
                                                 @endif
@@ -161,27 +198,27 @@
                                         <div class="col">
                                             <label for="" class="form-label">Gender</label>
                                             <label for=""
-                                                class="form-control">{{ strtoupper($application->permit_gender) }}</label>
+                                                class="form-control">{{ strtoupper($application->permitApplication?->gender) }}</label>
                                         </div>
                                         <div class="col">
                                             <label for="" class="form-label">Date of Birth</label>
                                             <label for=""
-                                                class="form-control">{{ $application->date_of_birth }}</label>
+                                                class="form-control">{{ $application->permitApplication?->date_of_birth }}</label>
                                         </div>
                                     </div>
                                     <div class="mt-3">
                                         <label for="" class="form-label">Address</label>
                                         <label for=""
-                                            class="form-control">{{ $application->permit_address }}</label>
+                                            class="form-control">{{ $application->permitApplication?->address }}</label>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col">
                                             <label for="" class="form-label">Test Score</label>
                                             <label for=""
-                                                class="form-control">{{ $application->overall_score }}</label>
+                                                class="form-control">{{ $application->permitApplication?->testResults?->overall_score }}</label>
                                         </div>
                                         <div class="col">
-                                            <label for="" class="form-label">Whittlow</label>
+                                            <label for="" class="form-label">Whitlow</label>
                                             <label for=""
                                                 class="form-control">{{ strtoupper($application->whitlow) }}</label>
                                         </div>
@@ -196,11 +233,6 @@
                                             <label for="" class="form-label">Literate</label>
                                             <label for=""
                                                 class="form-control">{{ $application->literate == 0 ? 'NO' : 'YES' }}</label>
-                                        </div>
-                                        <div class="col">
-                                            <label for="" class="form-label">Symptoms</label>
-                                            <label for=""
-                                                class="form-control">{{ $application->symptoms ? $application->symptoms : 'N/A' }}</label>
                                         </div>
                                     </div>
                                     <div class="row mt-3">
@@ -243,6 +275,14 @@
                                             <label for=""
                                                 class="form-control">{{ $application->travel_abroad == 0 ? 'NO' : 'YES' }}</label>
                                         </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <label for="" class="form-label">Symptoms</label>
+                                        <textarea class="form-control">
+                                            @foreach ($application?->healthInterviewSymptom as $symp)
+{{ $symp->symptoms?->name }}
+@endforeach
+                                        </textarea>
                                     </div>
                                 </div>
                             </div>
@@ -289,13 +329,13 @@
 
         var selected_items = [];
 
-        function testing(checkStatus, value){
-            if(checkStatus==true){
+        function testing(checkStatus, value) {
+            if (checkStatus == true) {
                 selected_items.push(value);
-                // console.log(selected_items);
-            }else{
-                var index=selected_items.indexOf(value);
-                if(index!==-1) selected_items.splice(index, 1);
+                console.log(selected_items);
+            } else {
+                var index = selected_items.indexOf(value);
+                if (index !== -1) selected_items.splice(index, 1);
                 // console.log(selected_items);
             }
         }

@@ -90,7 +90,24 @@ class AdvanceSearchController extends Controller
                 return view('advancesearch.view', compact('food_clinics', 'module'));
             } else if ($module['module'] == '3') {
                 if ($request->app_type == "1") {
-                    
+                    $module = 3;
+                    $app_type_id = 1;
+                    $firstname = $request->firstname;
+                    $lastname = $request->lastname;
+                    $id = $request->application_number;
+
+                    $test_results = PermitApplication::with('permitCategory', 'testResults')
+                        ->whereRelation('testResults', 'facility_id', Auth()->user()->facility_id)
+                        ->when($firstname, function ($query, string $firstname) {
+                            $query->where('firstname', 'like', '%' . $firstname . '%');
+                        })->when($lastname, function ($query, string $lastname) {
+                            $query->where('lastname', 'like', '%' . $lastname . '%');
+                        })->when($id, function ($query, string $id) {
+                            $query->where('id', $id);
+                        })
+                        ->get();
+
+                    return view('advancesearch.view', compact('test_results', 'module', 'app_type_id'));
                 } else if ($request->app_type == "2") {
                     $app_type_id = 3;
                     $module = 3;

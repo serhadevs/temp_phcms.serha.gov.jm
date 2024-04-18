@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PermitApplication;
 use App\Models\PermitCategory;
 use App\Models\PermitTestResults;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class PermitTestResultsController extends Controller
     public function outstandingResults()
     {
         $today = new DateTime();
-        $six_months_to_date = date_format(date_modify($today, "-6 months"), "Y-m-d");
+        $six_months_to_date = date_format(date_modify($today, "-1 months"), "Y-m-d");
 
         $outstanding_permits = DB::table('payments')
             ->join('permit_applications', 'payments.application_id', '=', 'permit_applications.id')
@@ -48,10 +49,15 @@ class PermitTestResultsController extends Controller
         $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
-        // $test_results = PermitTestResults::with('permit_application.permitCategory')->where('facility_id', Auth()->user()->facility_id)->where('created_at', '>', '2023-10-10')->get();
-
         if ($id == "0") {
-            $filterTimeline = $today;
+            $test_results =  PermitApplication::with('permitCategory', 'testResults')
+                ->whereRelation('testResults', 'facility_id', Auth()->user()->facility_id)
+                ->has('testResults')
+                ->whereRelation('testResults', 'created_at', '>', $today)
+                ->get();
+
+            $outstanding = $this->outstandingResults();
+            return view('test_center.food_handlers_permit.index', compact('test_results', 'outstanding'));
         } else if ($id == "1") {
             $filterTimeline = $yesterday;
         } else if ($id == "7") {
@@ -62,11 +68,11 @@ class PermitTestResultsController extends Controller
             $filterTimeline = $last_ninety_days;
         }
 
-        $test_results =  PermitTestResults::with('permit_application.permitCategory')
-            ->where('facility_id', Auth()->user()->facility_id)
-            ->where('application_type_id', '=', '1')
-            ->whereBetween('created_at', [$filterTimeline, $tonight])
-            ->whereRelation('permit_application', 'deleted_at', '=', NULL)
+        $test_results =  PermitApplication::with('permitCategory', 'user', 'testResults')
+            ->whereRelation('testResults', 'facility_id', Auth()->user()->facility_id)
+            ->has('testResults')
+            ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
+            ->whereRelation('testResults', 'created_at', '<', $today)
             ->get();
 
         $outstanding = $this->outstandingResults();
@@ -82,11 +88,11 @@ class PermitTestResultsController extends Controller
             'interval' => 'nullable|numeric|max:6'
         ]);
 
-        $test_results =  PermitTestResults::with('permit_application.permitCategory')
-            ->where('facility_id', Auth()->user()->facility_id)
-            ->where('application_type_id', '=', '1')
-            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
-            ->whereRelation('permit_application', 'deleted_at', '=', NULL)
+        $test_results =  PermitApplication::with('permitCategory', 'user', 'testResults')
+            ->whereRelation('testResults', 'facility_id', Auth()->user()->facility_id)
+            ->has('testResults')
+            ->whereRelation('testResults', 'created_at', '>', $timeline['starting_date'])
+            ->whereRelation('testResults', 'created_at', '<', $timeline['ending_date'] . " 23:59:59")
             ->get();
         $outstanding = $this->outstandingResults();
         return view('test_center.food_handlers_permit.index', compact('test_results', 'outstanding'));
@@ -140,10 +146,10 @@ class PermitTestResultsController extends Controller
         $new_permit_results = PermitTestResults::create($permit_results);
 
         if (!$new_permit_results) {
-            return redirect()->route('dashboard')->with(['error' => 'Test Results could not be added']);
+            return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', 'Test Results could not be added');
         }
 
-        return redirect()->route('dashboard.dashboard')->with(['success' => 'Test Results successfully added']);
+        return redirect()->route('test-results.permit.index', ['id' => 0])->with('success', 'Test Results successfully added');
     }
 
     /**

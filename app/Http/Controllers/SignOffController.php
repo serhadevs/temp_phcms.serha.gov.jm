@@ -54,108 +54,76 @@ class SignOffController extends Controller
 
         if ($app_type_id == 1) {
             if ($clinic_mode == "onsite") {
-                $applications = DB::table('health_interviews')
-                    ->where('health_interviews.facility_id', Auth()->user()->facility_id)
-                    ->where('health_interviews.deleted_at', '=', null)
-                    ->join('permit_applications', 'health_interviews.permit_application_id', '=', 'permit_applications.id')
-                    ->join('permit_categories', 'permit_categories.id', '=', 'permit_applications.permit_category_id')
-                    ->join('establishment_clinics', function ($join) use ($exam_date) {
-                        $join->on('establishment_clinics.id', '=', 'permit_applications.establishment_clinic_id')
-                            ->where('establishment_clinics.proposed_date', '=', $exam_date);
-                    })
-                    ->leftJoin('test_results', function ($join) {
-                        $join->on('health_interviews.permit_application_id', '=', 'test_results.application_id')
-                            ->where('test_results.deleted_at', '=', null)
-                            ->where('test_results.application_type_id', '=', 1);
-                    })
-                    ->leftJoin('health_interview_symptom', 'health_interviews.id', '=', 'health_interview_symptom.health_interview_id')
-                    ->leftJoin('symptoms', 'symptoms.id', '=', 'health_interview_symptom.symptom_id')
-                    ->leftJoin('travel_history', function ($join) {
-                        $join->on('travel_history.permit_application_id', '=', 'health_interviews.permit_application_id')
-                            ->where('travel_history.deleted_at', '=', null);
-                    })
-                    ->select(
-                        'establishment_clinics.proposed_date',
-                        'establishment_clinics.name as est_name',
-                        'establishment_clinics.address as est_address',
-                        'permit_applications.permit_no',
-                        'permit_applications.firstname as permit_firstname',
-                        'permit_applications.id as permit_id',
-                        'permit_applications.middlename as permit_middlename',
-                        'permit_applications.lastname as permit_lastname',
-                        'permit_applications.address as permit_address',
-                        'permit_applications.photo_upload',
-                        'permit_applications.date_of_birth',
-                        'permit_applications.gender as permit_gender',
-                        'permit_applications.sign_off_status',
-                        'permit_categories.name as permit_category',
-                        DB::raw('group_concat("  ", travel_history.destination, " - " ,travel_history.travel_date) as travel_history'),
-                        'test_results.overall_score',
-                        'test_results.critical_score',
-                        'health_interviews.*',
-                        'health_interviews.id as interview_id',
-                        DB::raw('group_concat("  ", symptoms.name) as symptoms')
-                    )
-                    ->where('permit_applications.deleted_at', NULL)
-                    ->groupBy('health_interviews.id', 'test_results.id', 'travel_history.id', 'establishment_clinics.id')
-                    ->orderBy('establishment_clinics.name')
-                    ->orderBy('permit_applications.sign_off_status')
+                $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms')
+                    ->where('facility_id', auth()->user()->facility_id)
+                    ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
+                    ->has('permitApplication.testResults')
+                    ->orderBy('sign_off_status')
                     ->get();
             } else if ($clinic_mode == "regular") {
-                $applications = DB::table('health_interviews')
-                    ->where('health_interviews.facility_id', Auth()->user()->facility_id)
-                    ->where('health_interviews.deleted_at', '=', null)
-                    ->join('permit_applications', function ($join) {
-                        $join->on('health_interviews.permit_application_id', '=', 'permit_applications.id')
-                            ->where('permit_applications.establishment_clinic_id', '=', null);
-                    })
-                    ->join('permit_categories', 'permit_categories.id', '=', 'permit_applications.permit_category_id')
-                    ->join('appointments', function ($join) use ($exam_date) {
-                        $join->on('appointments.permit_application_id', '=', 'permit_applications.id')
-                            ->where('appointments.deleted_at', '=', null)
-                            ->where('appointments.appointment_date', '=', $exam_date);
-                    })
-                    ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
-                    ->join('exam_sites', function ($join) use ($exam_site) {
-                        $join->on('exam_sites.id', '=', 'exam_dates.exam_site_id')
-                            ->where('exam_sites.id', '=', $exam_site);
-                    })
-                    ->leftJoin('test_results', function ($join) {
-                        $join->on('test_results.application_id', '=', 'health_interviews.permit_application_id')
-                            ->where('test_results.deleted_at', '=', null)
-                            ->where('test_results.application_type_id', '=', 1);
-                    })
-                    ->leftJoin('health_interview_symptom', 'health_interview_symptom.health_interview_id', '=', 'health_interviews.id')
-                    ->leftJoin('symptoms', 'symptoms.id', '=', 'health_interview_symptom.symptom_id')
-                    ->leftJoin('travel_history', function ($join) {
-                        $join->on('travel_history.permit_application_id', '=', 'health_interviews.permit_application_id')
-                            ->where('travel_history.deleted_at', '=', null);
-                    })
-                    ->select(
-                        'permit_applications.permit_no',
-                        'exam_sites.name as exam_site',
-                        'appointments.appointment_date',
-                        'permit_applications.firstname as permit_firstname',
-                        'permit_applications.id as permit_id',
-                        'permit_applications.middlename as permit_middlename',
-                        'permit_applications.lastname as permit_lastname',
-                        'permit_applications.address as permit_address',
-                        'permit_applications.date_of_birth',
-                        'permit_applications.gender as permit_gender',
-                        'permit_applications.sign_off_status',
-                        'permit_applications.photo_upload',
-                        'permit_categories.name as permit_category',
-                        DB::raw('group_concat("  ", travel_history.destination, " - " ,travel_history.travel_date) as travel_history'),
-                        'test_results.overall_score',
-                        'test_results.critical_score',
-                        'health_interviews.*',
-                        'health_interviews.id as interview_id',
-                        DB::raw('group_concat("  ", symptoms.name) as symptoms')
-                    )
-                    ->where('permit_applications.deleted_at', NULL)
-                    ->groupBy('health_interviews.id', 'test_results.id', 'travel_history.id', 'appointments.id')
-                    ->orderBy('permit_applications.sign_off_status')
+                $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites')
+                    ->where('facility_id', auth()->user()->facility_id)
+                    ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
+                    ->whereRelation('permitApplication.appointment', 'appointment_date', $exam_date)
+                    ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', $exam_site)
+                    ->doesntHave('permitApplication.establishmentClinics')
+                    ->has('permitApplication.testResults')
+                    ->orderBy('sign_off_status')
                     ->get();
+                // $applications = DB::table('health_interviews')
+                    // ->where('health_interviews.facility_id', Auth()->user()->facility_id)
+                    // ->where('health_interviews.deleted_at', '=', null)
+                    // ->join('permit_applications', function ($join) {
+                    //     $join->on('health_interviews.permit_application_id', '=', 'permit_applications.id')
+                    //         ->where('permit_applications.establishment_clinic_id', '=', null);
+                    // })
+                    // ->join('permit_categories', 'permit_categories.id', '=', 'permit_applications.permit_category_id')
+                    // ->join('appointments', function ($join) use ($exam_date) {
+                    //     $join->on('appointments.permit_application_id', '=', 'permit_applications.id')
+                    //         ->where('appointments.deleted_at', '=', null)
+                    //         ->where('appointments.appointment_date', '=', $exam_date);
+                    // })
+                    // ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
+                    // ->join('exam_sites', function ($join) use ($exam_site) {
+                    //     $join->on('exam_sites.id', '=', 'exam_dates.exam_site_id')
+                    //         ->where('exam_sites.id', '=', $exam_site);
+                    // })
+                    // ->leftJoin('test_results', function ($join) {
+                    //     $join->on('test_results.application_id', '=', 'health_interviews.permit_application_id')
+                    //         ->where('test_results.deleted_at', '=', null)
+                    //         ->where('test_results.application_type_id', '=', 1);
+                    // })
+                    // ->leftJoin('health_interview_symptom', 'health_interview_symptom.health_interview_id', '=', 'health_interviews.id')
+                    // ->leftJoin('symptoms', 'symptoms.id', '=', 'health_interview_symptom.symptom_id')
+                    // ->leftJoin('travel_history', function ($join) {
+                    //     $join->on('travel_history.permit_application_id', '=', 'health_interviews.permit_application_id')
+                    //         ->where('travel_history.deleted_at', '=', null);
+                    // })
+                    // ->select(
+                    //     'permit_applications.permit_no',
+                    //     'exam_sites.name as exam_site',
+                    //     'appointments.appointment_date',
+                    //     'permit_applications.firstname as permit_firstname',
+                    //     'permit_applications.id as id',
+                    //     'permit_applications.middlename as permit_middlename',
+                    //     'permit_applications.lastname as permit_lastname',
+                    //     'permit_applications.address as permit_address',
+                    //     'permit_applications.date_of_birth',
+                    //     'permit_applications.gender as permit_gender',
+                    //     'permit_applications.sign_off_status',
+                    //     'permit_applications.photo_upload',
+                    //     'permit_categories.name as permit_category',
+                    //     // DB::raw('group_concat("  ", travel_history.destination, " - " ,travel_history.travel_date) as travel_history'),
+                    //     'test_results.overall_score',
+                    //     'test_results.critical_score',
+                    //     'health_interviews.*',
+                    //     'health_interviews.id as interview_id',
+                    //     // DB::raw('group_concat("  ", symptoms.name) as symptoms')
+                    // )
+                    // ->where('permit_applications.deleted_at', NULL)
+                    // // ->groupBy('health_interviews.id', 'test_results.id', 'travel_history.id', 'appointments.id')
+                    // ->orderBy('permit_applications.sign_off_status')
+                    // ->get();
             }
         } elseif ($app_type_id == 2) {
             $applications = DB::table('health_interviews')
@@ -206,33 +174,10 @@ class SignOffController extends Controller
                 ->groupBy('health_interviews.id', 'test_results.id', 'travel_history.id', 'appointments.id')
                 ->get();
         } elseif ($app_type_id == 3) {
-            $applications = DB::table('establishment_applications')
-                ->where('establishment_applications.deleted_at', '=', null)
-                ->join('food_est_operators', 'food_est_operators.establishment_application_id', '=', 'establishment_applications.id')
-                ->join('establishment_categories', 'establishment_applications.establishment_category_id', '=', 'establishment_categories.id')
-                ->join('test_results', function ($join) use ($date_of_inspection) {
-                    $join->on('test_results.application_id', '=', 'establishment_applications.id')
-                        ->where('test_results.application_type_id', '=', 3)
-                        ->where('test_results.facility_id', '=', Auth()->user()->facility_id)
-                        ->where('test_results.deleted_at', '=', null)
-                        ->where('test_results.test_date', '=', $date_of_inspection);
-                })
-                ->select(
-                    'establishment_categories.name as est_category',
-                    'test_results.visit_purpose',
-                    'test_results.test_date as inspection_date',
-                    'test_results.staff_contact',
-                    'establishment_applications.id as est_id',
-                    'establishment_applications.*',
-                    'establishment_applications.id as permit_id',
-                    'establishment_applications.establishment_name as est_name',
-                    'establishment_applications.establishment_address as address',
-                    'test_results.overall_score',
-                    'test_results.comments',
-                    'test_results.critical_score',
-                    DB::raw('group_concat("  ", food_est_operators.name_of_operator) as operators')
-                )
-                ->groupBy('establishment_applications.id')
+            $applications = EstablishmentApplications::with('operators', 'establishmentCategory', 'testResults')
+                ->has('testResults')
+                ->whereRelation('testResults', 'test_date', $date_of_inspection)
+                ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->get();
         } elseif ($app_type_id == 5) {
             $applications = DB::table('swimming_pools_applications')
