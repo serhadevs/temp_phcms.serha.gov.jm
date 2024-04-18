@@ -240,7 +240,7 @@
                                         <div class="col">
                                             <label for="" class="form-label">Establishment</label>
                                             <input type="text" class="form-control"
-                                                value="{{ strtoupper(!empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
+                                                value="{{ strtoupper(empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
                                                 disabled>
                                         </div>
                                     </div>

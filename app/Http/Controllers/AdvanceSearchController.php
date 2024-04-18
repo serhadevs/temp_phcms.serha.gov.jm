@@ -126,6 +126,10 @@ class AdvanceSearchController extends Controller
 
                     return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 }
+            } else if ($module['module'] == 4) {
+                if ($request->app_type == 1) {
+                } else if ($request->app_type == 3) {
+                }
             } else if ($module['module'] == '5') {
                 $application_id = $request->application_number;
                 $receipt_no = $request->receipt_no;

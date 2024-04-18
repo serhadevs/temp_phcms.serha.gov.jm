@@ -276,7 +276,7 @@ class PaymentController extends Controller
             } else if ($application->establishment_clinic_id) {
                 $establishment_clinic = DB::table('establishment_clinics')
                     ->where('id', $application->establishment_clinic_id)
-                    ->get();
+                    ->first();
                 $receipt_info['appointment_data'] = date_format(new DateTime($establishment_clinic?->proposed_date), "Y-m-d") . " " . $establishment_clinic->proposed_time;
                 $receipt_info['exam_site'] = $establishment_clinic->name . " " . $establishment_clinic->address;
             }
