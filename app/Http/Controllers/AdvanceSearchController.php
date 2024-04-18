@@ -124,7 +124,7 @@ class AdvanceSearchController extends Controller
                     $est_name = $request->food_est_name;
                     $application_id = $request->application_number;
 
-                    $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
+                    $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user', 'signOff')
                         ->when($est_name, function ($query, string $est_name) {
                             $query->where('establishment_name', 'like', '%' . $est_name . '%');
                         })

@@ -56,9 +56,14 @@
                 <td class="text-nowrap">
                     @if (isset($module))
                         @if (empty($application->testResults))
-                            <a class="btn btn-primary btn-sm mx-2" href="/test-results/food-establishments/create/{{ $application->id }}">
+                            <a class="btn btn-primary btn-sm mx-2"
+                                href="/test-results/food-establishments/create/{{ $application->id }}">
                                 Add
                             </a>
+                        @endif
+                        @if (!empty($application->signOff))
+                            <a href="/food-establishments/renewal/{{ $application->id }}"
+                                class="btn btn-sm btn-success">Renew</a>
                         @endif
                     @endif
                     <a href="" class="btn btn-warning btn-sm">
