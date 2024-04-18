@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
+use App\Models\HealthCertApplications;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\User;
@@ -127,8 +128,38 @@ class AdvanceSearchController extends Controller
                     return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 }
             } else if ($module['module'] == 4) {
+                $firstname = $request->firstname;
+                $lastname = $request->lastname;
+                $id = $request->application_number;
+                $module = 4;
                 if ($request->app_type == 1) {
+                    $app_type_id = 1;
+                    $applications = PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms', 'user', 'payment')
+                        ->has('payment')
+                        ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                        ->when($firstname, function ($query, string $firstname) {
+                            $query->where('firstname', 'like', '%' . $firstname . '%');
+                        })->when($lastname, function ($query, string $lastname) {
+                            $query->where('lastname', 'like', '%' . $lastname . '%');
+                        })->when($id, function ($query, string $id) {
+                            $query->where('id', $id);
+                        })->orderBy('created_at', 'desc')
+                        ->get();
+                    return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 } else if ($request->app_type == 3) {
+                    $app_type_id = 2;
+                    $applications = HealthCertApplications::with('healthInterviews.healthInterviewSymptom.symptoms', 'user', 'payment')
+                        ->has('payment')
+                        ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                        ->when($firstname, function ($query, string $firstname) {
+                            $query->where('firstname', 'like', '%' . $firstname . '%');
+                        })->when($lastname, function ($query, string $lastname) {
+                            $query->where('lastname', 'like', '%' . $lastname . '%');
+                        })->when($id, function ($query, string $id) {
+                            $query->where('id', $id);
+                        })->orderBy('created_at', 'desc')
+                        ->get();
+                    return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 }
             } else if ($module['module'] == '5') {
                 $application_id = $request->application_number;

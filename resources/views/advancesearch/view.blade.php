@@ -24,6 +24,8 @@
                         @elseif($app_type_id == '1')
                             @include('partials.tables.permit_processed_test_results_table')
                         @endif
+                    @elseif($module == '4')
+                        @include('partials.tables.advanced_search_health_interview')
                     @elseif($module == '5')
                         @include('partials.tables.processed_payments_table')
                     @endif
