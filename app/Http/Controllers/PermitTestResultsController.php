@@ -20,7 +20,7 @@ class PermitTestResultsController extends Controller
     public function outstandingResults()
     {
         $today = new DateTime();
-        $six_months_to_date = date_format(date_modify($today, "-1 months"), "Y-m-d");
+        $six_months_to_date = date_format(date_modify($today, "-6 months"), "Y-m-d");
 
         $outstanding_permits = DB::table('payments')
             ->join('permit_applications', 'payments.application_id', '=', 'permit_applications.id')

@@ -339,7 +339,7 @@ class PermitApplicationController extends Controller
                     ->with('success', 'The application was entered successfully. The Application ID is: ' . $new_permit_application->id);
             }
         } else {
-            return redirect()->route('dashboard.dashboard')->with(['error' => 'Application was not created successfully']);
+            return redirect()->route('permit.index', ['id' => 0])->with(['error' => 'Application was not created successfully']);
         }
     }
 
