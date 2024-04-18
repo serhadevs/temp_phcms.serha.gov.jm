@@ -42,7 +42,8 @@ class AdvanceSearchController extends Controller
         ]);
         try {
             if ($module['module'] == '1') {
-                if ($request->firstname == "" && $request->lastname == "" && $request->application_nu) {
+                if (!$request->firstname && !$request->lastname && !$request->application_number) {
+                    return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
                 }
                 $firstname = $request->firstname;
                 $lastname = $request->lastname;
@@ -76,6 +77,9 @@ class AdvanceSearchController extends Controller
 
                 return view('advancesearch.view', compact('permit_applications', 'module'));
             } else if ($module['module'] == '2') {
+                if (!$request->establishment_clinic_name && !$request->application_number) {
+                    return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
+                }
                 $id = $request->application_number;
                 $est_clinic_name = $request->establishment_clinic_name;
                 $food_clinics = EstablishmentClinics::with('payment', 'user')
@@ -85,12 +89,14 @@ class AdvanceSearchController extends Controller
                         $query->where('id', $id);
                     })->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                     ->get();
-
                 $module = 2;
 
                 return view('advancesearch.view', compact('food_clinics', 'module'));
             } else if ($module['module'] == '3') {
                 if ($request->app_type == "1") {
+                    if (!$request->firstname && !$request->lastname && !$request->application_number) {
+                        return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
+                    }
                     $module = 3;
                     $app_type_id = 1;
                     $firstname = $request->firstname;
@@ -110,6 +116,9 @@ class AdvanceSearchController extends Controller
 
                     return view('advancesearch.view', compact('test_results', 'module', 'app_type_id'));
                 } else if ($request->app_type == "2") {
+                    if (!$request->food_est_name && !$request->application_number) {
+                        return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
+                    }
                     $app_type_id = 3;
                     $module = 3;
                     $est_name = $request->food_est_name;
@@ -128,6 +137,9 @@ class AdvanceSearchController extends Controller
                     return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 }
             } else if ($module['module'] == 4) {
+                if (!$request->firstname && !$request->lastname && !$request->application_number) {
+                    return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
+                }
                 $firstname = $request->firstname;
                 $lastname = $request->lastname;
                 $id = $request->application_number;
@@ -162,6 +174,9 @@ class AdvanceSearchController extends Controller
                     return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 }
             } else if ($module['module'] == '5') {
+                if (!$request->receipt_no && !$request->application_number) {
+                    return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
+                }
                 $application_id = $request->application_number;
                 $receipt_no = $request->receipt_no;
 
