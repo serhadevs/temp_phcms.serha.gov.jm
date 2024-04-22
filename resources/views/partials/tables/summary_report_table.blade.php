@@ -1,7 +1,7 @@
 <table class="table table-striped no-wrap" id="summary_report" style="width:100%">
     <thead>
         <tr>
-            <th>Application Type</th>
+            <th class="sorting_disabled">Application Type</th>
             <th>No. Applications Received (Total)</th>
             <th>No. of New Applications</th>
             <th>No. of Renewals</th>
@@ -79,8 +79,6 @@
             <td>{{ $foodClinics[6] }}</td>
             <td>{{ $foodClinics[7] }}</td>
         </tr>
-    </tbody>
-    <tfoot>
         <tr>
             <td class="fw-bold">Total</td>
             <td>{{ $foodHandlers[0] + $barberCosmet[0] + $foodEstablishments[0] + $swimmingPools[0] + $touristEstablishments[0] + $foodClinics[0] }}
@@ -91,11 +89,13 @@
             </td>
             <td>{{ $foodHandlers[3] + $barberCosmet[3] + $foodEstablishments[3] + $swimmingPools[3] + $touristEstablishments[3] + $foodClinics[3] }}
             </td>
-            <td colspan="3"></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
             <td>{{ $foodHandlers[7] + $barberCosmet[7] + $foodEstablishments[7] + $swimmingPools[7] + $touristEstablishments[7] + $foodClinics[7] }}
             </td>
         </tr>
-    </tfoot>
+    </tbody>
 </table>
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
@@ -123,10 +123,15 @@
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
+        "order": [],
         "footerCallback": function(row, data, start, end, display) {
             var api = this.api(),
                 data;
-        }
+        },
+        "aoColumnDefs": [{
+            "bSortable": false,
+            "aTargets": ["sorting_disabled"]
+        }],
     });
 </script>
 
