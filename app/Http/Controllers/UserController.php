@@ -224,8 +224,8 @@ class UserController extends Controller
             $user->password = Hash::make($password);
             $user->save();
 
-            // return redirect()->route("dashboard")->with("success", "Your password was reset successfully");
-            return view('dashboard.dashboard')->with('success', 'Your password was reset successfully');
+            return redirect()->route("dashboard")->with("success", "Your password was reset successfully");
+            // return view('dashboard.dashboard')->with('success', 'Your password was reset successfully');
 
         } else {
             return redirect()->back()->with('error', "Unable to find user");
