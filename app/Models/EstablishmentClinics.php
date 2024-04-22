@@ -11,7 +11,7 @@ use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 class EstablishmentClinics extends Model
 {
     use HasFactory;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "establishment_clinics";
 

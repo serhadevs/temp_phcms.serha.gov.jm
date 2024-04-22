@@ -10,7 +10,7 @@ use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 class SignOff extends Model
 {
     use HasFactory;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "sign_offs";
 

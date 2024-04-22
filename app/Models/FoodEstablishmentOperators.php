@@ -11,7 +11,7 @@ class FoodEstablishmentOperators extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "food_est_operators";
 

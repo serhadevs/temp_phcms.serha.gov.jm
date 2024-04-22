@@ -9,7 +9,7 @@ use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 class SwimmingPoolsApplications extends Model
 {
     use HasFactory;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "swimming_pools_applications";
 

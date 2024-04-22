@@ -14,7 +14,7 @@ use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $fillable = [
         'email',

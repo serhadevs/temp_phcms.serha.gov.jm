@@ -12,7 +12,7 @@ class ExamDates extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "exam_dates";
     protected $fillable = [

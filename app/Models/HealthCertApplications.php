@@ -11,7 +11,7 @@ use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 class HealthCertApplications extends Model
 {
     use HasFactory;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "health_cert_applications";
 

@@ -14,7 +14,7 @@ class PermitApplication extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $table = 'permit_applications';
 

@@ -12,7 +12,7 @@ class TouristEstablishments extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "tourist_establishments";
 

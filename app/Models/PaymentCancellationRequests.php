@@ -12,7 +12,7 @@ class PaymentCancellationRequests extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "payment_cancellation_requests";
 

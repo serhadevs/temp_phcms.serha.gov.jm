@@ -13,7 +13,7 @@ class EstablishmentApplications extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "establishment_applications";
 

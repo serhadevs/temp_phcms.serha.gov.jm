@@ -12,7 +12,7 @@ class HealthInterviewSymptom extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use Loggable;
+    // use Loggable;
 
     protected $table = "health_interview_symptom";
 
