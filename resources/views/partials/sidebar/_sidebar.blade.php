@@ -42,7 +42,7 @@
             </li>
         
 
-        @if (in_array(auth()->user()->role_id, [1, 5]))
+        @if (in_array(auth()->user()->role_id, [1,5,7]))
             <li class="sidebar-item">
                 <a href="/sign-off" class="sidebar-link">
                     <i class="bi bi-clipboard-check"></i>
