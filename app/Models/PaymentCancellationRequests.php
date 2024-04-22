@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class PaymentCancellationRequests extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use Loggable;
 
     protected $table = "payment_cancellation_requests";
 

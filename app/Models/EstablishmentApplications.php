@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class EstablishmentApplications extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use Loggable;
 
     protected $table = "establishment_applications";
 

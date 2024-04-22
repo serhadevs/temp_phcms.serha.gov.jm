@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class Payments extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use Loggable;
 
     protected $fillable = [
         'id',

@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class EstablishmentClinics extends Model
 {
     use HasFactory;
+    use Loggable;
 
     protected $table = "establishment_clinics";
 
