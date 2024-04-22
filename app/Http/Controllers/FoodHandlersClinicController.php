@@ -105,9 +105,9 @@ class FoodHandlersClinicController extends Controller
         $app_id = EstablishmentClinics::create($food_handlers_clinic)->id;
 
         if ($app_id) {
-            return redirect()->route('food-handlers-clinic.index')->with('success', 'Food Handlers Clinic application was created successfully. The application number is: ' . $app_id);
+            return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Food Handlers Clinic application was created successfully. The application number is: ' . $app_id);
         } else {
-            return redirect()->route('food-handlers-clinic.index')->with('error', 'Error processing Food Handlers Clinic application.');
+            return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('error', 'Error processing Food Handlers Clinic application.');
         }
     }
 

@@ -15,6 +15,7 @@ use App\Http\Controllers\PermitApplicationController;
 use App\Http\Controllers\PermitTestResultsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SignOffController;
+use App\Http\Controllers\SummaryReportController;
 use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
@@ -118,6 +119,10 @@ Route::group(['middleware' => ['auth']], function () {
      //Report
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');
      Route::post('/report/payment', [PaymentReportController::class, 'showReport'])->name('reports.payment.show');
+
+         //Summary Report
+      Route::get('/report/summary-report', [SummaryReportController::class, 'create'])->name('reports.summary.index');
+      Route::post('/report/summary-report/show', [SummaryReportController::class, 'show'])->name('report.summary.show');
 
      //Renewals
      Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class, 'renewal'])->name('food_handlers_permit.renewal');

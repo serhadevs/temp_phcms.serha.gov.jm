@@ -1,18 +1,18 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'General Reports')
+@section('title', 'Summary Report')
 
 @section('content')
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container">
-            <h1>Support Report</h1>
+            <h2 class="text-muted mb-2">Summary Report</h2>
             <div class="card">
                 <div class="card-body">
-                    <form action={{ route('reports.payment.show') }} method="POST">
+                    <form action={{ route('report.summary.show') }} method="POST">
                         @csrf
-                        @method("POST")
+                        @method('POST')
                         <div class="row">
                             <div class="col">
                                 <label for="" class="form-label">

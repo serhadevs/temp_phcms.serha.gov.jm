@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Renewals extends Model
 {
@@ -21,4 +22,9 @@ class Renewals extends Model
     protected $tale = 'renewals';
 
     public $timestamps = true;
+
+    public function permitApplication(): HasOne
+    {
+        return $this->hasOne(PermitApplication::class, 'id', 'new_application_id');
+    }
 }

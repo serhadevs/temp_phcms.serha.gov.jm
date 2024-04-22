@@ -1,16 +1,16 @@
-@extends("partials.layouts.layout")
+@extends('partials.layouts.layout')
 
-@section("title", "Payment Report")
+@section('title', ' - Summary Report')
 
-@section("content")
-    @include("partials.sidebar._sidebar")
+@section('content')
+    @include('partials.sidebar._sidebar')
     <div class="main">
-        @include("partials.navbar._navbar")
+        @include('partials.navbar._navbar')
         <div class="container">
-            <h1>Payment Report</h1>
+            <h2 class="text-muted mb-2">Summary Report</h2>
             <div class="card">
                 <div class="card-body">
-                    @include("partials.tables.payment_report_table")
+                    @include('partials.tables.summary_report_table')
                 </div>
             </div>
         </div>
