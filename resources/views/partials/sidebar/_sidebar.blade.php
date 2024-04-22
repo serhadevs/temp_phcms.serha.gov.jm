@@ -74,7 +74,7 @@
                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
                     <i class="bi bi-coin"></i>
-                    <span>Payment</span>
+                    <span>Payments</span>
                 </a>
                 <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
@@ -85,7 +85,7 @@
                     </li>
                    
                         <li class="sidebar-item">
-                            <a href="/payments/create" class="sidebar-link">Create New</a>
+                            <a href="/payments/create" class="sidebar-link">Create New Payment</a>
                         </li>
                   
                 </ul>
