@@ -27,7 +27,7 @@
             <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list"
                 href="#list-settings" role="tab" aria-controls="list-settings">Creating an Application for a Permit</a>
                 <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list"
-                href="#list-settings" role="tab" aria-controls="list-settings">Creating an Application for a Food Establishment License</a>
+                href="#list-settings" role="tab" aria-controls="list-settings">Creating an Application for A Food Establishment License</a>
         </div>
     </div>
     <div class="col-8">
@@ -228,8 +228,26 @@
                     </li>
                 </ul>
             </div>
-            <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">...</div>
-            <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">...</div>
+            <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                <div class="card">
+                    <div class="card-header">
+                        Coming Soon
+                    </div>
+                    <div class="card-body">
+                        <img src="/images/underconstruction.png" alt="Coming Soon Image" width="100%">
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                <div class="card">
+                    <div class="card-header">
+                        Coming Soon
+                    </div>
+                    <div class="card-body">
+                        <img src="/images/underconstruction.png" alt="Coming Soon Image" width="100%">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
