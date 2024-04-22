@@ -42,7 +42,7 @@
             </li>
         
 
-        @if (in_array(auth()->user()->role_id, [1, 5]))
+        @if (in_array(auth()->user()->role_id, [1,5,7]))
             <li class="sidebar-item">
                 <a href="/sign-off" class="sidebar-link">
                     <i class="bi bi-clipboard-check"></i>
@@ -57,12 +57,7 @@
             </a>
         </li>
        
-            <li class="sidebar-item">
-                <a href="/payments/cancellations" class="sidebar-link">
-                    <i class="bi bi-slash-circle"></i>
-                    <span>Payment Cancel Requests</span>
-                </a>
-            </li>
+           
        
     
             <li class="sidebar-item">
@@ -74,12 +69,12 @@
     
 
 
-        
+        @if(in_array(auth()->user()->id,[1,3,4,9]))
             <li class="sidebar-item">
                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
                     <i class="bi bi-coin"></i>
-                    <span>Payment</span>
+                    <span>Payments</span>
                 </a>
                 <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
@@ -90,12 +85,19 @@
                     </li>
                    
                         <li class="sidebar-item">
-                            <a href="/payments/create" class="sidebar-link">Create New</a>
+                            <a href="/payments/create" class="sidebar-link">Create New Payment</a>
                         </li>
                   
                 </ul>
             </li>
-       
+
+            <li class="sidebar-item">
+                <a href="/payments/cancellations" class="sidebar-link">
+                    <i class="bi bi-slash-circle"></i>
+                    <span>Payment Cancel Requests</span>
+                </a>
+            </li>
+       @endif
       
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"

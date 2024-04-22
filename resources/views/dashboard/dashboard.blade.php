@@ -30,7 +30,7 @@
                     <h3 class="fw-bold fs-4 mb-3">Dashboard</h3>
                     <h4 class="fs-4 mb-3">Welcome {{ auth()->user()->firstname }} {{ auth()->user()->lastname }} </h4>
 
-                    <div class="row mb-3">
+                    {{-- <div class="row mb-3">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
@@ -43,7 +43,7 @@
                                                 <a href="#" class="list-group-item list-group-item-action">
                                                     <p class="mb-1">{{ optional($appointment->applications)->firstname }}
                                                         {{ optional($appointment->applications)->lastname }}</p>
-                                                    {{-- <small class="text-muted">And some muted small print.</small> --}}
+                                                   
                                                 </a>
                                             @endforeach
                                         @else
@@ -54,7 +54,7 @@
                                 
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="row">
                         <div class="col-12 col-md-4 ">

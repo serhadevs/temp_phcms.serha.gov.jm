@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class FoodEstablishmentOperators extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    // use Loggable;
 
     protected $table = "food_est_operators";
 

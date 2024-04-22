@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class SignOff extends Model
 {
     use HasFactory;
+    // use Loggable;
 
     protected $table = "sign_offs";
 

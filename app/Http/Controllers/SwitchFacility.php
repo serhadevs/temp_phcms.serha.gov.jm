@@ -8,7 +8,7 @@ class SwitchFacility extends Controller
 {
     public function update(Request $request){
         //Change the location of the user
-
+        
         
 
     }
