@@ -53,8 +53,8 @@ Route::post('/reset/{token}', [UserController::class, 'post_reset']);
 Route::group(['middleware' => ['auth']], function () {
 
      //Dashboard Routes
-     Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
-     Route::get('/dashboard', [Dashboard::class, 'fetchAppointments'])->name('dashboard.fetchappointments');
+     Route::get('/dashboard', [Dashboard::class, 'index']);
+   //   Route::get('/dashboard', [Dashboard::class, 'fetchAppointments'])->name('dashboard.fetchappointments');
 
      //Permit Application Route
      Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
