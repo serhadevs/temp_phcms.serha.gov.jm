@@ -69,7 +69,7 @@
     
 
 
-        @if(in_array(auth()->user()->id,[1,3,4,9]))
+        @if(in_array(auth()->user()->role_id,[1,3,4,9]))
             <li class="sidebar-item">
                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
