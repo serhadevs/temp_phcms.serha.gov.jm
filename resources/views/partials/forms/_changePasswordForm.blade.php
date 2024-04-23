@@ -1,5 +1,6 @@
 <form action="/password-change" method = "post">
     @csrf
+    
     <div class="card-body">
         <div class="row mb-3">
             <label for="password" class="col-sm-2 col-form-label">New Password</label>
@@ -25,5 +26,6 @@
         </div>
     </div>
 
+    <a href="{{ route('dashboard.dashboard') }}" class ="btn btn-danger">Cancel </a>
     <button class="btn btn-outline-primary">Change Password</button>
 </form>

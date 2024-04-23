@@ -134,7 +134,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/settings/users', [UserController::class, 'index'])->name('users');
      Route::get('/settings/users/reset-password/{id}', [UserController::class, 'resetpassword']);
      Route::get('/settings/users/restore/{id}', [UserController::class, 'restore']);
-     Route::get('/change-password', [UserController::class, 'changepasswordMe']);
+     Route::get('/change-password', [UserController::class, 'changepasswordMe'])->name('user.changepassword');
      Route::post('/password-change', [UserController::class, 'store']);
      Route::get('/settings/user/create', [UserController::class, 'createuser'])->name('user.create');
      Route::post('/settings/user/add', [UserController::class, 'addUser'])->name('users.add');

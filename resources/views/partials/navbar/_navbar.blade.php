@@ -1,13 +1,17 @@
 <nav class="navbar navbar-expand px-4 py-3">
     <div class="navbar-collapse collapse">
         <ul class="navbar-nav ms-auto">
-            <li class="nav-item dropdown">
-                <form class="form-inline my-2 my-lg-0" action="/logout" method="POST">
-                    @csrf
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false" data-bs-auto-close="outside">
                     <i class="bi bi-person"></i> {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
+                </button>
+                <form class="dropdown-menu" action="/logout" method="POST">
+                    @csrf
+
                     @php
                         $facility = '';
-                        switch(Auth::user()->facility_id) {
+                        switch (Auth::user()->facility_id) {
                             case 1:
                                 $facility = 'St Catherine';
                                 break;
@@ -21,13 +25,19 @@
                                 $facility = 'Unknown Facility';
                         }
                     @endphp
-                    <span class="badge bg-primary">{{ $facility }}</span>
-                    <button class="btn btn-primary btn-sm my-2 my-sm-0" type="submit">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </button>
+                    <li><a class="dropdown-item" href="#">Facility: <em>{{ $facility }}</em></a></li>
+                    <li><a class="dropdown-item" href="#">View Profile</a></li>
+                    <li><a class="dropdown-item" href="{{ route('user.changepassword') }}">Change Password</a></li>
+
+                    <li class="dropdown-item">
+                        <button type="submit" class="btn btn-primary btn-sm">Logout</button>
+                    </li>
+
                 </form>
-            </li>
+            </div>
+
+
         </ul>
-        
+
     </div>
 </nav>
