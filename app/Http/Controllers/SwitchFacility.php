@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 class SwitchFacility extends Controller
 {
     public function update(Request $request){
-        //Change the location of the user
+       
+        // //Find the user in the database 
+        // $user = User::findOrFail(auth()->user())
         
         
 
