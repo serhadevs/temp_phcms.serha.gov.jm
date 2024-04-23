@@ -248,7 +248,7 @@
                                         <div class="col">
                                             <label for="" class="form-label">Added By</label>
                                             <input type="text" class="form-control"
-                                                value="{{ $permit_application->user?->firstname . ' ' . $permit_application?->lastname }}"
+                                                value="{{ $permit_application->user?->firstname . ' ' . $permit_application->user?->lastname }}"
                                                 disabled>
                                         </div>
                                         <div class="col">
