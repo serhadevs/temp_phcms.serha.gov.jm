@@ -90,14 +90,18 @@
                   
                 </ul>
             </li>
+            @endif
 
+            {{-- Only The Cashiers and the Accountant can access these routes --}}
+            @if(in_array(auth()->user()->role_id,[4,9]))
             <li class="sidebar-item">
                 <a href="/payments/cancellations" class="sidebar-link">
                     <i class="bi bi-slash-circle"></i>
                     <span>Payment Cancel Requests</span>
                 </a>
             </li>
-       @endif
+            @endif
+   
       
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -228,9 +232,11 @@
                     <li class="sidebar-item">
                         <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
                     </li>
+                    @if(in_array(auth()->user()->role_id,[4,9]))
                     <li class="sidebar-item">
                         <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                     </li>
+                    @endif
                 </ul>
 
             </li>
