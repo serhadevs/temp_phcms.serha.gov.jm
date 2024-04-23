@@ -37,6 +37,7 @@
                                 @if (!in_array(auth()->user()->role_id, [4, 9]))
                                     <option value="1">Food Handlers</option>
                                     <option value="2">Onsite</option>
+                                    <option value="6">Food Establishment</option>
                                     <option value="3">Test Results</option>
                                     <option value="4">Health Interview</option>
                                 @endif
@@ -50,24 +51,24 @@
                         @enderror
                         <div class="row g-3" id="name_div" style="display:none">
                             <div class="col-md-6" id="first_name_div">
-                                <label for="First name">Firstname</label>
+                                <label for="First name" class="form-label">Firstname</label>
                                 <input type="text" class="form-control" name = "firstname" placeholder="First name"
                                     aria-label="First name">
                             </div>
                             <div class="col-md-6" id="last_name_div">
-                                <label for="Last name">LastName</label>
+                                <label for="Last name" class="form-label">LastName</label>
                                 <input type="text" class="form-control" name="lastname" placeholder="Last name"
                                     aria-label="Last name">
                             </div>
                         </div>
                         <div class="row g-3 my-2">
                             <div class="col-md-6" id="app_no_div" style="display:none">
-                                <label for="application">Application Number</label>
+                                <label for="application" class="form-label">Application Number</label>
                                 <input type="text" class="form-control" placeholder="Application Number"
                                     aria-label="Application Number" name="application_number">
                             </div>
                             <div class="col-md-6" id="est_clinic_name_div" style="display:none">
-                                <label for="establishment">Establishment Clinic Name</label>
+                                <label for="establishment" class="form-label">Establishment Clinic Name</label>
                                 <select class="form-select" aria-label="establishment" name="establishment_clinic_name">
                                     <option selected disabled>Select an Establishment</option>
                                     @foreach ($establishment_clinics as $est)
@@ -76,7 +77,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6" id="app_type_div" style="display:none">
-                                <label for="app_type">Application Type</label>
+                                <label for="app_type" class="form-label">Application Type</label>
                                 <select class="form-select" aria-label="app_type" name="app_type" id="app_type">
                                     <option value="1">Food Handlers</option>
                                     <option value="2">Food Establishment</option>
@@ -84,7 +85,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6" id="receipt_div" style="display:none">
-                                <label for="Receipt No">Receipt Number</label>
+                                <label for="Receipt No" class="form-label">Receipt Number</label>
                                 <input type="text" class="form-control" aria-label="Receipt No" name="receipt_no">
                             </div>
                             <div class="col col-md-6" id="food_est_name_div" style="display:none">
@@ -102,10 +103,10 @@
                                 <input class="form-control" list="datalistOptions" id="exampleDataList"
                                     placeholder="Type to search..." name ="food_est_name">
                                 <datalist id="datalistOptions">
-                                          @foreach ($food_establishments as $food_est)
-                                            <option value="{{ $food_est->establishment_name }}">
-                                                {{ $food_est->establishment_name }}</option>
-                                        @endforeach
+                                    @foreach ($food_establishments as $food_est)
+                                        <option value="{{ $food_est->establishment_name }}">
+                                            {{ $food_est->establishment_name }}</option>
+                                    @endforeach
                                 </datalist>
                             </div>
                         </div>
@@ -148,6 +149,9 @@
                 } else if (this.value == '5') {
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('receipt_div').style.display = "";
+                } else if (this.value == '6') {
+                    document.getElementById('food_est_name_div').style.display = "";
+                    document.getElementById('app_no_div').style.display = "";
                 }
             })
 

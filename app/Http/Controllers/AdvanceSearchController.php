@@ -192,6 +192,23 @@ class AdvanceSearchController extends Controller
 
                 $module = 5;
                 return view('advancesearch.view', compact('payments_info', 'module'));
+            } else if ($module['module'] == '6') {
+                if (!$request->application_number && !$request->food_est_name) {
+                    return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
+                }
+
+                $id = $request->application_number;
+                $est_name = $request->food_est_name;
+                $food_establishments = EstablishmentApplications::with('user')
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->when($id, function ($query, string $id) {
+                        $query->where('id', $id);
+                    })->when($est_name, function ($query, string $est_name) {
+                        $query->where('establishment_name', 'like', '%' . $est_name . '%');
+                    })->get();
+                $module = 6;
+
+                return view('advancesearch.view', compact('food_establishments', 'module'));
             }
         } catch (Exception $e) {
             return $e->getMessage();

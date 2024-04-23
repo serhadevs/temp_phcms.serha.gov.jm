@@ -28,6 +28,8 @@
                         @include('partials.tables.advanced_search_health_interview')
                     @elseif($module == '5')
                         @include('partials.tables.processed_payments_table')
+                    @elseif($module == '6')
+                        @include('partials.tables.processed_food_establishment_table')
                     @endif
                     <a class="btn btn-danger mt-4" href="/advance-search/create">
                         <i class="bi bi-box-arrow-left"></i>
