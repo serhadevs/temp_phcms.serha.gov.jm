@@ -7,25 +7,21 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <main class="content px-3 py-4">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="card">
                     <div class="card-body">
                         @if ($message = Session::get('success'))
-                            {{-- <div class="container"> --}}
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <p class="text-success"><strong>{{ $message }}</strong></p>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            {{-- </div> --}}
                         @endif
                         @if ($message = Session::get('error'))
-                            {{-- <div class="container"> --}}
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <p class="text-danger font-weight-bold">{{ $message }}</p>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
                                     aria-label="Close"></button>
                             </div>
-                            {{-- </div> --}}
                         @endif
                         <div class="row justify-content-between mb-3">
                             <div class="col">

@@ -6,6 +6,7 @@
             <th>Address</th>
             <th>Telphone No.</th>
             <th>Payment Staus</th>
+            <th>Clinic Date & Time</th>
             {{-- Enter after logic has been implemented --}}
             {{-- <th>No. of Permits</th> --}}
             <th>No. of Employees</th>
@@ -34,6 +35,9 @@
                     @if (!empty($application->payment))
                         <span class="badge text-bg-success">Paid</span>
                     @endif
+                </td>
+                <td>
+                    {{ $application->proposed_date }} - {{ $application->proposed_time }}
                 </td>
                 {{-- <td>
                     {{ $application-> }}

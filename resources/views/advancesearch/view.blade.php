@@ -6,7 +6,7 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container">
+        <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
                     <h3 class="text-muted">

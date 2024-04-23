@@ -7,7 +7,7 @@
 
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container">
+        <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
                     <form method="POST" action="{{ route('food_handlers_permit.renew') }}" enctype="multipart/form-data">

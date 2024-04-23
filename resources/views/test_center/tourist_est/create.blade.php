@@ -6,7 +6,7 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container">
+        <div class="container-fluid">
             <h2 class="text-muted">
                 Create Tourist Inspection Result
             </h2>

@@ -2,13 +2,14 @@
     <thead>
         {{-- Only shows your facility --}}
         <tr>
-            <th>App #</th>{{-- THERE --}}
+            <th>App #</th>
             <th>Permit No.</th>{{-- THERE --}}
             <th>First Name</th>{{-- THERE --}}
             <th>Last Name</th>{{-- THERE --}}
             <th>Permit Type</th>{{-- THERE --}}
             <th>Category</th>{{-- Use category Table =>Done --}}
             <th>Payment Status</th>{{-- Use payments table =>Done --}}
+            <th>Photo Status</th>
             <th>Sign Off Status</th>{{-- THERE --}}
             <th>TRN</th>{{-- THERE --}}
             {{-- <th>Granted</th>THERE --}}
@@ -24,8 +25,13 @@
                 <td>{{ strtoupper($permit_application->lastname) }}</td>
                 <td>{{ strtoupper($permit_application->permit_type) }}</td>
                 <td>{{ strtoupper($permit_application->permitCategory?->name) }}</td>
+                <td>
+                    <span
+                        class="badge text-bg-{{ empty($permit_application->payment) ? 'danger' : 'success' }}">{{ empty($permit_application->payment) ? 'Not Paid' : 'Paid' }}
+                    </span>
+                </td>
                 <td><span
-                        class="badge text-bg-{{ empty($permit_application->payment) ? 'danger' : 'success' }}">{{ empty($permit_application->payment) ? 'Not Paid' : 'Paid' }}</span>
+                        class="badge text-bg-{{ $permit_application->photo_upload == '' ? 'danger' : 'success' }}">{{ $permit_application->photo_upload == '' ? 'No Image' : 'Uploaded' }}</span>
                 </td>
                 <td><i
                         class="bi bi-{{ $permit_application->sign_off_status == '1' ? 'check2-circle' : 'x-circle-fill' }}"></i>
@@ -54,6 +60,7 @@
             <th>Permit Type</th>{{-- THERE --}}
             <th>Category</th>{{-- Use category Table =>Done --}}
             <th>Payment Status</th>{{-- Use payments table =>Done --}}
+            <th>Photo Status</th>
             <th>Sign Off Status</th>{{-- THERE --}}
             <th>TRN</th>{{-- THERE --}}
             {{-- <th>Granted</th>THERE --}}

@@ -6,7 +6,7 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container">
+        <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-between mb-3">
