@@ -93,7 +93,7 @@
             @endif
 
             {{-- Only The Cashiers and the Accountant can access these routes --}}
-            @if(in_array(auth()->user()->role_id,[4,9]))
+            @if(in_array(auth()->user()->role_id,[1,4,9]))
             <li class="sidebar-item">
                 <a href="/payments/cancellations" class="sidebar-link">
                     <i class="bi bi-slash-circle"></i>
