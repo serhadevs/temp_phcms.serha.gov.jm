@@ -278,8 +278,14 @@ class PaymentController extends Controller
                     ->where('id', $application->establishment_clinic_id)
                     ->first();
                 $receipt_info['appointment_data'] = date_format(new DateTime($establishment_clinic?->proposed_date), "Y-m-d") . " " . $establishment_clinic->proposed_time;
-                $receipt_info['exam_site'] = $establishment_clinic->name . " " . $establishment_clinic->address;
+                $receipt_info['exam_site'] = $establishment_clinic?->name . " " . $establishment_clinic?->address;
             }
+        } else if ($payment->application_type_id == 3) {
+            $receipt_info['applicant_name'] = EstablishmentApplications::find($payment->application_id)?->establishment_name;
+            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
+        } else if ($payment->application_type_id == 4) {
+            $receipt_info['applicant_name'] = EstablishmentClinics::find($payment->application_id)?->name;
+            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
         }
 
         $receipt_info['application_no'] = $payment->application_id;
