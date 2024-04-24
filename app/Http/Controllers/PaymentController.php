@@ -269,7 +269,6 @@ class PaymentController extends Controller
                 ->orderBy('appointments.created_at', 'desc')
                 ->first();
 
-            // dd($appointment);
             if ($appointment) {
                 $receipt_info['appointment_date'] = date_format(new DateTime($appointment->appointment_date), 'M-d-Y') . " " . $appointment->exam_start_time;
                 $receipt_info['exam_site'] = $appointment->name;

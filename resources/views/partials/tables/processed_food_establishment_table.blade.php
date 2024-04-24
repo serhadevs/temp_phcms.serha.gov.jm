@@ -5,6 +5,7 @@
             <th>Name</th>
             <th>Address</th>
             <th>Type Food</th>
+            <th class="text-nowrap">Payment Status</th>
             <th>Category</th>
             <th>View</th>
         </tr>
@@ -16,6 +17,11 @@
                 <td>{{ $est->establishment_name }}</td>
                 <td>{{ $est->establishment_address }}</td>
                 <td>{{ $est->food_type }}</td>
+                <td class="text-center">
+                    <span class="badge text-bg-{{ empty($est->payment) ? 'danger' : 'success' }}">
+                        {{ empty($est->payment) ? 'Not Paid' : 'Paid' }}
+                    </span>
+                </td>
                 <td>{{ $est->establishmentCategory?->name }}</td>
                 <td class="text-nowrap">
                     <a class="btn btn-success btn-sm" href="/food-establishments/renewal/{{ $est->id }}">

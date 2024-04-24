@@ -30,7 +30,7 @@ class FoodEstablishmentController extends Controller
         $filterTimeline = "";
         if ($id == "0") {
             $filterTimeline = $today;
-            $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user')
+            $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->where('created_at', '>', $filterTimeline)
                 ->get();
@@ -45,7 +45,7 @@ class FoodEstablishmentController extends Controller
             $filterTimeline = $last_ninety_days;
         }
 
-        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user')
+        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$filterTimeline, $today])
             ->get();
@@ -64,7 +64,7 @@ class FoodEstablishmentController extends Controller
 
         $timeline["ending_date"] = $timeline["ending_date"] . " 23:59:59";
 
-        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user')
+        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline["starting_date"], $timeline["ending_date"]])
             ->get();
