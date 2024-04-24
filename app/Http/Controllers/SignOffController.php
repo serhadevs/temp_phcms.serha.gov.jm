@@ -63,7 +63,7 @@ class SignOffController extends Controller
             } else if ($clinic_mode == "regular") {
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites')
                     ->where('facility_id', auth()->user()->facility_id)
-                    ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
+                    // ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
                     ->whereRelation('permitApplication.appointment', 'appointment_date', $exam_date)
                     ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', $exam_site)
                     ->doesntHave('permitApplication.establishmentClinics')
