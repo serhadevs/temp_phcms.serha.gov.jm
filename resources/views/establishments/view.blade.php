@@ -234,6 +234,17 @@
                 })
             }
         </script>
+
+        <script src="https://unpkg.com/imask"></script>
+        <script>
+            const telephone = document.getElementById('telephone');
+            
+            const maskOptions = {
+                mask: '+1(000)000-0000'
+            }
+
+            const mask1 = IMask(telephone, maskOptions);
+        </script>
     </div>
 
 @endsection
