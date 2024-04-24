@@ -258,8 +258,8 @@ class PaymentController extends Controller
         if ($payment->application_type_id == 1 || $payment->application_type_id == 8 || $payment->application_type_id == 9) {
             $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)->name;
             $application = PermitApplication::with('permitCategory')->find($payment->application_id);
-            $receipt_info['applicant_name'] = $application->firstname . " " . $application->lastname;
-            $receipt_info['permit_category'] = $application->permitCategory?->name;
+            $receipt_info['applicant_name'] = $application?->firstname . " " . $application?->lastname;
+            $receipt_info['permit_category'] = $application?->permitCategory?->name;
             $appointment = DB::table('appointments')
                 ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
                 ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
@@ -273,7 +273,7 @@ class PaymentController extends Controller
             if ($appointment) {
                 $receipt_info['appointment_date'] = date_format(new DateTime($appointment->appointment_date), 'M-d-Y') . " " . $appointment->exam_start_time;
                 $receipt_info['exam_site'] = $appointment->name;
-            } else if ($application->establishment_clinic_id) {
+            } else if ($application?->establishment_clinic_id) {
                 $establishment_clinic = DB::table('establishment_clinics')
                     ->where('id', $application->establishment_clinic_id)
                     ->first();
