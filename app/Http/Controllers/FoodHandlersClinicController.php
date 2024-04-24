@@ -27,7 +27,7 @@ class FoodHandlersClinicController extends Controller
 
         if ($id == "0") {
             $filterTimeline = $today;
-            $food_clinics = EstablishmentClinics::with('payment', 'user')
+            $food_clinics = EstablishmentClinics::with('payment', 'user')->withCount('permits')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->where('created_at', '>', $filterTimeline)
                 ->get();
@@ -44,7 +44,7 @@ class FoodHandlersClinicController extends Controller
         }
 
         $food_clinics = EstablishmentClinics::with('payment', 'user')
-            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)->withCount('permits')
             ->whereBetween('created_at', [$filterTimeline, $today])
             ->get();
 
@@ -62,7 +62,7 @@ class FoodHandlersClinicController extends Controller
 
         $timeline["ending_date"] = $timeline["ending_date"] . " 23:59:59";
 
-        $food_clinics = EstablishmentClinics::with('payment', 'user')
+        $food_clinics = EstablishmentClinics::with('payment', 'user')->withCount('permits')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']])
             ->get();

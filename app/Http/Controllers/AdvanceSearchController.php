@@ -82,7 +82,7 @@ class AdvanceSearchController extends Controller
                 }
                 $id = $request->application_number;
                 $est_clinic_name = $request->establishment_clinic_name;
-                $food_clinics = EstablishmentClinics::with('payment', 'user')
+                $food_clinics = EstablishmentClinics::with('payment', 'user')->withCount('permits')
                     ->when($est_clinic_name, function ($query, string $est_clinic_name) {
                         $query->where('name', 'like', "%" . $est_clinic_name . "%");
                     })->when($id, function ($query, string $id) {

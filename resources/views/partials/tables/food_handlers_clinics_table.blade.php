@@ -8,7 +8,7 @@
             <th>Payment Staus</th>
             <th>Clinic Date & Time</th>
             {{-- Enter after logic has been implemented --}}
-            {{-- <th>No. of Permits</th> --}}
+            <th>No. of Permits</th>
             <th>No. of Employees</th>
             <th>Options</th>
         </tr>
@@ -28,7 +28,7 @@
                 <td>
                     {{ $application->telephone }}
                 </td>
-                <td>
+                <td class="text-center">
                     @if (empty($application->payment))
                         <span class="badge text-bg-danger">Not Paid</span>
                     @endif
@@ -39,9 +39,9 @@
                 <td>
                     {{ $application->proposed_date }} - {{ $application->proposed_time }}
                 </td>
-                {{-- <td>
-                    {{ $application-> }}
-                </td> --}}
+                <td>
+                    {{ $application->permits_count }}
+                </td>
                 <td>
                     {{ $application->no_of_employees }}
                 </td>

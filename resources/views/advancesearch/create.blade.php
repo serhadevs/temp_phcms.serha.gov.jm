@@ -69,12 +69,13 @@
                             </div>
                             <div class="col-md-6" id="est_clinic_name_div" style="display:none">
                                 <label for="establishment" class="form-label">Establishment Clinic Name</label>
-                                <select class="form-select" aria-label="establishment" name="establishment_clinic_name">
-                                    <option selected disabled>Select an Establishment</option>
+                                <input class="form-control" list="clinicOptions" id="dataList"
+                                    placeholder="Type to search..." name ="establishment_clinic_name">
+                                <datalist id="clinicOptions">
                                     @foreach ($establishment_clinics as $est)
-                                        <option value="{{ $est->name }}">{{ $est->name }}</option>
-                                    @endforeach
-                                </select>
+                                    <option value="{{ $est->name }}">{{ $est->name }}</option>
+                                @endforeach
+                                </datalist>
                             </div>
                             <div class="col-md-6" id="app_type_div" style="display:none">
                                 <label for="app_type" class="form-label">Application Type</label>
