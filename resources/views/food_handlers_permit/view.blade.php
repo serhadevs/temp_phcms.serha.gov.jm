@@ -29,9 +29,10 @@
                                                 <img src="{{ asset('images/female.jpg') }}" class="w-100 rounded-circle" />
                                             @endif
 
-                                            <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
-                                                name="photo_upload" style="display:none">
+                                        
                                         @endif
+                                        <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
+                                                name="photo_upload" style="display:none">
                                     </div>
 
                                 </div>
@@ -342,9 +343,9 @@
                 $("#gender").removeAttr("disabled");
                 $("#email").removeAttr("disabled");
                 document.getElementById("updBtn").style.display = "";
-                if ($("#applicant_img").attr('src') == undefined) {
-                    document.getElementById("photo_upload").style.display = "";
-                }
+                // if ($("#applicant_img").attr('src') == undefined) {
+                 document.getElementById("photo_upload").style.display = "";
+                // }
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
