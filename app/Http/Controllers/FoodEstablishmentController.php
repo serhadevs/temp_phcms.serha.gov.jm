@@ -263,7 +263,7 @@ class FoodEstablishmentController extends Controller
             'current_est_closed' => 'required',
             'prev_est_closed' => 'required',
             'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
-            'alt_telephone' => 'nullable|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
+            'alt_telephone' => 'nullable',
             'food_type' => 'required',
             'zone' => 'numeric|min:1|max:6|required',
             'establishment_name' => 'required',

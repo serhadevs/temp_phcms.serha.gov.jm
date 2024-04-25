@@ -19,6 +19,7 @@ use App\Http\Controllers\SummaryReportController;
 use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SwitchFacilityController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
 use App\Models\PermitTestResults;
@@ -199,6 +200,10 @@ Route::group(['middleware' => ['auth']], function () {
 
   //Training Manual Page
      Route::get('/training-manuals',[TrainingManualsController::class,'index'])->name("training.manuals");
+
+     //Switch Location 
+      Route::get('/switch-location',[SwitchFacilityController::class, 'index'])->name('switch.location');
+      Route::post('/switch-location/{id}',[SwitchFacilityController::class,'update'])->name('switch.update');
 
 
 

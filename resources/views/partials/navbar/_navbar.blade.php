@@ -26,7 +26,7 @@
                         }
                     @endphp
                     <li><a class="dropdown-item" href="#">Facility: <em>{{ $facility }}</em></a></li>
-                    <li><a class="dropdown-item" href="#">View Profile</a></li>
+                    <li><a class="dropdown-item" href="">View Profile</a></li>
                     <li><a class="dropdown-item" href="{{ route('user.changepassword') }}">Change Password</a></li>
 
                     <li class="dropdown-item">
