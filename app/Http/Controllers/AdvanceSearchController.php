@@ -103,8 +103,8 @@ class AdvanceSearchController extends Controller
                     $lastname = $request->lastname;
                     $id = $request->application_number;
 
-                    $test_results = PermitApplication::with('permitCategory', 'testResults')
-                        ->whereRelation('testResults', 'facility_id', Auth()->user()->facility_id)
+                    $test_results = PermitApplication::with('permitCategory', 'testResults', 'user')
+                        ->whereRelation('user', 'facility_id', Auth()->user()->facility_id)
                         ->when($firstname, function ($query, string $firstname) {
                             $query->where('firstname', 'like', '%' . $firstname . '%');
                         })->when($lastname, function ($query, string $lastname) {

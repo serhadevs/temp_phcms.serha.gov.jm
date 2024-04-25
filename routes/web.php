@@ -81,6 +81,8 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/food-handlers-clinics/edit/{id}', [FoodHandlersClinicController::class, 'edit'])->name('food-handlers-clinics.edit');
      Route::get('/food-handlers-clinics/permit/application/{clinic_app_id}', [ClinicPermitApplicationController::class, 'create'])->name('food-handlers-clinic.permit.application');
      Route::post('/food-handlers-clinics/update', [FoodHandlersClinicController::class, 'update'])->name('food-handlers-clinic.update');
+     Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinic.renewal');
+     Route::post('/food-handlers-clinics/renew', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinic.renew');
 
      //Payment Routes
      Route::get("/payments/create", [PaymentController::class, 'create'])->name('payments.create');

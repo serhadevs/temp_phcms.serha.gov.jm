@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EstablishmentClinics;
+use App\Models\SignOff;
 use Illuminate\Http\Request;
 use DateTime;
 
@@ -78,6 +79,43 @@ class FoodHandlersClinicController extends Controller
     public function create()
     {
         return view('food_handlers_clinic.create');
+    }
+
+    public function renewal(Request $request)
+    {
+        $application = EstablishmentClinics::find($request->route('id'));
+
+        return view('food_handlers_clinic.renew', compact('application'));
+    }
+
+    public function renew(Request $request)
+    {
+        $food_handlers_clinic = $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'contact_person' => 'required|string',
+            'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
+            'fax_no' => 'nullable|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
+            'no_of_employees' => 'numeric|required',
+            'proposed_date' => 'required',
+            'proposed_time' => 'required',
+            'application_date' => 'required|date'
+        ]);
+
+        $food_handlers_clinic['user_id'] = auth()->user()->id;
+
+        $app_id = EstablishmentClinics::create($food_handlers_clinic)->id;
+        $old_application = EstablishmentClinics::find($request->old_app_id);
+
+        dd($old_application);
+
+        if ($app_id) {
+            return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Food Handlers Clinic application was created successfully. The application number is: ' . $app_id);
+        } else {
+            return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('error', 'Error processing Food Handlers Clinic application.');
+        }
+
+        
     }
 
     /**

@@ -26,7 +26,7 @@
                 <td>
                     @if (isset($module))
                         @if (empty($result->testResults))
-                            <a href="" class="btn btn-info mx-1 btn-sm">
+                            <a href="/test-results/permits/{{ $result->id }}/create" class="btn btn-info mx-1 btn-sm">
                                 Add
                             </a>
                         @endif
