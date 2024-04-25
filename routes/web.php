@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
      Route::get('/test-results/permit/filter/{id}', [PermitTestResultsController::class, 'index'])->name('test-results.permit.index');
      Route::post('/test-results/permit/filter', [PermitTestResultsController::class, 'customFilterProcessedResults'])->name('test-results.permit.filter.custom');
+     Route::get('/test-results/permit/outstanding', [PermitTestResultsController::class , 'outstanding'])->name('test-results.permit.outstanding');
 
      Route::get('/test-results/food-establishments/filter/{id}', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');
      Route::post('/test-results/food-establishments/filter', [FoodEstTestResultController::class, 'customIndex'])->name('test-results.food-est.custom.filter');
