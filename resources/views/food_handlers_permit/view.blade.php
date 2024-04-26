@@ -255,7 +255,8 @@
                                         <div class="col">
                                             <label for="" class="form-label">Application Date</label>
                                             <input type="text" class="form-control"
-                                                value="{{ Carbon\Carbon::parse($permit_application->created_at)->format('F j, Y, g:i a') }}"
+                                                value="{{ $permit_application->application_date }}"
+                                                {{-- "{{ Carbon\Carbon::parse($permit_application->created_at)->format('F j, Y, g:i a') }}" --}}
                                                 disabled>
                                         </div>
                                     </div>
