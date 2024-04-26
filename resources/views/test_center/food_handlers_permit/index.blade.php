@@ -23,17 +23,16 @@
                 <div class="card-body">
                     <div class="row justify-content-between mb-3">
                         <div class="col">
-                            <h2>
+                            <h2 class="text-muted">
                                 Showing All FoodHandlers Permits Results
                             </h2>
                         </div>
                         <div class="col-auto no-wrap">
                             <div class="row">
                                 <div class="col">
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">
+                                    <a class="btn btn-success" href="/test-results/permit/outstanding/filter/0">
                                         Create New Results
-                                    </button>
+                                    </a>
                                 </div>
                                 <div class="col">
                                     <div class="dropdown">
@@ -94,7 +93,7 @@
                         </div>
                     </form>
                     @include('partials.tables.permit_processed_test_results_table')
-                    @include('partials.modals.permit_outstanding_results_modal')
+                    {{-- @include('partials.modals.permit_outstanding_results_modal') --}}
                 </div>
             </div>
         </div>

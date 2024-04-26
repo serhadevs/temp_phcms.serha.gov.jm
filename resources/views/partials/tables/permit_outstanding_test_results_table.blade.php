@@ -14,18 +14,19 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (json_decode($outstanding) as $application)
+        @foreach ($outstanding_permits as $application)
             <tr>
-                <td><a href="/test-results/permits/{{ $application->app_number }}/create" class="btn btn-primary btn-sm">Select</a></td>
-                <td>{{ $application->app_number }}</td>
-                <td>{{ $application->category }}</td>
-                <td>{{ $application->firstname }}</td>
-                <td>{{ $application->middlename }}</td>
-                <td>{{ $application->lastname }}</td>
-                <td>{{ $application->address }}</td>
-                <td>{{ $application->date_of_birth }}</td>
-                <td>{{ $application->gender }}</td>
-                <td>{{ $application->payment_date }}</td>
+                <td><a href="/test-results/permits/{{ $application->permitApplications?->id }}/create"
+                        class="btn btn-primary btn-sm">Select</a></td>
+                <td>{{ $application->permitApplications?->id }}</td>
+                <td>{{ strtoupper($application->permitApplications?->permitCategory?->name) }}</td>
+                <td>{{ strtoupper($application->permitApplications?->firstname) }}</td>
+                <td>{{ strtoupper($application->permitApplications?->middlename) }}</td>
+                <td>{{ strtoupper($application->permitApplications?->lastname) }}</td>
+                <td>{{ strtoupper($application->permitApplications?->address) }}</td>
+                <td>{{ $application->permitApplications?->date_of_birth }}</td>
+                <td>{{ strtoupper($application->permitApplications?->gender) }}</td>
+                <td>{{ $application->created_at }}</td>
             </tr>
         @endforeach
     </tbody>
