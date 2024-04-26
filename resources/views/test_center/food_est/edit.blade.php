@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Processed Test Results')
+@section('title', 'Edit Test Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-muted">
-                        Create Food Est. Test Result
+                        Edit Food Est. Results {{ $application->establishment_name }}
                     </h2>
                     <hr>
                     <div class="mt-3">
@@ -27,7 +27,7 @@
                         <input type="text" class="form-control" value="{{ $application->establishment_address }}"
                             disabled>
                     </div>
-                    <form action="{{ route('test-results.food-est.store') }}" method="POST">
+                    <form action="{{ route('test-results.food-est.update') }}" method="POST">
                         @method('POST')
                         @csrf
                         @include('partials.forms.test_result_ests')

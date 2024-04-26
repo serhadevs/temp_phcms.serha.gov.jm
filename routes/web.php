@@ -111,7 +111,8 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
      Route::get('/test-results/permit/filter/{id}', [PermitTestResultsController::class, 'index'])->name('test-results.permit.index');
      Route::post('/test-results/permit/filter', [PermitTestResultsController::class, 'customFilterProcessedResults'])->name('test-results.permit.filter.custom');
-     Route::get('/test-results/permit/outstanding', [PermitTestResultsController::class , 'outstanding'])->name('test-results.permit.outstanding');
+     Route::get('/test-results/permit/outstanding/filter/{id}', [PermitTestResultsController::class , 'outstanding'])->name('test-results.permit.outstanding');
+     Route::post('/test-results/permit/outstanding/filter', [PermitTestResultsController::class, 'outstandingCustom'])->name('test-results.permit.outstanding.custom');
 
      Route::get('/test-results/food-establishments/filter/{id}', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');
      Route::post('/test-results/food-establishments/filter', [FoodEstTestResultController::class, 'customIndex'])->name('test-results.food-est.custom.filter');
@@ -119,6 +120,8 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/test-results/food-establishments/outstanding/filter/{id}', [FoodEstTestResultController::class, 'outstanding'])->name('test-results.food-est.outstanding');
      Route::post('/test-results/food-establishments/outstanding', [FoodEstTestResultController::class, 'outstandingCustom'])->name('test-results.food-est.outstanding.custom.filter');
      Route::post('/test-results/food-establishments', [FoodEstTestResultController::class, 'store'])->name('test-results.food-est.store');
+     Route::get('/test-results/food-establishments/edit/{id}', [FoodEstTestResultController::class, 'edit'])->name('test-results.food-est.edit');
+     Route::post('/test-results/food-establishments/update', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update');
 
      //Report
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');

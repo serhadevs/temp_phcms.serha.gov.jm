@@ -34,7 +34,7 @@ class Payments extends Model
 
     public $timestamps = true;
 
-    public function applications(): BelongsTo
+    public function permitApplications(): BelongsTo
     {
         return $this->belongsTo(PermitApplication::class, 'application_id', 'id');
     }

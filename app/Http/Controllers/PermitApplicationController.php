@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DateTime;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+
 // use Faker\Provider\ar_EG\Payment;
 
 class PermitApplicationController extends Controller
@@ -154,7 +156,11 @@ class PermitApplicationController extends Controller
         $permit_application = PermitApplication::find($edits['id']);
 
         if ($request->file('photo_upload')) {
-            $path = $request->file('photo_upload')->storeAs('photo_uploads', $edits['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
+            if ($permit_application->photo_upload) {
+                Storage::disk('public')->move($permit_application->photo_upload, '/photo_uploads/archives/' . explode('/', $permit_application->photo_upload)[1]);
+            }
+
+            $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application->permit_no . '.' . $request->photo_upload->extension(), 'public');
             $photo_upload = $path;
         } else {
             $photo_upload = $permit_application->photo_upload;

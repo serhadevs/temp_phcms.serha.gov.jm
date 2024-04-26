@@ -182,9 +182,18 @@ class FoodEstTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-        //
+        $application = EstablishmentApplications::with('establishmentCategory')
+            ->find($request->route('id'));
+
+        $app_type_id = '3';
+
+        $result = TestResult::where('application_id', $request->route('id'))
+            ->where('application_type_id', 3)
+            ->first();
+
+        return view('test_center.food_est.edit', compact('application', 'result', 'app_type_id'));
     }
 
     /**
@@ -194,9 +203,29 @@ class FoodEstTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $food_est = $request->validate([
+            'visit_purpose' => 'required',
+            'staff_contact' => 'required',
+            'test_date' => 'required',
+            'overall_score' => 'required|numeric|min:0|max:100',
+            'critical_score' => 'required|numeric|min:0|max:100',
+            'comments' => 'nullable',
+            'test_location' => 'required'
+        ]);
+
+        $food_est_info = EstablishmentApplications::find($request->application_id);
+
+        if ($test_results = TestResult::where('application_id', $request->application_id)->where('application_type_id', 3)->first()) {
+            if ($test_results->update(
+                $food_est
+            )) {
+                return redirect()->route('test-results.food-est.index', ['id' => 0])->with('success', 'Test Result for ' . $food_est_info->establishment_name . ' has been updated successfully.');
+            }
+        }
+
+        return redirect()->route('test-results.food-est.index', ['id' => 0])->with('error', 'Error updating test Result for ' . $food_est_info->establishment_name . '.');
     }
 
     /**

@@ -66,7 +66,8 @@
                                 class="btn btn-sm btn-success">Renew</a>
                         @endif
                     @endif
-                    <a href="" class="btn btn-warning btn-sm">
+                    <a href="/test-results/food-establishments/edit/{{ $application->id }}"
+                        class="btn btn-warning btn-sm">
                         Edit
                     </a>
                 </td>
