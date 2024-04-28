@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdvanceSearchController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarberCosmetApplicationsController;
 use App\Http\Controllers\ClinicPermitApplicationController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DownloadsController;
@@ -67,6 +68,19 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/permit/application/edit', [PermitApplicationController::class, 'editApplication'])->name('permit.application.edit');
      Route::post('/permit/application/edit/appointment', [PermitApplicationController::class, 'editPermitAppointment'])->name('permit.application.edit.appointment');
      Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
+
+     //Barber Cosmetics Routes
+     Route::get('/barber-cosmet/create', [BarberCosmetApplicationsController::class, 'create'])->name('barber-cosmet.create');
+     Route::post('/barber-cosmet/store', [BarberCosmetApplicationsController::class, 'store'])->name('barber-cosmet.store');
+     Route::get('/barber-cosmet/filter/{id}', [BarberCosmetApplicationsController::class, 'index'])->name('barber-cosmet.index');
+     Route::post('/barber-cosmet/filter', [BarberCosmetApplicationsController::class , 'customIndex'])->name('baber-cosmet.custom.filter');
+     Route::get('/barber-cosmet/view/{id}', [BarberCosmetApplicationsController::class, 'show'])->name('barber-cosmet.view');
+
+     //Edit Applications
+     Route::put('/barber-cosmet/edit/applicant', [BarberCosmetApplicationsController::class, 'editApplicant'])->name('barber-cosmet.edit.applicant');
+     Route::put('/barber-cosmet/edit/employment', [BarberCosmetApplicationsController::class, 'editEmp'])->name('barber-cosmet.edit.employment');
+     Route::put('/barber-cosmet/edit/appointment', [BarberCosmetApplicationsController::class, 'editAppointment'])->name('barber-cosmet.edit.appointments');
+     Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
 
      //Advance Search 
 

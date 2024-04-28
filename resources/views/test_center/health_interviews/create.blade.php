@@ -79,7 +79,10 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="" class="form-label">Literacy</label>
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Literacy
+                                </label>
                                 <div class="form-check">
                                     <input type="radio" class="form-check-input" name="literate" value="1"
                                         {{ old('literate') == '1' ? 'checked' : '' }} />
@@ -95,7 +98,10 @@
                                 @enderror
                             </div>
                             <div class="col">
-                                <label for="" class="form-label">Have you ever had typhoid or paratyphoid?</label>
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Have you ever had typhoid or paratyphoid?
+                                </label>
                                 <div class="form-check">
                                     <input type="radio" class="form-check-input" name="typhoid" value="1"
                                         {{ old('typhoid') == '1' ? 'checked' : '' }} />
@@ -128,7 +134,10 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="" class="form-label">Have you ever lived abroad?</label>
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Have you ever lived abroad?
+                                </label>
                                 <div class="form-check">
                                     <input type="radio" class="form-check-input" name="lived_abroad" value="1"
                                         {{ old('lived_abroad') == '1' ? 'checked' : '' }} />
@@ -161,7 +170,10 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label for="" class="form-label">Have you travelled abroad recently?</label>
+                            <label for="" class="form-label">
+                                <span class="text-danger fw-bold">*</span>
+                                Have you travelled abroad recently?
+                            </label>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="travel_abroad" value="1"
                                     {{ old('travel_abroad') == '1' ? 'checked' : '' }}>
@@ -213,7 +225,10 @@
                         <h5 class="text-muted mt-3">Physical Examination (Observation)</h5>
                         <div class="row mt-2">
                             <div class="col">
-                                <label for="" class="form-label">Whitlow</label>
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Whitlow
+                                </label>
                                 <select name="whitlow" id="" class="form-control">
                                     <option selected disabled>Select an option</option>
                                     <option value="absent" {{ old('whitlow') == 'absent' ? 'selected' : '' }}>Absent
@@ -228,7 +243,10 @@
                                 @enderror
                             </div>
                             <div class="col">
-                                <label for="" class="form-label">Hands</label>
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Hands
+                                </label>
                                 <select name="hands_condition" id="" class="form-control">
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
@@ -248,7 +266,10 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="" class="form-label">Fingernails</label>
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Fingernails
+                                </label>
                                 <select name="fingernails_condition" id="" class="form-control">
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
@@ -266,7 +287,10 @@
                                 @enderror
                             </div>
                             <div class="col">
-                                <label for="" class="form-label">Teeth</label>
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Teeth
+                                </label>
                                 <select name="teeth_condition" id="" class="form-control">
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
