@@ -63,4 +63,8 @@ class HealthCertApplications extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public function signOff():HasOne{
+        return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', 2);
+    }
 }

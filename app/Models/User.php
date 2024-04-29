@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
@@ -64,6 +65,11 @@ class User extends Authenticatable
         return User::withTrashed()
             ->where('facility_id', Auth::user()->facility_id)
             ->get();
+    }
+
+    public function facility(): HasOne
+    {
+        return $this->hasOne(Facility::class, 'id', 'facility_id');
     }
 
     public $timestamps = true;

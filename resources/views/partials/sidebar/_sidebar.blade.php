@@ -9,7 +9,6 @@
     </div>
 
     <ul class="sidebar-nav">
-       
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#permit" aria-expanded="false" aria-controls="permit">
@@ -33,7 +32,12 @@
                     <span>Food Handlers Clinics</span>
                 </a>
             </li>
-
+            <li class="sidebar-item">
+                <a href="/barber-cosmet/filter/0" class="sidebar-link">
+                    <i class="bi bi-scissors"></i>
+                    <span>Barber/Cosmet etc.</span>
+                </a>
+            </li>
             <li class="sidebar-item">
                 <a href="/appointments" class="sidebar-link">
                     <i class="lni lni-calendar"></i>
