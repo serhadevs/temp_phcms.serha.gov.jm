@@ -140,7 +140,7 @@ class PaymentController extends Controller
             $applications = $permit_applications
                 ->union($est_applications)
                 ->union($clinic_application)
-                ->union($health_cert_applications)
+                // ->union($health_cert_applications)
                 ->get();
 
             return view('payments.applications', compact('applications'));
@@ -183,7 +183,7 @@ class PaymentController extends Controller
         $applications = $permit_applications
             ->union($est_applications)
             ->union($clinic_application)
-            ->union($health_cert_applications)
+            // ->union($health_cert_applications)
             ->get();
 
         return view('payments.applications', compact('applications'));
@@ -231,7 +231,7 @@ class PaymentController extends Controller
         $applications = $permit_applications
             ->union($est_applications)
             ->union($clinic_application)
-            ->union($health_cert_applications)
+            // ->union($health_cert_applications)
             ->get();
 
         return view('payments.applications', compact('applications'));
