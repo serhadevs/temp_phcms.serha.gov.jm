@@ -123,6 +123,13 @@ class PaymentController extends Controller
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->where('created_at', '>', $today);
 
+            $health_cert_applications = HealthCertApplications::with('payment', 'user')
+                ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 2)->first()->price . '')
+                ->doesntHave('payment')
+                ->doesntHave('payment')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->where('created_at', '>', $today);
+
             $clinic_application = EstablishmentClinics::with('payment', 'user')
                 ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
                 ->doesntHave('payment')
@@ -133,6 +140,7 @@ class PaymentController extends Controller
             $applications = $permit_applications
                 ->union($est_applications)
                 ->union($clinic_application)
+                ->union($health_cert_applications)
                 ->get();
 
             return view('payments.applications', compact('applications'));
@@ -165,9 +173,17 @@ class PaymentController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$filterTimeline, $today]);
 
+        $health_cert_applications = HealthCertApplications::with('payment', 'user')
+            ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 2)->first()->price . '')
+            ->doesntHave('payment')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$filterTimeline, $today]);
+
         $applications = $permit_applications
             ->union($est_applications)
             ->union($clinic_application)
+            ->union($health_cert_applications)
             ->get();
 
         return view('payments.applications', compact('applications'));
@@ -193,6 +209,12 @@ class PaymentController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
 
+        $health_cert_applications = HealthCertApplications::with('payment', 'user')
+            ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices[2]->price . ' as  price')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
+
         $est_applications = EstablishmentApplications::with('payment', 'user')
             ->selectRaw('"3" as application_type_id, "' . $application_type->where('id', 3)->first()->name . '" as app_type, establishment_applications.id as app_number, establishment_name as name, establishment_applications.permit_no, establishment_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 3)->first()->price . '')
             ->doesntHave('payment')
@@ -209,6 +231,7 @@ class PaymentController extends Controller
         $applications = $permit_applications
             ->union($est_applications)
             ->union($clinic_application)
+            ->union($health_cert_applications)
             ->get();
 
         return view('payments.applications', compact('applications'));
