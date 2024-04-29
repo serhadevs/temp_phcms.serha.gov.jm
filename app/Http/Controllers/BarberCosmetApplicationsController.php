@@ -57,7 +57,7 @@ class BarberCosmetApplicationsController extends Controller
 
         $applications = HealthCertApplications::with('user', 'appointment.examDate.examSites')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['starting_date'] . " 23:59:59"])
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
             ->get();
 
         return view('barbercosmet.index', compact('applications'));
