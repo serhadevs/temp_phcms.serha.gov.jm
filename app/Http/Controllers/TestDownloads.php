@@ -19,8 +19,8 @@ class TestDownloads extends Controller
     {
         // try{
             PermitJob::dispatch();
-            // FoodEstJob::dispatch();
-            // TouristEstJob::dispatch();
+            FoodEstJob::dispatch();
+            TouristEstJob::dispatch();
 
             // return 'success';
         // }catch(Exception $e){
