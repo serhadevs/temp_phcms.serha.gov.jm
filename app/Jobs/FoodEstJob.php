@@ -48,11 +48,13 @@ class FoodEstJob implements ShouldQueue
 
         $rand_string = rand(1000, 9999);
 
+        $counter2 = 0;
         foreach ($grouped_by_facility as $key => $facility_permit) {
-            dd($facility_permit);
             if ($key == 1) { //St. Catherine Health Dept.
+
                 $sch_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($sch_per_date as $key => $sch_permit) {
+                    $array[$counter2] = $sch_permit->id;
                     $folder_date_exist = Storage::disk('public')->exists("downloads/establishment-txts/" . $key . "/" . "STC");
                     $content = "";
 
@@ -130,6 +132,7 @@ class FoodEstJob implements ShouldQueue
                         }
                     }
                 }
+                dd($array);
             } else if ($key == 2) {
                 $stt_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($stt_per_date as $key => $stt_permit) {
