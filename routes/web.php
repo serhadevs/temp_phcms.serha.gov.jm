@@ -21,6 +21,7 @@ use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SwitchFacilityController;
+use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
 use App\Models\PermitTestResults;
@@ -76,11 +77,14 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/barber-cosmet/filter', [BarberCosmetApplicationsController::class , 'customIndex'])->name('baber-cosmet.custom.filter');
      Route::get('/barber-cosmet/view/{id}', [BarberCosmetApplicationsController::class, 'show'])->name('barber-cosmet.view');
 
-     //Edit Applications
+     //Edit Health Cert Applications
      Route::put('/barber-cosmet/edit/applicant', [BarberCosmetApplicationsController::class, 'editApplicant'])->name('barber-cosmet.edit.applicant');
      Route::put('/barber-cosmet/edit/employment', [BarberCosmetApplicationsController::class, 'editEmp'])->name('barber-cosmet.edit.employment');
      Route::put('/barber-cosmet/edit/appointment', [BarberCosmetApplicationsController::class, 'editAppointment'])->name('barber-cosmet.edit.appointments');
      Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
+
+     //Tourist Establishment Route
+     Route::get('/tourist-establishments/create', [TouristEstApplicationsController::class, 'create'])->name('tourist-establishment.create');
 
      //Advance Search 
 
