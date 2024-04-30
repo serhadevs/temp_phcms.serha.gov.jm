@@ -51,17 +51,16 @@ class FoodEstJob implements ShouldQueue
         $counter2 = 0;
         foreach ($grouped_by_facility as $key => $facility_permit) {
             if ($key == 1) { //St. Catherine Health Dept.
-                $array=[];
+                $array_2=[];
                 $sch_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($sch_per_date as $key => $sch_permit) {
-                    $array[$counter2] = $sch_permit->id;
                     $folder_date_exist = Storage::disk('public')->exists("downloads/establishment-txts/" . $key . "/" . "STC");
                     $content = "";
 
                     $counter = 0;
 
                     foreach ($sch_permit as $item) {
-
+                        $array_2[$counter2] = $item->id;
                         $permit_download_exist = ZippedApplications::where('application_id', $item->id)->where('application_type_id', 3)->first();
 
                         if (!$permit_download_exist) {
@@ -131,8 +130,9 @@ class FoodEstJob implements ShouldQueue
                             $zip->close();
                         }
                     }
+                    $counter2++;
                 }
-                dd($array);
+                dd($array_2);
             } else if ($key == 2) {
                 $stt_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($stt_per_date as $key => $stt_permit) {
