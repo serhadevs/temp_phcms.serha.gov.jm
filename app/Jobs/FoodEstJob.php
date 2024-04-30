@@ -44,11 +44,12 @@ class FoodEstJob implements ShouldQueue
         // dd($food_establishments);
 
         $grouped_by_facility = $food_establishments->groupBy('user.facility_id');
-        dd($grouped_by_facility);
+        // dd($grouped_by_facility);
 
         $rand_string = rand(1000, 9999);
 
         foreach ($grouped_by_facility as $key => $facility_permit) {
+            dd($facility_permit);
             if ($key == 1) { //St. Catherine Health Dept.
                 $sch_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($sch_per_date as $key => $sch_permit) {
