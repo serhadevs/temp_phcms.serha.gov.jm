@@ -38,8 +38,10 @@ class FoodEstJob implements ShouldQueue
         $food_establishments = EstablishmentApplications::with('user', 'testResults', 'operators', 'establishmentCategory', 'signOff')
             ->has('signOff')
             ->has('testResults')
-            // ->whereBetween('created_at', ['2022-10-05', '2022-11-05'])
+            ->whereRelation('signOff', 'created_at', '>', '2024-01-01')
             ->get();
+
+        dd($food_establishments);
 
         $grouped_by_facility = $food_establishments->groupBy('user.facility_id');
         // dd($grouped_by_facility);
