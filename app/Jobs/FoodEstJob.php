@@ -41,10 +41,10 @@ class FoodEstJob implements ShouldQueue
             ->whereRelation('signOff', 'created_at', '>', '2024-01-01')
             ->get();
 
-        dd($food_establishments);
+        // dd($food_establishments);
 
         $grouped_by_facility = $food_establishments->groupBy('user.facility_id');
-        // dd($grouped_by_facility);
+        dd($grouped_by_facility);
 
         $rand_string = rand(1000, 9999);
 
