@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\FoodEstJob;
-use App\Jobs\PermitJob;
-use App\Jobs\TouristEstJob;
 use Illuminate\Http\Request;
-use Exception;
 
-class TestDownloads extends Controller
+class TouristEstApplicationsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,15 +13,7 @@ class TestDownloads extends Controller
      */
     public function index()
     {
-        // try{
-            // PermitJob::dispatch();
-            FoodEstJob::dispatch();
-            // TouristEstJob::dispatch();
-
-            // return 'success';
-        // }catch(Exception $e){
-        //     return $e->getMessage();
-        // }
+        //
     }
 
     /**
@@ -35,7 +23,7 @@ class TestDownloads extends Controller
      */
     public function create()
     {
-        //
+        return view('tourist_est.create');
     }
 
     /**

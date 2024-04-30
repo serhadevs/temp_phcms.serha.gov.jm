@@ -38,16 +38,20 @@ class FoodEstJob implements ShouldQueue
         $food_establishments = EstablishmentApplications::with('user', 'testResults', 'operators', 'establishmentCategory', 'signOff')
             ->has('signOff')
             ->has('testResults')
-            // ->whereBetween('created_at', ['2022-10-05', '2022-11-05'])
+            ->whereRelation('signOff', 'created_at', '>', '2024-01-01')
             ->get();
+
+        // dd($food_establishments);
 
         $grouped_by_facility = $food_establishments->groupBy('user.facility_id');
         // dd($grouped_by_facility);
 
         $rand_string = rand(1000, 9999);
 
+        $counter2 = 0;
         foreach ($grouped_by_facility as $key => $facility_permit) {
             if ($key == 1) { //St. Catherine Health Dept.
+                $array_2=[];
                 $sch_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($sch_per_date as $key => $sch_permit) {
                     $folder_date_exist = Storage::disk('public')->exists("downloads/establishment-txts/" . $key . "/" . "STC");
@@ -56,7 +60,7 @@ class FoodEstJob implements ShouldQueue
                     $counter = 0;
 
                     foreach ($sch_permit as $item) {
-
+                        $array_2[$counter2] = $item->id;
                         $permit_download_exist = ZippedApplications::where('application_id', $item->id)->where('application_type_id', 3)->first();
 
                         if (!$permit_download_exist) {
@@ -126,7 +130,9 @@ class FoodEstJob implements ShouldQueue
                             $zip->close();
                         }
                     }
+                    $counter2++;
                 }
+                dd($array_2);
             } else if ($key == 2) {
                 $stt_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($stt_per_date as $key => $stt_permit) {

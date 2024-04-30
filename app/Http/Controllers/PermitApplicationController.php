@@ -166,6 +166,8 @@ class PermitApplicationController extends Controller
             $photo_upload = $permit_application->photo_upload;
         }
 
+        //dd($path);
+
         $update_permit_application = PermitApplication::where('id', $edits["id"])->update([
             'firstname' => $edits["firstname"],
             'middlename' => $edits["middlename"],
