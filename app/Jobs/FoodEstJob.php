@@ -51,7 +51,7 @@ class FoodEstJob implements ShouldQueue
         $counter2 = 0;
         foreach ($grouped_by_facility as $key => $facility_permit) {
             if ($key == 1) { //St. Catherine Health Dept.
-
+                $array=[];
                 $sch_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($sch_per_date as $key => $sch_permit) {
                     $array[$counter2] = $sch_permit->id;
