@@ -70,6 +70,13 @@
                     <span>Food Establishments</span>
                 </a>
             </li>
+
+            <li class="sidebar-item">
+                <a href="/sign-off/food-establishments" class="sidebar-link">
+                    <i class="bi bi-hospital"></i>
+                    <span>Approved Food Est List 2024</span>
+                </a>
+            </li>
     
 
 
