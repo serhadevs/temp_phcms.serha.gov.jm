@@ -195,6 +195,7 @@ Route::group(['middleware' => ['auth']], function () {
 
      //Test Exports
      Route::get('/test/downloads', [TestDownloads::class, 'index']);
+     Route::get('/manual-run/food-est-job', [TestDownloads::class, 'writeAllFoodEstablishments']);
 
      //Download routes
      Route::post('/downloads/foodhandlers', [DownloadsController::class, 'customFilterFHand'])->name('downloads.foodhandlers.custom');
