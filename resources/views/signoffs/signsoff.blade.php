@@ -23,7 +23,10 @@
                                     <th>Establishment Name</th>
                                     <th>Sign Off Date</th>
                                     <th>Expiry Date</th>
+                                    <th>Status</th>
+                                    <th>Zone</th>
                                     <th>Approved By</th>
+                                    <th>Options</th>
                                 </thead>
                                 <tbody>
                                     @foreach ($applications as $applicant )
@@ -32,7 +35,13 @@
                                             <td>{{ $applicant->establishment_name }}</td>
                                             <td>{{ \Carbon\Carbon::parse($applicant->sign_off_date)->format('d F Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($applicant->expiry_date)->format('d F Y') }}</td>
+                                            <td>{{ $applicant->is_grant = 1 ? 'Approved' : 'Awaiting Approval'}}</td>
+                                            <td>{{ $applicant->zone }}</td>
                                             <td>{{ $applicant->firstname. " " .$applicant->lastname}}</td>
+                                            <td> <a class="btn btn-primary btn-sm" href="/food-establishments/view/{{ $applicant->id }}">
+                                                View
+                                            </a></td>
+                                           
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -40,7 +49,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                        <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous Page</a>
                     </div>
                 </div>
             </div>

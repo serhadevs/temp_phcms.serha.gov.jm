@@ -7,7 +7,7 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid mb-4">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body ">
                     <h2 class="text-muted mb-3">{{ $est_application->establishment_name }}</h2>
                     <hr>
@@ -188,6 +188,9 @@
                     <hr>
                     @include('partials.tables.establishment_operators_table')
                 </div>
+                <div class="card-footer">
+                    <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous Page</a>
+                </div>
             </div>
         </div>
         <script>
@@ -238,7 +241,7 @@
         <script src="https://unpkg.com/imask"></script>
         <script>
             const telephone = document.getElementById('telephone');
-            
+
             const maskOptions = {
                 mask: '+1(000)000-0000'
             }
