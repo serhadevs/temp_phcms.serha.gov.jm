@@ -224,7 +224,7 @@
                         <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
+                        <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Food Establishments</a>
                     </li>
                     <li class="sidebar-item">
                         <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist
