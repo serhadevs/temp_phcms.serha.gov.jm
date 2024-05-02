@@ -84,7 +84,10 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
 
      //Tourist Establishment Route
-     Route::get('/tourist-establishments/create', [TouristEstApplicationsController::class, 'create'])->name('tourist-establishment.create');
+     Route::get('/tourist-establishments/create', [TouristEstApplicationsController::class, 'create'])->name('tourist-establishments.create');
+     Route::get('/tourist-establishments/filter/{id}', [TouristEstApplicationsController::class , 'index'])->name('tourist-establishments.index.filter');
+     Route::post('/tourist-establishments/filter', [TouristEstApplicationsController::class , 'customIndex'])->name('tourist-establishments.index.custom.filter');
+     Route::post('/tourist-establishments/store', [TouristEstApplicationsController::class , 'store'])->name('tourist-establishments.store');
 
      //Advance Search 
 
@@ -196,6 +199,7 @@ Route::group(['middleware' => ['auth']], function () {
      //Test Exports
      Route::get('/test/downloads', [TestDownloads::class, 'index']);
      Route::get('/manual-run/food-est-job', [TestDownloads::class, 'writeAllFoodEstablishments']);
+     Route::get('/test/tourist-establishments', [TestDownloads::class, 'testTourist']);
 
      //Download routes
      Route::post('/downloads/foodhandlers', [DownloadsController::class, 'customFilterFHand'])->name('downloads.foodhandlers.custom');

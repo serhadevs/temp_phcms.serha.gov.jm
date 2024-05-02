@@ -6,6 +6,7 @@ use App\Jobs\FoodEstJob;
 use App\Jobs\PermitJob;
 use App\Jobs\TouristEstJob;
 use App\Models\EstablishmentApplications;
+use App\Models\TouristEstablishments;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -43,6 +44,14 @@ class TestDownloads extends Controller
                 . $item->permit_no . "Z" . $item->zone . "-0010233" . "\r\n");
         }
         fclose($file);
+    }
+
+    public function testTourist(){
+        dd(TouristEstablishments::with('managers', 'services')
+        ->where('created_at', '>', '2023-07-01')
+        // ->doesntHave('managers')
+        // ->doesntHave('services')
+        ->get());
     }
 
     /**

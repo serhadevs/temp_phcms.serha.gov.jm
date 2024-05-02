@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
@@ -54,5 +55,17 @@ class TouristEstablishments extends Model
 
     public function printableApplication():HasOne{
         return $this->hasOne(PrintableApplications::class, 'application_id', 'id');
+    }
+
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function managers():HasMany{
+        return $this->hasMany(TouristEstManagers::class, 'tourist_establishment_id', 'id');
+    }
+
+    public function services():HasMany{
+        return $this->hasMany(TouristEstServices::class, 'tourist_establishment_id', 'id');
     }
 }

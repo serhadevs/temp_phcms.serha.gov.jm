@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-muted">
-                        Create Barber/Cosmet etc.
+                        Hair Dressers, Beauty Therapists, Cosmotologists/Barbers
                     </h2>
                     <hr>
                     <form method="POST" action="{{ route('barber-cosmet.store') }}">
