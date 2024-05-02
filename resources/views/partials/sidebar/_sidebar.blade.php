@@ -76,6 +76,13 @@
                     <span>Food Establishments</span>
                 </a>
             </li>
+
+            <li class="sidebar-item">
+                <a href="/sign-off/food-establishments" class="sidebar-link">
+                    <i class="bi bi-hospital"></i>
+                    <span>Approved Food Est List 2024</span>
+                </a>
+            </li>
     
 
 
@@ -230,7 +237,7 @@
                         <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Food Handlers Permits</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="/downloads/food-establishments" class="sidebar-link">Food Establishments</a>
+                        <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Food Establishments</a>
                     </li>
                     <li class="sidebar-item">
                         <a href="/downloads/food-establishments/filter/0" class="sidebar-link">Tourist

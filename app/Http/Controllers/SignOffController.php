@@ -71,59 +71,59 @@ class SignOffController extends Controller
                     ->orderBy('sign_off_status')
                     ->get();
                 // $applications = DB::table('health_interviews')
-                    // ->where('health_interviews.facility_id', Auth()->user()->facility_id)
-                    // ->where('health_interviews.deleted_at', '=', null)
-                    // ->join('permit_applications', function ($join) {
-                    //     $join->on('health_interviews.permit_application_id', '=', 'permit_applications.id')
-                    //         ->where('permit_applications.establishment_clinic_id', '=', null);
-                    // })
-                    // ->join('permit_categories', 'permit_categories.id', '=', 'permit_applications.permit_category_id')
-                    // ->join('appointments', function ($join) use ($exam_date) {
-                    //     $join->on('appointments.permit_application_id', '=', 'permit_applications.id')
-                    //         ->where('appointments.deleted_at', '=', null)
-                    //         ->where('appointments.appointment_date', '=', $exam_date);
-                    // })
-                    // ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
-                    // ->join('exam_sites', function ($join) use ($exam_site) {
-                    //     $join->on('exam_sites.id', '=', 'exam_dates.exam_site_id')
-                    //         ->where('exam_sites.id', '=', $exam_site);
-                    // })
-                    // ->leftJoin('test_results', function ($join) {
-                    //     $join->on('test_results.application_id', '=', 'health_interviews.permit_application_id')
-                    //         ->where('test_results.deleted_at', '=', null)
-                    //         ->where('test_results.application_type_id', '=', 1);
-                    // })
-                    // ->leftJoin('health_interview_symptom', 'health_interview_symptom.health_interview_id', '=', 'health_interviews.id')
-                    // ->leftJoin('symptoms', 'symptoms.id', '=', 'health_interview_symptom.symptom_id')
-                    // ->leftJoin('travel_history', function ($join) {
-                    //     $join->on('travel_history.permit_application_id', '=', 'health_interviews.permit_application_id')
-                    //         ->where('travel_history.deleted_at', '=', null);
-                    // })
-                    // ->select(
-                    //     'permit_applications.permit_no',
-                    //     'exam_sites.name as exam_site',
-                    //     'appointments.appointment_date',
-                    //     'permit_applications.firstname as permit_firstname',
-                    //     'permit_applications.id as id',
-                    //     'permit_applications.middlename as permit_middlename',
-                    //     'permit_applications.lastname as permit_lastname',
-                    //     'permit_applications.address as permit_address',
-                    //     'permit_applications.date_of_birth',
-                    //     'permit_applications.gender as permit_gender',
-                    //     'permit_applications.sign_off_status',
-                    //     'permit_applications.photo_upload',
-                    //     'permit_categories.name as permit_category',
-                    //     // DB::raw('group_concat("  ", travel_history.destination, " - " ,travel_history.travel_date) as travel_history'),
-                    //     'test_results.overall_score',
-                    //     'test_results.critical_score',
-                    //     'health_interviews.*',
-                    //     'health_interviews.id as interview_id',
-                    //     // DB::raw('group_concat("  ", symptoms.name) as symptoms')
-                    // )
-                    // ->where('permit_applications.deleted_at', NULL)
-                    // // ->groupBy('health_interviews.id', 'test_results.id', 'travel_history.id', 'appointments.id')
-                    // ->orderBy('permit_applications.sign_off_status')
-                    // ->get();
+                // ->where('health_interviews.facility_id', Auth()->user()->facility_id)
+                // ->where('health_interviews.deleted_at', '=', null)
+                // ->join('permit_applications', function ($join) {
+                //     $join->on('health_interviews.permit_application_id', '=', 'permit_applications.id')
+                //         ->where('permit_applications.establishment_clinic_id', '=', null);
+                // })
+                // ->join('permit_categories', 'permit_categories.id', '=', 'permit_applications.permit_category_id')
+                // ->join('appointments', function ($join) use ($exam_date) {
+                //     $join->on('appointments.permit_application_id', '=', 'permit_applications.id')
+                //         ->where('appointments.deleted_at', '=', null)
+                //         ->where('appointments.appointment_date', '=', $exam_date);
+                // })
+                // ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
+                // ->join('exam_sites', function ($join) use ($exam_site) {
+                //     $join->on('exam_sites.id', '=', 'exam_dates.exam_site_id')
+                //         ->where('exam_sites.id', '=', $exam_site);
+                // })
+                // ->leftJoin('test_results', function ($join) {
+                //     $join->on('test_results.application_id', '=', 'health_interviews.permit_application_id')
+                //         ->where('test_results.deleted_at', '=', null)
+                //         ->where('test_results.application_type_id', '=', 1);
+                // })
+                // ->leftJoin('health_interview_symptom', 'health_interview_symptom.health_interview_id', '=', 'health_interviews.id')
+                // ->leftJoin('symptoms', 'symptoms.id', '=', 'health_interview_symptom.symptom_id')
+                // ->leftJoin('travel_history', function ($join) {
+                //     $join->on('travel_history.permit_application_id', '=', 'health_interviews.permit_application_id')
+                //         ->where('travel_history.deleted_at', '=', null);
+                // })
+                // ->select(
+                //     'permit_applications.permit_no',
+                //     'exam_sites.name as exam_site',
+                //     'appointments.appointment_date',
+                //     'permit_applications.firstname as permit_firstname',
+                //     'permit_applications.id as id',
+                //     'permit_applications.middlename as permit_middlename',
+                //     'permit_applications.lastname as permit_lastname',
+                //     'permit_applications.address as permit_address',
+                //     'permit_applications.date_of_birth',
+                //     'permit_applications.gender as permit_gender',
+                //     'permit_applications.sign_off_status',
+                //     'permit_applications.photo_upload',
+                //     'permit_categories.name as permit_category',
+                //     // DB::raw('group_concat("  ", travel_history.destination, " - " ,travel_history.travel_date) as travel_history'),
+                //     'test_results.overall_score',
+                //     'test_results.critical_score',
+                //     'health_interviews.*',
+                //     'health_interviews.id as interview_id',
+                //     // DB::raw('group_concat("  ", symptoms.name) as symptoms')
+                // )
+                // ->where('permit_applications.deleted_at', NULL)
+                // // ->groupBy('health_interviews.id', 'test_results.id', 'travel_history.id', 'appointments.id')
+                // ->orderBy('permit_applications.sign_off_status')
+                // ->get();
             }
         } elseif ($app_type_id == 2) {
             $applications = DB::table('health_interviews')
@@ -274,6 +274,27 @@ class SignOffController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return $e->getMessage();
+        }
+    }
+
+
+    public function viewSignOffs()
+    {
+
+        //get the applications thats have been approved 
+
+        try {
+
+              $applications = SignOff::join('establishment_applications', 'sign_offs.application_id', '=', 'establishment_applications.id')
+                ->where('sign_offs.application_type_id', '=', 3)
+                ->where('sign_offs.created_at', '>', '2024-01-01')
+                ->join('users', 'users.id', '=', 'sign_offs.user_id')
+                ->orderBy('sign_offs.expiry_date', 'desc')
+                ->where('users.facility_id', auth()->user()->facility_id)
+                ->get();
+
+            return view('signoffs.signsoff', compact('applications'));
+        } catch (\Exception $e) {
         }
     }
 }

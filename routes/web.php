@@ -126,6 +126,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/sign-off/create/{id}', [SignOffController::class, 'create'])->name('sign-off.create');
      Route::post('/sign-off/show-applications/{id}', [SignOffController::class, 'fetchApplications'])->name('show-applications');
      Route::post('/sign-off/approve', [SignOffController::class, 'approve'])->name('sign-off.approve');
+     Route::get('/sign-off/food-establishments',[SignOffController::class, 'viewSignOffs'])->name('sign-off-establishments');
 
      //Test Results
      Route::get('/test-results/permits/{id}/create', [PermitTestResultsController::class, 'permitResults'])->name('test-results.permit');
