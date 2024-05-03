@@ -22,7 +22,7 @@
         @foreach ($appointments as $appointment)
             <tr>
                 <td>{{ $appointment->id }}</td>
-                <td>{{ $appointment->appointment_date }}</td>
+                <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d F Y') }}</td>
                 <td>{{ $appointment->examDate?->examSites?->name }}</td>
                 <td>{{ $appointment->examDate?->exam_start_time }}</td>
                 <td>

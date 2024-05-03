@@ -29,10 +29,10 @@
                                                 <img src="{{ asset('images/female.jpg') }}" class="w-100 rounded-circle" />
                                             @endif
 
-                                        
+
                                         @endif
                                         <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
-                                                name="photo_upload" style="display:none">
+                                            name="photo_upload" style="display:none">
                                     </div>
 
                                 </div>
@@ -178,106 +178,112 @@
                                     </div>
                                 </form>
 
-                                <div class="mt-3">
-                                    <h3 class="text-muted">
+                                <div class="card mt-3">
+                                    <h3 class="text-muted card-header">
                                         Application Information
                                     </h3>
-                                    <div class="mt-3">
-                                        <label for="" class="form-label">Application Number</label>
-                                        <input type="text" class="form-control" value="{{ $permit_application->id }}"
-                                            disabled>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col">
-                                            <label for="" class="form-label">Permit Number</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $permit_application->permit_no }}" disabled>
+                                    <div class="card-body">
+                                        <div class="mt-3">
+                                            
+                                            <div class="mt-3">
+                                                <label for="" class="form-label">Application Number</label>
+                                                <input type="text" class="form-control" value="{{ $permit_application->id }}"
+                                                    disabled>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col">
+                                                    <label for="" class="form-label">Permit Number</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ $permit_application->permit_no }}" disabled>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="form-label">Permit Type</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ strtoupper($permit_application->permit_type) }}" disabled>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="form-label">Permit Category</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ strtoupper($permit_application->permitCategory?->name) }}"
+                                                        disabled>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label for="" class="form-label">Expiry Date</label>
+                                                <input type="text" class="form-control"
+                                                    value="{{ !empty($permit_application->signOffs) ? $permit_application->signOffs?->expiry_date : '' }}"
+                                                    disabled>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col">
+                                                    <label for="" class="form-label">Granted</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ strtoupper($permit_application->granted == 1 ? 'Granted' : ($permit_application->granted == 0 ? 'Not Granted' : 'N/A')) }}"
+                                                        disabled>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="form-label">Sign Off Status</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ strtoupper($permit_application->sign_off_status == 1 ? 'Signed Off' : 'Not Signed Off') }}"
+                                                        disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col">
+                                                    <label for="" class="form-label">Applied Before</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ $permit_application->applied_before == 1 ? 'YES' : 'NO' }}"
+                                                        disabled>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="form-label">Payment Status</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ empty($permit_application->payment) ? 'NOT PAID' : 'PAID' }}"
+                                                        disabled>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="form-label">Establishment</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ strtoupper(empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
+                                                        disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col">
+                                                    <label for="" class="form-label">Added By</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ $permit_application->user?->firstname . ' ' . $permit_application->user?->lastname }}"
+                                                        disabled>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="" class="form-label">Application Date</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ \Carbon\Carbon::parse($permit_application->application_date)->format('d F Y') }}" 
+                                                        disabled>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label for="" class="form-label">Reason for refusal (if any)</label>
+                                                <textarea class="form-control" disabled>{{ $permit_application->reason }}</textarea>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <label for="" class="form-label">Permit Type</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ strtoupper($permit_application->permit_type) }}" disabled>
-                                        </div>
-                                        <div class="col">
-                                            <label for="" class="form-label">Permit Category</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ strtoupper($permit_application->permitCategory?->name) }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <label for="" class="form-label">Expiry Date</label>
-                                        <input type="text" class="form-control"
-                                            value="{{ !empty($permit_application->signOffs) ? $permit_application->signOffs?->expiry_date : '' }}"
-                                            disabled>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col">
-                                            <label for="" class="form-label">Granted</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ strtoupper($permit_application->granted == 1 ? 'Granted' : ($permit_application->granted == 0 ? 'Not Granted' : 'N/A')) }}"
-                                                disabled>
-                                        </div>
-                                        <div class="col">
-                                            <label for="" class="form-label">Sign Off Status</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ strtoupper($permit_application->sign_off_status == 1 ? 'Signed Off' : 'Not Signed Off') }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col">
-                                            <label for="" class="form-label">Applied Before</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $permit_application->applied_before == 1 ? 'YES' : 'NO' }}"
-                                                disabled>
-                                        </div>
-                                        <div class="col">
-                                            <label for="" class="form-label">Payment Status</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ empty($permit_application->payment) ? 'NOT PAID' : 'PAID' }}"
-                                                disabled>
-                                        </div>
-                                        <div class="col">
-                                            <label for="" class="form-label">Establishment</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ strtoupper(empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col">
-                                            <label for="" class="form-label">Added By</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $permit_application->user?->firstname . ' ' . $permit_application->user?->lastname }}"
-                                                disabled>
-                                        </div>
-                                        <div class="col">
-                                            <label for="" class="form-label">Application Date</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $permit_application->application_date }}"
-                                                {{-- "{{ Carbon\Carbon::parse($permit_application->created_at)->format('F j, Y, g:i a') }}" --}}
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <label for="" class="form-label">Reason for refusal (if any)</label>
-                                        <textarea class="form-control" disabled>{{ $permit_application->reason }}</textarea>
                                     </div>
                                 </div>
-                                <div class="mt-5">
+                               
+                                <div class="mt-3">
                                     <div class="card">
+                                        <h4 class="text-muted card-header">Appointment Info</h4>
                                         <div class="card-body">
-                                            <h3 class="text-muted">Appointment Info</h3>
+                                          
                                             @include('partials.tables.permit_applications_appointments_table')
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="card mt-3">
-                                    <div class="card-header">
-                                       Sign Off Officer
-                                    </div>
+                                   <h4 class="card-header text-muted">
+                                    Approving Officer
+                                   </h4>
                                     <div class="card-body">
                                         <div>
                                             <table class="table table-bordered">
@@ -285,26 +291,33 @@
                                                     <tr>
                                                         <th>First Name</th>
                                                         <th>Last Name</th>
+                                                        <th>Approval Date</th>
                                                     </tr>
                                                 </thead>
-                                        
+
                                                 <tbody>
-                                                    @foreach ($sign_off_user as $user)
-                                                    <tr> <!-- Move the <tr> inside the loop -->
-                                                        <td>{{ $user->user->firstname }}</td>
-                                                        <td>{{ $user->user->lastname }}</td>
-                                                    </tr>
-                                                    @endforeach
+                                                    @if ($sign_off_user->isEmpty())
+                                                        <td>Not Signed off</td>
+                                                    @else
+                                                        @foreach ($sign_off_user as $user)
+                                                            <tr> <!-- Move the <tr> inside the loop -->
+                                                                <td>{{ $user->user->firstname }}</td>
+                                                                <td>{{ $user->user->lastname }}</td>
+                                                                <td>{{ \Carbon\Carbon::parse($user->sign_off_date)->format('d F Y') }}</td>
+
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                   
+
                                 </div>
-                                
-                                
-                                
-                                <div class="class mt-4 mb-3">
+
+
+
+                                <div class="class mt-4 mb-4">
                                     <a class="btn btn-warning" id="btnEdit">
                                         Edit Application
                                     </a>
@@ -376,7 +389,7 @@
                 $("#email").removeAttr("disabled");
                 document.getElementById("updBtn").style.display = "";
                 // if ($("#applicant_img").attr('src') == undefined) {
-                 document.getElementById("photo_upload").style.display = "";
+                document.getElementById("photo_upload").style.display = "";
                 // }
                 window.scrollTo({
                     top: 0,
