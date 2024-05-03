@@ -13,6 +13,7 @@ use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
 use App\Http\Controllers\PermitApplicationController;
+
 use App\Http\Controllers\PermitTestResultsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SignOffController;
@@ -191,13 +192,8 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post("/health-interview/filter", [HealthInterviewController::class, 'customFilterIndex'])->name('health-interview.processed.custom');
      Route::post("/health-interview/outstanding/", [HealthInterviewController::class, 'customFilterOutstanding'])->name('health-interview.outstanding.custom');
 
-     //Establishments Routes
-
-     //     Route::post("/food-establishment/{id}/edit", 'FoodEstablishmentController@edit');
-     //     Route::resource('/food-establishment', 'FoodEstablishmentController');
-     //     Route::get("/food-establishment/renew/{id}", "FoodEstablishmentController@renew");
-     //     Route::post("/food-establishment/renew/{id}", "FoodEstablishmentController@storeRenewal");
-
+   
+     //Food Establishments Route
      Route::get('/food-establishments/filter/{id}', [FoodEstablishmentController::class, 'index'])->name('food-establishment.filter');
      Route::post('/food-establishments/filter', [FoodEstablishmentController::class, 'indexCustom'])->name('food-establishment.filter.custom');
      Route::get('/food-establishments/create', [FoodEstablishmentController::class, 'create'])->name('food-establishment.create');
@@ -237,16 +233,19 @@ Route::group(['middleware' => ['auth']], function () {
 
      //Route::get("/test-centre/test-results/food-establishments",[FoodEstResultController::class,'index']);
 
-  //Training Manual Page
+   //Training Manual Page
      Route::get('/training-manuals',[TrainingManualsController::class,'index'])->name("training.manuals");
 
      //Switch Location 
       Route::get('/switch-location',[SwitchFacilityController::class, 'index'])->name('switch.location');
-      Route::post('/switch-location/{id}',[SwitchFacilityController::class,'update'])->name('switch.update');
-
-
+      Route::post('/switch-location',[SwitchFacilityController::class,'update'])->name('switch.update');
 
 
      //Logout Routes
      Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+ 
+
+     
 });

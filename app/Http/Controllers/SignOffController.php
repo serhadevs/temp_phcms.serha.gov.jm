@@ -15,6 +15,7 @@ use App\Models\SignOff;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TestResult;
 use App\Models\TouristEstablishments;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use DateTime;
 use Exception;
@@ -281,8 +282,6 @@ class SignOffController extends Controller
     public function viewSignOffs()
     {
 
-        //get the applications thats have been approved 
-
         try {
 
               $applications = SignOff::join('establishment_applications', 'sign_offs.application_id', '=', 'establishment_applications.id')
@@ -294,7 +293,10 @@ class SignOffController extends Controller
                 ->get();
 
             return view('signoffs.signsoff', compact('applications'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            return redirect()->with('error', 'Unknown error occured', $e->getMessage());
+        } catch (QueryException $e){
+            return redirect()->with('error', 'Unable to fetch data from the database!', $e->getMessage());
         }
     }
 }

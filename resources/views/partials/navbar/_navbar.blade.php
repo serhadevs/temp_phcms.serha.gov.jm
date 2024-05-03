@@ -25,7 +25,8 @@
                                 $facility = 'Unknown Facility';
                         }
                     @endphp
-                    <li><a class="dropdown-item" href="#">Facility: <em>{{ $facility }}</em></a></li>
+                    <li><a class="dropdown-item" href="#">{{ $facility }}</a></li>
+                    <li><a class="dropdown-item" href="/switch-location">Switch Location</a></li>
                     <li><a class="dropdown-item" href="">View Profile</a></li>
                     <li><a class="dropdown-item" href="{{ route('user.changepassword') }}">Change Password</a></li>
 

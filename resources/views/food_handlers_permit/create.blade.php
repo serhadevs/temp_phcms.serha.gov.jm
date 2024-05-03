@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Dashboard')
+@section('title', 'Food Handlers Permit')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -8,18 +8,7 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <p class="text-success"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if ($message = Session::get('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+          @include('partials.messages.messages')
             @if (isset($clinic_permit_data))
                 <h4 class="text-muted">
                     Application
