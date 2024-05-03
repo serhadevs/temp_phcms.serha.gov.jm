@@ -45,9 +45,10 @@
                 <td class="text-nowrap">
                     <a href="/barber-cosmet/view/{{ $application->id }}" class="btn-sm btn btn-primary mx-1">View</a>
                     <a href="/barber-cosmet/edit/{{ $application->id }}" class="btn btn-warning btn-sm mx-1">Edit</a>
-                    @if ($application->sign_off_status == '1')
-                        <a href="" class="btn-success btn-sm mx-1">Renew</a>
-                    @endif
+                    {{-- @if ($application->sign_off_status == '1') --}}
+                    <a href="/barber-cosmet/renewal/{{ $application->id }}"
+                        class="btn-success btn-sm btn mx-1">Renew</a>
+                    {{-- @endif --}}
                 </td>
             </tr>
         @endforeach

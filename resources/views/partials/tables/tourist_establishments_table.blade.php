@@ -40,8 +40,14 @@
                         data-bs-target="#managers-{{ $application->id }}">View Team</button>
                     <button type="button" class="btn btn-primary btn-sm mx-1" data-bs-toggle="modal"
                         data-bs-target="#services-{{ $application->id }}">View Services</button>
-                    <a href="/tourist-establishments/view/{{ $application->id }}" class="btn btn-sm btn-primary mx-1">View App.</a>
-                    <a href="/tourist-establishments/edit/{{ $application->id }}" class="btn btn-sm btn-warning mx-1">Edit</a>
+                    <a href="/tourist-establishments/view/{{ $application->id }}"
+                        class="btn btn-sm btn-primary mx-1">View App.</a>
+                    <a href="/tourist-establishments/edit/{{ $application->id }}"
+                        class="btn btn-sm btn-warning mx-1">Edit</a>
+                    @if ($application->sign_off_status == '1')
+                        <a href="/tourist-establishments/renewal/{{ $application->id }}"
+                            class="btn btn-sm btn-success mx-1">Renew</a>
+                    @endif
                 </td>
             </tr>
         @endforeach
@@ -86,7 +92,7 @@
                     @foreach ($application->services as $service)
                         <div class="mb-3">
                             <label for="" class="form-label fw-bold">
-                                Service {{ $counter + 1 }} 
+                                Service {{ $counter + 1 }}
                             </label>
                             <label for="" class="form-control">{{ $service->name }}</label>
                         </div>
