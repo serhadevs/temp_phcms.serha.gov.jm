@@ -53,8 +53,6 @@
                                         <div class="card-body">
                                             
                                             <div class="mt-3">
-                                               
-                                                <hr>
                                                 <div class="row mt-3">
                                                     <div class="col">
                                                         <label for="" class="form-label">First Name</label>
