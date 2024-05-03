@@ -77,16 +77,16 @@
                                     Gender
                                 </label>
                                 <div class="form-check">
-                                    <input type="radio" class="form-check-input" value="male" name="gender"
-                                        {{ old('gender') ? (old('gender') == 'male' ? 'checked' : '') : '' }}>
+                                    <input type="radio" class="form-check-input" value="male" name="sex"
+                                        {{ old('sex') ? (old('sex') == 'male' ? 'checked' : '') : '' }}>
                                     <label for="" class="form-check-label">Male</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="radio" class="form-check-input" value="female" name="gender"
-                                        {{ old('gender') ? (old('gender') == 'female' ? 'checked' : '') : '' }}>
+                                    <input type="radio" class="form-check-input" value="female" name="sex"
+                                        {{ old('sex') ? (old('sex') == 'female' ? 'checked' : '') : '' }}>
                                     <label for="" class="form-check-label">Female</label>
                                 </div>
-                                @error('gender')
+                                @error('sex')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>

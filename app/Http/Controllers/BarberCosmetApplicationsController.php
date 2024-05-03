@@ -90,7 +90,7 @@ class BarberCosmetApplicationsController extends Controller
             'lastname' => 'required',
             'middlename' => 'nullable',
             'date_of_birth' => 'required|date',
-            'gender' => 'required',
+            'sex' => 'required',
             'email' => 'nullable|email',
             'trn' => 'nullable',
             'occupation' => 'nullable',
