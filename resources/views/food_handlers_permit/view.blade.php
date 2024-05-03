@@ -283,13 +283,15 @@
                                 </div>
 
                                 <div class="card mt-3">
-                                    <h3 class="card-header text-muted">
+                                    <h4 class="card-header text-muted">
                                         Approving Officer
-                                    </h3>
+                                    </h4>
                                     <div class="card-body">
                                         <div>
                                             @if ($sign_off_user->isEmpty())
-                                                <td>Not Signed off</td>
+                                            <div class="alert alert-primary" role="alert">
+                                                Awaiting Sign Off
+                                              </div>
                                             @else
                                                 <table class="table table-bordered">
                                                     <thead>
