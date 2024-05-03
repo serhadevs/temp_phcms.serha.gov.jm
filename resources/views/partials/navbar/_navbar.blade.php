@@ -25,7 +25,7 @@
                                 $facility = 'Unknown Facility';
                         }
                     @endphp
-                    <li><a class="dropdown-item" href="#">{{ $facility }}</a></li>
+                    <li><a class="dropdown-item" href="#">Location: {{ $facility }}</a></li>
                     @if(in_array(auth()->user()->role_id,[10]))
                     <li><a class="dropdown-item" href="/switch-location">Switch Location</a></li>
                     @endif
