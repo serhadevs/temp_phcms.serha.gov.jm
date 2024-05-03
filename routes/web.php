@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdvanceSearchController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberCosmetApplicationsController;
+use App\Http\Controllers\BarberCosmetTestResultController;
 use App\Http\Controllers\ClinicPermitApplicationController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DownloadsController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SwitchFacilityController;
 use App\Http\Controllers\TouristEstApplicationsController;
+use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
 use App\Models\PermitTestResults;
@@ -141,6 +143,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/sign-off/food-establishments',[SignOffController::class, 'viewSignOffs'])->name('sign-off-establishments');
 
      //Test Results
+     //Food Handlers Permit
      Route::get('/test-results/permits/{id}/create', [PermitTestResultsController::class, 'permitResults'])->name('test-results.permit');
      Route::post('/test-results/permits/create', [PermitTestResultsController::class, 'addPermitResults'])->name('test-results.permit.add');
      Route::get('/test-results/permit/filter/{id}', [PermitTestResultsController::class, 'index'])->name('test-results.permit.index');
@@ -148,6 +151,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/test-results/permit/outstanding/filter/{id}', [PermitTestResultsController::class , 'outstanding'])->name('test-results.permit.outstanding');
      Route::post('/test-results/permit/outstanding/filter', [PermitTestResultsController::class, 'outstandingCustom'])->name('test-results.permit.outstanding.custom');
 
+     //Food Establishment Results
      Route::get('/test-results/food-establishments/filter/{id}', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');
      Route::post('/test-results/food-establishments/filter', [FoodEstTestResultController::class, 'customIndex'])->name('test-results.food-est.custom.filter');
      Route::get('/test-results/food-establishments/create/{id}', [FoodEstTestResultController::class, 'create'])->name('test-results.food-est.create');
@@ -156,6 +160,22 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/test-results/food-establishments', [FoodEstTestResultController::class, 'store'])->name('test-results.food-est.store');
      Route::get('/test-results/food-establishments/edit/{id}', [FoodEstTestResultController::class, 'edit'])->name('test-results.food-est.edit');
      Route::post('/test-results/food-establishments/update', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update');
+
+     //Baber/Cosmet Results
+     Route::get('/test-results/barber-cosmet/filter/{id}', [BarberCosmetTestResultController::class, 'index'])->name('test-results.barber-cosmet.processed');
+     Route::post('/test-results/barber-cosmet/filter', [BarberCosmetTestResultController::class , 'customIndex'])->name('test-results.barber-cosmet.processed.custom');
+     Route::get('/test-results/barber-cosmet/outstanding/filter/{id}', [BarberCosmetTestResultController::class, 'outstanding'])->name('test-results.barber-cosmet.outstanding');
+     Route::post('/test-results/barber-cosmet/outstanding/filter', [BarberCosmetTestResultController::class, 'outstandingCustom'])->name('test-results.barber-cosmet.custom.outstanding');
+
+     //Tourist Establishment Results
+     Route::get('/test-results/tourist-establishments/filter/{id}', [TouristEstTestResultController::class, 'index'])->name('test-results.tourist-establishments.index.filter');
+     Route::post('/test-results/tourist-establishments/filter', [TouristEstTestResultController::class, 'customIndex'])->name('test-results.tourist-establishments.custom.filter');
+     Route::get('/test-results/tourist-establishments/create/{id}', [TouristEstTestResultController::class , 'create'])->name('test-results.tourist-establishments.create');
+     Route::post('/test-results/tourist-establishments/store/{id}', [TouristEstTestResultController::class, 'store'])->name('test-results.tourist-establishments.store');
+     Route::get('/test-results/tourist-establishments/edit/{id}', [TouristEstTestResultController::class , 'edit'])->name('test-results.tourist-establishments.edit');
+     Route::put('/test-results/tourist-establishments/update/{id}', [TouristEstTestResultController::class , 'update'])->name('test-results.tourist-establishments.update');
+     Route::get('/test-results/tourist-establishments/outstanding/filter/{id}', [TouristEstTestResultController::class, 'outstanding'])->name('test-results.tourist-establishments.outstanding.filter');
+     Route::post('/test-results/tourist-establishments/outstanding/filter', [TouristEstTestResultController::class, 'outstandingCustom'])->name('test-results.test-establishments.outstanding.custom');
 
      //Report
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');

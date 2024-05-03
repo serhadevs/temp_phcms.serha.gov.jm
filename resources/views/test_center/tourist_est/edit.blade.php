@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-muted">
-                        Create Tourist Inspection Result for {{ $application->establishment_name }}
+                        Edit Tourist Inspection Result for {{ $application->establishment_name }}
                     </h2>
                     <hr>
                     <div class="row mt-3">
@@ -39,12 +39,14 @@
                         <label for="" class="form-label">Bed Capacity</label>
                         <input type="text" class="form-control" value="{{ $application->bed_capacity }}" disabled>
                     </div>
-                    <form action="{{ route('test-results.tourist-establishments.store', ['id' => $application->id]) }}" method="POST">
-                        @method('POST')
+                    <form
+                        action="{{ route('test-results.tourist-establishments.update', ['id' => $application->testResults?->id]) }}"
+                        method="POST">
+                        @method('PUT')
                         @csrf
                         @include('partials.forms.test_results_tourist_est_form')
                         <button class="btn btn-primary mt-4" type="submit">
-                            Add Test Results
+                            Update Test Results
                         </button>
                     </form>
                 </div>

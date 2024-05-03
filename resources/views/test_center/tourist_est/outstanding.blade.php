@@ -1,27 +1,27 @@
 @extends('partials.layouts.layout')
 
-@section('title', "Outstanding Food Establishment Results")
+@section('title', 'Outstanding Test Results Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <p class="text-success"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="card">
-                <div class="card-body">
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <p class="text-success"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    @if ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
                                 Outstanding Tourist Est. Results
@@ -35,16 +35,19 @@
                                         Filter Results
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/0">Today</a>
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/tourist-establishments/outstanding/filter/0">Today</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/1">Yesterday</a>
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/tourist-establishments/outstanding/filter/1">Yesterday</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/7">Last
+                                        <li><a class="dropdown-item" href="/test-results/tourist-establishments/outstanding/filter/7">Last
                                                 Week</a></li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/30">Last
+                                        <li><a class="dropdown-item" href="/test-results/tourist-establishments/outstanding/filter/30">Last
                                                 Month</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/90">Last 3
+                                        <li><a class="dropdown-item" href="/test-results/tourist-establishments/outstanding/filter/90">Last
+                                                3
                                                 month</a>
                                         </li>
                                         <li><button class="dropdown-item" href="#"
@@ -54,7 +57,9 @@
                             </div>
                         </div>
                     </div>
-                    <form action="{{ route('downloads.tourist_est.custom') }}" method="POST">
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('test-results.test-establishments.outstanding.custom') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="row text-center justify-content-md-center" id="search-row" style="display:none">
@@ -85,7 +90,7 @@
                             </div>
                         </div>
                     </form>
-                    @include('partials.tables.outstanding_test_results_ests')
+                    @include('partials.tables.tourist_establishments_table')
                 </div>
             </div>
         </div>
