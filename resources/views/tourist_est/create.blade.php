@@ -455,6 +455,7 @@
                     service = document.createElement('input');
                     service.classList.add('form-control');
                     service.setAttribute('name', 'services[]');
+                    service.setAttribute('oninput', 'this.value=this.value.toUpperCase()')
 
                     service_div.append(label, service, remove_button);
                     document.getElementById('services').append(service_div);

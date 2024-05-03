@@ -172,6 +172,8 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/food-establishments/renewal', [FoodEstablishmentController::class, 'storeRenewal'])->name('food-establishment.renew');
      Route::get('/barber-cosmet/renewal/{id}', [BarberCosmetApplicationsController::class, 'renewal'])->name('barber-cosmet.application.renewal');
      Route::post('/barber-cosmet/renew/{id}', [BarberCosmetApplicationsController::class , 'renew'])->name('barber-cosmet.application.renew');
+     Route::get('/tourist-establishments/renewal/{id}', [TouristEstApplicationsController::class, 'renewal'])->name('tourist-establishments.renewal');
+     Route::post('/tourist-establishments/renew/{id}', [TouristEstApplicationsController::class, 'renew'])->name('tourist-establishments.renew');
 
 
      Route::get('/settings/users', [UserController::class, 'index'])->name('users');

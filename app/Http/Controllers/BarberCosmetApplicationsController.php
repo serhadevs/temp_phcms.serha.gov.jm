@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Appointments;
 use App\Models\ExamDates;
 use App\Models\HealthCertApplications;
+use App\Models\HealthInterview;
 use App\Models\Renewals;
+use App\Models\TestResult;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
@@ -307,6 +309,13 @@ class BarberCosmetApplicationsController extends Controller
                             ->first()
                             ->update(['deleted_at' => new DateTime()])
                         ) {
+                            if ($old_health_interview = HealthInterview::where('health_cert_application_id', $id)->first()) {
+                                $old_health_interview->update(['deleted_at' => new DateTime()]);
+                            }
+
+                            if ($old_test_results = TestResult::where('application_id', $id)->where('application_type_id', 2)->first()) {
+                                $old_test_results->update(['deleted_at' => new DateTime()]);
+                            }
                             return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Health Certificate Application has been renewed successfully. The New Application ID is: ' . $new_application->id);
                         }
                     }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\EstablishmentApplications;
 use App\Models\Facility;
+use App\Models\Renewals;
+use App\Models\TestResult;
 use App\Models\TouristEstablishments;
 use App\Models\TouristEstManagers;
 use App\Models\TouristEstServices;
@@ -336,5 +338,103 @@ class TouristEstApplicationsController extends Controller
         } catch (Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function renewal($id)
+    {
+        $application = TouristEstablishments::with('services', 'managers')->find($id);
+
+        return view('tourist_est.renew', compact('application'));
+    }
+
+    public function renew(Request $request, $id)
+    {
+        $tourist_est = $request->validate([
+            'establishment_name' => 'required',
+            'establishment_address' => 'required',
+            'bed_capacity' => 'numeric|required',
+            'is_eating_establishment' => 'required',
+            'eating_establishment_description' => 'nullable',
+            'establishment_state' => 'required',
+            'officer_firstname' => 'nullable',
+            'officer_lastname' => 'nullable',
+            'authorized_officer_statement' => 'nullable',
+            'statement_date' => 'nullable|date',
+            'application_date' => 'required|date',
+            'firstname.*' => 'required_with:firstname.0|required_with:lastname.0|required_with:nationality.0',
+            'lastname.*' => 'required_with:firstname.0|required_with:lastname.0|required_with:nationality.0',
+            'nationality.*' => 'required_with:firstname.0|required_with:lastname.0|required_with:nationality.0',
+            'services.*' => 'required_with:services.0'
+        ]);
+
+        $old_application = TouristEstablishments::find($id);
+
+        $tourist_est['permit_no'] = $old_application->permit_no;
+        $tourist_est['user_id'] = auth()->user()->id;
+
+        if ($new_tourist_est = TouristEstablishments::create($tourist_est)) {
+            foreach ($old_application->managers as $manager) {
+                TouristEstManagers::find($manager->id)->update([
+                    'deleted_at' => new DateTime()
+                ]);
+            }
+
+            foreach ($old_application->services as $service) {
+                TouristEstServices::find($service->id)->update([
+                    'deleted_at' => new DateTime()
+                ]);
+            }
+
+            if (!empty($request->firstname)) {
+                $i = 0;
+                foreach ($request->firstname as $item) {
+                    if ($item) {
+                        TouristEstManagers::create([
+                            'tourist_establishment_id' => $new_tourist_est->id,
+                            'firstname' => $item,
+                            'lastname' => $request->lastname[$i],
+                            'post_held' => $request->post_held[$i],
+                            'qualifications' => $request->qualifications[$i],
+                            'nationality' => $request->nationality[$i]
+                        ]);
+                    }
+                    $i++;
+                }
+            }
+
+            if (!empty($request->services)) {
+                foreach ($request->services as $name) {
+                    if ($name) {
+                        TouristEstServices::create(
+                            [
+                                'tourist_establishment_id' => $new_tourist_est->id,
+                                'name' => $name
+                            ]
+
+                        );
+                    }
+                }
+            }
+
+            if ($old_test_results = TestResult::where('application_id', $id)->where('application_type_id', 6)->first()) {
+                $old_test_results->update([
+                    'deleted_at' => new DateTime()
+                ]);
+            }
+
+            if (Renewals::create(
+                [
+                    'new_application_id' => $new_tourist_est->id,
+                    'application_type_id' => 6,
+                    'old_application_id' => $old_application->id
+
+                ]
+            )) {
+                if ($old_application->update(['deleted_at' => new DateTime()])) {
+                    return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', 'Tourist Establishment ' . $new_tourist_est->establishment_name . ' has been renewed successfully. The Application ID is: ' . $new_tourist_est->id . '.');
+                }
+            }
+        }
+        return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('error', 'Error processing renewal for Tourist Establishment ' . $old_application->establishment_name . '.');
     }
 }
