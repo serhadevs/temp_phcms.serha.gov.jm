@@ -10,6 +10,7 @@ use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
 use App\Models\Renewals;
+use App\Models\SignOff;
 use App\Models\TestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -90,6 +91,13 @@ class PermitApplicationController extends Controller
         $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs')
             ->find($application_id);
 
+            //dd($permit_application);
+
+            $sign_off_user = SignOff::with('user')->where('application_id',$permit_application->id)->get();
+           
+
+            //dd($sign_off_user);
+
         $appointments = Appointments::with('examDate.examSites')
             ->where('facility_id', auth()->user()->facility_id)
             ->where('permit_application_id', $application_id)
@@ -105,7 +113,7 @@ class PermitApplicationController extends Controller
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available','sign_off_user'));
     }
 
     public function editView(Request $request)

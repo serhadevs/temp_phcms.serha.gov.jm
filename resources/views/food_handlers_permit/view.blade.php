@@ -273,6 +273,37 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                       Sign Off Officer
+                                    </div>
+                                    <div class="card-body">
+                                        <div>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>First Name</th>
+                                                        <th>Last Name</th>
+                                                    </tr>
+                                                </thead>
+                                        
+                                                <tbody>
+                                                    @foreach ($sign_off_user as $user)
+                                                    <tr> <!-- Move the <tr> inside the loop -->
+                                                        <td>{{ $user->user->firstname }}</td>
+                                                        <td>{{ $user->user->lastname }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                
+                                
+                                
                                 <div class="class mt-4 mb-3">
                                     <a class="btn btn-warning" id="btnEdit">
                                         Edit Application
