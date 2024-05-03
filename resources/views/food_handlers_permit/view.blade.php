@@ -184,11 +184,11 @@
                                     </h3>
                                     <div class="card-body">
                                         <div class="mt-3">
-                                            
+
                                             <div class="mt-3">
                                                 <label for="" class="form-label">Application Number</label>
-                                                <input type="text" class="form-control" value="{{ $permit_application->id }}"
-                                                    disabled>
+                                                <input type="text" class="form-control"
+                                                    value="{{ $permit_application->id }}" disabled>
                                             </div>
                                             <div class="row mt-3">
                                                 <div class="col">
@@ -199,7 +199,8 @@
                                                 <div class="col">
                                                     <label for="" class="form-label">Permit Type</label>
                                                     <input type="text" class="form-control"
-                                                        value="{{ strtoupper($permit_application->permit_type) }}" disabled>
+                                                        value="{{ strtoupper($permit_application->permit_type) }}"
+                                                        disabled>
                                                 </div>
                                                 <div class="col">
                                                     <label for="" class="form-label">Permit Category</label>
@@ -258,57 +259,60 @@
                                                 <div class="col">
                                                     <label for="" class="form-label">Application Date</label>
                                                     <input type="text" class="form-control"
-                                                        value="{{ \Carbon\Carbon::parse($permit_application->application_date)->format('d F Y') }}" 
+                                                        value="{{ \Carbon\Carbon::parse($permit_application->application_date)->format('d F Y') }}"
                                                         disabled>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <label for="" class="form-label">Reason for refusal (if any)</label>
+                                                <label for="" class="form-label">Reason for refusal (if
+                                                    any)</label>
                                                 <textarea class="form-control" disabled>{{ $permit_application->reason }}</textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                               
+
                                 <div class="mt-3">
                                     <div class="card">
                                         <h4 class="text-muted card-header">Appointment Info</h4>
                                         <div class="card-body">
-                                          
+
                                             @include('partials.tables.permit_applications_appointments_table')
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="card mt-3">
-                                   <h4 class="card-header text-muted">
-                                    Approving Officer
-                                   </h4>
+                                    <h3 class="card-header text-muted">
+                                        Approving Officer
+                                    </h3>
                                     <div class="card-body">
                                         <div>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>First Name</th>
-                                                        <th>Last Name</th>
-                                                        <th>Approval Date</th>
-                                                    </tr>
-                                                </thead>
+                                            @if ($sign_off_user->isEmpty())
+                                                <td>Not Signed off</td>
+                                            @else
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>First Name</th>
+                                                            <th>Last Name</th>
+                                                            <th>Approval Date</th>
+                                                        </tr>
+                                                    </thead>
 
-                                                <tbody>
-                                                    @if ($sign_off_user->isEmpty())
-                                                        <td>Not Signed off</td>
-                                                    @else
+                                                    <tbody>
+
                                                         @foreach ($sign_off_user as $user)
                                                             <tr> <!-- Move the <tr> inside the loop -->
                                                                 <td>{{ $user->user->firstname }}</td>
                                                                 <td>{{ $user->user->lastname }}</td>
-                                                                <td>{{ \Carbon\Carbon::parse($user->sign_off_date)->format('d F Y') }}</td>
+                                                                <td>{{ \Carbon\Carbon::parse($user->sign_off_date)->format('d F Y') }}
+                                                                </td>
 
                                                             </tr>
                                                         @endforeach
-                                                    @endif
-                                                </tbody>
+                                            @endif
+                                            </tbody>
                                             </table>
                                         </div>
                                     </div>
