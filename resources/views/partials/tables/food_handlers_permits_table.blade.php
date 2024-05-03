@@ -42,8 +42,7 @@
                     <a href="/permit/application/edit/{{ $permit_application->id }}"
                         class="btn btn-warning btn-sm">Edit</a>
                     {{-- <a href="/permit/application/destroy/{{ $permit_application->id }}" class="btn btn-danger btn-sm">Remove</a> --}}
-                    <button class="btn btn-danger btn-sm"
-                        onclick="purgeApplication({{ json($permit_application) }})">Remove</a>
+                    <button class="btn btn-danger btn-sm">Remove</button>
                         <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
                         @if ($permit_application->sign_off_status == '1')
                             <a class="btn btn-success btn-sm"
@@ -105,23 +104,6 @@
         scrollX: true
     });
 
-    function purgeApplication(permit_application) {
-        swal.fire({
-            title: permit_application,
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                });
-            }
-        });
-    }
+    
+    
 </script>
