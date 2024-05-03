@@ -472,6 +472,9 @@ class PermitApplicationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $permit_application = PermitApplication::find($id);
+        //dd($permit_application);
+
+        return redirect()->route('dashboard.dashboard')->with('success',$permit_application);
     }
 }

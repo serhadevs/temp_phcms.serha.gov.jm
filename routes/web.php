@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth']], function () {
      Route::post('/permit/application/edit', [PermitApplicationController::class, 'editApplication'])->name('permit.application.edit');
      Route::post('/permit/application/edit/appointment', [PermitApplicationController::class, 'editPermitAppointment'])->name('permit.application.edit.appointment');
      Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
+     Route::put('/permit/application/destroy/{id}',[PermitApplicationController::class, 'destroy']);
 
      //Barber Cosmetics Routes
      Route::get('/barber-cosmet/create', [BarberCosmetApplicationsController::class, 'create'])->name('barber-cosmet.create');
