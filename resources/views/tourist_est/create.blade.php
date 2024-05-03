@@ -20,7 +20,7 @@
                                 Tourist Establishment Name
                             </label>
                             <input type="text" class="form-control" name="establishment_name"
-                                value="{{ old('establishment_name') }}">
+                                value="{{ old('establishment_name') }}" oninput="this.value=this.value.toUpperCase()">
                             @error('establishment_name')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -31,7 +31,7 @@
                                 Establishment Address
                             </label>
                             <input type="text" class="form-control" name="establishment_address"
-                                value="{{ old('establishment_address') }}">
+                                value="{{ old('establishment_address') }}" oninput="this.value=this.value.toUpperCase()">
                             @error('establishment_address')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -69,7 +69,7 @@
                         <div class="mt-3">
                             <label for="" class="form-label">Describe Eating Establishment and Seating
                                 Capacity</label>
-                            <textarea class="form-control" name="eating_establishment_description">{{ old('eating_establishment_description') }}</textarea>
+                            <textarea class="form-control" name="eating_establishment_description" oninput="this.value=this.value.toUpperCase()">{{ old('eating_establishment_description') }}</textarea>
                             @error('eating_establishment_description')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -98,7 +98,7 @@
                             <div class="col">
                                 <label for="" class="form-label">Authorized Officer First Name</label>
                                 <input type="text" class="form-control" name="officer_firstname"
-                                    value="{{ old('officer_firstname') }}">
+                                    value="{{ old('officer_firstname') }}" oninput="this.value=this.value.toUpperCase()">
                                 @error('officer_firstname')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -106,7 +106,7 @@
                             <div class="col">
                                 <label for="" class="form-label">Authorized Officer Last Name</label>
                                 <input type="text" class="form-control" name="officer_lastname"
-                                    value="{{ old('officer_lastname') }}">
+                                    value="{{ old('officer_lastname') }}" oninput="this.value=this.value.toUpperCase()">
                                 @error('officer_lastname')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -114,7 +114,7 @@
                         </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Authorized Officer Statement</label>
-                            <textarea name="authorized_officer_statement" class="form-control">{{ old('authorized_officer_statement') }}</textarea>
+                            <textarea name="authorized_officer_statement" class="form-control" oninput="this.value=this.value.toUpperCase()">{{ old('authorized_officer_statement') }}</textarea>
                             @error('authorized_officer_statement')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -150,7 +150,8 @@
                                         <div class="col">
                                             <label for="" class="form-label">First Name</label>
                                             <input type="text" class="form-control" name="firstname[]"
-                                                value="{{ old('firstname') ? (old('firstname')[0] ? old('firstname')[0] : '') : '' }}">
+                                                value="{{ old('firstname') ? (old('firstname')[0] ? old('firstname')[0] : '') : '' }}"
+                                                oninput="this.value=this.value.toUpperCase()">
                                             @error('firstname.0')
                                                 <p class="text-danger">First Name is a required field.</p>
                                             @enderror
@@ -158,7 +159,8 @@
                                         <div class="col">
                                             <label for="" class="form-label">Last Name</label>
                                             <input type="text" class="form-control" name="lastname[]"
-                                                value="{{ old('lastname') ? (old('lastname')[0] ? old('lastname')[0] : '') : '' }}">
+                                                value="{{ old('lastname') ? (old('lastname')[0] ? old('lastname')[0] : '') : '' }}"
+                                                oninput="this.value=this.value.toUpperCase()">
                                             @error('lastname.0')
                                                 <p class="text-danger">Last Name is a required field.</p>
                                             @enderror
@@ -168,7 +170,8 @@
                                         <div class="col">
                                             <label for="" class="form-label">Post Held</label>
                                             <input type="text" class="form-control" name="post_held[]"
-                                                value="{{ old('post_held') ? (old('post_held')[0] ? old('post_held')[0] : '') : '' }}">
+                                                value="{{ old('post_held') ? (old('post_held')[0] ? old('post_held')[0] : '') : '' }}"
+                                                oninput="this.value=this.value.toUpperCase()">
                                             @error('post_held.0')
                                                 <p class="text-danger">Post Held is a required field.</p>
                                             @enderror
@@ -176,7 +179,8 @@
                                         <div class="col">
                                             <label for="" class="form-label">Qualifications</label>
                                             <input type="text" class="form-control" name="qualifications[]"
-                                                value="{{ old('qualifications') ? (old('qualifications')[0] ? old('qualifications')[0] : '') : '' }}">
+                                                value="{{ old('qualifications') ? (old('qualifications')[0] ? old('qualifications')[0] : '') : '' }}"
+                                                oninput="this.value=this.value.toUpperCase()">
                                             @error('qualifications.0')
                                                 <p class="text-danger">Qualification is a required field.</p>
                                             @enderror
@@ -184,7 +188,8 @@
                                         <div class="col">
                                             <label for="" class="form-label">Nationality</label>
                                             <input type="text" class="form-control" name="nationality[]"
-                                                value="{{ old('nationality') ? (old('nationality')[0] ? old('nationality')[0] : '') : '' }}">
+                                                value="{{ old('nationality') ? (old('nationality')[0] ? old('nationality')[0] : '') : '' }}"
+                                                oninput="this.value=this.value.toUpperCase()">
                                             @error('nationality.0')
                                                 <p class="text-danger">Nationality is a required field.</p>
                                             @enderror
@@ -203,7 +208,8 @@
                                             <div class="col">
                                                 <label for="" class="form-label">First Name</label>
                                                 <input type="text" class="form-control" name="firstname[]"
-                                                    value="{{ old('firstname') ? (old('firstname')[$i] ? old('firstname')[$i] : '') : '' }}">
+                                                    value="{{ old('firstname') ? (old('firstname')[$i] ? old('firstname')[$i] : '') : '' }}"
+                                                    oninput="this.value=this.value.toUpperCase()">
                                                 @error('firstname.' . $i)
                                                     <p class="text-danger">First Name is a required field.</p>
                                                 @enderror
@@ -211,7 +217,8 @@
                                             <div class="col">
                                                 <label for="" class="form-label">Last Name</label>
                                                 <input type="text" class="form-control" name="lastname[]"
-                                                    value="{{ old('lastname') ? (old('lastname')[$i] ? old('lastname')[$i] : '') : '' }}">
+                                                    value="{{ old('lastname') ? (old('lastname')[$i] ? old('lastname')[$i] : '') : '' }}"
+                                                    oninput="this.value=this.value.toUpperCase()">
                                                 @error('lastname.' . $i)
                                                     <p class="text-danger">Last Name is a required field.</p>
                                                 @enderror
@@ -221,7 +228,8 @@
                                             <div class="col">
                                                 <label for="" class="form-label">Post Held</label>
                                                 <input type="text" class="form-control" name="post_held[]"
-                                                    value="{{ old('post_held') ? (old('post_held')[$i] ? old('post_held')[$i] : '') : '' }}">
+                                                    value="{{ old('post_held') ? (old('post_held')[$i] ? old('post_held')[$i] : '') : '' }}"
+                                                    oninput="this.value=this.value.toUpperCase()">
                                                 @error('post_held.' . $i)
                                                     <p class="text-danger">Post Held is a required field.</p>
                                                 @enderror
@@ -229,7 +237,8 @@
                                             <div class="col">
                                                 <label for="" class="form-label">Qualifications</label>
                                                 <input type="text" class="form-control" name="qualifications[]"
-                                                    value="{{ old('qualifications') ? (old('qualifications')[$i] ? old('qualifications')[$i] : '') : '' }}">
+                                                    value="{{ old('qualifications') ? (old('qualifications')[$i] ? old('qualifications')[$i] : '') : '' }}"
+                                                    oninput="this.value=this.value.toUpperCase()">
                                                 @error('qualifications.' . $i)
                                                     <p class="text-danger">Qualification is a required field.</p>
                                                 @enderror
@@ -237,7 +246,8 @@
                                             <div class="col">
                                                 <label for="" class="form-label">Nationality</label>
                                                 <input type="text" class="form-control" name="nationality[]"
-                                                    value="{{ old('nationality') ? (old('nationality')[$i] ? old('nationality')[$i] : '') : '' }}">
+                                                    value="{{ old('nationality') ? (old('nationality')[$i] ? old('nationality')[$i] : '') : '' }}"
+                                                    oninput="this.value=this.value.toUpperCase()">
                                                 @error('nationality.' . $i)
                                                     <p class="text-danger">Nationality is a required field.</p>
                                                 @enderror
@@ -254,7 +264,8 @@
                                 @endforeach
                             @endif
                         </div>
-                        <input type="hidden" class="form-control" id="num_management" name="num_management" value="{{ old('num_management') }}">
+                        <input type="hidden" class="form-control" id="num_management" name="num_management"
+                            value="{{ old('num_management') }}">
                         <button class="btn btn-sm btn-info mt-3" onclick="addTeamMember()" type="button">
                             <i class="bi bi-plus-square-fill"></i>
                             Add another team member
@@ -267,7 +278,8 @@
                                 <div class="border border-2 p-3 rounded border-primary">
                                     <label for="" class="form-label">Service/Facility Name</label>
                                     <input type="text" class="form-control" name="services[]"
-                                        value="{{ old('services') ? (old('services')[0] ? old('services')[0] : '') : '' }}">
+                                        value="{{ old('services') ? (old('services')[0] ? old('services')[0] : '') : '' }}"
+                                        oninput="this.value=this.value.toUpperCase()">
                                     @error('services.0')
                                         <p class="text-danger">Service/Facility Name is a required field.</p>
                                     @enderror
@@ -282,7 +294,8 @@
                                         id="services_{{ $index }}">
                                         <label for="" class="form-label">Service/Facility Name</label>
                                         <input type="text" class="form-control" name="services[]"
-                                            value="{{ old('services') ? (old('services')[$index] ? old('services')[$index] : '') : '' }}">
+                                            value="{{ old('services') ? (old('services')[$index] ? old('services')[$index] : '') : '' }}"
+                                            oninput="this.value=this.value.toUpperCase()">
                                         @error('services.' . $index)
                                             <p class="text-danger">Service/Facility Name is a required field.</p>
                                         @enderror
@@ -297,8 +310,8 @@
                                 @endforeach
                             @endif
                         </div>
-                        <input type="hidden" class="form-control" id="num_services"
-                            value="{{ old('num_services') }}" name="num_services">
+                        <input type="hidden" class="form-control" id="num_services" value="{{ old('num_services') }}"
+                            name="num_services">
                         <button class="btn btn-sm btn-info mt-3 d-block" onclick="addService()" type="button">
                             <i class="bi bi-plus-square-fill"></i>
                             Add another service
@@ -320,6 +333,7 @@
                     firstname = document.createElement('input');
                     firstname.classList.add('form-control');
                     firstname.setAttribute('name', 'firstname[]');
+                    firstname.setAttribute('oninput', 'this.value=this.value.toUpperCase()');
 
                     //Labels
                     //Label 1
@@ -351,6 +365,7 @@
                     lastname = document.createElement('input');
                     lastname.classList.add('form-control');
                     lastname.setAttribute('name', 'lastname[]');
+                    lastname.setAttribute('oninput', 'this.value=this.value.toUpperCase()');
 
                     //row
                     firstrow = document.createElement('div');
@@ -378,6 +393,7 @@
                     post_held = document.createElement('input');
                     post_held.classList.add('form-control');
                     post_held.setAttribute('name', 'post_held[]');
+                    post_held.setAttribute('oninput', 'this.value=this.value.toUpperCase()');
                     col_3.append(label_3);
                     col_3.append(post_held);
 
@@ -387,6 +403,7 @@
                     qual = document.createElement('input');
                     qual.classList.add('form-control');
                     qual.setAttribute('name', 'qualifications[]');
+                    qual.setAttribute('oninput', 'this.value=this.value.toUpperCase()');
                     col_4.append(label_4);
                     col_4.append(qual);
 
@@ -396,6 +413,7 @@
                     nationality = document.createElement('input');
                     nationality.setAttribute('name', 'nationality[]');
                     nationality.classList.add('form-control');
+                    nationality.setAttribute('oninput', 'this.value=this.value.toUpperCase()');
                     col_5.append(label_5);
                     col_5.append(nationality);
 

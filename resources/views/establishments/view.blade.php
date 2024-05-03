@@ -16,15 +16,15 @@
                             <label for="" class="form-label">
                                 Application ID
                             </label>
-                            <label for=""
-                                class="form-control bg-secondary text-white">{{ $est_application->id }}</label>
+                            <label for="" class="form-control"
+                                style="background:#e9ecef">{{ $est_application->id }}</label>
                         </div>
                         <div class="col">
                             <label for="" class="form-label">
                                 Permit Number
                             </label>
-                            <label for=""
-                                class="form-control bg-secondary text-white">{{ $est_application->permit_no }}</label>
+                            <label for="" class="form-control"
+                                style="background:#e9ecef">{{ $est_application->permit_no }}</label>
                         </div>
                     </div>
                     <form action="{{ route('food-establishment.edit') }}" method="POST">

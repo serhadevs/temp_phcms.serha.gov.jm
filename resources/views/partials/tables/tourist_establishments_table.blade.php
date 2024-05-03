@@ -40,8 +40,8 @@
                         data-bs-target="#managers-{{ $application->id }}">View Team</button>
                     <button type="button" class="btn btn-primary btn-sm mx-1" data-bs-toggle="modal"
                         data-bs-target="#services-{{ $application->id }}">View Services</button>
-                    <a href="" class="btn btn-sm btn-primary mx-1">View App.</a>
-                    <a href="" class="btn btn-sm btn-warning mx-1">Edit</a>
+                    <a href="/tourist-establishments/view/{{ $application->id }}" class="btn btn-sm btn-primary mx-1">View App.</a>
+                    <a href="/tourist-establishments/edit/{{ $application->id }}" class="btn btn-sm btn-warning mx-1">Edit</a>
                 </td>
             </tr>
         @endforeach

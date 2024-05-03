@@ -167,12 +167,13 @@
                     <div class="row">
                         <div class="col">
                             <label for="" class="form-label">Application ID</label>
-                            <label for="" class="form-control text-bg-secondary">{{ $application->id }}</label>
+                            <label for="" class="form-control"
+                                style="background:#e9ecef">{{ $application->id }}</label>
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Permit Number</label>
-                            <label for=""
-                                class="form-control text-bg-secondary">{{ $application->permit_no }}</label>
+                            <label for="" class="form-control"
+                                style="background:#e9ecef">{{ $application->permit_no }}</label>
                         </div>
                     </div>
                     <div class="row mt-3">

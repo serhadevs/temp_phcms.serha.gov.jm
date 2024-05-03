@@ -10,6 +10,7 @@ use App\Models\TouristEstServices;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
+use Exception;
 
 class TouristEstApplicationsController extends Controller
 {
@@ -166,9 +167,13 @@ class TouristEstApplicationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function view($id)
     {
-        //
+        $application = TouristEstablishments::with('managers', 'services', 'user')->find($id);
+
+        $not_modal = 1;
+
+        return view('tourist_est.view', compact('application', 'not_modal'));
     }
 
     /**
@@ -179,7 +184,12 @@ class TouristEstApplicationsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $application = TouristEstablishments::with('managers', 'services', 'user')->find($id);
+
+        $not_modal = 1;
+        $edit_mode = 1;
+
+        return view('tourist_est.view', compact('application', 'not_modal', 'edit_mode'));
     }
 
     /**
@@ -189,9 +199,60 @@ class TouristEstApplicationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $update_tourist_est = $request->validate([
+            'establishment_name' => 'required',
+            'establishment_address' => 'required',
+            'bed_capacity' => 'numeric|required',
+            'is_eating_establishment' => 'required',
+            'eating_establishment_description' => 'nullable',
+            'establishment_state' => 'required',
+            'officer_firstname' => 'nullable',
+            'officer_lastname' => 'nullable',
+            'authorized_officer_statement' => 'nullable',
+            'statement_date' => 'nullable|date'
+        ]);
+
+        $tourist_est = TouristEstablishments::find($request->app_id);
+
+        if ($tourist_est->update($update_tourist_est)) {
+            return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', 'Tourist Establishment Application for ' . $tourist_est->establishment_name . ' has been updated successfully.');
+        }
+    }
+
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $tourist_est_id
+     * @return \Illuminate\Http\Response
+     */
+    public function createManager($tourist_est_id)
+    {
+        $establishment_name = TouristEstablishments::find($tourist_est_id)->establishment_name;
+
+        return view('tourist_est.create_mangers', compact('establishment_name', 'tourist_est_id'));
+    }
+
+    public function storeManager(Request $request)
+    {
+        $tourist_est_managers = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'post_held' => 'nullable',
+            'qualifications' => 'nullable',
+            'nationality' => 'required'
+        ]);
+
+        $tourist_est = TouristEstablishments::find($request->tourist_est_id);
+
+        $tourist_est_managers['tourist_establishment_id'] = $request->tourist_est_id;
+
+        if (TouristEstManagers::create($tourist_est_managers)) {
+            return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', 'Manager has been added to ' . $tourist_est->establishment_name . ' successfully.');
+        }
     }
 
     /**
@@ -200,8 +261,80 @@ class TouristEstApplicationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function editManager($id)
     {
-        //
+        $manager = TouristEstManagers::find($id);
+        $establishment_name = TouristEstablishments::find($manager->tourist_establishment_id)->establishment_name;
+
+        return view('tourist_est.edit_managers', compact('manager', 'establishment_name'));
+    }
+
+    public function updateManager(Request $request)
+    {
+        $tourist_est_manager_update = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'post_held' => 'nullable',
+            'qualifications' => 'nullable',
+            'nationality' => 'required'
+        ]);
+
+        $tourist_est_manager = TouristEstManagers::find($request->manager_id);
+        $establishment_name = TouristEstablishments::find($tourist_est_manager->tourist_establishment_id)->establishment_name;
+
+        if ($tourist_est_manager->update($tourist_est_manager_update)) {
+            return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', $tourist_est_manager->firstname . ' ' . $tourist_est_manager->lastname . ' of Tourist Establishment ' . $establishment_name . ' has been updated successfully.');
+
+            return view('tourist_est.edit_managers', compact('manager', 'establishment_name'));
+        }
+    }
+
+    public function updateService(Request $request)
+    {
+        try {
+            if (TouristEstServices::find($request->data['id'])->update([
+                'name' => $request->data['name']
+            ])) {
+                return 'success';
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function deleteService(Request $request)
+    {
+        try {
+            if (TouristEstServices::find($request->data['service_id'])->update(['deleted_at' => new DateTime()])) {
+                return 'success';
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function deleteManager(Request $request)
+    {
+        try {
+            if (TouristEstManagers::find($request->data['manager_id'])->update(['deleted_at' => new DateTime()])) {
+                return 'success';
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function storeService(Request $request)
+    {
+        try {
+            if (TouristEstServices::create([
+                'tourist_establishment_id' => $request->data['tourist_est_id'],
+                'name' => $request->data['name']
+            ])) {
+                return 'success';
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 }
