@@ -88,6 +88,10 @@ class AuthController extends Controller
         }
     }
 
+    public function loginApi(){
+        return 'Hey';
+    }
+
 
 
 

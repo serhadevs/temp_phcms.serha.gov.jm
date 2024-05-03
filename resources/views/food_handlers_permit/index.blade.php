@@ -8,30 +8,16 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            @if ($message = Session::get('success'))
-                {{-- <div class="container"> --}}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <p class="text-success"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {{-- </div> --}}
-            @endif
-            @if ($message = Session::get('error'))
-                {{-- <div class="container"> --}}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <p class="text-danger font-weight-bold">{{ $message }}</p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {{-- </div> --}}
-            @endif
+            @include('partials.messages.messages')
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <div class="row justify-content-between mb-2">
                         <div class="col">
-                            <h3>Food Handler's Permits</h3>
+                            <h3>Food Handlers Permits Application Table</h3>
                         </div>
                         <div class="col-auto">
                             <div class="dropdown">
+                                <a href = {{ route('food_handlers_permit.newApplication') }} class="btn btn-success">Create Application</a>
                                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                     Filter Applications
@@ -50,6 +36,10 @@
 
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+
+
                     <form action="{{ route('permit.index.custom') }}" method="POST">
                         @csrf
                         @method('POST')
@@ -81,7 +71,9 @@
                             </div>
                         </div>
                     </form>
+
                     @include('partials.tables.food_handlers_permits_table')
+
                 </div>
             </div>
         </div>

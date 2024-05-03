@@ -1,9 +1,3 @@
-@php
-
- 
-
-@endphp
-
 <form action="advance-search/show" method="POST">
     @csrf
     @method('POST')
