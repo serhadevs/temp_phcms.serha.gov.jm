@@ -13,20 +13,22 @@
                         $facility = '';
                         switch (Auth::user()->facility_id) {
                             case 1:
-                                $facility = 'St Catherine';
+                                $facility = 'STC';
                                 break;
                             case 2:
-                                $facility = 'St Thomas';
+                                $facility = 'STT';
                                 break;
                             case 3:
-                                $facility = 'Kingston and St Andrew';
+                                $facility = 'KSA';
                                 break;
                             default:
                                 $facility = 'Unknown Facility';
                         }
                     @endphp
                     <li><a class="dropdown-item" href="#">{{ $facility }}</a></li>
+                    @if(in_array(auth()->user()->role_id,[10]))
                     <li><a class="dropdown-item" href="/switch-location">Switch Location</a></li>
+                    @endif
                     <li><a class="dropdown-item" href="">View Profile</a></li>
                     <li><a class="dropdown-item" href="{{ route('user.changepassword') }}">Change Password</a></li>
 
