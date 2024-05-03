@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointments;
 use App\Models\ExamDates;
 use App\Models\HealthCertApplications;
+use App\Models\Renewals;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
@@ -247,9 +248,72 @@ class BarberCosmetApplicationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function renewal($id)
     {
-        //
+        $application = HealthCertApplications::find($id);
+
+        $exam_sessions = ExamDates::with('examSites')
+            ->where('application_type_id', 2)
+            ->where('facility_id', auth()->user()->facility_id)
+            ->get();
+
+        return view('barbercosmet.renew', compact('application', 'exam_sessions'));
+    }
+
+    public function renew(Request $request, $id)
+    {
+        $health_cert_app = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'middlename' => 'nullable',
+            'date_of_birth' => 'required|date',
+            'sex' => 'required',
+            'email' => 'nullable|email',
+            'trn' => 'nullable',
+            'occupation' => 'nullable',
+            'employer_address' => 'nullable',
+            'employer' => 'nullable',
+            'granted' => 'required_if:applied_before,1',
+            'appointment_date' => 'required',
+            'telephone' => 'required',
+            'applied_before' => 'required',
+            'reason' => 'required_if:granted,0|max:255',
+            'exam_date_id' => 'required',
+            'application_date' => 'required',
+            'address' => 'required'
+        ]);
+
+        $old_application = HealthCertApplications::find($id);
+        $health_cert_app['user_id'] = auth()->user()->id;
+        $health_cert_app['permit_no'] = $old_application->permit_no;
+
+        if ($new_application = HealthCertApplications::create($health_cert_app)) {
+            if (Renewals::create([
+                'old_application_id' => $old_application->id,
+                'new_application_id' => $new_application->id,
+                'application_type_id' => '2'
+            ])) {
+                if ($old_application->update(['deleted_at' => new DateTime()])) {
+                    if (Appointments::create(
+                        [
+                            'appointment_date' => $health_cert_app['appointment_date'],
+                            'facility_id' => auth()->user()->facility_id,
+                            'health_cert_application_id' => $new_application->id,
+                            'exam_date_id' => $health_cert_app['exam_date_id']
+                        ]
+                    )) {
+                        if (Appointments::where('health_cert_application_id', $id)
+                            ->orderBy('created_at', 'desc')
+                            ->first()
+                            ->update(['deleted_at' => new DateTime()])
+                        ) {
+                            return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Health Certificate Application has been renewed successfully. The New Application ID is: ' . $new_application->id);
+                        }
+                    }
+                }
+            }
+        }
+        return redirect()->route('barber-cosmet.index', ['id' => 0])->with('error', 'Error renewing application id: ' . $id);
     }
 
     /**
