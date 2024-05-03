@@ -8,10 +8,11 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                <h4 class="card-header">
+                <h4 class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
                     <a href="#" onclick="window.history.back();" class="btn btn-primary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
-
-                    {{ $permit_application->firstname . " " . $permit_application->lastname }}</h4>
+                    <span>{{ $permit_application->firstname . " " . $permit_application->lastname }}</span>
+                </h4>
+                
                 <div class="card-body">
                     <form action="{{ route('permit.application.edit') }}" method="POST" enctype="multipart/form-data">
                         @csrf
