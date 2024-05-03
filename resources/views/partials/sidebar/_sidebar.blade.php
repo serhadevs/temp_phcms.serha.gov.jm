@@ -9,50 +9,50 @@
     </div>
 
     <ul class="sidebar-nav">
-            <li class="sidebar-item">
-                <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                    data-bs-target="#permit" aria-expanded="false" aria-controls="permit">
-                    <i class="lni lni-user"></i>
-                    <span>Food Handlers Permit</span>
-                </a>
-                <ul id="permit" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                    <li class="sidebar-item">
-                        <a href="/permit/filter/0" class="sidebar-link">Applications</a>
-                    </li>
-                   
-                        <li class="sidebar-item">
-                            <a href="/permit/application" class="sidebar-link">Create New</a>
-                        </li>
-                  
-                </ul>
-            </li>
-            <li class="sidebar-item">
-                <a href="/food-handlers-clinics/filter/0" class="sidebar-link">
-                    <i class="bi bi-buildings"></i>
-                    <span>Food Handlers Clinics</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/barber-cosmet/filter/0" class="sidebar-link">
-                    <i class="bi bi-scissors"></i>
-                    <span>Barber/Cosmet etc.</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/tourist-establishments/filter/0" class="sidebar-link">
-                    <i class="bi bi-luggage"></i>
-                    <span>Tourist Establishments</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/appointments" class="sidebar-link">
-                    <i class="lni lni-calendar"></i>
-                    <span>Appointments</span>
-                </a>
-            </li>
-        
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#permit" aria-expanded="false" aria-controls="permit">
+                <i class="lni lni-user"></i>
+                <span>Food Handlers Permit</span>
+            </a>
+            <ul id="permit" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/permit/filter/0" class="sidebar-link">Applications</a>
+                </li>
 
-        @if (in_array(auth()->user()->role_id, [1,5,7]))
+                <li class="sidebar-item">
+                    <a href="/permit/application" class="sidebar-link">Create New</a>
+                </li>
+
+            </ul>
+        </li>
+        <li class="sidebar-item">
+            <a href="/food-handlers-clinics/filter/0" class="sidebar-link">
+                <i class="bi bi-buildings"></i>
+                <span>Food Handlers Clinics</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="/barber-cosmet/filter/0" class="sidebar-link">
+                <i class="bi bi-scissors"></i>
+                <span>Barber/Cosmet etc.</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="/tourist-establishments/filter/0" class="sidebar-link">
+                <i class="bi bi-luggage"></i>
+                <span>Tourist Establishments</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="/appointments" class="sidebar-link">
+                <i class="lni lni-calendar"></i>
+                <span>Appointments</span>
+            </a>
+        </li>
+
+
+        @if (in_array(auth()->user()->role_id, [1, 5, 7]))
             <li class="sidebar-item">
                 <a href="/sign-off" class="sidebar-link">
                     <i class="bi bi-clipboard-check"></i>
@@ -66,27 +66,27 @@
                 <span>Advance Search</span>
             </a>
         </li>
-       
-           
-       
-    
-            <li class="sidebar-item">
-                <a href="/food-establishments/filter/0" class="sidebar-link">
-                    <i class="bi bi-hospital"></i>
-                    <span>Food Establishments</span>
-                </a>
-            </li>
-
-            <li class="sidebar-item">
-                <a href="/sign-off/food-establishments" class="sidebar-link">
-                    <i class="bi bi-hospital"></i>
-                    <span>Approved Food Est List 2024</span>
-                </a>
-            </li>
-    
 
 
-        @if(in_array(auth()->user()->role_id,[1,3,4,9]))
+
+
+        <li class="sidebar-item">
+            <a href="/food-establishments/filter/0" class="sidebar-link">
+                <i class="bi bi-hospital"></i>
+                <span>Food Establishments</span>
+            </a>
+        </li>
+
+        <li class="sidebar-item">
+            <a href="/sign-off/food-establishments" class="sidebar-link">
+                <i class="bi bi-hospital"></i>
+                <span>Approved Food Est List 2024</span>
+            </a>
+        </li>
+
+
+
+        @if (in_array(auth()->user()->role_id, [1, 3, 4, 9]))
             <li class="sidebar-item">
                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
@@ -100,64 +100,63 @@
                     <li class="sidebar-item">
                         <a href="/payments/applications/filter/0" class="sidebar-link">Outstanding Applications</a>
                     </li>
-                   
-                        <li class="sidebar-item">
-                            <a href="/payments/create" class="sidebar-link">Create New Payment</a>
-                        </li>
-                  
+
+                    <li class="sidebar-item">
+                        <a href="/payments/create" class="sidebar-link">Create New Payment</a>
+                    </li>
+
                 </ul>
             </li>
-            @endif
+        @endif
 
-            {{-- Only The Cashiers and the Accountant can access these routes --}}
-            @if(in_array(auth()->user()->role_id,[1,4,9]))
+        {{-- Only The Cashiers and the Accountant can access these routes --}}
+        @if (in_array(auth()->user()->role_id, [1, 4, 9]))
             <li class="sidebar-item">
                 <a href="/payments/cancellations" class="sidebar-link">
                     <i class="bi bi-slash-circle"></i>
                     <span>Payment Cancel Requests</span>
                 </a>
             </li>
-            @endif
-   
-      
-            <li class="sidebar-item">
-                <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                    data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
-                    <i class="bi bi-file-earmark-medical"></i>
-                    <span>Test Results</span>
-                </a>
-                <ul id="downloads2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                    <li class="sidebar-item">
-                        <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#download0" aria-expanded="false" aria-controls="reports">
-                            <span>Food Handlers Permits</span>
-                        </a>
-                        <ul id="download0" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
-                            <li class="sidebar-item mx-3">
-                                <a href="/test-results/permit/outstanding/filter/0"
-                                    class="sidebar-link">Outstanding</a>
-                            </li>
-                            <li class="sidebar-item mx-3">
-                                <a href="/test-results/permit/filter/0" class="sidebar-link">Processed</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
-                            <span>Food Establishments</span>
-                        </a>
-                        <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
-                            <li class="sidebar-item mx-3">
-                                <a href="/test-results/food-establishments/outstanding/filter/0"
-                                    class="sidebar-link">Outstanding</a>
-                            </li>
-                            <li class="sidebar-item mx-3">
-                                <a href="/test-results/food-establishments/filter/0" class="sidebar-link">Processed</a>
-                            </li>
-                        </ul>
-                    </li>
-                    {{-- <li class="sidebar-item">
+        @endif
+
+
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
+                <i class="bi bi-file-earmark-medical"></i>
+                <span>Test Results</span>
+            </a>
+            <ul id="downloads2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download0" aria-expanded="false" aria-controls="reports">
+                        <span>Food Handlers Permits</span>
+                    </a>
+                    <ul id="download0" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/permit/outstanding/filter/0" class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/permit/filter/0" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
+                        <span>Food Establishments</span>
+                    </a>
+                    <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/food-establishments/outstanding/filter/0"
+                                class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/food-establishments/filter/0" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
+                {{-- <li class="sidebar-item">
                         <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                             data-bs-target="#download4" aria-expanded="false" aria-controls="reports">
                             <span>Swimming Pool</span>
@@ -171,60 +170,59 @@
                                 <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#download5" aria-expanded="false" aria-controls="reports">
-                            <span>Tourist Establishment</span>
-                        </a>
-                        <ul id="download5" class="sidebar-dropdown list-unstyled collapse"
-                            data-bs-parent="#download2">
-                            <li class="sidebar-item mx-3">
-                                <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
-                            </li>
-                            <li class="sidebar-item mx-3">
-                                <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#download6" aria-expanded="false" aria-controls="reports">
-                            <span>Barber/Cosmet. etc.</span>
-                        </a>
-                        <ul id="download6" class="sidebar-dropdown list-unstyled collapse"
-                            data-bs-parent="#download2">
-                            <li class="sidebar-item mx-3">
-                                <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
-                            </li>
-                            <li class="sidebar-item mx-3">
-                                <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
-                            </li>
-                        </ul>
                     </li> --}}
-                </ul>
-            </li>
-            <li class="sidebar-item">
-                <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                    data-bs-target="#health_interview" aria-expanded="false" aria-controls="health_interview">
-                    <i class="bi bi-person-lines-fill"></i>
-                    <span>Health Interview</span>
-                </a>
-                <ul id="health_interview" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                    <li class="sidebar-item">
-                        <a href="/health-interview/filter/0" class="sidebar-link">Processed Interviews</a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="/health-interview/outstanding/filter/1/0" class="sidebar-link">Outstanding Food
-                            Handlers</a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="/health-interview/outstanding/filter/2/0" class="sidebar-link">Outstanding Health
-                            Cert.</a>
-                    </li>
-                </ul>
-            </li>
-      
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download5" aria-expanded="false" aria-controls="reports">
+                        <span>Tourist Establishment</span>
+                    </a>
+                    <ul id="download5" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/tourist-establishments/outstanding/filter/0"
+                                class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/tourist-establishments/filter/0" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
+                {{-- <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download6" aria-expanded="false" aria-controls="reports">
+                        <span>Barber/Cosmet. etc.</span>
+                    </a>
+                    <ul id="download6" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li> --}}
+            </ul>
+        </li>
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#health_interview" aria-expanded="false" aria-controls="health_interview">
+                <i class="bi bi-person-lines-fill"></i>
+                <span>Health Interview</span>
+            </a>
+            <ul id="health_interview" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/health-interview/filter/0" class="sidebar-link">Processed Interviews</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/health-interview/outstanding/filter/1/0" class="sidebar-link">Outstanding Food
+                        Handlers</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/health-interview/outstanding/filter/2/0" class="sidebar-link">Outstanding Health
+                        Cert.</a>
+                </li>
+            </ul>
+        </li>
+
         @if (in_array(auth()->user()->role_id, [1, 6]))
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -247,29 +245,29 @@
             </li>
         @endif
 
-        
-            <li class="sidebar-item">
-                <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                    data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
-                    <i class="bi bi-journal-check"></i>
-                    <span>Reports</span>
-                </a>
-                <ul id="reports" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                    <li class="sidebar-item">
-                        <a href="/report/general-report" class="sidebar-link">General Report</a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
-                    </li>
-                    @if(in_array(auth()->user()->role_id,[4,9]))
+
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
+                <i class="bi bi-journal-check"></i>
+                <span>Reports</span>
+            </a>
+            <ul id="reports" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/report/general-report" class="sidebar-link">General Report</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
+                </li>
+                @if (in_array(auth()->user()->role_id, [4, 9]))
                     <li class="sidebar-item">
                         <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                     </li>
-                    @endif
-                </ul>
+                @endif
+            </ul>
 
-            </li>
-    
+        </li>
+
 
         @if (in_array(auth()->user()->role_id, [1]))
             <li class="sidebar-item">

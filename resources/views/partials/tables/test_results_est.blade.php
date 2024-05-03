@@ -66,7 +66,7 @@
                                 class="btn btn-sm btn-success">Renew</a>
                         @endif
                     @endif
-                    <a href="/test-results/food-establishments/edit/{{ $application->id }}"
+                    <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/edit' : ($app_type_id == '6' ? 'tourist-establishments/edit' : '') }}/{{ $application->id }}"
                         class="btn btn-warning btn-sm">
                         Edit
                     </a>

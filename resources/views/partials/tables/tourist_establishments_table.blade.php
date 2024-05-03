@@ -1,6 +1,9 @@
 <table id="tourist_est_table" class="table table-striped" style="width:100%;max-width:100%">
     <thead>
         <tr>
+            @if (isset($is_results))
+                <th></th>
+            @endif
             <th>App. #</th>
             <th>Name</th>
             <th>Address</th>
@@ -15,6 +18,9 @@
     <tbody>
         @foreach ($applications as $application)
             <tr>
+                @if (isset($is_results))
+                    <td><a href="/test-results/tourist-establishments/create/{{ $application->id }}" class="btn btn-sm btn-primary">Select</a></td>
+                @endif
                 <td>{{ $application->id }}</td>
                 <td>{{ $application->establishment_name }}</td>
                 <td>{{ $application->establishment_address }}</td>
@@ -42,11 +48,13 @@
                         data-bs-target="#services-{{ $application->id }}">View Services</button>
                     <a href="/tourist-establishments/view/{{ $application->id }}"
                         class="btn btn-sm btn-primary mx-1">View App.</a>
-                    <a href="/tourist-establishments/edit/{{ $application->id }}"
-                        class="btn btn-sm btn-warning mx-1">Edit</a>
-                    @if ($application->sign_off_status == '1')
-                        <a href="/tourist-establishments/renewal/{{ $application->id }}"
-                            class="btn btn-sm btn-success mx-1">Renew</a>
+                    @if (!isset($is_results))
+                        <a href="/tourist-establishments/edit/{{ $application->id }}"
+                            class="btn btn-sm btn-warning mx-1">Edit</a>
+                        @if ($application->sign_off_status == '1')
+                            <a href="/tourist-establishments/renewal/{{ $application->id }}"
+                                class="btn btn-sm btn-success mx-1">Renew</a>
+                        @endif
                     @endif
                 </td>
             </tr>
