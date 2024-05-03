@@ -26,7 +26,7 @@
                         }
                     @endphp
                     <li><a class="dropdown-item" href="#">Location: {{ $facility }}</a></li>
-                    @if(in_array(auth()->user()->role_id,[10]))
+                    @if(in_array(auth()->user()->role_id,[1]))
                     <li><a class="dropdown-item" href="/switch-location">Switch Location</a></li>
                     @endif
                     <li><a class="dropdown-item" href="">View Profile</a></li>
