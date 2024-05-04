@@ -66,11 +66,18 @@ class HealthCertApplications extends Model
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function signOff():HasOne{
+    public function signOff(): HasOne
+    {
         return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', 2);
     }
 
-    public function testResults():HasOne{
+    public function testResults(): HasOne
+    {
         return $this->hasOne(TestResult::class, 'application_id', 'id')->where('application_type_id', 2);
+    }
+
+    public function travelHistory(): HasMany
+    {
+        return $this->hasMany(TravelHistory::class, 'health_cert_application_id', 'id');
     }
 }
