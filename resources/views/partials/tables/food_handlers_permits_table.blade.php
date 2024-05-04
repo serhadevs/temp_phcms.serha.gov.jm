@@ -41,12 +41,13 @@
                 <td class="text-nowrap">
                     <a href="/permit/application/edit/{{ $permit_application->id }}"
                         class="btn btn-warning btn-sm">Edit</a>
-                    <a href="" class="btn btn-danger btn-sm">Remove</a>
-                    <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
-                    @if ($permit_application->sign_off_status == '1')
-                        <a class="btn btn-success btn-sm"
-                            href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
-                    @endif
+                    {{-- <a href="/permit/application/destroy/{{ $permit_application->id }}" class="btn btn-danger btn-sm">Remove</a> --}}
+                    <button class="btn btn-danger btn-sm">Remove</button>
+                        <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
+                        @if ($permit_application->sign_off_status == '1')
+                            <a class="btn btn-success btn-sm"
+                                href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
+                        @endif
                 </td>
             </tr>
         @endforeach
@@ -102,4 +103,7 @@
         },
         scrollX: true
     });
+
+    
+    
 </script>
