@@ -97,7 +97,8 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Telephone
                                 </label>
-                                <input type="text" class="form-control" name="telephone" value="{{ old('telephone') }}">
+                                <input type="text" class="form-control" name="telephone" value="{{ old('telephone') }}"
+                                    id="telephone">
                                 @error('telephone')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -116,7 +117,7 @@
                                 <span class="text-danger fw-bold">*</span>
                                 Tax Registration Number (TRN)
                             </label>
-                            <input type="text" class="form-control" name="trn" value="{{ old('trn') }}">
+                            <input type="text" class="form-control" name="trn" value="{{ old('trn') }}" id="trn">
                             @error('trn')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -244,6 +245,21 @@
                     </form>
                 </div>
             </div>
+            <script src="https://unpkg.com/imask"></script>
+            <script>
+                const telephone = document.getElementById('telephone');
+                const trn = document.getElementById('trn');
+
+                const maskOptions = {
+                    mask: '+1(000)000-0000'
+                }
+                const maskOptions2 = {
+                    mask: '000-000-000'
+                }
+
+                const mask1 = IMask(telephone, maskOptions);
+                const mask2 = IMask(trn, maskOptions2);
+            </script>
         </div>
     </div>
 @endsection

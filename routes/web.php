@@ -165,7 +165,11 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('/test-results/barber-cosmet/filter/{id}', [BarberCosmetTestResultController::class, 'index'])->name('test-results.barber-cosmet.processed');
      Route::post('/test-results/barber-cosmet/filter', [BarberCosmetTestResultController::class , 'customIndex'])->name('test-results.barber-cosmet.processed.custom');
      Route::get('/test-results/barber-cosmet/outstanding/filter/{id}', [BarberCosmetTestResultController::class, 'outstanding'])->name('test-results.barber-cosmet.outstanding');
-     Route::post('/test-results/barber-cosmet/outstanding/filter', [BarberCosmetTestResultController::class, 'outstandingCustom'])->name('test-results.barber-cosmet.custom.outstanding');
+     Route::post('/test-results/barber-cosmet/outstanding/filter', [BarberCosmetTestResultController::class, 'customOutstanding'])->name('test-results.barber-cosmet.custom.outstanding');
+     Route::get('/test-results/barber-cosmet/edit/{id}', [BarberCosmetTestResultController::class, 'edit'])->name('test-results.barber-cosmet.edit');
+     Route::put('/test-results/barber-cosmet/update/{id}', [BarberCosmetTestResultController::class, 'update'])->name('test-results.barber-cosmet.update');
+     Route::get('/test-results/barber-cosmet/create/{id}', [BarberCosmetTestResultController::class, 'create'])->name('test-results.barber-cosmet.create');
+     Route::post('/test-results/barber-cosmet/store/{id}', [BarberCosmetTestResultController::class, 'store'])->name('test-results.barber-cosmet.store');
 
      //Tourist Establishment Results
      Route::get('/test-results/tourist-establishments/filter/{id}', [TouristEstTestResultController::class, 'index'])->name('test-results.tourist-establishments.index.filter');

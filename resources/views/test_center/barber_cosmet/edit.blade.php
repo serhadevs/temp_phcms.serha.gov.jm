@@ -1,16 +1,16 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Create Barber/Cosmet Test Results')
+@section('title', 'Edit Barber/Cosmet Test Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container-fluid">
+        <div class="container-fluid mb-4">
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-muted">
-                        Create Barber/Cosmet Test Results
+                        Edit Barber/Cosmet Test Results {{ $application->firstname }} {{ $application->lastname }}
                     </h2>
                     <hr>
                     <div class="row mt-3">
@@ -45,13 +45,14 @@
                         </label>
                         <input type="text" class="form-control" disabled value="{{ $application->telephone }}">
                     </div>
-                    <form action="{{ route('test-results.barber-cosmet.store', ['id' => $application->id]) }}"
+                    <form
+                        action="{{ route('test-results.barber-cosmet.update', ['id' => $application->testResults?->id]) }}"
                         method="POST">
-                        @method('POST')
+                        @method('PUT')
                         @csrf
                         @include('partials.forms.barber_cosmet_test_results')
                         <button class="btn btn-primary mt-4" type="submit">
-                            Submit Results
+                            Update Results
                         </button>
                     </form>
                 </div>

@@ -1,6 +1,9 @@
 <table id="barber_cosmet_table" class="table table-striped" style="width:100%;max-width:100%">
     <thead>
         <tr>
+            @if (isset($is_result))
+                <th></th>
+            @endif
             <th>App. #</th>
             <th>First Name</th>
             <th>Last Name</th>
@@ -18,6 +21,12 @@
     <tbody>
         @foreach ($applications as $application)
             <tr>
+                @if (isset($is_result))
+                    <td>
+                        <a href="/test-results/barber-cosmet/create/{{ $application->id }}"
+                            class="btn btn-primary btn-sm mx-1">Select</a>
+                    </td>
+                @endif
                 <td>{{ $application->id }}</td>
                 <td>{{ strtoupper($application->firstname) }}</td>
                 <td>{{ strtoupper($application->lastname) }}</td>
@@ -44,11 +53,14 @@
                 </td>
                 <td class="text-nowrap">
                     <a href="/barber-cosmet/view/{{ $application->id }}" class="btn-sm btn btn-primary mx-1">View</a>
-                    <a href="/barber-cosmet/edit/{{ $application->id }}" class="btn btn-warning btn-sm mx-1">Edit</a>
-                    {{-- @if ($application->sign_off_status == '1') --}}
-                    <a href="/barber-cosmet/renewal/{{ $application->id }}"
-                        class="btn-success btn-sm btn mx-1">Renew</a>
-                    {{-- @endif --}}
+                    @if (!isset($is_result))
+                        <a href="/barber-cosmet/edit/{{ $application->id }}"
+                            class="btn btn-warning btn-sm mx-1">Edit</a>
+                        @if ($application->sign_off_status == '1')
+                            <a href="/barber-cosmet/renewal/{{ $application->id }}"
+                                class="btn-success btn-sm btn mx-1">Renew</a>
+                        @endif
+                    @endif
                 </td>
             </tr>
         @endforeach

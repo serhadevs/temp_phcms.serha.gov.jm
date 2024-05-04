@@ -186,20 +186,20 @@
                         </li>
                     </ul>
                 </li>
-                {{-- <li class="sidebar-item">
+                <li class="sidebar-item">
                     <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#download6" aria-expanded="false" aria-controls="reports">
                         <span>Barber/Cosmet. etc.</span>
                     </a>
                     <ul id="download6" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
                         <li class="sidebar-item mx-3">
-                            <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
+                            <a href="/test-results/barber-cosmet/outstanding/filter/0" class="sidebar-link">Outstanding</a>
                         </li>
                         <li class="sidebar-item mx-3">
-                            <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
+                            <a href="/test-results/barber-cosmet/filter/0" class="sidebar-link">Processed</a>
                         </li>
                     </ul>
-                </li> --}}
+                </li>
             </ul>
         </li>
         <li class="sidebar-item">
