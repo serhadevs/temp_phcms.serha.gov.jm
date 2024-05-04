@@ -221,10 +221,6 @@ class SignOffController extends Controller
 
     public function approve(Request $request)
     {
-        if(in_array(auth()->user()->role_id,[1,4,6,7])){
-            return back()->with('error', 'You are not authorized to sign off applications');
-        }
-
         $app_type_id = $request->data["appTypeId"];
         DB::beginTransaction();
         try {

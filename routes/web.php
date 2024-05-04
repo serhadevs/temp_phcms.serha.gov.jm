@@ -57,7 +57,7 @@ Route::post('/forget-password', [UserController::class, 'forgetpassword'])->name
 Route::get('/reset/{token}', [UserController::class, 'reset']);
 Route::post('/reset/{token}', [UserController::class, 'post_reset']);
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth','prevent-back-history']], function () {
 
      //Dashboard Routes
      Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
