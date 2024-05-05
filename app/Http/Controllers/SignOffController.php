@@ -15,6 +15,7 @@ use App\Models\SignOff;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TestResult;
 use App\Models\TouristEstablishments;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use DateTime;
@@ -97,29 +98,11 @@ class SignOffController extends Controller
                 ->select('test_results.test_date', 'test_results.test_location', 'test_results.comments', 'test_results.staff_contact', 'test_results.overall_score', 'test_results.critical_score', 'swimming_pools_applications.id as pool_id', 'swimming_pools_applications.*')
                 ->get();
         } elseif ($app_type_id == 6) {
-            $applications = DB::table('tourist_establishments')
-                ->join('test_results', function ($join) use ($date_of_inspection) {
-                    $join->on('test_results.application_id', '=', 'tourist_establishments.id')
-                        ->where('test_results.application_type_id', '=', 6)
-                        ->where('test_results.deleted_at', '=', null)
-                        ->where('test_results.facility_id', '=', Auth()->user()->facility_id)
-                        ->where('test_results.test_date', '=', $date_of_inspection);
-                })
-                ->join('tourist_establishment_services', 'tourist_establishment_services.tourist_establishment_id', '=', 'tourist_establishments.id')
-                ->select(
-                    'test_results.test_date',
-                    'test_results.test_location',
-                    'test_results.comments',
-                    'test_results.staff_contact',
-                    'test_results.overall_score',
-                    'test_results.critical_score',
-                    'test_results.test_date',
-                    'tourist_establishments.id as tourist_est_id',
-                    'tourist_establishments.*',
-                    DB::raw('group_concat("  ", tourist_establishment_services.name) as services')
-                )
-                ->groupBy('tourist_establishments.id', 'test_results.id')
-                ->get();
+            $applications = TouristEstablishments::with('testResults', 'services')
+            ->has('testResults')
+            ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
+            ->whereRelation('testResults', 'test_date', $date_of_inspection)
+            ->get();
         }
         return view('signoffs.view', compact('applications', 'app_type_id'));
     }
@@ -134,7 +117,7 @@ class SignOffController extends Controller
                     $application = PermitApplication::with('healthInterviews')->find($item);
                 } elseif ($app_type_id == "2") {
                     $application = HealthCertApplications::find($item);
-                } elseif ($app_type_id = "3") {
+                } elseif ($app_type_id == "3") {
                     $application = EstablishmentApplications::find($item);
                 } elseif ($app_type_id == "5") {
                     $application = SwimmingPoolsApplications::find($item);

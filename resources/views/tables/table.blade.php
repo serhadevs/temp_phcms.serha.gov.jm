@@ -35,6 +35,7 @@
                 @endif
                 @if ($app_type_id == 3 || $app_type_id == 5 || $app_type_id == 6)
                     <th>Address</th>
+                    <th>Comments</th>
                 @endif
                 @if ($app_type_id == 5 || $app_type_id == 6)
                     <th>Inspector</th>
@@ -89,12 +90,12 @@
                         @endif
                     </td>
                     <td>
-                        @if ($app_type_id == 3)
-                            {{ $application->id }}
-                        @elseif ($app_type_id == 2)
+                        @if ($app_type_id == 2)
                             {{ $application->healthCertApplication?->id }}
-                        @else
+                        @elseif($app_type_id == 1)
                             {{ $application->permitApplication?->id }}
+                        @else
+                            {{ $application->id }}
                         @endif
                     </td>
                     @if ($app_type_id != 6)
@@ -153,18 +154,19 @@
                         <td>{{ $application->closure_date }}</td>
                     @endif
                     @if ($app_type_id == 3 || $app_type_id == 5 || $app_type_id == 6)
-                        @if ($app_type_id == 3)
+                        @if ($app_type_id == 3 || $app_type_id == 6)
                             <td>{{ $application->establishment_address }}</td>
                         @else
                             <td>{{ $application->address }}</td>
                         @endif
+                        <td>{{ $application->testResults?->comments }}</td>
                     @endif
                     @if ($app_type_id == 5 || $app_type_id == 6)
-                        <td>{{ $application->staff_contact }}</td>
+                        <td>{{ $application->testResults?->staff_contact }}</td>
                     @endif
                     @if ($app_type_id == 6)
                         <td>{{ $application->bed_capacity }}</td>
-                        <td>{{ $application->est_state }}</td>
+                        <td>{{ $application->establishment_state }}</td>
                     @endif
                 </tr>
             @endforeach
