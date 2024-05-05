@@ -19,6 +19,7 @@ use App\Http\Controllers\PermitTestResultsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SignOffController;
 use App\Http\Controllers\SummaryReportController;
+use App\Http\Controllers\SwimmingPoolsApplicationController;
 use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
 use App\Models\PermitTestResults;
+use App\Models\SwimmingPoolsApplications;
 use Illuminate\Support\Facades\Route;
 
 
@@ -120,6 +122,14 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/food-handlers-clinics/update', [FoodHandlersClinicController::class, 'update'])->name('food-handlers-clinic.update');
      Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinic.renewal');
      Route::post('/food-handlers-clinics/renew', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinic.renew');
+
+     //Swimming Pools Application
+     Route::get('/swimming-pools/create', [SwimmingPoolsApplicationController::class, 'create'])->name('swimming-pools.create');
+     Route::post('/swimming-pools/store', [SwimmingPoolsApplicationController::class, 'store'])->name('swimming-pools.store');
+     Route::get('/swimming-pools/filter/{id}', [SwimmingPoolsApplicationController::class, 'index'])->name('swimming-pools.index.filter');
+     Route::post('/swimming-pools/filter', [SwimmingPoolsApplicationController::class, 'customIndex'])->name('swimming-pools.custom.filter');
+     Route::get('/swimming-pools/edit/{id}', [SwimmingPoolsApplicationController::class, 'edit'])->name('swimming-pools.edit');
+     Route::put('/swimming-pools/update/{id}', [SwimmingPoolsApplicationController::class, 'update'])->name('swimming-pools.update');
 
      //Payment Routes
      Route::get("/payments/create", [PaymentController::class, 'create'])->name('payments.create');

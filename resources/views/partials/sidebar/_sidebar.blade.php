@@ -45,13 +45,17 @@
             </a>
         </li>
         <li class="sidebar-item">
+            <a href="/swimming-pools/filter/0" class="sidebar-link">
+                <i class="bi bi-water"></i>
+                <span>Swimming Pools</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="/appointments" class="sidebar-link">
                 <i class="lni lni-calendar"></i>
                 <span>Appointments</span>
             </a>
         </li>
-
-
         @if (in_array(auth()->user()->role_id, [1, 5, 7]))
             <li class="sidebar-item">
                 <a href="/sign-off" class="sidebar-link">
@@ -193,7 +197,8 @@
                     </a>
                     <ul id="download6" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
                         <li class="sidebar-item mx-3">
-                            <a href="/test-results/barber-cosmet/outstanding/filter/0" class="sidebar-link">Outstanding</a>
+                            <a href="/test-results/barber-cosmet/outstanding/filter/0"
+                                class="sidebar-link">Outstanding</a>
                         </li>
                         <li class="sidebar-item mx-3">
                             <a href="/test-results/barber-cosmet/filter/0" class="sidebar-link">Processed</a>
