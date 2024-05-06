@@ -202,6 +202,7 @@ class FoodEstablishmentController extends Controller
         $est_application = EstablishmentApplications::with('operators')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::all();
         $enableEditFeature = "0";
+        //dd($est_application);
         return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature'));
     }
 
