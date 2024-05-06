@@ -12,7 +12,24 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @include('partials.messages.messages')
+                    @if ($message = Session::get('success'))
+                        <div class="container">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <p class="text-success"><strong>{{ $message }}</strong></p>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
+                    @endif
+                    @if ($message = Session::get('error'))
+                        <div class="container">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <p class="text-danger font-weight-bold">{{ $message }}</p>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('forget-password') }}">
                         @csrf
                         <div class="row mb-3">
