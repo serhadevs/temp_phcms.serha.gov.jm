@@ -293,13 +293,13 @@
                                     </div>
                                 </div>
 
-                                <div class="card mt-3">
+                                {{-- <div class="card mt-3">
                                     <h4 class="card-header text-muted">
                                         Approving Officer
                                     </h4>
                                     <div class="card-body">
                                         <div>
-                                            @if ($sign_off_user->isEmpty())
+                                            @if ($permi)
                                             <div class="alert alert-light" role="alert">
                                                 Awaiting Sign Off
                                               </div>
@@ -330,7 +330,9 @@
                                         </div>
                                     </div>
 
-                                </div>
+                                </div> --}}
+
+                                <p>{{ $permit_application->signOffs?->user_id}}</p>
 
 
 

@@ -9,25 +9,19 @@
         <main class="content px-3 py-4">
             <div class="container-fluid">
                 <div class="card">
+                    <h2 class="card-header">
+                        <div class="row">
+                            <div class="col">
+                                <a href = "/dashboard" class="btn btn-primary">Back</a>  
+                                Processed Food Establishments   
+                           </div>
+                        </div>
+                    </h2>
                     <div class="card-body">
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <p class="text-success"><strong>{{ $message }}</strong></p>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <p class="text-danger font-weight-bold">{{ $message }}</p>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-                            </div>
-                        @endif
+                      @include('partials.messages.messages')
                         <div class="row justify-content-between mb-3">
                             <div class="col">
-                                <h2>
-                                    Processed Food Establishments
-                                </h2>
+                               
                             </div>
                             <div class="col-auto no-wrap">
                                 <div class="row">

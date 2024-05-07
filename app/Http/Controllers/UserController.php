@@ -102,6 +102,8 @@ class UserController extends Controller
         //Find the user using the User Model
         $user = User::where('email', '=', $email)->first();
 
+        //dd($email);
+
         //Check to see if the email is empty before
         if (!empty($user)) {
 

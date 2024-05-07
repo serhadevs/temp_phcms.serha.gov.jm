@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Appointments;
 use App\Models\EstablishmentClinics;
 use App\Models\ExamDates;
@@ -12,10 +13,10 @@ use App\Models\PermitCategory;
 use App\Models\Renewals;
 use App\Models\SignOff;
 use App\Models\TestResult;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use DateTime;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 // use Faker\Provider\ar_EG\Payment;
@@ -93,7 +94,7 @@ class PermitApplicationController extends Controller
 
             //dd($permit_application);
 
-            $sign_off_user = SignOff::with('user')->where('application_id',$permit_application->id)->get();
+            //$sign_off_user = SignOff::with('user')->where('application_id',$permit_application->id)->get();
            
 
             //dd($sign_off_user);
@@ -113,7 +114,7 @@ class PermitApplicationController extends Controller
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available','sign_off_user'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available'));
     }
 
     public function editView(Request $request)
@@ -444,10 +445,42 @@ class PermitApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+    // public function printInspection($id)
+    // {
+    //     try {
+    //         //Get the inspection to be printed 
+    //         $inspection = Inspection::where('entry_number_inspections', $id)
+    //             ->join("establishment_master", "establishment_master.establishment_id", "=", "sanitized_inspections.establishment_id")
+    //             ->where('sanitized_inspections.entry_number_inspections', $id)->firstOrFail();
+
+    //         //Pass the inspection details to the view for the pdf
+    //         $inspectionData = [
+    //             'inspection' => $inspection
+    //         ];
+
+    //         $pdf = PDF::loadView('inspections.inspectionPDF', $inspectionData);
+
+    //         // Check if PDF is successfully generated
+    //         if (!$pdf) {
+    //             return view('inspections.view')->with('error', 'Unable to generate PDF for ' . $inspection->establishment_name);
+    //         }
+
+    //         // Add the establishment name and the id to the pdf before it is downloaded
+    //         $fileName = strval($inspection->establishment_name) . '_' . strval($inspection->establishment_id) . '.pdf';
+
+    //         // Show the pdf in the browser
+    //         return $pdf->stream($fileName);
+    //     } catch (ModelNotFoundException $e) {
+    //         // Handle the case when the inspection is not found
+    //         return view('inspections.view')->with('error', 'Inspection not found for ID ' . $id);
+    //     } catch (\Exception $e) {
+    //         // Handle other exceptions
+    //         return view('inspections.view')->with('error', 'An error occurred: ' . $e->getMessage());
+    //     }
+    // }
+
+    
+
 
     /**
      * Show the form for editing the specified resource.
