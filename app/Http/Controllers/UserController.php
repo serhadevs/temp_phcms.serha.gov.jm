@@ -16,6 +16,7 @@ use App\Mail\ForgetPasswordMail;
 use App\Models\Facility;
 use App\Models\LoginActivity;
 use App\Models\Role;
+use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -80,12 +81,7 @@ class UserController extends Controller
         return view('users.loggedusers', compact('loginUsers', 'loginUsersCount','ksaCount','sttCount','stcCount'));
     }
 
-
-
-
-
-
-    //Forget Password Page View
+   //Forget Password Page View
     //Route: /forget-password
     //This function serves you the forget password reset form to the user.
     public function forgetPasswordPage()
@@ -331,7 +327,8 @@ class UserController extends Controller
             'role_id' => 'required',
         ]);
 
-        //Find the user in the database
+        try {
+          //Find the user in the database
 
         $user = User::find($id);
 
@@ -345,11 +342,26 @@ class UserController extends Controller
         $user_update = User::where('id',$request->id)->update($validatedData);
             
         if ($user_update) {
-            return redirect()->route('users')->with(['success' => 'Applicant has be updated successfully']);
-        } else {
-            return redirect()->route('users')->with(['error' => 'Error updating record or nothing to update']);
+            return redirect()->route('users')->with(['success' => 'The user was updated successfully']);
         }
 
+        //Error if the user update is not valid
+            return redirect()->route('users')->with(['error' => 'Error updating record or nothing to update']);
+        
 
+        } catch (\Exception $e) {
+            return redirect()->route('users')->with(['error' => 'Exception Error:' . $e->getMessage()]);
+        } catch(QueryException $e) {
+            return redirect()->route('users')->with(['error' => 'Query Exception:' . $e->getMessage()]);
+        }
+
+        
+
+
+   }
+
+   public function destroy($id){
+        //Find the user in the database
+        
    }
 }

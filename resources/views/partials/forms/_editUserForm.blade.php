@@ -66,7 +66,7 @@
             </div>
             
                 <a href="{{ route('users') }}" class="btn btn-primary">Cancel Edit</a>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" onclick="showLoading(this)" class="btn btn-primary">Submit</button>
           
             
           </form>
@@ -79,6 +79,7 @@
             }
             const mask1 = IMask(cell_phone, maskOptions);
           </script>
+          @include('partials.messages.loading_message')
           
     </div>
 </div>

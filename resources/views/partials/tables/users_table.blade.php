@@ -20,7 +20,7 @@
         
                     @foreach ($users as $user)
                         <tr>
-                            <td>{{ ($user->status == 1 ? "Active" : "Inactive")  }}</td>
+                            <td><a href = "{{ route('/settings/users/deactivate/{id}') }}">Active</a></td>
                             <td>{{ $user->firstname}}</td>
                             <td>{{ $user->lastname }}</td>
                             <td>
