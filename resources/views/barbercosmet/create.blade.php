@@ -239,7 +239,7 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary mt-4">
+                        <button type="button" class="btn btn-primary mt-4" onclick="showLoading(this)">
                             Submit Application
                         </button>
                     </form>
@@ -261,5 +261,6 @@
                 const mask2 = IMask(trn, maskOptions2);
             </script>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

@@ -43,11 +43,11 @@
                         class="btn btn-warning btn-sm">Edit</a>
                     {{-- <a href="/permit/application/destroy/{{ $permit_application->id }}" class="btn btn-danger btn-sm">Remove</a> --}}
                     <button class="btn btn-danger btn-sm">Remove</button>
-                        <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
-                        @if ($permit_application->sign_off_status == '1')
-                            <a class="btn btn-success btn-sm"
-                                href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
-                        @endif
+                    <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
+                    @if ($permit_application->sign_off_status == '1')
+                        <a class="btn btn-success btn-sm"
+                            href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
+                    @endif
                 </td>
             </tr>
         @endforeach
@@ -69,6 +69,9 @@
         </tr>
     </tfoot>
 </table>
+<button class="btn btn-primary" id="clickable">
+    Remove modal
+</button>
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -79,8 +82,9 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
 <script>
-    new DataTable('#food_handlers_permit', {
+    var table = new DataTable('#food_handlers_permit', {
         initComplete: function() {
+            loading.close(),
             this.api()
                 .columns()
                 .every(function() {
@@ -103,7 +107,4 @@
         },
         scrollX: true
     });
-
-    
-    
 </script>

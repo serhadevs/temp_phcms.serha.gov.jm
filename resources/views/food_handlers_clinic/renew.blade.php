@@ -94,12 +94,13 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button class="btn btn-primary mt-4" type="submit">
+                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
                             Submit Application
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

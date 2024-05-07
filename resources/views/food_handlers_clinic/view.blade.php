@@ -100,8 +100,8 @@
                         </div>
                         <input type="text" class="form-control mt-3" value="{{ isset($edit_mode) ? '1' : '' }}"
                             id="edit_mode_status" hidden>
-                        <button id="update-button" type="submit" class="btn btn-primary mt-4"
-                            style="display:none">Update
+                        <button id="update-button" type="button" class="btn btn-primary mt-4"
+                            style="display:none" onclick="showLoading(this)">Update
                             information</button>
                     </form>
                 </div>
@@ -133,5 +133,6 @@
             const mask1 = IMask(telephone, maskOptions2);
             const mask2 = IMask(fax_no, maskOptions2);
         </script>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

@@ -306,7 +306,7 @@
                                 name="old_application_id" hidden>
                         </div>
                         <div class="mt-4">
-                            <button class="btn btn-primary">
+                            <button class="btn btn-primary" type="button" onclick="showLoading(this)">
                                 Submit
                             </button>
                         </div>
@@ -368,5 +368,6 @@
                 }
             }
         </script>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

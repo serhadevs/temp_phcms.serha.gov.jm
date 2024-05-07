@@ -92,12 +92,7 @@ class PermitApplicationController extends Controller
         $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs')
             ->find($application_id);
 
-            //dd($permit_application);
-
-            //$sign_off_user = SignOff::with('user')->where('application_id',$permit_application->id)->get();
-           
-
-            //dd($sign_off_user);
+        $categories = PermitCategory::all();
 
         $appointments = Appointments::with('examDate.examSites')
             ->where('facility_id', auth()->user()->facility_id)
@@ -114,7 +109,7 @@ class PermitApplicationController extends Controller
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories'));
     }
 
     public function editView(Request $request)
@@ -122,6 +117,8 @@ class PermitApplicationController extends Controller
         $application_id = $request->route('id');
         $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs')
             ->find($application_id);
+
+        $categories = PermitCategory::all();
 
         $appointments = Appointments::with('examDate.examSites')
             ->where('facility_id', auth()->user()->facility_id)
@@ -140,7 +137,7 @@ class PermitApplicationController extends Controller
 
         $edit_mode = 1;
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories'));
     }
 
     public function editApplication(Request $request)
@@ -159,7 +156,8 @@ class PermitApplicationController extends Controller
             'trn' => 'nullable|regex:/^[0-9]{3}\-[0-9]{3}\-[0-9]{3}+$/',
             'email' => 'nullable',
             'permit_no' => 'required',
-            'photo_upload' => 'nullable'
+            'photo_upload' => 'nullable',
+            'permit_category_id' => 'required'
         ]);
 
         $permit_application = PermitApplication::find($edits['id']);
@@ -175,8 +173,6 @@ class PermitApplicationController extends Controller
             $photo_upload = $permit_application->photo_upload;
         }
 
-        //dd($path);
-
         $update_permit_application = PermitApplication::where('id', $edits["id"])->update([
             'firstname' => $edits["firstname"],
             'middlename' => $edits["middlename"],
@@ -189,6 +185,7 @@ class PermitApplicationController extends Controller
             'work_phone' => $edits["work_phone"],
             'trn' => $edits["trn"],
             'email' => $edits["email"],
+            'permit_category_id' => $edits['permit_category_id'],
             'photo_upload' => $photo_upload
         ]);
 
@@ -479,7 +476,7 @@ class PermitApplicationController extends Controller
     //     }
     // }
 
-    
+
 
 
     /**
@@ -516,6 +513,6 @@ class PermitApplicationController extends Controller
         $permit_application = PermitApplication::find($id);
         //dd($permit_application);
 
-        return redirect()->route('dashboard.dashboard')->with('success',$permit_application);
+        return redirect()->route('dashboard.dashboard')->with('success', $permit_application);
     }
 }

@@ -15,9 +15,18 @@
                         <div class="col">
                             <h3>Food Handlers Permits Application Table</h3>
                         </div>
+                        <script>
+                            let loading = Swal.fire({
+                                title: "Table is loading..",
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+                        </script>
                         <div class="col-auto">
                             <div class="dropdown">
-                                <a href = {{ route('food_handlers_permit.newApplication') }} class="btn btn-success">Create Application</a>
+                                <a href={{ route('food_handlers_permit.newApplication') }} class="btn btn-success">Create
+                                    Application</a>
                                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                     Filter Applications
