@@ -4,7 +4,7 @@
             <table id="users" class="display table nowrap table-sm table-bordered" style="width:100%;max-width:100%">
                 <thead>
                     <tr>
-                   
+                   <th>Statue</th>
                      <th>Firstname</th>
                      <th>LastName</th>
                      <th>Facility</th>
@@ -20,19 +20,22 @@
         
                     @foreach ($users as $user)
                         <tr>
-                            
+                            <td>{{ ($user->status == 1 ? "Active" : "Inactive")  }}</td>
                             <td>{{ $user->firstname}}</td>
                             <td>{{ $user->lastname }}</td>
                             <td>
-                                {{ $user->facility_id = 1 }}
+                                @php
+                                    $facilityName = $user->facility_id == 1 ? "STC" : ($user->facility_id == 2 ? "STT" : ($user->facility_id == 3 ? "KSA" : "Unknown Facility"));
+                                    echo $facilityName;
+                               @endphp 
                             </td>
-                            <td>{{ $user->role_id }}</td>
+                            <td>{{ ($user->name) }}</td>
                             <td>{{ $user->telephone }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>{{ $user->created_at }}</td>
-                            <td>{{ $user->updated_at }}</td> 
+                            <td>{{ \Carbon\Carbon::parse($user->created_at)->format('F d Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($user->updated_at)->format('F d Y') }}</td> 
                             <td>
-                                <button class="btn btn-sm btn-primary">Edit</button>
+                                <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="btn btn-sm btn-primary">Edit</a>
                                 <a href ="/settings/users/reset-password/{{ $user->id }}" class="btn btn-sm btn-primary">Reset</a>
                                 <a href ="/settings/users/restore/{{ $user->id }}"class="btn btn-sm btn-primary">Restore</button>
         

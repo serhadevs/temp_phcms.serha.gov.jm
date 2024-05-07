@@ -27,10 +27,17 @@ class UserController extends Controller
     {
 
         if (Auth::user()->role_id == 1) {
-            $users = DB::table('users')->get();
+            $users = DB::table('users')
+            ->join('roles','roles.id','=','users.role_id')
+            ->latest('users.created_at')
+            ->select( 'users.id','users.firstname','users.lastname','users.facility_id','users.role_id','users.telephone','users.email','users.status','users.created_at','users.updated_at','roles.name','roles.description')
+            ->get();
+            $facilities = Facility::all();
         } elseif (Auth::user()->role_id == 2) {
             $users = User::where('facility_id', Auth::user()->facility_id)->get();
         }
+
+        //dd($users);
 
         $currentUsers = User::select("*")
             ->whereNotNull('last_seen')
@@ -42,7 +49,7 @@ class UserController extends Controller
         //dd($currentUsers);
 
 
-        return view('users.index', compact('users', 'currentUsers'));
+        return view('users.index', compact('users','facilities' ,'currentUsers'));
     }
 
     //Shows currently logged in users
@@ -285,5 +292,64 @@ class UserController extends Controller
    public function switchFacility(Request $request){
         return view("users.switch_facility");
         
+   }
+
+   public function viewEditForm($id){
+
+       //Check to see if the user is authorized to edit an application
+
+       if(!in_array(auth()->user()->role_id,[1,2])){
+        return redirect()->back()->with('error','You are not authorized to make edits to users');
+       }
+
+       //Define in an array what you want from the database
+
+       $userData = ['users.id','firstname','lastname','facility_id','role_id','telephone','email','status','roles.name'];
+       //Find the user in the database
+
+        $user = User::join('roles','roles.id','=','users.role_id')->where('users.id',$id)->select($userData)->first();
+        $roles = DB::table('roles')->where('name', '!=', 'Super Admin')->get();
+       //dd($roles);
+       //Throw error if the user is not found in the database
+
+       if(!$user){
+        return redirect()->back()->with('error','There is no user found in the database');
+       }
+
+       return view('users.edit',compact('user','roles'));
+   }
+
+   public function editUser(Request $request,$id){
+        //Get the values from the request 
+
+        $validatedData = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'facility_id' => 'required',
+            'telephone' => 'required',
+            'email' => 'required',
+            'role_id' => 'required',
+        ]);
+
+        //Find the user in the database
+
+        $user = User::find($id);
+
+        //Throw error if the user is not found
+
+        if(!$user){
+            return redirect()->back()->with('error','The user was not found in the database');
+        }
+
+        //Update the fields 
+        $user_update = User::where('id',$request->id)->update($validatedData);
+            
+        if ($user_update) {
+            return redirect()->route('users')->with(['success' => 'Applicant has be updated successfully']);
+        } else {
+            return redirect()->route('users')->with(['error' => 'Error updating record or nothing to update']);
+        }
+
+
    }
 }

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
@@ -26,7 +27,9 @@ class User extends Authenticatable
         'role_id',
         'facility_id',
         'telephone',
-        'last_seen'
+        'last_seen',
+        'created_at',
+        'updated_at'
     ];
 
     /**
@@ -71,6 +74,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Facility::class, 'id', 'facility_id');
     }
+
+    
+    
 
     public $timestamps = true;
 }

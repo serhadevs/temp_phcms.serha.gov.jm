@@ -221,7 +221,9 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::get('/settings/users/online', [UserController::class, 'onlineUsers'])->name('users.online');
      Route::get('/settings/users/loginusers', [UserController::class, 'loginUsersLocations']);
      Route::put('/settings/users/loginusers', [UserController::class, 'loginUsersLocations']);
-     Route::get('/settings/users/switch-facility');
+     Route::get('/settings/user/edit/{id}',[UserController::class, 'viewEditForm'])->name('users.edit');
+     Route::post('/settings/user/update/{id}',[UserController::class, 'editUser'])->name('users.update');
+     
 
      //Health Interview Routes
      Route::get("/health-interview/create/{app_type_id}/{app_id}", [HealthInterviewController::class, 'create'])->name('health-interview.create');
