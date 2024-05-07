@@ -103,7 +103,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <button class="btn btn-success" type="submit">Submit Payment</button>
+                                    <button class="btn btn-success" type="button" onclick="showLoading(this)">Submit Payment</button>
                                     <a class="btn btn-danger" onclick="history.back()">Cancel</a>
                                 </div>
                             </form>
@@ -224,5 +224,6 @@
                 document.querySelector("#sidebar").classList.toggle("expand");
             });
         </script>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

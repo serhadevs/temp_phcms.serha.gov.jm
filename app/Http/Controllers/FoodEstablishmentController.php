@@ -107,7 +107,7 @@ class FoodEstablishmentController extends Controller
             'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
             'alt_telephone' => 'nullable|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
             'food_type' => 'required',
-            'zone' => 'required',
+            'zone' => 'required|max:3',
             'establishment_name' => 'required',
             'establishment_category_id' => 'required',
             'establishment_address' => 'required',

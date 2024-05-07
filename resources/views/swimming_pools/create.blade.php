@@ -17,12 +17,13 @@
                         @csrf
                         @method('POST')
                         @include('partials.forms.swimming_pool_app_form')
-                        <button class="btn btn-primary mt-4" type="submit">
+                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
                             Submit Application
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection
