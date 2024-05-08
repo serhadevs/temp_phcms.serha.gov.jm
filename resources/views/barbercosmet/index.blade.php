@@ -20,6 +20,7 @@
                 </div>
             @endif
             <div class="card">
+                @include('partials.messages.table_loading')
                 <div class="card-body">
                     <div class="row justify-content-between mb-4">
                         <div class="col">

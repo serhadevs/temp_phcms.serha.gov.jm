@@ -7,6 +7,7 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
+            @include('partials.messages.table_loading')
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-between mb-3">

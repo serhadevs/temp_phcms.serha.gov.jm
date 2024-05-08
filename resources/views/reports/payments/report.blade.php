@@ -7,6 +7,7 @@
     <div class="main">
         @include("partials.navbar._navbar")
         <div class="container-fluid">
+            @include('partials.messages.table_loading')
             <h1>Payment Report</h1>
             <div class="card">
                 <div class="card-body">

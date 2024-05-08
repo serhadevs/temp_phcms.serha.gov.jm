@@ -8,6 +8,7 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
+            @include('partials.messages.table_loading')
             @include('partials.messages.messages')
             <div class="card">
                 <div class="card-header">
@@ -15,14 +16,6 @@
                         <div class="col">
                             <h3>Food Handlers Permits Application Table</h3>
                         </div>
-                        <script>
-                            let loading = Swal.fire({
-                                title: "Table is loading..",
-                                didOpen: () => {
-                                    Swal.showLoading();
-                                }
-                            });
-                        </script>
                         <div class="col-auto">
                             <div class="dropdown">
                                 <a href={{ route('food_handlers_permit.newApplication') }} class="btn btn-success">Create

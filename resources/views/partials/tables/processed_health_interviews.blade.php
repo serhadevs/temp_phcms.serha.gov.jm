@@ -91,6 +91,9 @@
 <script>
     new DataTable('#processed_health_interviews', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
         // responsive: true
     });
 </script>

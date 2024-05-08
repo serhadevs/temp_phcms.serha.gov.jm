@@ -73,6 +73,9 @@
 <script>
     new DataTable('#downloads_table', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        },
         // responsive: true,
         "aoColumnDefs": [{
             "bSortable": false,

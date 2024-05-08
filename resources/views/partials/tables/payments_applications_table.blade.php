@@ -70,5 +70,8 @@
 <script>
     new DataTable('#food_handlers_permit', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
     });
 </script>

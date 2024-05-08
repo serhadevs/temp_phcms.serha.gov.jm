@@ -19,7 +19,8 @@
         @foreach ($applications as $application)
             <tr>
                 @if (isset($is_results))
-                    <td><a href="/test-results/tourist-establishments/create/{{ $application->id }}" class="btn btn-sm btn-primary">Select</a></td>
+                    <td><a href="/test-results/tourist-establishments/create/{{ $application->id }}"
+                            class="btn btn-sm btn-primary">Select</a></td>
                 @endif
                 <td>{{ $application->id }}</td>
                 <td>{{ $application->establishment_name }}</td>
@@ -124,5 +125,8 @@
     new DataTable('#tourist_est_table', {
         // responsive: true,
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
     });
 </script>

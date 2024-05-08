@@ -8,6 +8,7 @@
         @include('partials.navbar._navbar')
         <main class="content px-3 py-4">
             <div class="container-fluid">
+                @include('partials.messages.table_loading')
                 <div class="card">
                     <h2 class="card-header">
                         <div class="row">

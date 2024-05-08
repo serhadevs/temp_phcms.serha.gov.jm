@@ -38,7 +38,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
-                        Test Results - {{ strtoupper($result->firstname . ' ' . $result->middlename . ' ' . $result->lastname) }}
+                        Test Results -
+                        {{ strtoupper($result->firstname . ' ' . $result->middlename . ' ' . $result->lastname) }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -79,7 +80,8 @@
                         </div>
                         <div class="col">
                             <label class="form-label">Entry Date</label>
-                            <label for="" class="form-control" style="background:#e9ecef">{{ $result->testResults?->created_at }}</label>
+                            <label for="" class="form-control"
+                                style="background:#e9ecef">{{ $result->testResults?->created_at }}</label>
                         </div>
                     </div>
                     <div class="mt-3">
@@ -107,6 +109,9 @@
 <script>
     new DataTable('#processed_barber_results', {
         scrollX: true,
-        responsive: true
+        responsive: true,
+        initComplete: function() {
+            loading.close()
+        }
     });
 </script>

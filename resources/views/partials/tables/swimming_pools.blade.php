@@ -33,7 +33,7 @@
                 <td>{{ $application->application_date }}</td>
                 <td>
                     <a href="/swimming-pools/edit/{{ $application->id }}" class="btn btn-sm btn-warning mx-1">Edit</a>
-                    @if($application->sign_off_status=='1')
+                    @if ($application->sign_off_status == '1')
                         <a href="" class="btn btn-success btn-sm">Renew</a>
                     @endif
                 </td>
@@ -50,5 +50,8 @@
     new DataTable('#swimming_pool_table', {
         // responsive: true,
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
     });
 </script>

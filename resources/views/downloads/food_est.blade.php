@@ -9,6 +9,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
+                    @include('partials.messages.table_loading')
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <p class="text-success"><strong>{{ $message }}</strong></p>

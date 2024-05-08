@@ -70,6 +70,9 @@
 <script>
     new DataTable('#outstanding_results', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
         // responsive: true
     });
 </script>

@@ -67,7 +67,7 @@
                         <span class="badge bg-danger">N/A</span>
                     @elseif(!empty($application->healthInterviews->healthInterviewSymptom))
                         @foreach ($application->healthInterviews->healthInterviewSymptom as $symp)
-                            {{ $symp->symptoms?->name."," }}
+                            {{ $symp->symptoms?->name . ',' }}
                         @endforeach
                     @endif
                 </td>
@@ -95,6 +95,9 @@
 <script>
     new DataTable('#food_clinics', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
         // responsive: true
     })
 </script>

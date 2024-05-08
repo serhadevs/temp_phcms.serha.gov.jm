@@ -9,6 +9,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
+                    @include('partials.messages.table_loading')
                     <div class="row justify-content-between mb-3">
                         <div class="col">
                             <h3>

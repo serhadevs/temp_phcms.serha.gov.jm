@@ -22,7 +22,8 @@
                 <td>{{ $est->testResults->staff_contact }}</td>
                 <td>{{ $est->created_at }}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm" onclick="deletePrintable({{ json_encode($est->printableApplication?->id) }})">Delete</button>
+                    <button class="btn btn-danger btn-sm"
+                        onclick="deletePrintable({{ json_encode($est->printableApplication?->id) }})">Delete</button>
                 </td>
             </tr>
         @endforeach
@@ -41,6 +42,9 @@
 <script>
     new DataTable('#outstanding_results', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        },
         responsive: true
     });
 

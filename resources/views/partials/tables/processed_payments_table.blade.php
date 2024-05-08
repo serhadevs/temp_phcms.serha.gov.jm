@@ -51,7 +51,8 @@
                 <td>{{ $payment_data->amount_paid }}</td>
                 <td>{{ $payment_data->change_amt }}</td>
                 <td>{{ \Carbon\Carbon::parse($payment_data->created_at)->format('d M Y') }}</td>
-                <td>{{ substr($payment_data->cashier?->firstname, 0, 1) . '.' . $payment_data->cashier?->lastname }}</td>
+                <td>{{ substr($payment_data->cashier?->firstname, 0, 1) . '.' . $payment_data->cashier?->lastname }}
+                </td>
                 <td>
                     <button class="btn btn-danger btn-sm"
                         onclick="sendCancelRequest({{ json_encode($payment_data->id) }})">Request Cancel</button>
@@ -75,6 +76,9 @@
 <script>
     new DataTable('#payment_info', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        },
         "columnDefs": [{
             "width": "20%",
             "targets": 9

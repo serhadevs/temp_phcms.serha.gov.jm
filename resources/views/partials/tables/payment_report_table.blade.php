@@ -57,6 +57,9 @@
 <script>
     new DataTable('#payment_report', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        },
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'

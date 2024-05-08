@@ -88,6 +88,9 @@
 <script>
     new DataTable('#outstanding_results', {
         scrollX: true,
-        responsive: true
+        responsive: true,
+        initComplete: function() {
+            loading.close()
+        }
     });
 </script>

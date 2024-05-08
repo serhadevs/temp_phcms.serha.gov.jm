@@ -42,6 +42,9 @@
 <script>
     new DataTable('#outstanding_payment_cancellations', {
         // scrollX: true,
+        initComplete: function() {
+            loading.close()
+        },
         responsive: true
     });
 

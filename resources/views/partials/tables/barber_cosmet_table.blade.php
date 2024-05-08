@@ -75,5 +75,8 @@
     new DataTable('#barber_cosmet_table', {
         // responsive: true,
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
     });
 </script>

@@ -47,5 +47,8 @@
     new DataTable('#food_establishments', {
         responsive: true,
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        }
     });
 </script>

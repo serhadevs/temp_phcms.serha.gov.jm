@@ -122,6 +122,9 @@
 <script>
     new DataTable('#processed_results', {
         scrollX: true,
+        initComplete: function() {
+            loading.close()
+        },
         "columnDefs": [{
             "width": "20%",
             "targets": 8
