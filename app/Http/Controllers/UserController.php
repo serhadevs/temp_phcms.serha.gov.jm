@@ -16,6 +16,7 @@ use App\Mail\ForgetPasswordMail;
 use App\Models\Facility;
 use App\Models\LoginActivity;
 use App\Models\Role;
+use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -28,10 +29,13 @@ class UserController extends Controller
 
         if (Auth::user()->role_id == 1) {
             $users = DB::table('users')
-            ->join('roles','roles.id','=','users.role_id')
-            ->latest('users.created_at')
-            ->select( 'users.id','users.firstname','users.lastname','users.facility_id','users.role_id','users.telephone','users.email','users.status','users.created_at','users.updated_at','roles.name','roles.description')
-            ->get();
+                ->join('roles', 'roles.id', '=', 'users.role_id')
+                ->latest('users.created_at')
+                ->select('users.id', 'users.firstname', 'users.lastname', 'users.facility_id', 'users.role_id', 'users.telephone', 'users.email', 'users.status', 'users.created_at', 'users.updated_at', 'roles.name', 'roles.description')
+                ->where('users.id',159)
+                ->get();
+
+                //dd($users);
             $facilities = Facility::all();
         } elseif (Auth::user()->role_id == 2) {
             $users = User::where('facility_id', Auth::user()->facility_id)->get();
@@ -49,7 +53,7 @@ class UserController extends Controller
         //dd($currentUsers);
 
 
-        return view('users.index', compact('users','facilities' ,'currentUsers'));
+        return view('users.index', compact('users', 'facilities', 'currentUsers'));
     }
 
     //Shows currently logged in users
@@ -71,19 +75,14 @@ class UserController extends Controller
         $loginUsersCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->count();
         $ksaCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
             ->where('login_activity.facility_id', '3')->whereNull('logout_time')->count();
-            $sttCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
+        $sttCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
             ->where('login_activity.facility_id', '2')->whereNull('logout_time')->count();
-            $stcCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
+        $stcCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
             ->where('login_activity.facility_id', '1')->whereNull('logout_time')->count();
 
         //dd($loginUsers);
-        return view('users.loggedusers', compact('loginUsers', 'loginUsersCount','ksaCount','sttCount','stcCount'));
+        return view('users.loggedusers', compact('loginUsers', 'loginUsersCount', 'ksaCount', 'sttCount', 'stcCount'));
     }
-
-
-
-
-
 
     //Forget Password Page View
     //Route: /forget-password
@@ -244,14 +243,14 @@ class UserController extends Controller
     public function createuser()
     {
         //Role 2 which is an admin will not be able to add a superadmin
-      
-            // $roles = Role::where('name', '!=', 'Super Admin')->get();
-            // dd($roles);
-            // return view('users.create', compact('roles'));
+
+        // $roles = Role::where('name', '!=', 'Super Admin')->get();
+        // dd($roles);
+        // return view('users.create', compact('roles'));
         // } else {
-            $roles = DB::table('roles')->get();
-            //dd($roles);
-            return view('users.create', compact('roles'));
+        $roles = DB::table('roles')->get();
+        //dd($roles);
+        return view('users.create', compact('roles'));
         //}
     }
 
@@ -289,37 +288,39 @@ class UserController extends Controller
         return redirect()->route('users')->with('success', 'User was added');
     }
 
-   public function switchFacility(Request $request){
+    public function switchFacility(Request $request)
+    {
         return view("users.switch_facility");
-        
-   }
+    }
 
-   public function viewEditForm($id){
+    public function viewEditForm($id)
+    {
 
-       //Check to see if the user is authorized to edit an application
+        //Check to see if the user is authorized to edit an application
 
-       if(!in_array(auth()->user()->role_id,[1,2])){
-        return redirect()->back()->with('error','You are not authorized to make edits to users');
-       }
+        if (!in_array(auth()->user()->role_id, [1, 2])) {
+            return redirect()->back()->with('error', 'You are not authorized to make edits to users');
+        }
 
-       //Define in an array what you want from the database
+        //Define in an array what you want from the database
 
-       $userData = ['users.id','firstname','lastname','facility_id','role_id','telephone','email','status','roles.name'];
-       //Find the user in the database
+        $userData = ['users.id', 'firstname', 'lastname', 'facility_id', 'role_id', 'telephone', 'email', 'status', 'roles.name'];
+        //Find the user in the database
 
-        $user = User::join('roles','roles.id','=','users.role_id')->where('users.id',$id)->select($userData)->first();
+        $user = User::join('roles', 'roles.id', '=', 'users.role_id')->where('users.id', $id)->select($userData)->first();
         $roles = DB::table('roles')->where('name', '!=', 'Super Admin')->get();
-       //dd($roles);
-       //Throw error if the user is not found in the database
+        //dd($roles);
+        //Throw error if the user is not found in the database
 
-       if(!$user){
-        return redirect()->back()->with('error','There is no user found in the database');
-       }
+        if (!$user) {
+            return redirect()->back()->with('error', 'There is no user found in the database');
+        }
 
-       return view('users.edit',compact('user','roles'));
-   }
+        return view('users.edit', compact('user', 'roles'));
+    }
 
-   public function editUser(Request $request,$id){
+    public function editUser(Request $request, $id)
+    {
         //Get the values from the request 
 
         $validatedData = $request->validate([
@@ -331,25 +332,51 @@ class UserController extends Controller
             'role_id' => 'required',
         ]);
 
-        //Find the user in the database
+        try {
+            //Find the user in the database
 
+            $user = User::find($id);
+
+            //Throw error if the user is not found
+
+            if (!$user) {
+                return redirect()->back()->with('error', 'The user was not found in the database');
+            }
+
+            //Update the fields 
+            $user_update = User::where('id', $request->id)->update($validatedData);
+
+            if ($user_update) {
+                return redirect()->route('users')->with(['success' => 'The user was updated successfully']);
+            }
+
+            //Error if the user update is not valid
+            return redirect()->route('users')->with(['error' => 'Error updating record or nothing to update']);
+        } catch (\Exception $e) {
+            return redirect()->route('users')->with(['error' => 'Exception Error:' . $e->getMessage()]);
+        } catch (QueryException $e) {
+            return redirect()->route('users')->with(['error' => 'Query Exception:' . $e->getMessage()]);
+        }
+    }
+
+    public function destroy(Request $request,$id)
+    {
+        //Find the user in the database
         $user = User::find($id);
 
-        //Throw error if the user is not found
-
-        if(!$user){
-            return redirect()->back()->with('error','The user was not found in the database');
+        //Throw error if there is no results from the query 
+        if (!$user) {
+            return redirect()->back()->with('error', 'Unable to find the user in the database');
         }
 
-        //Update the fields 
-        $user_update = User::where('id',$request->id)->update($validatedData);
-            
-        if ($user_update) {
-            return redirect()->route('users')->with(['success' => 'Applicant has be updated successfully']);
-        } else {
-            return redirect()->route('users')->with(['error' => 'Error updating record or nothing to update']);
+        $newStatus = $user->status === "1" ? "0" : "1";
+        User::where('id', $user->id)->update(['status' => $newStatus]);
+
+     
+        if (!$newStatus) {
+            return redirect()->back()->with('error', 'Unable to change status in the database');
         }
 
-
-   }
+        return redirect()->back()->with("success", "Success!");
+    }
 }
