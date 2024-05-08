@@ -1,9 +1,13 @@
 <script>
+    loading.close();
     @if ($message = Session::get('success'))
         Swal.fire({
             title: "Success!",
             text: "{{ $message }}",
-            icon: "success"
+            icon: "success",
+            didOpen: () => {
+                Swal.hideLoading();
+            }
         });
     @endif
 
@@ -11,7 +15,10 @@
         Swal.fire({
             title: "Error!",
             text: "{{ $message }}",
-            icon: "error"
+            icon: "error",
+            didOpen: () => {
+                Swal.hideLoading();
+            }
         });
     @endif
 </script>

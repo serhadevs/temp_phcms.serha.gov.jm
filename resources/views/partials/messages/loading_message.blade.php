@@ -3,7 +3,9 @@
         element.setAttribute('disabled', 'true');
         element.form.submit();
         Swal.fire({
-            title: "Application is processing",
+            icon: "info",
+            title: "Application is Processing",
+            text: "This should only take a minute...",
             didOpen: () => {
                 Swal.showLoading();
             }
