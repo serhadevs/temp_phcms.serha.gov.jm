@@ -223,7 +223,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::put('/settings/users/loginusers', [UserController::class, 'loginUsersLocations']);
      Route::get('/settings/user/edit/{id}',[UserController::class, 'viewEditForm'])->name('users.edit');
      Route::post('/settings/user/update/{id}',[UserController::class, 'editUser'])->name('users.update');
-     Route::get('/settings/users/deaactive/{id}',[UserController::class,'destroy'])->name('users.destroy');
+     Route::put('/settings/user/deactivate/{id}',[UserController::class,'destroy'])->name('users.destroy');
      
 
      //Health Interview Routes

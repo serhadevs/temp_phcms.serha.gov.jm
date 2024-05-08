@@ -20,7 +20,18 @@
         
                     @foreach ($users as $user)
                         <tr>
-                            <td><a href = "{{ route('/settings/users/deactivate/{id}') }}">Active</a></td>
+                            <td>
+                                <form method="post" action="{{ url('/settings/user/deactivate/' . $user->id) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-{{ $user->status == 1 ? "danger" : "success" }} btn-sm">
+                                        {{ $user->status == 1 ? "Active" : "Inactive" }}
+                                    </button>
+                                    
+                                </form>
+                                
+                                
+                            </td>
                             <td>{{ $user->firstname}}</td>
                             <td>{{ $user->lastname }}</td>
                             <td>
