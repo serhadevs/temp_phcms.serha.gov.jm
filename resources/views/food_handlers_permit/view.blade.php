@@ -49,6 +49,22 @@
                                         <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
                                             name="photo_upload" style="display:none">
                                     </div>
+                                    <div class="card mt-2">
+                                        <h5 class="card-header text-muted">
+                                            Test Results
+                                        </h5>
+                                        <div class="card-body">
+                                            No Test Results Available
+                                        </div>
+                                    </div>
+                                    <div class="card mt-2">
+                                        <h5 class="card-header text-muted">
+                                           Health Interview Results
+                                        </h5>
+                                        <div class="card-body">
+                                            No Health Interview Information Available
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>
