@@ -14,7 +14,10 @@
                 <div class="card-header">
                     <div class="row justify-content-between mb-2">
                         <div class="col">
-                            <h3>Food Handlers Permits Application Table</h3>
+                            <div>
+                                <a href="{{ route("dashboard.dashboard") }}" class="btn btn-danger">Back</a>
+                                <h3>Food Handlers Permits Application Table</h3>
+                            </div>
                         </div>
                         <div class="col-auto">
                             <div class="dropdown">

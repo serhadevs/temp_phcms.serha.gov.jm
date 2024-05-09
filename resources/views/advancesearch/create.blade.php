@@ -12,18 +12,7 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <h2>Advanced Search</h2>
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <p class="text-success"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if ($message = Session::get('error'))
-                <div class="alert alert-danger alert-dismissible fade show w-75 mx-auto" role="alert">
-                    <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+            @include('partials.messages.messages')
             <div class="card shadow my-2">
                 <div class="card-header">Select the module you would like to search</div>
                 <div class="card-body">

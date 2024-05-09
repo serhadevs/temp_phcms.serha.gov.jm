@@ -9,8 +9,17 @@
         <div class="container-fluid">
             <div class="card">
                 <h4 class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
-                    <a href="#" onclick="window.history.back();" class="btn btn-primary btn-sm"><i
-                            class="bi bi-arrow-left"></i> Back</a>
+
+                    @if (app('url')->previous() === url('/advance-search/show'))
+                        <a href="{{ url('/advance-search/create') }}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    @else
+                        <a href="#" onclick="window.history.back()" class="btn btn-primary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    @endif
+
                     <span>{{ $permit_application->firstname . ' ' . $permit_application->lastname }}</span>
                 </h4>
 
