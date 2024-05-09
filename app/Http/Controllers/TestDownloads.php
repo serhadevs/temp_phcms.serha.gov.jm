@@ -20,9 +20,9 @@ class TestDownloads extends Controller
     public function index()
     {
         // try{
-        // PermitJob::dispatch();
+        PermitJob::dispatch();
         FoodEstJob::dispatch();
-        // TouristEstJob::dispatch();
+        TouristEstJob::dispatch();
 
         // return 'success';
         // }catch(Exception $e){
