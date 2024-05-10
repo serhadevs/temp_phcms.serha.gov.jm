@@ -9,8 +9,17 @@
         <div class="container-fluid">
             <div class="card">
                 <h4 class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
-                    <a href="#" onclick="window.history.back();" class="btn btn-primary btn-sm"><i
-                            class="bi bi-arrow-left"></i> Back</a>
+
+                    @if (app('url')->previous() === url('/advance-search/show'))
+                        <a href="{{ url('/advance-search/create') }}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    @else
+                        <a href="#" onclick="window.history.back()" class="btn btn-primary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    @endif
+
                     <span>{{ $permit_application->firstname . ' ' . $permit_application->lastname }}</span>
                 </h4>
 
@@ -39,6 +48,22 @@
                                         @endif
                                         <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
                                             name="photo_upload" style="display:none">
+                                    </div>
+                                    <div class="card mt-2">
+                                        <h5 class="card-header text-muted">
+                                            Test Results
+                                        </h5>
+                                        <div class="card-body">
+                                            No Test Results Available
+                                        </div>
+                                    </div>
+                                    <div class="card mt-2">
+                                        <h5 class="card-header text-muted">
+                                           Health Interview Results
+                                        </h5>
+                                        <div class="card-body">
+                                            No Health Interview Information Available
+                                        </div>
                                     </div>
 
                                 </div>
