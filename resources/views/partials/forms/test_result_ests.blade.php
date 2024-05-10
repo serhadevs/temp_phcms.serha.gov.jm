@@ -70,7 +70,7 @@
         <label for="" class="form-label">Inspection Location</label>
         <input type="text" class="form-control" name="test_location"
             value="{{ $app_type_id == '5' ? $application->swimming_pool_address : $application->establishment_address }}">
-        @error('staff_contact')
+        @error('test_location')
             <p class="text-danger">{{ $message }}</p>
         @enderror
     </div>
@@ -108,6 +108,8 @@
         <p class="text-danger">{{ $message }}</p>
     @enderror
 </div>
-<button class="btn btn-primary mt-3">
+<button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
     Submit
 </button>
+
+@include('partials.messages.loading_message')

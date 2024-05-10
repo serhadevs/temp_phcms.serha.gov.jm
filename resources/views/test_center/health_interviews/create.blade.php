@@ -383,12 +383,13 @@
                                 <textarea class="form-control" name="comments">{{ old('comments') }}</textarea>
                             </div>
                         @endif
-                        <button class="btn btn-primary mt-3" type="submit">
+                        <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
                             Submit Health Interview
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

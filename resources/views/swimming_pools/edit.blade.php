@@ -17,12 +17,13 @@
                         @method('PUT')
                         @csrf
                         @include('partials.forms.swimming_pool_app_form')
-                        <button class="btn btn-primary mt-4">
+                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
                             Update Application
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

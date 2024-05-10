@@ -51,12 +51,13 @@
                         @method('PUT')
                         @csrf
                         @include('partials.forms.barber_cosmet_test_results')
-                        <button class="btn btn-primary mt-4" type="submit">
+                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
                             Update Results
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

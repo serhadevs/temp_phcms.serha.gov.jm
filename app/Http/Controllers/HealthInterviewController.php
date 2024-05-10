@@ -237,7 +237,6 @@ class HealthInterviewController extends Controller
             'doctor_tele' => 'nullable'
         ]);
 
-
         if ($request->app_type_id == "1") {
             $health_interview["permit_application_id"] = $request->application_id;
         } else if ($request->app_type_id == "2") {
@@ -266,12 +265,12 @@ class HealthInterviewController extends Controller
 
             if ($health_interview["travel_abroad"] == "1") {
                 for ($a = 0; $a < 2; $a++) {
-                    if ($health_interview["destination"][$a] || $health_interview["travel_date"][$a]) {
+                    if ($request->destination[$a] || $request->travel_date[$a]) {
                         if ($request->app_type_id == "1") {
                             TravelHistory::create([
                                 'permit_application_id' => $request->application_id,
-                                'destination' => $health_interview['destination'][$a] ? $health_interview['destination'][$a] : NULL,
-                                'travel_date' => $health_interview["travel_date"][$a] ? $health_interview["travel_date"][$a] : NULL
+                                'destination' => $request->destination[$a] ? $request->destination[$a] : NULL,
+                                'travel_date' => $request->travel_date[$a] ? $request->travel_date[$a] : NULL
                             ]);
                         }
                     }
