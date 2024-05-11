@@ -18,7 +18,7 @@ class HealthInterview extends Model
     protected $table = 'health_interviews';
 
     protected $fillable = [
-
+        'id',
         'permit_application_id',
         'health_cert_application_id',
         'literate',
@@ -39,7 +39,9 @@ class HealthInterview extends Model
         'sign_off_status',
         'user_id',
         'facility_id',
-
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     public $timestamp = true;

@@ -211,6 +211,8 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/tourist-establishments/renew/{id}', [TouristEstApplicationsController::class, 'renew'])->name('tourist-establishments.renew');
      Route::get('/swimming-pools/renewal/{id}', [SwimmingPoolsApplicationController::class, 'renewal'])->name('swimming-pools.renewal');
      Route::post('/swimming-pools/renew/{id}', [SwimmingPoolsApplicationController::class, 'renew'])->name('swimming-pools.renew');
+     Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinics.renewal');
+     Route::post('/food-handlers-clinics/renew/{id}', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinics.renew');
 
 
      Route::get('/settings/users', [UserController::class, 'index'])->name('users');

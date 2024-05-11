@@ -52,7 +52,18 @@
                         <a href="/food-handlers-clinics/permit/application/{{ $application->id }}"
                             class="btn btn-info btn-sm">Add Employees</a>
                     @endif
-                    <a href="" class="btn btn-success btn-sm">Renew</a>
+                    <?php
+                    $interval = explode(
+                        ',',
+                        (new DateTime())
+                            ->diff(new DateTime($application->proposed_date))
+                            ->format('%y,%m'),
+                    );
+                    ?>
+                    @if ($interval[0] > 0 || $interval[1] > 10)
+                        <a href="/food-handlers-clinics/renewal/{{ $application->id }}"
+                            class="btn btn-success btn-sm">Renew</a>
+                    @endif
                 </td>
             </tr>
         @endforeach

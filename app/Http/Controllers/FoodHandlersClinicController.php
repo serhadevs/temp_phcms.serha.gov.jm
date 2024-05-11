@@ -2,10 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointments;
 use App\Models\EstablishmentClinics;
+use App\Models\HealthInterview;
+use App\Models\PermitApplication;
+use App\Models\Renewals;
 use App\Models\SignOff;
+use App\Models\TestResult;
 use Illuminate\Http\Request;
 use DateTime;
+use Exception;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 
 class FoodHandlersClinicController extends Controller
 {
@@ -81,14 +89,15 @@ class FoodHandlersClinicController extends Controller
         return view('food_handlers_clinic.create');
     }
 
-    public function renewal(Request $request)
+    public function renewal($id)
     {
-        $application = EstablishmentClinics::find($request->route('id'));
+        $application = EstablishmentClinics::find($id);
+        $permit_applications = PermitApplication::where('establishment_clinic_id', $id)->get();
 
-        return view('food_handlers_clinic.renew', compact('application'));
+        return view('food_handlers_clinic.renew', compact('application', 'permit_applications'));
     }
 
-    public function renew(Request $request)
+    public function renew(Request $request, $id)
     {
         $food_handlers_clinic = $request->validate([
             'name' => 'required',
@@ -99,23 +108,69 @@ class FoodHandlersClinicController extends Controller
             'no_of_employees' => 'numeric|required',
             'proposed_date' => 'required',
             'proposed_time' => 'required',
-            'application_date' => 'required|date'
+            'application_date' => 'required|date',
+            'renewable_permits' => 'required'
         ]);
 
-        $food_handlers_clinic['user_id'] = auth()->user()->id;
+        try {
 
-        $app_id = EstablishmentClinics::create($food_handlers_clinic)->id;
-        $old_application = EstablishmentClinics::find($request->old_app_id);
+            $food_handlers_clinic['user_id'] = auth()->user()->id;
 
-        dd($old_application);
+            $old_clinic = EstablishmentClinics::find($id);
 
-        if ($app_id) {
-            return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Food Handlers Clinic application was created successfully. The application number is: ' . $app_id);
-        } else {
-            return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('error', 'Error processing Food Handlers Clinic application.');
+            if ($new_clinic = EstablishmentClinics::create($food_handlers_clinic)) {
+                DB::beginTransaction();
+                if (Renewals::create([
+                    'new_application_id' => $new_clinic->id,
+                    'application_type_id' => 4,
+                    'old_application_id' => $id
+                ])) {
+                    $counter = 0;
+                    $old_clinic->update(['deleted_at' => new DateTime()]);
+                    $permit_ids = explode(",", $food_handlers_clinic['renewable_permits']);
+                    foreach ($permit_ids as $permit_id) {
+                        if ($permit = PermitApplication::find($permit_id)) {
+                            $new_permit = $permit->toArray();
+                            unset($new_permit['id']);
+                            unset($new_permit['created_at']);
+                            unset($new_permit['updated_at']);
+                            unset($new_permit['sign_off_status']);
+                            unset($new_permit['reprint']);
+                            unset($new_permit['deleted_at']);
+                            unset($new_permit['no_of_years']);
+                            $new_permit['user_id'] = auth()->user()->id;
+                            $new_permit['establishment_clinic_id'] = $new_clinic->id;
+                            $new_permit['applied_before'] = 1;
+                            $new_permit['application_date'] = $food_handlers_clinic['application_date'];
+                            if ($new_permit_application = PermitApplication::create($new_permit)) {
+                                if (Renewals::create([
+                                    'new_application_id' => $new_permit_application->id,
+                                    'application_type_id' => 1,
+                                    'old_application_id' => $permit->id
+                                ])) {
+                                    if ($appointment = Appointments::where('permit_application_id', $permit_id)->first()) {
+                                        $appointment->update(['deleted_at' => new DateTime()]);
+                                    }
+                                    if ($health_interview = HealthInterview::where('permit_application_id', $permit_id)->first()) {
+                                        $health_interview->update(['deleted_at' => new DateTime()]);
+                                    }
+                                    if ($test_result = TestResult::where('application_id', $permit_id)->where('application_type_id', 1)->first()) {
+                                        $test_result->update(['deleted_at' => new DateTime()]);
+                                    }
+                                    $permit->update(['deleted_at' => new DateTime()]);
+                                }
+                            }
+                        }
+                        $counter++;
+                    }
+                }
+                DB::commit();
+                return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Food Handlers Clinic Renewal has been successfully processed for ' . $new_clinic->name . '. ' . $counter . ' Food Handlers Applications were also entered. The Clinic Application ID is: ' . $new_clinic->id);
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
         }
-
-        
     }
 
     /**
