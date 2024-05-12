@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointments;
+use App\Models\EditTransactions;
 use App\Models\EstablishmentClinics;
 use App\Models\ExamDates;
 use App\Models\HealthInterview;
@@ -508,11 +509,44 @@ class PermitApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $permit_application = PermitApplication::find($id);
-        //dd($permit_application);
-
-        return redirect()->route('dashboard.dashboard')->with('success', $permit_application);
+        try {
+            DB::beginTransaction();
+            if ($permit = PermitApplication::with('payment', 'appointment')->find($id)) {
+                if (empty($permit->payment)) {
+                    if (EditTransactions::create([
+                        'application_type_id' => 1,
+                        'table_id' => $id,
+                        'system_operation_type_id' => 1,
+                        'edit_type_id' => 2,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $request->data['reason']
+                    ])) {
+                        if(!empty($permit->appointment)){
+                            if(!Appointments::where('permit_application_id', $id)->first()->update(['deleted_at'=>new DateTime()])){
+                                throw new Exception("Delete Operation failed. Unable to delete appointment created for this application.");
+                            }
+                        }
+                        if ($permit->update(['deleted_at' => new DateTime()])) {
+                            DB::commit();
+                            return 'success';
+                        } else {
+                            throw new Exception("Delete Operation Failed. Failed to delete application.");
+                        }
+                    } else {
+                        throw new Exception('Delete operation failed. Failed to create transaction');
+                    }
+                } else {
+                    throw new Exception('This permit already has a payment. It cannot be deleted.');
+                }
+            } else {
+                throw new Exception("This permit application does not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }
