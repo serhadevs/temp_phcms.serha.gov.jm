@@ -22,9 +22,9 @@
                     showCancelButton: true
                 }).then((result2) => {
                     if (result2.isConfirmed) {
-                        $.post({!! json_encode(url('/')) !!} + "/permit/application/delete/" + entry_id, {
+                        $.post({!! json_encode(url('/')) !!} + path + "/delete/" + entry_id, {
                             _method: "DELETE",
-                            data:{
+                            data: {
                                 reason: result.value
                             },
                             _token: "{{ csrf_token() }}"

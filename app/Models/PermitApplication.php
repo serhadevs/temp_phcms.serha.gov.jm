@@ -105,4 +105,11 @@ class PermitApplication extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('system_operation_type_id', 1)
+            ->where('application_type_id', 1);
+    }
 }

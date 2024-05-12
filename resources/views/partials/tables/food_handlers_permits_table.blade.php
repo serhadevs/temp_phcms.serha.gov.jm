@@ -46,7 +46,7 @@
                     @endif
                     @if (empty($permit_application->payment))
                         <button class="btn btn-danger btn-sm"
-                            onclick="removeEntry('permit/application',{{ json_encode($permit_application->id) }})">Remove</button>
+                            onclick="removeEntry('/permit/application',{{ json_encode($permit_application->id) }})">Remove</button>
                     @endif
                 </td>
             </tr>

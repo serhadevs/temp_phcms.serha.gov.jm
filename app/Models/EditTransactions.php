@@ -32,10 +32,18 @@ class EditTransactions extends Model
     public $timestamps = true;
 
     public function changedColumns():HasMany{
-        return $this->hasMany(EditTransactionsChangedColumns::class, 'edit_transaction_id', 'id');
+        return $this->hasMany(EditTransactionsChangedColumns::class, 'edit_transaction_id', 'id')->select('column_name', 'old_value', 'new_value');
     }
 
     public function systemOperationType():HasOne{
         return $this->hasOne(SystemOperationTypes::class, 'id', 'system_operation_id');
+    }
+
+    public function user():HasOne{
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function editType():HasOne{
+        return $this->hasOne(EditTypes::class, 'id', 'edit_type_id');
     }
 }
