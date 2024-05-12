@@ -344,7 +344,7 @@
                                     <div class="card mt-3">
                                         <div class="card-header">
                                             <h4 class="text-muted">
-                                                All Edits Info
+                                                Transactions
                                             </h4>
                                         </div>
                                         <div class="card-body">
