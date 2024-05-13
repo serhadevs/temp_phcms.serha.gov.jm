@@ -45,13 +45,13 @@
                         @method('PUT')
                         @csrf
                         @include('partials.forms.test_results_tourist_est_form')
-                        <button class="btn btn-primary mt-4" type="submit">
+                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
                             Update Test Results
                         </button>
                     </form>
                 </div>
             </div>
-
+            @include('partials.messages.loading_message')
         </div>
     </div>
 @endsection

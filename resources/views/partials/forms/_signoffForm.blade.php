@@ -64,8 +64,9 @@
             @enderror
         </div>
     @endif
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="button" class="btn btn-primary" onclick="showLoading(this)">Submit</button>
 </form>
+@include('partials.messages.loading_message')
 {{-- <script>
     // function hideSites(val){
     //     if(val)

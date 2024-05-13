@@ -316,7 +316,7 @@
                             <i class="bi bi-plus-square-fill"></i>
                             Add another service
                         </button>
-                        <button type="submit" class="btn btn-primary mt-4">
+                        <button type="button" class="btn btn-primary mt-4" onclick="showLoading(this)">
                             Submit Application
                         </button>
                     </form>
@@ -472,5 +472,6 @@
                 }
             </script>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

@@ -35,8 +35,8 @@
 <div class="row mt-3">
     <div class="col col-md-6">
         <label for="" class="form-label">Application Date</label>
-        <input type="date" class="form-control" name="application_date" {{ isset($application) ? 'disabled' : '' }}
-            value="{{ old('application_date') ? old('application_date') : (isset($application) ? $application->application_date : '') }}">
+        <input type="date" class="form-control" name="application_date" {{ isset($is_edit) ? 'disabled' : '' }}
+            value="{{ old('application_date') ? old('application_date') : (isset($application) ? (isset($is_edit) ? $application->application_date : '') : '') }}">
         @error('application_date')
             <p class="text-danger">{{ $message }}</p>
         @enderror

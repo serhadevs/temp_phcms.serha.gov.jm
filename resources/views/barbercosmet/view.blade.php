@@ -144,7 +144,7 @@
                             </div>
                         </div>
                         <div id="update_1" style="display:none">
-                            <button class="btn btn-primary mt-3" type="submit">
+                            <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
                                 <i class="bi bi-pencil-square"></i>
                                 Update Applicant Information
                             </button>
@@ -278,7 +278,7 @@
                             @enderror
                         </div>
                         <div id="update_2" style="display:none">
-                            <button class="btn btn-primary mt-3" type="submit">
+                            <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
                                 <i class="bi bi-pencil-square"></i>
                                 Update Application Information
                             </button>
@@ -338,7 +338,7 @@
                                 disabled>
                         </div>
                         <div id="update_3" style="display:none">
-                            <button class="btn btn-primary mt-3" type="submit">
+                            <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
                                 <i class="bi bi-pencil-square"></i>
                                 Update Appointment Information
                             </button>
@@ -440,5 +440,6 @@
                 document.getElementById('edit_button_3').style.display = "";
             }
         </script>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

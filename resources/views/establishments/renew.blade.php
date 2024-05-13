@@ -249,7 +249,7 @@
                         </div>
                         <input type="text" class="form-control mt-3" name="old_application_id"
                             value="{{ $application->id }}" hidden>
-                        <button class="btn btn-primary mt-4" type="submit">
+                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
                             Submit Application
                         </button>
                     </form>
@@ -268,4 +268,5 @@
             const mask2 = IMask(alt_telephone, maskOptions);
         </script>
     </div>
+    @include('partials.messages.loading_message')
 @endsection

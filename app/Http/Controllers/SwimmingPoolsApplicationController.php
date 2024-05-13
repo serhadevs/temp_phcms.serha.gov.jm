@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Renewals;
 use App\Models\SwimmingPoolsApplications;
+use App\Models\TestResult;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
@@ -132,8 +134,9 @@ class SwimmingPoolsApplicationController extends Controller
     public function edit($id)
     {
         $application = SwimmingPoolsApplications::find($id);
+        $is_edit = 1;
 
-        return view('swimming_pools.edit', compact('application'));
+        return view('swimming_pools.edit', compact('application', 'is_edit'));
     }
 
     /**
@@ -159,6 +162,42 @@ class SwimmingPoolsApplicationController extends Controller
         }
 
         return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('error', 'Error processing application information.');
+    }
+
+    public function renewal($id)
+    {
+        $application = SwimmingPoolsApplications::find($id);
+
+        return view('swimming_pools.renew', compact('application'));
+    }
+
+    public function renew(Request $request, $id)
+    {
+        $swimming_pool = $request->validate([
+            'firstname' => 'required',
+            'middlename' => 'nullable',
+            'lastname' => 'required',
+            'swimming_pool_address' => 'required',
+            'application_date' => 'required'
+        ]);
+        $old_application = SwimmingPoolsApplications::find($id);
+        $swimming_pool['user_id'] = Auth()->user()->id;
+        $swimming_pool['permit_no'] = $old_application->permit_no;
+
+        if ($new_swimming_pool = SwimmingPoolsApplications::create($swimming_pool)) {
+            if (Renewals::create([
+                'new_application_id' => $new_swimming_pool->id,
+                'old_application_id' => $old_application->id,
+                'application_type_id' => 5
+            ])) {
+                TestResult::where('application_type_id', 5)->where('application_id', $id)->first()->update(['deleted_at' => new DateTime()]);
+                if ($old_application->update(['deleted_at' => new DateTime()])) {
+                    return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('success', 'Swimming Pool renewal application for ' . $new_swimming_pool->firstname . ' ' . $new_swimming_pool->lastname . ' has been entered successfully. The Application ID is ' . $new_swimming_pool->id);
+                }
+            }
+        }
+
+        return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('error', 'Error entering swimming pool application renewal.');
     }
 
     /**

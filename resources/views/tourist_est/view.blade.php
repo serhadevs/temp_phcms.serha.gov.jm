@@ -162,7 +162,7 @@
                             id="btn_edit">Edit
                             Application</button>
                         <div id="update_div" style="display:none">
-                            <button class="btn btn-primary mt-3" type="submit">
+                            <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
                                 <i class="bi bi-pencil-square"></i>
                                 Update Application Information
                             </button>
@@ -298,4 +298,5 @@
             }
         </script>
     </div>
+    @include('partials.messages.loading_message')
 @endsection

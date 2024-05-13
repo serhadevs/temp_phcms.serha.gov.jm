@@ -11,18 +11,18 @@
                 <div class="card-body">
                     <h2 class="text-muted">Edit Manager: {{ $manager->firstname . ' ' . $manager->lastname }} of Establishment
                         {{ $establishment_name }}</h2>
-
                     <form action="{{ route('tourist-establishments.manager.update') }}" method="POST">
                         @csrf
                         @method('PUT')
                         <input type="hidden" class="form-control" name="manager_id" value="{{ $manager->id }}">
                         @include('partials.forms.tourist_est_managers_form')
-                        <button type="submit" class="btn btn-primary mt-4">
+                        <button type="button" class="btn btn-primary mt-4" onclick="showLoading(this)">
                             Update Manager Information
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection

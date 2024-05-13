@@ -12,7 +12,6 @@
             <th>Photo Status</th>
             <th>Sign Off Status</th>{{-- THERE --}}
             <th>TRN</th>{{-- THERE --}}
-            {{-- <th>Granted</th>THERE --}}
             <th>Options</th>{{-- THERE --}}
         </tr>
     </thead>
@@ -37,16 +36,17 @@
                         class="bi bi-{{ $permit_application->sign_off_status == '1' ? 'check2-circle' : 'x-circle-fill' }}"></i>
                 </td>
                 <td>{{ $permit_application->trn }}</td>
-                {{-- <td><i class="bi bi-{{ $permit_application->granted==1? 'check2-circle' : 'x-circle-fill' }}"></i></td> --}}
                 <td class="text-nowrap">
                     <a href="/permit/application/edit/{{ $permit_application->id }}"
                         class="btn btn-warning btn-sm">Edit</a>
-                    {{-- <a href="/permit/application/destroy/{{ $permit_application->id }}" class="btn btn-danger btn-sm">Remove</a> --}}
-                    <button class="btn btn-danger btn-sm">Remove</button>
                     <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
                     @if ($permit_application->sign_off_status == '1')
                         <a class="btn btn-success btn-sm"
                             href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
+                    @endif
+                    @if (empty($permit_application->payment))
+                        <button class="btn btn-danger btn-sm"
+                            onclick="removeEntry('/permit/application',{{ json_encode($permit_application->id) }})">Remove</button>
                     @endif
                 </td>
             </tr>
@@ -82,7 +82,7 @@
     var table = new DataTable('#food_handlers_permit', {
         initComplete: function() {
             loading.close(),
-            this.api()
+                this.api()
                 .columns()
                 .every(function() {
                     let column = this;
@@ -105,3 +105,4 @@
         scrollX: true
     });
 </script>
+@include('partials.messages.remove_entry_message')

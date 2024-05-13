@@ -221,7 +221,7 @@
                                 <button class="btn btn-warning mt-4" id="editBtn" onclick="enableEdits()" type="button">
                                     Edit Application
                                 </button>
-                                <button class="btn btn-primary mt-4" id="updateBtn" style="display:none" type="submit">
+                                <button class="btn btn-primary mt-4" id="updateBtn" style="display:none" type="button" onclick="showLoading(this)">
                                     Update Application
                                 </button>
                                 <button class="btn btn-danger mt-4" onclick="history.back()" type="button">
@@ -300,5 +300,6 @@
             const mask1 = IMask(telephone, maskOptions);
         </script>
     </div>
+    @include('partials.messages.loading_message')
 
 @endsection

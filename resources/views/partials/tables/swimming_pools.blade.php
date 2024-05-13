@@ -34,7 +34,7 @@
                 <td>
                     <a href="/swimming-pools/edit/{{ $application->id }}" class="btn btn-sm btn-warning mx-1">Edit</a>
                     @if ($application->sign_off_status == '1')
-                        <a href="" class="btn btn-success btn-sm">Renew</a>
+                        <a href="/swimming-pools/renewal/{{ $application->id }}" class="btn btn-success btn-sm">Renew</a>
                     @endif
                 </td>
             </tr>

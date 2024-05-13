@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointments;
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\EstablishmentClinics;
 use App\Models\ExamDates;
 use App\Models\HealthInterview;
@@ -140,14 +142,13 @@ class PermitApplicationController extends Controller
         return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories'));
     }
 
-    public function editApplication(Request $request)
+    public function editApplication(Request $request, $id)
     {
         $edits = $request->validate([
             'firstname' => "required",
             'middlename' => "nullable",
             'lastname' => "required",
             'address' => 'required',
-            'id' => 'required',
             'date_of_birth' => 'required',
             'gender' => 'required',
             'cell_phone' => 'nullable|regex:/^[0-9]{1}\({1}[0-9]{3}\)[0-9]{3}\-[0-9]{4}+$/',
@@ -157,43 +158,85 @@ class PermitApplicationController extends Controller
             'email' => 'nullable',
             'permit_no' => 'required',
             'photo_upload' => 'nullable',
-            'permit_category_id' => 'required'
+            'permit_category_id' => 'required',
+            'edit_reason' => 'required'
         ]);
-
-        $permit_application = PermitApplication::find($edits['id']);
-
-        if ($request->file('photo_upload')) {
-            if ($permit_application->photo_upload) {
-                Storage::disk('public')->move($permit_application->photo_upload, '/photo_uploads/archives/' . explode('/', $permit_application->photo_upload)[1]);
+        try {
+            if ($permit = PermitApplication::with('signOffs')->find($id)) {
+                if (empty($permit->signOffs)) {
+                    unset($edits['edit_reason']);
+                    if ($request->file('photo_upload')) {
+                        if ($permit->photo_upload) {
+                            Storage::disk('public')->move($permit->photo_upload, '/photo_uploads/archives/' . explode('/', $permit->photo_upload)[1]);
+                        }
+                        $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit->permit_no . '.' . $request->photo_upload->extension(), 'public');
+                        $edits['photo_upload'] = $path;
+                    } else {
+                        $edits['photo_upload'] = $permit->photo_upload;
+                    }
+                    if (!empty($differences = array_diff($edits, PermitApplication::where('id', $id)->select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'gender', 'cell_phone', 'home_phone', 'work_phone', 'trn', 'email', 'permit_no', 'photo_upload', 'permit_category_id')->first()->toArray()))) {
+                        DB::beginTransaction();
+                        if ($edit_transaction = EditTransactions::create([
+                            'application_type_id' => 1,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 1,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->edit_reason
+                        ])) {
+                            foreach ($differences as $key => $difference) {
+                                EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => $key,
+                                    'old_value' => $permit->toArray()[$key],
+                                    'new_value' => $edits[$key]
+                                ]);
+                            }
+                            if ($permit->update($edits)) {
+                                DB::commit();
+                                return redirect()->route('permit.index', ['id' => 0])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ' has be updated successfully']);
+                            } else {
+                                throw new Exception("Error updating Food Handlers Application. Unable to update Permit Application.");
+                            }
+                        } else {
+                            throw new Exception("Error updating Food Handlers Permit. Unable to create Edit Transaction.");
+                        }
+                    } else {
+                        throw new Exception('You did not edit any field on this application.');
+                    }
+                } else {
+                    throw new Exception('This Food Handlers Application has already been signed off. It cannot be updated.');
+                }
+            } else {
+                throw new Exception('This Food Handlers Application does not exist');
             }
-
-            $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application->permit_no . '.' . $request->photo_upload->extension(), 'public');
-            $photo_upload = $path;
-        } else {
-            $photo_upload = $permit_application->photo_upload;
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->route('permit.index', ['id' => 0])->with('error', $e->getMessage());
         }
 
-        $update_permit_application = PermitApplication::where('id', $edits["id"])->update([
-            'firstname' => $edits["firstname"],
-            'middlename' => $edits["middlename"],
-            'lastname' => $edits["lastname"],
-            'address' => $edits["address"],
-            'date_of_birth' => $edits["date_of_birth"],
-            'gender' => $edits["gender"],
-            'cell_phone' => $edits["cell_phone"],
-            'home_phone' => $edits["home_phone"],
-            'work_phone' => $edits["work_phone"],
-            'trn' => $edits["trn"],
-            'email' => $edits["email"],
-            'permit_category_id' => $edits['permit_category_id'],
-            'photo_upload' => $photo_upload
-        ]);
+        // $update_permit_application = PermitApplication::where('id', $edits["id"])->update([
+        //     'firstname' => $edits["firstname"],
+        //     'middlename' => $edits["middlename"],
+        //     'lastname' => $edits["lastname"],
+        //     'address' => $edits["address"],
+        //     'date_of_birth' => $edits["date_of_birth"],
+        //     'gender' => $edits["gender"],
+        //     'cell_phone' => $edits["cell_phone"],
+        //     'home_phone' => $edits["home_phone"],
+        //     'work_phone' => $edits["work_phone"],
+        //     'trn' => $edits["trn"],
+        //     'email' => $edits["email"],
+        //     'permit_category_id' => $edits['permit_category_id'],
+        //     'photo_upload' => $photo_upload
+        // ]);
 
-        if ($update_permit_application > 0) {
-            return redirect()->route('permit.index', ['id' => 0])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ' has be updated successfully']);
-        } else {
-            return redirect()->route('permit.index', ['id' => 0])->with(['error' => 'Error updating record or nothing to update']);
-        }
+        // if ($update_permit_application > 0) {
+        //     return redirect()->route('permit.index', ['id' => 0])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ' has be updated successfully']);
+        // } else {
+        //     return redirect()->route('permit.index', ['id' => 0])->with(['error' => 'Error updating record or nothing to update']);
+        // }
     }
 
     public function editPermitAppointment(Request $request)
@@ -508,11 +551,44 @@ class PermitApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $permit_application = PermitApplication::find($id);
-        //dd($permit_application);
-
-        return redirect()->route('dashboard.dashboard')->with('success', $permit_application);
+        try {
+            DB::beginTransaction();
+            if ($permit = PermitApplication::with('payment', 'appointment')->find($id)) {
+                if (empty($permit->payment)) {
+                    if (EditTransactions::create([
+                        'application_type_id' => 1,
+                        'table_id' => $id,
+                        'system_operation_type_id' => 1,
+                        'edit_type_id' => 2,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $request->data['reason']
+                    ])) {
+                        if (!empty($permit->appointment)) {
+                            if (!Appointments::where('permit_application_id', $id)->first()->update(['deleted_at' => new DateTime()])) {
+                                throw new Exception("Delete Operation failed. Unable to delete appointment created for this application.");
+                            }
+                        }
+                        if ($permit->update(['deleted_at' => new DateTime()])) {
+                            DB::commit();
+                            return 'success';
+                        } else {
+                            throw new Exception("Delete Operation Failed. Failed to delete application.");
+                        }
+                    } else {
+                        throw new Exception('Delete operation failed. Failed to create transaction');
+                    }
+                } else {
+                    throw new Exception('This permit already has a payment. It cannot be deleted.');
+                }
+            } else {
+                throw new Exception("This permit application does not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

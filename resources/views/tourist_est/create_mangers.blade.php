@@ -16,13 +16,13 @@
                         @csrf
                         @method('POST')
                         @include('partials.forms.tourist_est_managers_form')
-                        <button class="btn-primary btn mt-4" type="submit">
+                        <button class="btn-primary btn mt-4" type="button" onclick="showLoading(this)">
                             Add Manager
                         </button>
                     </form>
                 </div>
             </div>
-
+            @include('partials.messages.loading_message')
         </div>
     </div>
 @endsection

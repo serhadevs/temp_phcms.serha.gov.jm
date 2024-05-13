@@ -71,10 +71,10 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::get("/permit/filter/{id}", [PermitApplicationController::class, 'index'])->name('permit.index');
      Route::post("/permit/filter", [PermitApplicationController::class, 'customFilterApplications'])->name('permit.index.custom');
      Route::get('/permit/view/{id}', [PermitApplicationController::class, 'viewApplication'])->name('permit.application.view');
-     Route::post('/permit/application/edit', [PermitApplicationController::class, 'editApplication'])->name('permit.application.edit');
+     Route::put('/permit/application/update/{id}', [PermitApplicationController::class, 'editApplication'])->name('permit.application.update');
      Route::post('/permit/application/edit/appointment', [PermitApplicationController::class, 'editPermitAppointment'])->name('permit.application.edit.appointment');
      Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
-     Route::put('/permit/application/destroy/{id}',[PermitApplicationController::class, 'destroy']);
+     Route::delete('/permit/application/delete/{id}', [PermitApplicationController::class, 'destroy'])->name('permit.application.delete');
 
      //Barber Cosmetics Routes
      Route::get('/barber-cosmet/create', [BarberCosmetApplicationsController::class, 'create'])->name('barber-cosmet.create');
@@ -209,6 +209,10 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/barber-cosmet/renew/{id}', [BarberCosmetApplicationsController::class , 'renew'])->name('barber-cosmet.application.renew');
      Route::get('/tourist-establishments/renewal/{id}', [TouristEstApplicationsController::class, 'renewal'])->name('tourist-establishments.renewal');
      Route::post('/tourist-establishments/renew/{id}', [TouristEstApplicationsController::class, 'renew'])->name('tourist-establishments.renew');
+     Route::get('/swimming-pools/renewal/{id}', [SwimmingPoolsApplicationController::class, 'renewal'])->name('swimming-pools.renewal');
+     Route::post('/swimming-pools/renew/{id}', [SwimmingPoolsApplicationController::class, 'renew'])->name('swimming-pools.renew');
+     Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinics.renewal');
+     Route::post('/food-handlers-clinics/renew/{id}', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinics.renew');
 
 
      Route::get('/settings/users', [UserController::class, 'index'])->name('users');

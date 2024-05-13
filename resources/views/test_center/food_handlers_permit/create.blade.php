@@ -114,7 +114,7 @@
                             <textarea class="form-control" name="comments">{{ old('comments') }}</textarea>
                         </div>
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" onclick="showLoading(this)">
                                 Submit
                             </button>
                             <a class="btn btn-danger" onclick="history.back()">
@@ -126,5 +126,6 @@
                 </div>
             </div>
         </div>
+        @include('partials.messages.loading_message')
     </div>
 @endsection
