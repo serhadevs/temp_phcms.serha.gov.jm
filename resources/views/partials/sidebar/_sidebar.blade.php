@@ -160,21 +160,21 @@
                         </li>
                     </ul>
                 </li>
-                {{-- <li class="sidebar-item">
-                        <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#download4" aria-expanded="false" aria-controls="reports">
-                            <span>Swimming Pool</span>
-                        </a>
-                        <ul id="download4" class="sidebar-dropdown list-unstyled collapse"
-                            data-bs-parent="#download2">
-                            <li class="sidebar-item mx-3">
-                                <a href="/downloads/foodhandlers/filter/0" class="sidebar-link">Outstanding</a>
-                            </li>
-                            <li class="sidebar-item mx-3">
-                                <a href="/downloads/food-establishments" class="sidebar-link">Processed</a>
-                            </li>
-                        </ul>
-                    </li> --}}
+                <li class="sidebar-item">
+                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download4" aria-expanded="false" aria-controls="reports">
+                        <span>Swimming Pool</span>
+                    </a>
+                    <ul id="download4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/swimming-pools/outstanding/filter/0"
+                                class="sidebar-link">Outstanding</a>
+                        </li>
+                        <li class="sidebar-item mx-3">
+                            <a href="/test-results/swimming-pools/filter/0" class="sidebar-link">Processed</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="sidebar-item">
                     <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#download5" aria-expanded="false" aria-controls="reports">

@@ -13,7 +13,7 @@
                     Status
                 </th>
                 <th>App No.</th>
-                @if ($app_type_id != 6)
+                @if ($app_type_id != 5)
                     <th>Establishment Name</th>
                 @endif
                 <th>Permit No.</th>
@@ -98,7 +98,7 @@
                             {{ $application->id }}
                         @endif
                     </td>
-                    @if ($app_type_id != 6)
+                    @if ($app_type_id != 5)
                         <td>
                             @if ($app_type_id == 3)
                                 {{ $application->establishment_name }}
@@ -106,6 +106,8 @@
                                 {{ $application->healthCertApplication?->employer_address }}
                             @elseif($app_type_id == 1)
                                 {{ $application->permitApplication?->establishmentClinics?->name }}
+                            @elseif($app_type_id == 6)
+                                {{ $application->establishment_name }}
                             @endif
                         </td>
                     @endif

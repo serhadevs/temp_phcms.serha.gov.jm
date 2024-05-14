@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointments;
+use App\Models\EditTransactions;
 use App\Models\EstablishmentClinics;
 use App\Models\HealthInterview;
 use App\Models\PermitApplication;
@@ -275,8 +276,32 @@ class FoodHandlersClinicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try{
+            if($food_clinic = EstablishmentClinics::with('permits')->find($id)){
+                DB::beginTransaction();
+                if(EditTransactions::create([
+                    'application_type_id'=>4,
+                    'table_id'=>$id,
+                    'system_operation_type_id'=> 1,
+                    'edit_type_id'=>2,
+                    'user_id'=>auth()->user()->id,
+                    'facility_id'=>auth()->user()->facility_id,
+                    'reason'=>$request->data['reason']
+                ])){
+                    foreach($food_clinic->permits as $permit){
+                        // PermitApplicationController->destroy($request, $permit->id);
+                        
+                    }
+                }else{
+
+                }
+            }else{
+                throw new Exception("This Food Establishment does not exist.");
+            }
+        }catch(Exception $e){
+
+        }
     }
 }

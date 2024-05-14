@@ -87,22 +87,26 @@ class SignOffController extends Controller
                 ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->get();
         } elseif ($app_type_id == 5) {
-            $applications = DB::table('swimming_pools_applications')
-                ->join('test_results', function ($join) use ($date_of_inspection) {
-                    $join->on('test_results.application_id', '=', 'swimming_pools_applications.id')
-                        ->where('test_results.application_type_id', '=', 5)
-                        ->where('test_results.deleted_at', '=', null)
-                        ->where('test_results.facility_id', '=', Auth()->user()->facility_id)
-                        ->where('test_results.test_date', '=', $date_of_inspection);
-                })
-                ->select('test_results.test_date', 'test_results.test_location', 'test_results.comments', 'test_results.staff_contact', 'test_results.overall_score', 'test_results.critical_score', 'swimming_pools_applications.id as pool_id', 'swimming_pools_applications.*')
+            // $applications = DB::table('swimming_pools_applications')
+            //     ->join('test_results', function ($join) use ($date_of_inspection) {
+            //         $join->on('test_results.application_id', '=', 'swimming_pools_applications.id')
+            //             ->where('test_results.application_type_id', '=', 5)
+            //             ->where('test_results.deleted_at', '=', null)
+            //             ->where('test_results.facility_id', '=', Auth()->user()->facility_id)
+            //             ->where('test_results.test_date', '=', $date_of_inspection);
+            //     })
+            //     ->select('test_results.test_date', 'test_results.test_location', 'test_results.comments', 'test_results.staff_contact', 'test_results.overall_score', 'test_results.critical_score', 'swimming_pools_applications.id as pool_id', 'swimming_pools_applications.*')
+            //     ->get();
+            $applications = SwimmingPoolsApplications::with('testResults', 'payment')
+                ->whereRelation('testResults', 'test_date', $date_of_inspection)
+                ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->get();
         } elseif ($app_type_id == 6) {
             $applications = TouristEstablishments::with('testResults', 'services')
-            ->has('testResults')
-            ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
-            ->whereRelation('testResults', 'test_date', $date_of_inspection)
-            ->get();
+                ->has('testResults')
+                ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
+                ->whereRelation('testResults', 'test_date', $date_of_inspection)
+                ->get();
         }
         return view('signoffs.view', compact('applications', 'app_type_id'));
     }
@@ -126,9 +130,9 @@ class SignOffController extends Controller
                 }
                 $exam_date = TestResult::where('application_id', '=', $item)->where('application_type_id', '=', $app_type_id)->first();
                 if ($app_type_id == "1" || $app_type_id == "2") {
-                    if($app_type_id == 1){
+                    if ($app_type_id == 1) {
                         $health_interview = HealthInterview::where("permit_application_id", $item)->first();
-                    }else{
+                    } else {
                         $health_interview = HealthInterview::where("health_cert_application_id", $item)->first();
                     }
                     if ($health_interview) {

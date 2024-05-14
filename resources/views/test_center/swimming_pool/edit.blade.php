@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Processed Test Results')
+@section('title', 'Edit Swimming Pool Test Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-muted">
-                        Create Swimming Pool Inspection Result
+                        Edit {{ $application->firstname . ' ' . $application->lastname }} Swimming Pool Results
                     </h2>
                     <hr>
                     <div class="row mt-3">
@@ -29,15 +29,27 @@
                     </div>
                     <div class="mt-3">
                         <label for="" class="form-label">Swimming Pool Address</label>
-                        <input type="text" class="form-control" disabled value="{{ $application->swimming_pool_address }}">
+                        <input type="text" class="form-control" disabled
+                            value="{{ $application->swimming_pool_address }}">
                     </div>
-                    <form action="{{ route('test-results.swimming-pools.store', ['id' => $application->id]) }}"
+                    <form
+                        action="{{ route('test-results.swimming-pools.update', ['id' => $application->testResults?->id]) }}"
                         method="POST">
-                        @method('POST')
+                        @method('PUT')
                         @csrf
                         @include('partials.forms.swimming_pool_tresults_form')
+                        <div class="mt-3">
+                            <label for="" class="form-label">
+                                <span class="text-danger fw-bold">*</span>
+                                Reason for edit
+                            </label>
+                            <textarea name="edit_reason" class="form-control">{{ old('edit_reason') }}</textarea>
+                            @error('edit_reason')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <button class="btn btn-primary mt-4" type="submit">
-                            Submit Test Results
+                            Update Test Results
                         </button>
                     </form>
                 </div>

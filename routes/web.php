@@ -20,6 +20,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SignOffController;
 use App\Http\Controllers\SummaryReportController;
 use App\Http\Controllers\SwimmingPoolsApplicationController;
+use App\Http\Controllers\SwimmingPoolTestResultController;
 use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
@@ -122,6 +123,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/food-handlers-clinics/update', [FoodHandlersClinicController::class, 'update'])->name('food-handlers-clinic.update');
      Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinic.renewal');
      Route::post('/food-handlers-clinics/renew', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinic.renew');
+     Route::delete('/food-handlers-clinics/delete/{id}', [FoodHandlersClinicController::class, 'destroy'])->name('food-handlers-clinic.delete');
 
      //Swimming Pools Application
      Route::get('/swimming-pools/create', [SwimmingPoolsApplicationController::class, 'create'])->name('swimming-pools.create');
@@ -191,6 +193,16 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::put('/test-results/tourist-establishments/update/{id}', [TouristEstTestResultController::class , 'update'])->name('test-results.tourist-establishments.update');
      Route::get('/test-results/tourist-establishments/outstanding/filter/{id}', [TouristEstTestResultController::class, 'outstanding'])->name('test-results.tourist-establishments.outstanding.filter');
      Route::post('/test-results/tourist-establishments/outstanding/filter', [TouristEstTestResultController::class, 'outstandingCustom'])->name('test-results.test-establishments.outstanding.custom');
+
+     //Swimming Pool Results
+     Route::get('/test-results/swimming-pools/filter/{id}', [SwimmingPoolTestResultController::class, 'index'])->name('test-results.swimming-pools.index');
+     Route::post('/test-results/swimming-pools/filter', [SwimmingPoolTestResultController::class, 'customIndex'])->name('test-results.swimming-pools.custom.index');
+     Route::get('/test-results/swimming-pools/outstanding/filter/{id}', [SwimmingPoolTestResultController::class, 'outstanding'])->name('test-results.swimming-pools.outstanding');
+     Route::post('/test-results/swimming-pools/outstanding/filter', [SwimmingPoolTestResultController::class, 'customOutstanding'])->name('test-results.swimming-pools.custom.outstanding');
+     Route::get('/test-results/swimming-pools/create/{id}', [SwimmingPoolTestResultController::class, 'create'])->name('test-results.swimming-pools.create');
+     Route::post('/test-results/swimming-pools/store/{id}', [SwimmingPoolTestResultController::class, 'store'])->name('test-results.swimming-pools.store');
+     Route::get('/test-results/swimming-pools/edit/{id}', [SwimmingPoolTestResultController::class, 'edit'])->name('test-results.swimming-pools.edit');
+     Route::put('/test-results/swimming-pools/update/{id}', [SwimmingPoolTestResultController::class, 'update'])->name('test-results.swimming-pools.update');
 
      //Report
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');

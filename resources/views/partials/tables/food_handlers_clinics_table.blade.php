@@ -52,6 +52,9 @@
                         <a href="/food-handlers-clinics/permit/application/{{ $application->id }}"
                             class="btn btn-info btn-sm">Add Employees</a>
                     @endif
+                    {{-- @if(empty($application->payment))
+                        <button class="btn btn-sm btn-danger" onclick="removeEntry('/food-establishments', {{ json_encode($application->id) }})">Remove</button>
+                    @endif --}}
                     <?php
                     $interval = explode(
                         ',',
@@ -78,7 +81,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
-
+@include('partials.messages.remove_entry_message')
 <script>
     new DataTable('#food_clinics', {
         scrollX: true,

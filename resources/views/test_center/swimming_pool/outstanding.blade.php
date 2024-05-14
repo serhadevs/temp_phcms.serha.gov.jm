@@ -1,28 +1,28 @@
 @extends('partials.layouts.layout')
 
-@section('title', "Outstanding Swimming Pool Results")
+@section('title', 'Outstanding Swimming Pool Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
+            @include('partials.messages.table_loading')
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <p class="text-success"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="card">
-                <div class="card-body">
-                    @include('partials.messages.table_loading')
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <p class="text-success"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    @if ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
                                 Outstanding Swimming Pool Results
@@ -36,16 +36,22 @@
                                         Filter Results
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/0">Today</a>
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/swimming-pools/outstanding/filter/0">Today</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/1">Yesterday</a>
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/swimming-pools/outstanding/filter/1">Yesterday</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/7">Last
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/swimming-pools/outstanding/filter/7">Last
                                                 Week</a></li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/30">Last
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/swimming-pools/outstanding/filter/30">Last
                                                 Month</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/downloads/tourist-establishments/filter/90">Last 3
+                                        <li><a class="dropdown-item"
+                                                href="/test-results/swimming-pools/outstanding/filter/90">Last
+                                                3
                                                 month</a>
                                         </li>
                                         <li><button class="dropdown-item" href="#"
@@ -55,7 +61,9 @@
                             </div>
                         </div>
                     </div>
-                    <form action="{{ route('') }}" method="POST">
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('test-results.swimming-pools.custom.outstanding') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="row text-center justify-content-md-center" id="search-row" style="display:none">
@@ -86,7 +94,7 @@
                             </div>
                         </div>
                     </form>
-                    @include('partials.tables.outstanding_test_results_ests')
+                    @include('partials.tables.swimming_pools')
                 </div>
             </div>
         </div>
