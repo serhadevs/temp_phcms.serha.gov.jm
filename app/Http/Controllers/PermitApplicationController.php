@@ -159,6 +159,7 @@ class PermitApplicationController extends Controller
             'permit_no' => 'required',
             'photo_upload' => 'nullable',
             'permit_category_id' => 'required',
+            'permit_type'=>'required',
             'edit_reason' => 'required'
         ]);
         try {
