@@ -56,7 +56,53 @@
                                             Test Results
                                         </h5>
                                         <div class="card-body">
-                                            No Test Results Available
+                                            @if (!empty($permit_application->testResults))
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold text-nowrap">
+                                                            Exam Site
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        {{ $permit_application->testResults?->test_location }}
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold text-nowrap">
+                                                            Trainer(s)
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        {{ $permit_application->testResults?->staff_contact }}
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold text-nowrap">
+                                                            Test Score
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        {{ $permit_application->testResults?->overall_score }}
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold text-nowrap">
+                                                            Comments
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        {{ $permit_application->testResults?->comments }}
+                                                    </div>
+                                                </div>
+                                            @else
+                                                No Test Results Available
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="card mt-2">
@@ -64,10 +110,136 @@
                                             Health Interview Results
                                         </h5>
                                         <div class="card-body">
-                                            No Health Interview Information Available
+                                            @if (!empty($permit_application->healthInterviews))
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Literacy
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->literate == '1' ? 'success' : 'danger' }}">
+                                                            {{ $permit_application->healthInterviews?->literate == '1' ? 'YES' : 'NO' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Typhiod
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->typhoid == '1' ? 'success' : 'danger' }}">
+                                                            {{ $permit_application->healthInterviews?->typhoid == '1' ? 'YES' : 'NO' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Whitlow
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->whitlow == 'absent' ? 'success' : 'danger' }}">
+                                                            {{ strtoupper($permit_application->healthInterviews?->whitlow) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Hands
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->hands_condition == 'satisfactory' ? 'success' : 'danger' }}">
+                                                            {{ strtoupper($permit_application->healthInterviews?->hands_condition) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Fingernails
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->fingernails_condition == 'satisfactory' ? 'success' : 'danger' }}">
+                                                            {{ strtoupper($permit_application->healthInterviews?->fingernails_condition) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Teeth
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->teeth_condition == 'satisfactory' ? 'success' : 'danger' }}">
+                                                            {{ strtoupper($permit_application->healthInterviews?->teeth_condition) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Lived Abroad
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->lived_abroad == '1' ? 'success' : 'danger' }}">
+                                                            {{ $permit_application->healthInterviews?->lived_abroad == '1' ? 'YES' : 'NO' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Travlled Abroad
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        <span
+                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->travel_abroad == '1' ? 'success' : 'danger' }}">
+                                                            {{ $permit_application->healthInterviews?->travel_abroad == '1' ? 'YES' : 'NO' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col col-md-4 text-start">
+                                                        <span class="fw-bold">
+                                                            Symptoms
+                                                        </span>
+                                                    </div>
+                                                    <div class="col text-start">
+                                                        @foreach ($permit_application->healthInterviews->healthInterviewSymptom as $symp)
+                                                            {{ $symp->symptoms?->name }}<br/>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @else
+                                                No Health Interview Information Available
+                                            @endif
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="col col-md-9">
