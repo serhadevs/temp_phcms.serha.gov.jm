@@ -9,10 +9,12 @@
             <th>Address</th>
             <th>Permit No.</th>
             <th class="text-nowrap">App Date</th>
-            <th>TRN</th>
+            <th class="text-nowrap">Payment Date</th>
+            {{-- <th>TRN</th> --}}
             @if ($app_type_id == '3')
                 <th>Operators</th>
             @endif
+            <th>Paid</th>
             <th>Options</th>
         </tr>
     </thead>
@@ -41,7 +43,8 @@
                 </td>
                 <td>{{ $application->permit_no }}</td>
                 <td>{{ $application->application_date }}</td>
-                <td>{{ $application->trn }}</td>
+                <td>{{ $application->application_date }}</td>
+                {{-- <td>{{ $application->trn }}</td> --}}
                 @if ($app_type_id == '3')
                     <td>
                         @foreach ($application->operators as $operator)
@@ -49,6 +52,7 @@
                         @endforeach
                     </td>
                 @endif
+                <td><span class="badge text-bg-success">Paid</span>
                 <td>
                     <a href="{{ $app_type_id == '3' ? '/test-results/food-establishments/create/' . $application->id : '' }}"
                         class="btn btn-primary btn-sm">Select</a>

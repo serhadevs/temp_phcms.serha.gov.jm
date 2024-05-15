@@ -298,6 +298,11 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
       Route::get('/switch-location',[SwitchFacilityController::class, 'index'])->name('switch.location');
       Route::post('/switch-location',[SwitchFacilityController::class,'update'])->name('switch.update');
 
+      //Inspections 
+
+      Route::get('/inspections/filter/{id}',[FoodEstablishmentController::class, 'showInspections']);
+      Route::get('/inspections/filter',[FoodEstablishmentController::class, 'showInspectionsCustom']);
+
 
      //Logout Routes
      Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

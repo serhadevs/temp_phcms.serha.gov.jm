@@ -108,8 +108,11 @@
         <p class="text-danger">{{ $message }}</p>
     @enderror
 </div>
+
+<a href="/test-results/food-establishments/outstanding/filter/0" class="btn btn-danger mt-3">Back</a>
 <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
     Submit
 </button>
+
 
 @include('partials.messages.loading_message')

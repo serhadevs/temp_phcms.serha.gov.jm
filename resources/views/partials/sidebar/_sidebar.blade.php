@@ -128,7 +128,7 @@
             <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
                 <i class="bi bi-file-earmark-medical"></i>
-                <span>Test Results</span>
+                <span>Test Results/Inspections</span>
             </a>
             <ul id="downloads2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">

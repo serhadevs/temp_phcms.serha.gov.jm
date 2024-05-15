@@ -25,7 +25,7 @@
                     <div class="row justify-content-between mb-3">
                         <div class="col">
                             <h2 class="text-muted">
-                                Food Establishments Test Results
+                                Food Establishments Test Results/ Inspections
                             </h2>
                         </div>
                         <div class="col-auto no-wrap">

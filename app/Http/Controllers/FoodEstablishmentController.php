@@ -280,10 +280,51 @@ class FoodEstablishmentController extends Controller
         }
     }
 
-    public function showApplications()
+    public function showInspections(Request $request)
     {
-        //Show all applications based on date 
 
+        $id = $request->route('id');
+        $today = date_format(new Datetime(), "Y-m-d");
+        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
+        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
+        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
+        //Find the establishments in the database by joining the establishment_applications and the test_results table
+
+        
+
+        $filterTimeline = "";
+        if ($id == "0") {
+            $filterTimeline = $today;
+            $inspections = EstablishmentApplications::with('testResults', 'user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                // ->where('created_at', '>', $filterTimeline)
+                ->where('id',23603)
+                ->get();
+
+                //dd($inspections);
+            return view('establishments.inspections', compact('inspections'));
+        } else if ($id == "1") {
+            $filterTimeline = $yesterday;
+        } else if ($id == "7") {
+            $filterTimeline = $last_week;
+        } else if ($id == "30") {
+            $filterTimeline = $thirty_days;
+        } else if ($id == "90") {
+            $filterTimeline = $last_ninety_days;
+        }
+
+       
+            $inspections = EstablishmentApplications::with('testResults','user')
+            ->whereRelation('user','facility_id',auth()->user()->facility_id)
+            ->where('created_at', '>', [$filterTimeline, $today])
+            ->get();
+
+        return view('establishments.inspections', compact('inspections'));
     }
+
+    
+
+
 }
