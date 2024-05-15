@@ -17,6 +17,7 @@
             <th>Critical Score</th>
             <th>Comments</th>
             <th>Inspection Date</th>
+            <th>Inspector</th>
             <th>Options</th>
         </tr>
     </thead>
@@ -44,7 +45,7 @@
                     @endif
                 </td>
                 @if ($app_type_id == '3')
-                    <td>{{ $application->testResults?->visit_purpose }}</td>
+                    <td>{{ strtoupper($application->testResults?->visit_purpose) }}</td>
                 @endif
                 @if ($app_type_id == '6')
                     <td>{{ $application->bed_capacity }}</td>
@@ -52,7 +53,8 @@
                 <td>{{ $application->testResults?->overall_score }}</td>
                 <td>{{ $application->testResults?->critical_score }}</td>
                 <td>{{ $application->testResults?->comments }}</td>
-                <td>{{ $application->testResults?->test_date }}</td>
+                <td>{{ \Carbon\Carbon::parse($application->testResults?->test_date)->format('M-j-Y') }}</td>
+                <td>{{ $application->testResults?->staff_contact }}</td>
                 <td class="text-nowrap">
                     @if (isset($module))
                         @if (empty($application->testResults))

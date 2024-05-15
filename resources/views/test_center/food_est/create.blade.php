@@ -8,11 +8,10 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
+                <h4 class="card-header">
+                    Create Food Establishment Inspection Results
+                </h4>
                 <div class="card-body">
-                    <h2 class="text-muted">
-                        Create Food Est. Test Result
-                    </h2>
-                    <hr>
                     <div class="mt-3">
                         <label for="" class="form-label">Establishment Name</label>
                         <input type="text" class="form-control" value="{{ $application->establishment_name }}" disabled>
