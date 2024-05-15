@@ -55,7 +55,7 @@ class PermitJob implements ShouldQueue
                     if ($facility_permit->establishment_clinic_id == NULL) {
                         return $facility_permit->appointment[0]?->appointment_date;
                     } else {
-                        return $facility_permit->establishmentClinics->proposed_date;
+                        return $facility_permit->establishmentClinics?->proposed_date;
                     }
                 });
 
@@ -114,8 +114,8 @@ class PermitJob implements ShouldQueue
                                 [
                                     'application_type_id' => '1',
                                     'application_id' => $index->id,
-                                    'application_amount' => $counter,
-                                    'category' => 'Food Handlers Permit',
+                                    // 'application_amount' => $counter,
+                                    // 'category' => 'Food Handlers Permit',
                                     'download_id' => 0
                                 ]
                             );
@@ -172,7 +172,7 @@ class PermitJob implements ShouldQueue
                     if ($facility_permit->establishment_clinic_id == NULL) {
                         return $facility_permit->appointment[0]?->appointment_date;
                     } else {
-                        return $facility_permit->establishmentClinics->proposed_date;
+                        return $facility_permit->establishmentClinics?->proposed_date;
                     }
                 });
 
@@ -232,8 +232,8 @@ class PermitJob implements ShouldQueue
                                 [
                                     'application_type_id' => '1',
                                     'application_id' => $index->id,
-                                    'application_amount' => $counter,
-                                    'category' => 'Food Handlers Permit',
+                                    // 'application_amount' => $counter,
+                                    // 'category' => 'Food Handlers Permit',
                                     'download_id' => 0
                                 ]
                             );
@@ -290,7 +290,7 @@ class PermitJob implements ShouldQueue
                     if ($facility_permit->establishment_clinic_id == NULL) {
                         return $facility_permit->appointment[0]?->appointment_date;
                     } else {
-                        return $facility_permit->establishmentClinics->proposed_date;
+                        return $facility_permit->establishmentClinics?->proposed_date;
                     }
                 });
 
@@ -349,8 +349,8 @@ class PermitJob implements ShouldQueue
                                 [
                                     'application_type_id' => '1',
                                     'application_id' => $index->id,
-                                    'application_amount' => $counter,
-                                    'category' => 'Food Handlers Permit',
+                                    // 'application_amount' => $counter,
+                                    // 'category' => 'Food Handlers Permit',
                                     'download_id' => 0
                                 ]
                             );
