@@ -69,7 +69,7 @@ class FoodEstJob implements ShouldQueue
                                 Storage::disk("public")->put("downloads/establishment-txts/" . $key . "/" . "STC" . "/" . "STC" . "-" . $key . "-Food_Establishment.txt", $content);
                             }
 
-                            $create_download = ZippedApplications::create([
+                            ZippedApplications::create([
                                 'application_type_id' => 3,
                                 'application_id' => $item->id,
                                 'download_id' => 0
@@ -94,6 +94,7 @@ class FoodEstJob implements ShouldQueue
                         foreach ($sch_permit as $each_permit) {
                             ZippedApplications::where('application_id', $each_permit->id)
                                 ->where('application_type_id', 3)
+                                ->orderBy('created_at', 'desc')
                                 ->first()
                                 ->update(
                                     [
@@ -127,14 +128,10 @@ class FoodEstJob implements ShouldQueue
                 $stt_per_date = $facility_permit->groupBy('testResults.test_date');
                 foreach ($stt_per_date as $key => $stt_permit) {
                     $folder_date_exist = Storage::disk('public')->exists("downloads/establishment-txts/" . $key . "/" . "STT");
-                    // dd("here");
                     $content = "";
                     $counter = 0;
-
                     foreach ($stt_permit as $item) {
-
                         $permit_download_exist = ZippedApplications::where('application_id', $item->id)->where('application_type_id', 3)->first();
-                        // dd($item);
                         if (!$permit_download_exist) {
                             $content = $content . "\t" .
                                 ucwords(strtolower($item->establishment_name)) . "\t" . ucwords(strtolower($item->operators[0]?->name_of_operator)) . "\t"
@@ -174,6 +171,7 @@ class FoodEstJob implements ShouldQueue
                         foreach ($stt_permit as $each_permit) {
                             ZippedApplications::where('application_id', $each_permit->id)
                                 ->where('application_type_id', 3)
+                                ->orderBy('created_at', 'desc')
                                 ->first()
                                 ->update(
                                     [
@@ -253,6 +251,7 @@ class FoodEstJob implements ShouldQueue
                         foreach ($ksa_permit as $each_permit) {
                             ZippedApplications::where('application_id', $each_permit->id)
                                 ->where('application_type_id', 3)
+                                ->orderBy('created_at', 'desc')
                                 ->first()
                                 ->update(
                                     [

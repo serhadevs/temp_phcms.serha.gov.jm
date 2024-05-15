@@ -19,13 +19,13 @@ class TestDownloads extends Controller
      */
     public function index()
     {
-        // try{
-        PermitJob::dispatch();
-        FoodEstJob::dispatch();
-        TouristEstJob::dispatch();
+        // try {
+            PermitJob::dispatch();
+            FoodEstJob::dispatch();
+            TouristEstJob::dispatch();
 
-        // return 'success';
-        // }catch(Exception $e){
+            // return 'success';
+        // } catch (Exception $e) {
         //     return $e->getMessage();
         // }
     }
@@ -46,12 +46,13 @@ class TestDownloads extends Controller
         fclose($file);
     }
 
-    public function testTourist(){
+    public function testTourist()
+    {
         dd(TouristEstablishments::with('managers', 'services')
-        ->where('created_at', '>', '2023-07-01')
-        // ->doesntHave('managers')
-        // ->doesntHave('services')
-        ->get());
+            ->where('created_at', '>', '2023-07-01')
+            // ->doesntHave('managers')
+            // ->doesntHave('services')
+            ->get());
     }
 
     /**

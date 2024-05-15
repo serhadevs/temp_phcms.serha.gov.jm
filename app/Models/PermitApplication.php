@@ -101,10 +101,10 @@ class PermitApplication extends Model
         return $this->hasMany(TravelHistory::class, 'permit_application_id', 'id');
     }
 
-    public function allUsers(): HasOne
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
+    // public function allUsers(): HasOne
+    // {
+    //     return $this->hasOne(User::class, 'id', 'user_id');
+    // }
 
     public function editTransactions(): HasMany
     {
