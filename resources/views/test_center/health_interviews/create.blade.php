@@ -340,47 +340,53 @@
                             </div>
                         </div>
                         @if ($app_type_id == '1' && !empty($test_info))
-                            <h5 class="text-muted mt-3">Test Results</h5>
-                            <hr>
-                            <div class="mt-2">
-                                <label for="" class="form-label">Trainers</label>
-                                <input type="text" class="form-control" name="staff_contact"
-                                    value="{{ old('staff_contact') ? old('staff_contact') : '' }}">
-                                @error('staff_contact')
-                                    <p class="text-danger">Trainers field is required.</p>
-                                @enderror
-                            </div>
-                            <div class="mt-3">
-                                <label for="" class="form-label">Overall Score</label>
-                                <input type="number" class="form-control" name="overall_score"
-                                    value="{{ old('overall_score') ? old('overall_score') : '' }}">
-                                @error('overall_score')
-                                    <p class="text-danger">Overall score field is required. Must be in between 0 and 100.</p>
-                                @enderror
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="" class="form-label">Test Location</label>
-                                    <input type="text" class="form-control" name="test_location"
-                                        value="{{ $application->establishment_clinic_id == '' ? $test_info->examDate?->examSites?->name : $test_info->address }}"
-                                        readonly>
-                                    @error('test_location')
-                                        <p class="text-danger">{{ $message }}</p>
-                                    @enderror
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5 class="text-muted">Test Results</h5>
                                 </div>
-                                <div class="col">
-                                    <label for="" class="form-label">Test Date</label>
-                                    <input type="text" class="form-control" name="test_date"
-                                        value="{{ $application->establishment_clinic_id == '' ? $test_info->appointment_date : $test_info->proposed_date }}"
-                                        readonly>
-                                    @error('test_date')
-                                        <p class="text-danger">{{ $message }}</p>
-                                    @enderror
+                                <div class="card-body">
+                                    <div class="mt-2">
+                                        <label for="" class="form-label">Trainers</label>
+                                        <input type="text" class="form-control" name="staff_contact"
+                                            value="{{ old('staff_contact') ? old('staff_contact') : '' }}">
+                                        @error('staff_contact')
+                                            <p class="text-danger">Trainers field is required.</p>
+                                        @enderror
+                                    </div>
+                                    <div class="mt-3">
+                                        <label for="" class="form-label">Overall Score</label>
+                                        <input type="number" class="form-control" name="overall_score"
+                                            value="{{ old('overall_score') ? old('overall_score') : '' }}">
+                                        @error('overall_score')
+                                            <p class="text-danger">Overall score field is required. Must be in between 0 and
+                                                100.</p>
+                                        @enderror
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <label for="" class="form-label">Test Location</label>
+                                            <input type="text" class="form-control" name="test_location"
+                                                value="{{ $application->establishment_clinic_id == '' ? $test_info->examDate?->examSites?->name : $test_info->address }}"
+                                                readonly>
+                                            @error('test_location')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                        <div class="col">
+                                            <label for="" class="form-label">Test Date</label>
+                                            <input type="text" class="form-control" name="test_date"
+                                                value="{{ $application->establishment_clinic_id == '' ? $test_info->appointment_date : $test_info->proposed_date }}"
+                                                readonly>
+                                            @error('test_date')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <label for="" class="form-label">Comments</label>
+                                        <textarea class="form-control" name="comments">{{ old('comments') }}</textarea>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mt-3">
-                                <label for="" class="form-label">Comments</label>
-                                <textarea class="form-control" name="comments">{{ old('comments') }}</textarea>
                             </div>
                         @endif
                         <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">

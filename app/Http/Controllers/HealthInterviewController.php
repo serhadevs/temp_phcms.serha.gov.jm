@@ -213,7 +213,7 @@ class HealthInterviewController extends Controller
             'test_results_exist' => 'required',
             'test_location' => 'required_if:test_results_exist,0',
             'test_date' => 'required_if:test_results_exist,0',
-            'overall_score' => 'required_if:test_results_exist,0',
+            'overall_score' => 'required_if:test_results_exist,0|numeric|min:0|max:100',
             'staff_contact' => 'required_if:test_results_exist,0',
             'destination.0' => 'required_if:travel_abroad,1',
             'travel_date.0' => 'required_if:travel_abroad,1',
