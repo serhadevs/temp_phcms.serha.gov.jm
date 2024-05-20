@@ -103,6 +103,8 @@ class PermitApplicationController extends Controller
             ->get();
 
         $appointment_available = [];
+        $app_type_id = 1;
+        $system_operation_type_id = 1;
 
         foreach (ExamDates::with('examSites', 'permitCategory')
             ->where('facility_id', auth()->user()->facility_id)
@@ -111,7 +113,7 @@ class PermitApplicationController extends Controller
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function editView(Request $request)
@@ -121,6 +123,8 @@ class PermitApplicationController extends Controller
             ->find($application_id);
 
         $categories = PermitCategory::all();
+        $app_type_id = 1;
+        $system_operation_type_id = 1;
 
         $appointments = Appointments::with('examDate.examSites')
             ->where('facility_id', auth()->user()->facility_id)
@@ -139,7 +143,7 @@ class PermitApplicationController extends Controller
 
         $edit_mode = 1;
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function editApplication(Request $request, $id)
@@ -159,7 +163,7 @@ class PermitApplicationController extends Controller
             'permit_no' => 'required',
             'photo_upload' => 'nullable',
             'permit_category_id' => 'required',
-            'permit_type'=>'required',
+            'permit_type' => 'required',
             'edit_reason' => 'required'
         ]);
         try {
@@ -175,7 +179,7 @@ class PermitApplicationController extends Controller
                     } else {
                         $edits['photo_upload'] = $permit->photo_upload;
                     }
-                    if (!empty($differences = array_diff($edits, PermitApplication::where('id', $id)->select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'gender', 'cell_phone', 'home_phone', 'work_phone', 'trn', 'email', 'permit_no', 'photo_upload', 'permit_category_id')->first()->toArray()))) {
+                    if (!empty($differences = array_diff_assoc($edits, PermitApplication::where('id', $id)->select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'gender', 'cell_phone', 'home_phone', 'work_phone', 'trn', 'email', 'permit_no', 'photo_upload', 'permit_category_id', 'permit_type')->first()->toArray()))) {
                         DB::beginTransaction();
                         if ($edit_transaction = EditTransactions::create([
                             'application_type_id' => 1,
@@ -216,28 +220,6 @@ class PermitApplicationController extends Controller
             DB::rollBack();
             return redirect()->route('permit.index', ['id' => 0])->with('error', $e->getMessage());
         }
-
-        // $update_permit_application = PermitApplication::where('id', $edits["id"])->update([
-        //     'firstname' => $edits["firstname"],
-        //     'middlename' => $edits["middlename"],
-        //     'lastname' => $edits["lastname"],
-        //     'address' => $edits["address"],
-        //     'date_of_birth' => $edits["date_of_birth"],
-        //     'gender' => $edits["gender"],
-        //     'cell_phone' => $edits["cell_phone"],
-        //     'home_phone' => $edits["home_phone"],
-        //     'work_phone' => $edits["work_phone"],
-        //     'trn' => $edits["trn"],
-        //     'email' => $edits["email"],
-        //     'permit_category_id' => $edits['permit_category_id'],
-        //     'photo_upload' => $photo_upload
-        // ]);
-
-        // if ($update_permit_application > 0) {
-        //     return redirect()->route('permit.index', ['id' => 0])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ' has be updated successfully']);
-        // } else {
-        //     return redirect()->route('permit.index', ['id' => 0])->with(['error' => 'Error updating record or nothing to update']);
-        // }
     }
 
     public function editPermitAppointment(Request $request)

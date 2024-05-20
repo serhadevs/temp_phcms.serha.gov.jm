@@ -543,25 +543,7 @@
                                             @include('partials.tables.edit_transactions_table')
                                         </div>
                                     </div>
-                                    @include('partials.modals.trans_columns_changed_modal')
                                 @endif
-                                <script>
-                                    function popChangedTable(columns) {
-                                        table = document.querySelector('#edit_cols_table tbody');
-                                        table.innerHTML = "";
-                                        columns.forEach((element) => {
-                                            var tr = document.createElement('tr');
-                                            var td1 = document.createElement('td');
-                                            var td2 = document.createElement('td');
-                                            var td3 = document.createElement('td');
-                                            td1.innerHTML = element['column_name'] ? element['column_name'].toUpperCase().replace('_', ' ') : '';
-                                            td2.innerHTML = element['old_value'] ? element['old_value'].toUpperCase() : '';
-                                            td3.innerHTML = element['new_value'] ? element['new_value'].toUpperCase() : '';
-                                            tr.append(td1, td2, td3);
-                                            table.append(tr);
-                                        })
-                                    }
-                                </script>
                                 {{-- <div class="card mt-3">
                                     <h4 class="card-header text-muted">
                                         Approving Officer

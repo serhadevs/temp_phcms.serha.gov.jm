@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
@@ -27,7 +28,14 @@ class HealthInterviewSymptom extends Model
 
     public $timestamps = true;
 
-    public function symptoms():HasOne{
+    public function symptoms(): HasOne
+    {
         return $this->hasOne(Symptoms::class, 'id', 'symptom_id');
+    }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('system_operation_type_id', 7);
     }
 }

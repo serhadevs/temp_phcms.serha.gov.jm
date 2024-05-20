@@ -73,12 +73,19 @@
                         <span class="badge bg-danger">Unapproved</span>
                     @endif
                 </td>
-                <td><button class="btn btn-warning btn-sm">Edit</button></td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-primary" href="/health-interview/view/{{ $interview->id }}">View</a>
+                    @if ($interview->sign_off_status != '1')
+                        <a class="btn btn-warning btn-sm" href="/health-interview/edit/{{ $interview->id }}">Edit</a>
+                        <button class="btn-danger btn btn-sm"
+                            onclick="removeEntry('/health-interview', {{ json_encode($interview->id) }})">Delete</button>
+                    @endif
+                </td>
             </tr>
         @endforeach
     </tbody>
 </table>
-
+@include('partials.messages.remove_entry_message')
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>

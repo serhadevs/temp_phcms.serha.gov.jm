@@ -21,10 +21,10 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
-                            <h2>
+                            <h2 class="text-muted">
                                 Processed Health Interviews
                             </h2>
                         </div>
@@ -57,6 +57,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
                     <form action="{{ route('health-interview.processed.custom') }}" method="POST">
                         @csrf
                         @method('POST')

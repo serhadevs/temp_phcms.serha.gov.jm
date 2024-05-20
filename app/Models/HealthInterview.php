@@ -46,15 +46,29 @@ class HealthInterview extends Model
 
     public $timestamp = true;
 
-    public function healthInterviewSymptom():HasMany{
+    public function healthInterviewSymptom(): HasMany
+    {
         return $this->hasMany(HealthInterviewSymptom::class, 'health_interview_id', 'id');
     }
 
-    public function healthCertApplication():HasOne{
+    public function symptomsWithTrashed(): HasMany
+    {
+        return $this->hasMany(HealthInterviewSymptom::class, 'health_interview_id', 'id')->withTrashed();
+    }
+
+    public function healthCertApplication(): HasOne
+    {
         return $this->hasOne(HealthCertApplications::class, 'id', 'health_cert_application_id');
     }
 
-    public function permitApplication():HasOne{
+    public function permitApplication(): HasOne
+    {
         return $this->hasOne(PermitApplication::class, 'id', 'permit_application_id');
+    }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('system_operation_type_id', 2);
     }
 }

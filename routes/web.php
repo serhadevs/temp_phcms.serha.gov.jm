@@ -29,6 +29,7 @@ use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
+use App\Models\HealthInterview;
 use App\Models\PermitTestResults;
 use App\Models\SwimmingPoolsApplications;
 use Illuminate\Support\Facades\Route;
@@ -247,8 +248,14 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/health-interview/store', [HealthInterviewController::class, 'store'])->name('health-interview.store');
      Route::get('/health-interview/filter/{id}', [HealthInterviewController::class, 'index'])->name('health-interview.index');
      Route::get("/health-interview/outstanding/filter/{app_type_id}/{filter_id}", [HealthInterviewController::class, 'outstandingApplications'])->name('health-interview.outstanding');
+     Route::get('/health-interview/view/{id}', [HealthInterviewController::class, 'show'])->name('health-interview.view');
      Route::post("/health-interview/filter", [HealthInterviewController::class, 'customFilterIndex'])->name('health-interview.processed.custom');
      Route::post("/health-interview/outstanding/", [HealthInterviewController::class, 'customFilterOutstanding'])->name('health-interview.outstanding.custom');
+     Route::put("/health-interview/update/{id}", [HealthInterviewController::class, 'update'])->name('health-interview.update');
+     Route::get('/health-interview/edit/{id}', [HealthInterviewController::class, 'edit'])->name('health-interview.edit');
+     Route::delete('/health-interview/delete/{id}', [HealthInterviewController::class, 'destroy'])->name('health-interview.delete');
+     Route::delete('/health-interview/symptoms/delete/{id}', [HealthInterviewController::class, 'destroySymptom'])->name('health-interview.symptoms.delete');
+     Route::delete('/health-interview/travel-history/delete/{id}', [HealthInterviewController::class, 'destroyTravelHistory'])->name('health-interview.travel-history.delete');
 
    
      //Food Establishments Route
