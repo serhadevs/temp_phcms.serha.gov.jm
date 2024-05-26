@@ -4,7 +4,6 @@
 
 @section('content')
     @include('partials.sidebar._sidebar')
-
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
@@ -12,11 +11,15 @@
             @include('partials.messages.messages')
             <div class="card">
                 <div class="card-header">
-                    <div class="row justify-content-between mb-2">
+                    <div class="row justify-content-between">
                         <div class="col">
-                            <div>
-                                <a href="{{ route("dashboard.dashboard") }}" class="btn btn-danger">Back</a>
-                                <h3>Food Handlers Permits Application Table</h3>
+                            <div class="text-nowrap">
+                                <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger"
+                                    style="float:left; margin-right:1%">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                    Back
+                                </a>
+                                <h2 class="text-muted">All Food Handler's Applications</h2>
                             </div>
                         </div>
                         <div class="col-auto">

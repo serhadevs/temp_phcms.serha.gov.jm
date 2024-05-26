@@ -45,7 +45,7 @@ class PermitApplicationController extends Controller
         $i = 0;
         if ($id == "0") {
             $filterTimeline = $today;
-            $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')
+            $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
                 ->where('created_at', '>', $today)
                 ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
                 ->get();
@@ -60,7 +60,7 @@ class PermitApplicationController extends Controller
             $filterTimeline = $last_ninety_days;
         }
 
-        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')
+        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
             ->whereBetween('created_at', [$filterTimeline, $today])
             ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
             ->get();
@@ -80,7 +80,7 @@ class PermitApplicationController extends Controller
 
         $permit_array = [];
 
-        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user')
+        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
             ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
             ->get();

@@ -71,4 +71,8 @@ class HealthInterview extends Model
         return $this->hasMany(EditTransactions::class, 'table_id', 'id')
             ->where('system_operation_type_id', 2);
     }
+
+    public function user():HasOne{
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

@@ -11,18 +11,13 @@
                 @include('partials.messages.table_loading')
                 <div class="card">
                     <h2 class="card-header">
-                        <div class="row">
+                        <div class="row justify-content-between">
                             <div class="col">
-                                <a href = "/dashboard" class="btn btn-primary">Back</a>  
-                                Processed Food Establishments   
-                           </div>
-                        </div>
-                    </h2>
-                    <div class="card-body">
-                      @include('partials.messages.messages')
-                        <div class="row justify-content-between mb-3">
-                            <div class="col">
-                               
+                                <a href = "/dashboard" class="btn btn-danger" style="float:left; margin-right:1%">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                    Back
+                                </a>
+                                <h2 class="text-muted">Food Establishment Applications</h2>
                             </div>
                             <div class="col-auto no-wrap">
                                 <div class="row">
@@ -59,6 +54,9 @@
                                 </div>
                             </div>
                         </div>
+                    </h2>
+                    <div class="card-body">
+                        @include('partials.messages.messages')
                         <form action="{{ route('food-establishment.filter.custom') }}" method="POST">
                             @csrf
                             @method('POST')

@@ -6,11 +6,19 @@
             <th>Permit No.</th>{{-- THERE --}}
             <th>First Name</th>{{-- THERE --}}
             <th>Last Name</th>{{-- THERE --}}
+            <th class="text-nowrap">Date of Birth</th>
+            <th>Address</th>
+            <th class="text-nowrap">Telephone No.</th>
+            <th>Establishment</th>
             <th>Permit Type</th>{{-- THERE --}}
             <th>Category</th>{{-- Use category Table =>Done --}}
+            <th class="text-nowrap">Apt. Date</th>
+            <th class="text-nowrap">Apt. Time</th>
+            <th class="text-nowrap">Apt. Venue</th>
             <th>Payment Status</th>{{-- Use payments table =>Done --}}
+            <th class="text-nowrap">Payment Date</th>
             <th>Photo Status</th>
-            <th>Sign Off Status</th>{{-- THERE --}}
+            <th class="text-nowrap">Sign Off Status</th>{{-- THERE --}}
             <th>TRN</th>{{-- THERE --}}
             <th>Options</th>{{-- THERE --}}
         </tr>
@@ -22,17 +30,31 @@
                 <td>{{ strtoupper($permit_application->permit_no) }}</td>
                 <td>{{ strtoupper($permit_application->firstname) }}</td>
                 <td>{{ strtoupper($permit_application->lastname) }}</td>
+                <td>{{ $permit_application->date_of_birth }}</td>
+                <td>{{ $permit_application->address }}</td>
+                <td>{{ $permit_application->cell_phone }}</td>
+                <td>{{ !empty($permit_application->establishmentClinics) ? $permit_application->establishmentClinics?->name : 'N/A' }}
+                </td>
                 <td>{{ strtoupper($permit_application->permit_type) }}</td>
                 <td>{{ strtoupper($permit_application->permitCategory?->name) }}</td>
+                <td>{{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_date : $permit_application->appointment[0]?->appointment_date }}
+                </td>
+                <td class="text-nowrap">
+                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_time : strtoupper($permit_application->appointment[0]?->examDate?->exam_day) . ' - ' . $permit_application->appointment[0]?->examDate?->exam_start_time }}
+                </td>
                 <td>
+                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->address : $permit_application->appointment[0]?->examDate?->examSites?->name }}
+                </td>
+                <td class="text-center">
                     <span
                         class="badge text-bg-{{ empty($permit_application->payment) ? 'danger' : 'success' }}">{{ empty($permit_application->payment) ? 'Not Paid' : 'Paid' }}
                     </span>
-                </td>
+                </td class="text-center">
+                <td>{{ !empty($permit_application->payment) ? $permit_application?->payment?->created_at : "N/A" }}</td>
                 <td><span
                         class="badge text-bg-{{ $permit_application->photo_upload == '' ? 'danger' : 'success' }}">{{ $permit_application->photo_upload == '' ? 'No Image' : 'Uploaded' }}</span>
                 </td>
-                <td><i
+                <td class="text-center"><i
                         class="bi bi-{{ $permit_application->sign_off_status == '1' ? 'check2-circle' : 'x-circle-fill' }}"></i>
                 </td>
                 <td>{{ $permit_application->trn }}</td>
@@ -54,17 +76,24 @@
     </tbody>
     <tfoot>
         <tr>
-            <th>App #</th>{{-- THERE --}}
+            <th>App #</th>
             <th>Permit No.</th>{{-- THERE --}}
             <th>First Name</th>{{-- THERE --}}
             <th>Last Name</th>{{-- THERE --}}
+            <th class="text-nowrap">Date of Birth</th>
+            <th>Address</th>
+            <th class="text-nowrap">Telephone No.</th>
+            <th>Establishment</th>
             <th>Permit Type</th>{{-- THERE --}}
             <th>Category</th>{{-- Use category Table =>Done --}}
+            <th class="text-nowrap">Apt. Date</th>
+            <th class="text-nowrap">Apt. Time</th>
+            <th class="text-nowrap">Apt. Venue</th>
             <th>Payment Status</th>{{-- Use payments table =>Done --}}
+            <th>Payment Date</th>
             <th>Photo Status</th>
-            <th>Sign Off Status</th>{{-- THERE --}}
+            <th class="text-nowrap">Sign Off Status</th>{{-- THERE --}}
             <th>TRN</th>{{-- THERE --}}
-            {{-- <th>Granted</th>THERE --}}
             <th>Options</th>{{-- THERE --}}
         </tr>
     </tfoot>

@@ -1,13 +1,16 @@
-<table id="food_establishments" class="table table-striped" style="width:100%;max-width:100%">
+<table id="food_establishments" class="table table-striped table-bordered" style="width:100%;max-width:100%">
     <thead>
         <tr>
-            <th>ID #</th>
+            <th class="text-nowrap">ID #</th>
             <th>Name</th>
             <th>Address</th>
             <th>Type Food</th>
             <th class="text-nowrap">Payment Status</th>
+            <th class="text-nowrap">Payment Date</th>
+            <th class="text-nowrap">Telphone No.</th>
             <th>Category</th>
-            <th>View</th>
+            <th>Opertators</th>
+            <th>Options</th>
         </tr>
     </thead>
     <tbody>
@@ -22,7 +25,16 @@
                         {{ empty($est->payment) ? 'Not Paid' : 'Paid' }}
                     </span>
                 </td>
+                <td class="text-nowrap">
+                    {{ !empty($est->payment) ? Carbon\Carbon::parse($est->payment?->created_at)->format('F j, Y, g:i a') : 'N/A' }}
+                </td>
+                <td class="text-nowrap">{{ $est->telephone }}</td>
                 <td>{{ $est->establishmentCategory?->name }}</td>
+                <td>
+                    @foreach($est->operators as $operator)
+                        <span class="">{{ $operator?->name_of_operator."\n" }}</span>
+                    @endforeach
+                </td>
                 <td class="text-nowrap">
                     <a class="btn btn-success btn-sm" href="/food-establishments/renewal/{{ $est->id }}">
                         Renew
@@ -45,7 +57,7 @@
 
 <script>
     new DataTable('#food_establishments', {
-        responsive: true,
+        // responsive: true,
         scrollX: true,
         initComplete: function() {
             loading.close()

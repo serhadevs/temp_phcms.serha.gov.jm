@@ -39,7 +39,7 @@ class HealthInterviewController extends Controller
 
         if ($id == "0") {
             $filterTimeline = $today;
-            $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment', 'healthCertApplication')
+            $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
                 ->whereBetween('created_at', [$filterTimeline, $tonight])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->get();
@@ -54,7 +54,7 @@ class HealthInterviewController extends Controller
             $filterTimeline = $last_ninety_days;
         }
 
-        $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment', 'healthCertApplication')
+        $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
             ->whereBetween('created_at', [$filterTimeline, $today])
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
@@ -72,7 +72,7 @@ class HealthInterviewController extends Controller
 
         $end_date = new DateTime($timeline["ending_date"] . " 23:59:59");
 
-        $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment', 'healthCertApplication')
+        $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
             ->where('facility_id', auth()->user()->facility_id)
             ->get();

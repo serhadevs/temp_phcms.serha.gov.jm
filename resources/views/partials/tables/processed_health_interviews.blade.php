@@ -13,6 +13,10 @@
             <th class="text-nowrap">Hands Condition</th>
             <th class="text-nowrap">Finger Condition</th>
             <th class="text-nowrap">Teeth Condition</th>
+            <th class="text-nowrap">Added By</th>
+            <th class="text-nowrap">Apt. Date</th>
+            <th class="text-nowrap">Apt. Time</th>
+            <th class="text-nowrap">Apt. Venue</th>
             <th class="text-nowrap">Sign off Status</th>
             <th>Option</th>
         </tr>
@@ -65,6 +69,33 @@
                 <td>{{ strtoupper($interview->hands_condition) }}</td>
                 <td>{{ strtoupper($interview->fingernails_condition) }}</td>
                 <td>{{ strtoupper($interview->teeth_condition) }}</td>
+                <td>{{ strtoupper($interview?->user?->firstname[0] . '.' . $interview?->user?->lastname) }}
+                </td>
+                <td>
+                    {{ $interview->permit_application_id == ''
+                        ? $interview->healthCertApplication?->appointment[0]?->appointment_date
+                        : ($interview->permitApplication?->establishment_clinic_id == ''
+                            ? $interview->permitApplication?->appointment[0]?->appointment_date
+                            : $interview->permitApplication?->establishmentClinics?->proposed_date) }}
+                </td>
+                <td>
+                    {{ $interview->permit_application_id == ''
+                        ? strtoupper($interview->healthCertApplication?->appointment[0]?->examDate?->exam_day) .
+                            '-' .
+                            $interview->healthCertApplication?->appointment[0]?->examDate?->exam_start_time
+                        : ($interview->permitApplication?->establishment_clinic_id == ''
+                            ? strtoupper($interview->permitApplication?->appointment[0]?->examDate?->exam_day) .
+                                '-' .
+                                $interview->permitApplication?->appointment[0]?->examDate?->exam_start_time
+                            : $interview->permitApplication?->establishmentClinics?->proposed_time) }}
+                </td>
+                <td>
+                    {{ $interview->permit_application_id == ''
+                        ? strtoupper($interview->healthCertApplication?->appointment[0]?->examDate?->examSites?->name)
+                        : ($interview->permitApplication?->establishment_clinic_id == ''
+                            ? strtoupper($interview->permitApplication?->appointment[0]?->examDate?->examSites?->name)
+                            : $interview->permitApplication?->establishmentClinics?->address) }}
+                </td>
                 <td>
                     @if ($interview->sign_off_status)
                         <span class="badge bg-success">Approved</span>
