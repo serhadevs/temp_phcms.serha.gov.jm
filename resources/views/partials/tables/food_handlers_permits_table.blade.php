@@ -37,20 +37,21 @@
                 </td>
                 <td>{{ strtoupper($permit_application->permit_type) }}</td>
                 <td>{{ strtoupper($permit_application->permitCategory?->name) }}</td>
-                <td>{{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_date : $permit_application->appointment[0]?->appointment_date }}
+                <td>{{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_date : (!empty($permit_application?->appointment[0]) ? $permit_application?->appointment[0]?->appointment_date : 'N/A') }}
                 </td>
                 <td class="text-nowrap">
-                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_time : strtoupper($permit_application->appointment[0]?->examDate?->exam_day) . ' - ' . $permit_application->appointment[0]?->examDate?->exam_start_time }}
+                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_time : (!empty($permit_application?->appointment[0]) ? strtoupper($permit_application->appointment[0]?->examDate?->exam_day) . ' - ' . $permit_application->appointment[0]?->examDate?->exam_start_time : '') }}
                 </td>
                 <td>
-                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->address : $permit_application->appointment[0]?->examDate?->examSites?->name }}
+                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->address : (!empty($permit_application->appointment[0]) ? $permit_application->appointment[0]?->examDate?->examSites?->name : '') }}
                 </td>
                 <td class="text-center">
                     <span
                         class="badge text-bg-{{ empty($permit_application->payment) ? 'danger' : 'success' }}">{{ empty($permit_application->payment) ? 'Not Paid' : 'Paid' }}
                     </span>
                 </td class="text-center">
-                <td>{{ !empty($permit_application->payment) ? $permit_application?->payment?->created_at : "N/A" }}</td>
+                <td>{{ !empty($permit_application->payment) ? $permit_application?->payment?->created_at : 'N/A' }}
+                </td>
                 <td><span
                         class="badge text-bg-{{ $permit_application->photo_upload == '' ? 'danger' : 'success' }}">{{ $permit_application->photo_upload == '' ? 'No Image' : 'Uploaded' }}</span>
                 </td>
@@ -107,8 +108,18 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
+{{-- Buttons links --}}
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.13.7/api/sum().js"></script>
+
 <script>
     var table = new DataTable('#food_handlers_permit', {
+        dom: 'Bfrtip',
         initComplete: function() {
             loading.close(),
                 this.api()
@@ -133,5 +144,20 @@
         },
         scrollX: true
     });
+
+    table.buttons = [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ];
+</script>
+<script>
+    window.onload = () => {
+        buttons = document.querySelectorAll("div.dt-buttons button");
+
+        // alert("Testing")
+        buttons.forEach((element) => {
+            element.classList.add("btn");
+            element.classList.add("btn-secondary")
+        })
+    }
 </script>
 @include('partials.messages.remove_entry_message')
