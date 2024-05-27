@@ -308,6 +308,10 @@ class PaymentController extends Controller
         } else if ($payment->application_type_id == 4) {
             $receipt_info['applicant_name'] = EstablishmentClinics::find($payment->application_id)?->name;
             $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
+        } else if ($payment->application_type_id == 2) {
+            $health_certif = HealthCertApplications::find($payment->application_id);
+            $receipt_info['applicant_name'] = $health_certif->firstname . " " . $health_certif->lastname;
+            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
         }
 
         $receipt_info['application_no'] = $payment->application_id;

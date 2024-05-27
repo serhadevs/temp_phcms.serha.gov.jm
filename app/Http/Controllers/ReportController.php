@@ -43,19 +43,22 @@ class ReportController extends Controller
 
     public function generalReport(Request $request)
     {
-
         $criteria = $request->validate([
             "starting_date" => "required|date",
             "ending_date" => "required|date",
             "type" => "required"
         ]);
+        $application_type = $criteria['type'];
+        $is_general_report = true;
+
+        // dd($criteria);
 
         try {
             switch ($criteria['type']) {
-                case 1:
+                case '1':
                     $permit_category_id = $request->permit_category;
-                    $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
-                        ->whereBetween('application_date', [$criteria['starting_date'], $criteria['end_date']])
+                    $applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
+                        ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->when(
                             $permit_category_id,
@@ -123,8 +126,9 @@ class ReportController extends Controller
                         ->get();
                     break;
             }
+            return view('reports.generalreport.report', compact('applications', 'application_type', 'is_general_report'));
         } catch (Exception $e) {
-            redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

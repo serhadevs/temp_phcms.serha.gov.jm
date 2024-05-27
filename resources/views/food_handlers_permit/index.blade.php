@@ -46,8 +46,6 @@
                     </div>
                 </div>
                 <div class="card-body">
-
-
                     <form action="{{ route('permit.index.custom') }}" method="POST">
                         @csrf
                         @method('POST')
@@ -131,10 +129,8 @@
             }
         </script>
         <script>
-            const hamBurger = document.querySelector(".toggle-btn");
-
-            hamBurger.addEventListener("click", function() {
-                document.querySelector("#sidebar").classList.toggle("expand");
+            document.addEventListener("DOMContentLoaded", (event) => {
+                loading.close();
             });
         </script>
     </div>

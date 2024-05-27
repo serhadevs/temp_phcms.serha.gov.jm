@@ -7,7 +7,7 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            <form action="" method="POST">
+            <form action="{{ route('reports.general.generate') }}" method="POST">
                 @csrf
                 @method('POST')
                 <div class="card">
@@ -20,13 +20,21 @@
                                 <label for="" class="form-label">
                                     Start Date
                                 </label>
-                                <input type="date" class="form-control" name="starting_date">
+                                <input type="date" class="form-control" name="starting_date"
+                                    value="{{ old('starting_date') }}">
+                                @error('starting_date')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">
                                     End Date
                                 </label>
-                                <input type="date" class="form-control" name="ending_date">
+                                <input type="date" class="form-control" name="ending_date"
+                                    value="{{ old('ending_date') }}">
+                                @error('ending_date')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -34,56 +42,76 @@
                                 <label for="Application Type" class="form-label">
                                     Application Type
                                 </label>
-                                <select class="form-select" aria-label="Default select example" name = "type"
+                                <select class="form-select" aria-label="Default select example" name="type"
                                     id ="type">
-                                    <option selected>Select an application type</option>
+                                    <option selected disabled>Select an application type</option>
                                     @foreach ($application_type as $type)
-                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        <option value="{{ $type->id }}"
+                                            {{ old('type') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('type')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col" id="foodcategory">
                                 <label for="Application Type" class="form-label">
-                                    Category
+                                    Permit Category
                                 </label>
                                 <select class="form-select" aria-label="Default select example" name="permit_category">
-                                    <option value="" selected>All</option>
+                                    <option selected disabled>All Categories</option>
                                     @foreach ($foodHandlersCategories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}"
+                                            {{ old('permit_category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('permit_category')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col" id = "estCat">
                                 <label for="Application Type" class="form-label">
-                                    Category
+                                    Establishment Category
                                 </label>
-                                <select class="form-select" aria-label="Default select example" name = "estcategory">
-                                    <option selected>All Categories</option>
+                                <select class="form-select" aria-label="Default select example" name="est_category">
+                                    <option selected disabled>All Categories</option>
                                     @foreach ($establishmentCategories as $est)
-                                        <option value="{{ $est->name }}">{{ $est->name }}</option>
+                                        <option value="{{ $est->id }}"
+                                            {{ old('est_category') == $est->id ? 'selected' : '' }}>{{ $est->name }}
+                                        </option>
                                     @endforeach
                                 </select>
+                                @error('est_category')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="row mt-3" id="establishments">
                             <div class="col">
                                 <select class="form-select" aria-label="Default select example" name="critical_score">
-                                    <option selected>Select Critical Score</option>
-                                    <option value="58">less than 59</option>
-                                    <option value="59">59</option>
+                                    <option selected disabled>Select Critical Score</option>
+                                    <option value="less">less than 59</option>
+                                    <option value="equal">59</option>
+                                    <option value="greater">greater than 59</option>
                                 </select>
+                                @error('critical_score')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col mt-3">
                                 <select class="form-select" aria-label="Default select example" name="visit_purpose">
-                                    <option selected>Select Visit Purpose</option>
+                                    <option selected disabled>Select Visit Purpose</option>
                                     <option value="routine">Routine</option>
                                     <option value="complaince">Complaince</option>
                                     <option value="reinspection">Re-inspection</option>
                                     <option value="complaint">Complaint</option>
                                 </select>
+                                @error('visit_purpose')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
-
                         </div>
                     </div>
                     <div class="card-footer">

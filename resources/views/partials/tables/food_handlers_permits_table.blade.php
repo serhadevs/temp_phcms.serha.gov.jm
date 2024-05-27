@@ -108,56 +108,74 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
-{{-- Buttons links --}}
-{{-- <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.13.7/api/sum().js"></script> --}}
+@if (isset($is_general_report))
+    {{-- Buttons links --}}
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.13.7/api/sum().js"></script>
 
-<script>
-    var table = new DataTable('#food_handlers_permit', {
-        dom: 'Bfrtip',
-        initComplete: function() {
-            loading.close(),
+    <script>
+        var table = new DataTable('#food_handlers_permit', {
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            initComplete: function() {
                 this.api()
-                .columns()
-                .every(function() {
-                    let column = this;
-                    let title = column.footer().textContent;
+                    .columns()
+                    .every(function() {
+                        let column = this;
+                        let title = column.footer().textContent;
 
-                    // Create input element
-                    let input = document.createElement('input');
-                    input.placeholder = title;
-                    input.style.width = "100%";
-                    column.footer().replaceChildren(input);
+                        // Create input element
+                        let input = document.createElement('input');
+                        input.placeholder = title;
+                        input.style.width = "100%";
+                        column.footer().replaceChildren(input);
 
-                    // Event listener for user input
-                    input.addEventListener('keyup', () => {
-                        if (column.search() !== this.value) {
-                            column.search(input.value).draw();
-                        }
+                        // Event listener for user input
+                        input.addEventListener('keyup', () => {
+                            if (column.search() !== this.value) {
+                                column.search(input.value).draw();
+                            }
+                        });
                     });
-                });
-        },
-        scrollX: true
-    });
+                loading.close();
+            },
+            scrollX: true
+        });
+    </script>
+@else
+    <script>
+        var table = new DataTable('#food_handlers_permit', {
+            initComplete: function() {
+                this.api()
+                    .columns()
+                    .every(function() {
+                        let column = this;
+                        let title = column.footer().textContent;
 
-    // table.buttons = [
-    //     'copy', 'csv', 'excel', 'pdf', 'print'
-    // ];
-</script>
-{{-- <script>
-    window.onload = () => {
-        buttons = document.querySelectorAll("div.dt-buttons button");
+                        // Create input element
+                        let input = document.createElement('input');
+                        input.placeholder = title;
+                        input.style.width = "100%";
+                        column.footer().replaceChildren(input);
 
-        // alert("Testing")
-        buttons.forEach((element) => {
-            element.classList.add("btn");
-            element.classList.add("btn-secondary")
-        })
-    }
-</script> --}}
+                        // Event listener for user input
+                        input.addEventListener('keyup', () => {
+                            if (column.search() !== this.value) {
+                                column.search(input.value).draw();
+                            }
+                        });
+                    });
+                loading.close();
+            },
+            scrollX: true
+        });
+    </script>
+@endif
 @include('partials.messages.remove_entry_message')

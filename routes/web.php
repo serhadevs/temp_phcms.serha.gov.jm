@@ -292,7 +292,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      //Reports 
 
      Route::get('/reports/general-report', [ReportController::class, 'index']);
-     Route::post('/reports/general-report', [ReportController::class, 'generalReport'])->name('reports.general');
+     Route::post('/reports/general-report/view', [ReportController::class, 'generalReport'])->name('reports.general.generate');
 
      //Test Centre Routes
 
