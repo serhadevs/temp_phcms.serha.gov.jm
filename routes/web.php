@@ -34,12 +34,6 @@ use App\Models\PermitTestResults;
 use App\Models\SwimmingPoolsApplications;
 use Illuminate\Support\Facades\Route;
 
-
-
-
-
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -209,9 +203,9 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');
      Route::post('/report/payment', [PaymentReportController::class, 'showReport'])->name('reports.payment.show');
 
-         //Summary Report
-      Route::get('/report/summary-report', [SummaryReportController::class, 'create'])->name('reports.summary.index');
-      Route::post('/report/summary-report/show', [SummaryReportController::class, 'show'])->name('report.summary.show');
+    //Summary Report
+     Route::get('/report/summary-report', [SummaryReportController::class, 'create'])->name('reports.summary.index');
+     Route::post('/report/summary-report/show', [SummaryReportController::class, 'show'])->name('report.summary.show');
 
      //Renewals
      Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class, 'renewal'])->name('food_handlers_permit.renewal');
@@ -310,12 +304,10 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
       Route::get('/inspections/filter/{id}',[FoodEstablishmentController::class, 'showInspections']);
       Route::get('/inspections/filter',[FoodEstablishmentController::class, 'showInspectionsCustom']);
 
-
+    
      //Logout Routes
      Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
- 
 
      
 });
