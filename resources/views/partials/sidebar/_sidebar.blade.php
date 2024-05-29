@@ -259,7 +259,7 @@
             </a>
             <ul id="reports" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="/report/general-report" class="sidebar-link">General Report</a>
+                    <a href="/reports/general-report" class="sidebar-link">General Report</a>
                 </li>
                 <li class="sidebar-item">
                     <a href="/report/summary-report" class="sidebar-link">Summary Report</a>

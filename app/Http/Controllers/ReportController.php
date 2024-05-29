@@ -46,12 +46,11 @@ class ReportController extends Controller
         $criteria = $request->validate([
             "starting_date" => "required|date",
             "ending_date" => "required|date",
-            "type" => "required"
+            "type" => "required",
+            "interval" => 'required|numeric|min:0|max:6'
         ]);
         $application_type = $criteria['type'];
         $is_general_report = true;
-
-        // dd($criteria);
 
         try {
             switch ($criteria['type']) {
@@ -77,7 +76,8 @@ class ReportController extends Controller
                     $establishment_category_id = $request->est_category;
                     $critical_score = $request->critical_score;
                     $visit_purpose = $request->visit_purpose;
-                    $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'testResults')
+                    // dd($visit_purpose);
+                    $applications = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'testResults')
                         ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->when(
@@ -108,27 +108,27 @@ class ReportController extends Controller
                         )->get();
                     break;
                 case 4:
-                    $food_clinics = EstablishmentClinics::with('payment', 'user')->withCount('permits')
+                    $applications = EstablishmentClinics::with('payment', 'user')->withCount('permits')
                         ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->get();
                     break;
                 case 5:
                     $applications = SwimmingPoolsApplications::with('payment')
-                        ->where('user_id', User::facilityUsers()->pluck('id')->flatten())
+                        ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->get();
                     break;
                 case 6:
                     $applications =  TouristEstablishments::with('payments', 'managers', 'services')
-                        ->where('user_id', User::facilityUsers()->pluck('id')->flatten())
+                        ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->get();
                     break;
             }
             return view('reports.generalreport.report', compact('applications', 'application_type', 'is_general_report'));
         } catch (Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+            return $e->getMessage();
         }
     }
 }

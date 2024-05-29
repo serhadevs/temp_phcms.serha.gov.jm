@@ -20,8 +20,8 @@
                                 <label for="" class="form-label">
                                     Start Date
                                 </label>
-                                <input type="date" class="form-control" name="starting_date"
-                                    value="{{ old('starting_date') }}">
+                                <input type="date" class="form-control" name="starting_date" id="starting_date"
+                                    value="{{ old('starting_date') }}" onchange="calcInterval()" onkeyup="calcInterval()">
                                 @error('starting_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -30,12 +30,17 @@
                                 <label for="" class="form-label">
                                     End Date
                                 </label>
-                                <input type="date" class="form-control" name="ending_date"
-                                    value="{{ old('ending_date') }}">
+                                <input type="date" class="form-control" name="ending_date" id="ending_date"
+                                    onchange="calcInterval()" onkeyup="calcInterval()" value="{{ old('ending_date') }}">
                                 @error('ending_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <input type="hidden" class="form-control" id="interval" value="{{ old('interval') }}"
+                                name="interval">
+                            @error('interval')
+                                <p class="text-danger">The interval must not be greater than 6 months.</p>
+                            @enderror
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -46,8 +51,11 @@
                                     id ="type">
                                     <option selected disabled>Select an application type</option>
                                     @foreach ($application_type as $type)
-                                        <option value="{{ $type->id }}"
-                                            {{ old('type') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                                        @if ($type->id != 7)
+                                            <option value="{{ $type->id }}"
+                                                {{ old('type') == $type->id ? 'selected' : '' }}>{{ $type->name }}
+                                            </option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('type')
@@ -126,6 +134,16 @@
 @endsection
 
 <script>
+    function calcInterval() {
+        if (document.getElementById('starting_date').value && document.getElementById('ending_date').value) {
+            var starting_date = new Date(document.getElementById("starting_date").value);
+            var ending_date = new Date(document.getElementById("ending_date").value);
+            var datediff = (ending_date.getMonth() - starting_date.getMonth()) + (12 * (ending_date.getFullYear() -
+                starting_date.getFullYear()));
+            document.getElementById('interval').value = datediff;
+        }
+    };
+
     document.addEventListener("DOMContentLoaded", function() {
         const elementsToHide = [
             document.getElementById('foodcategory'),
