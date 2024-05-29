@@ -30,7 +30,6 @@ class BarberCosmetApplicationsController extends Controller
 
         if ($id == "0") {
             $filterTimeline = $today;
-            return view('barbercosmet.index', compact('applications'));
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $applications = HealthCertApplications::with('user', 'appointment.examDate.examSites')

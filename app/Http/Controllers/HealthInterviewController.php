@@ -78,7 +78,7 @@ class HealthInterviewController extends Controller
         return view('test_center.health_interviews.index', compact('health_interviews'));
     }
 
-    public function outstandingApplications($filter_id, $app_type_id)
+    public function outstandingApplications($app_type_id, $filter_id)
     {
         // $id = $request->route('filter_id');
         // $app_type_id = $request->route('app_type_id');
@@ -123,7 +123,7 @@ class HealthInterviewController extends Controller
 
         if ($app_type_id == "1") {
             $applications = PermitApplication::with('permitCategory', 'appointment.examDate.examSites', 'establishmentClinics', 'payment', 'user', 'healthInterviews')
-                ->whereBetween('created_at', '>', $filterTimeline)
+                ->where('created_at', '>', $filterTimeline)
                 ->has('payment')
                 ->doesntHave('healthInterviews')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
