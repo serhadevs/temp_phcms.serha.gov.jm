@@ -296,7 +296,7 @@
                                             </div>
                                             <div class="col">
                                                 <label for="" class="form-label">Gender</label>
-                                                <select name="gender" id="gender" class="form-control" disabled>
+                                                <select name="gender" id="gender" class="form-select" disabled>
                                                     <option disabled selected>Please select a value</option>
                                                     <option value="male"
                                                         {{ old('gender') == '' ? (strtoupper($permit_application->gender) == 'MALE' ? 'selected' : '') : (old('gender') == 'male' ? 'selected' : '') }}>

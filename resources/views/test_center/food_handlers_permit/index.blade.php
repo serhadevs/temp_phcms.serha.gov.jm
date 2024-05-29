@@ -21,11 +21,11 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
-                                Showing All FoodHandlers Permits Results
+                                All Processed FoodHandlers Permits Results
                             </h2>
                         </div>
                         <div class="col-auto no-wrap">
@@ -62,6 +62,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
                     <form action="{{ route('test-results.permit.filter.custom') }}" method="POST">
                         @csrf
                         @method('POST')

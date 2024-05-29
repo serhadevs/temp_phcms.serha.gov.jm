@@ -23,7 +23,7 @@
                                 @method('POST')
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
-                                    <select name="price_id" class="form-control" id="prices" onchange="detPrice()">
+                                    <select name="price_id" class="form-select" id="prices" onchange="detPrice()">
                                         <option readonly disabled selected>Please select application type</option>
                                         @foreach ($prices as $price)
                                             <option value="{{ $price->id }}" data-price="{{ $price->price }}"

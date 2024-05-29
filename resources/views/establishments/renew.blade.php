@@ -154,7 +154,7 @@
                                 </span>
                                 Establishment Category
                             </label>
-                            <select name="establishment_category_id" id="" class="form-control">
+                            <select name="establishment_category_id" id="" class="form-select">
                                 <option selected disabled class="text-center">- - - - - - - - - - Please select a category
                                     - - - - - - - - - -</option>
                                 @foreach ($establishment_categories as $category)

@@ -181,7 +181,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Whitlow
                                 </label>
-                                <select name="" id="" class="form-control" disabled>
+                                <select name="" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="absent"
                                         {{ old('whitlow') ? (old('whitlow') == 'absent' ? 'selected' : '') : ($application->healthInterviews?->whitlow == 'absent' ? 'selected' : '') }}>
@@ -204,7 +204,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Hands
                                 </label>
-                                <select name="" id="" class="form-control" disabled>
+                                <select name="" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('hands_condition') ? (old('hands_condition') == 'satisfactory' ? 'selected' : '') : ($application->healthInterviews?->hands_condition == 'satisfactory' ? 'selected' : '') }}>
@@ -230,7 +230,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Fingernails
                                 </label>
-                                <select name="" id="" class="form-control" disabled>
+                                <select name="" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('fingernails_condition') ? (old('fingernails_condition') == 'satisfactory' ? 'selected' : '') : ($application->healthInterviews?->fingernails_condition == 'satisfactory' ? 'selected' : '') }}>
@@ -253,7 +253,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Teeth
                                 </label>
-                                <select name="" id="" class="form-control" disabled>
+                                <select name="" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('teeth_condition') ? (old('teeth_condition') == 'satisfactory' ? 'selected' : '') : ($application->healthInterviews?->teeth_condition == 'satisfactory' ? 'selected' : '') }}>

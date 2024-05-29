@@ -30,7 +30,6 @@ use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
 use App\Models\HealthInterview;
-use App\Models\PermitTestResults;
 use App\Models\SwimmingPoolsApplications;
 use Illuminate\Support\Facades\Route;
 
@@ -158,6 +157,8 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/test-results/permit/filter', [PermitTestResultsController::class, 'customFilterProcessedResults'])->name('test-results.permit.filter.custom');
      Route::get('/test-results/permit/outstanding/filter/{id}', [PermitTestResultsController::class , 'outstanding'])->name('test-results.permit.outstanding');
      Route::post('/test-results/permit/outstanding/filter', [PermitTestResultsController::class, 'outstandingCustom'])->name('test-results.permit.outstanding.custom');
+     Route::get('/test-results/permits/edit/{id}', [PermitTestResultsController::class, 'edit'])->name('test-results.permit.edit');
+     Route::put('/test-results/permits/update/{id}', [PermitTestResultsController::class, 'update'])->name('test-results.permit.update');
 
      //Food Establishment Results
      Route::get('/test-results/food-establishments/filter/{id}', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');

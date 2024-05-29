@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
-use App\Models\PermitTestResults;
+use App\Models\TestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DateTime;
-
+use Exception;
 
 class PermitTestResultsController extends Controller
 {
@@ -169,7 +171,7 @@ class PermitTestResultsController extends Controller
         $permit_results['test_date'] = $request->test_date;
         $permit_results['facility_id'] = Auth()->user()->facility_id;
 
-        $new_permit_results = PermitTestResults::create($permit_results);
+        $new_permit_results = TestResult::create($permit_results);
 
         if (!$new_permit_results) {
             return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', 'Test Results could not be added');
@@ -208,7 +210,28 @@ class PermitTestResultsController extends Controller
      */
     public function edit($id)
     {
-        //
+        try {
+            if ($result = TestResult::find($id)) {
+                if ($permit_application = PermitApplication::with('testResults', 'user')->find($result->application_id)) {
+                    if ($permit_application->sign_off_status != '1') {
+                        if ($permit_application->user?->facility_id == auth()->user()->facility_id) {
+                            $permit_categories = PermitCategory::all();
+                            return view('test_center.food_handlers_permit.edit', compact('permit_application', 'permit_categories'));
+                        } else {
+                            throw new Exception('This application was not added at your location. You cannot edit these test results.');
+                        }
+                    } else {
+                        throw new Exception('This permit application has already been signed off. THerefore test results cannot be edited.');
+                    }
+                } else {
+                    throw new Exception('Permit Application linked to this application does not exist. Therefore these test results cannot be edited.');
+                }
+            } else {
+                throw new Exception('This Test Result does not exist.');
+            }
+        } catch (Exception $e) {
+            return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -220,7 +243,61 @@ class PermitTestResultsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $updated_results = $request->validate([
+            'staff_contact' => 'required',
+            'overall_score' => 'required|numeric|max:100|min:0',
+            'edit_reason' => 'required'
+        ]);
+
+        try {
+            if ($results = TestResult::find($id)) {
+                if ($application = PermitApplication::with('user')->find($results->application_id)) {
+                    if ($application->sign_off_status != '1') {
+                        if ($results->facility_id == auth()->user()->facility_id) {
+                            $edit_reason = $updated_results['edit_reason'];
+                            unset($updated_results['edit_reason']);
+                            if (!empty($differences = array_diff_assoc($updated_results, TestResult::select('staff_contact', 'overall_score')->find($id)->toArray()))) {
+                                DB::beginTransaction();
+                                if ($transaction = EditTransactions::create([
+                                    'application_type_id' => 1,
+                                    'table_id' => $results->id,
+                                    'system_operation_type_id' => 3,
+                                    'edit_type_id' => 1,
+                                    'user_id' => auth()->user()->id,
+                                    'facility_id' => auth()->user()->facility_id,
+                                    'reason' => $edit_reason
+                                ])) {
+                                    foreach ($differences as $key => $edit) {
+                                        EditTransactionsChangedColumns::create([
+                                            'edit_transaction_id' => $transaction->id,
+                                            'column_name' => $key,
+                                            'old_value' => $results->toArray()[$key],
+                                            'new_value' => $updated_results[$key]
+                                        ]);
+                                    }
+                                    if ($results->update($updated_results)) {
+                                        DB::commit();
+                                        return redirect()->route('test-results.permit.index', ['id' => 0])->with('success', 'Test Results for ' . $application->id . ':' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+                                    }
+                                }
+                            } else {
+                                throw new Exception('Nothing was updated in your entries.');
+                            }
+                        } else {
+                            throw new Exception('This test result does not belong to your facility.');
+                        }
+                    } else {
+                        throw new Exception('The application for these test results have already been signed off.');
+                    }
+                } else {
+                    throw new Exception('This Permit Application does not exist.');
+                }
+            } else {
+                throw new Exception('These test results do not exist.');
+            }
+        } catch (Exception $e) {
+            return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', $e->getMessage());
+        }
     }
 
     /**

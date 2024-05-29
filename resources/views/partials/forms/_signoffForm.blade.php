@@ -35,7 +35,7 @@
     @if ($id == 1 || $id == 2)
         <div class="mb-3">
             <label for="" class="form-label">Select Exam Sites</label>
-            <select name="exam_site" id="" class="form-control">
+            <select name="exam_site" id="" class="form-select">
                 <option selected disabled>----Select a site---</option>
                 @foreach ($exam_sites as $site)
                     <option value="{{ $site->id }}" {{ old('exam_site') == $site->id ? 'selected' : '' }}>

@@ -2,7 +2,7 @@
 @if ($app_type_id == '3')
     <div class="mt-3">
         <label for="" class="form-label">Purpose of Visit</label>
-        <select name="visit_purpose" id="" class="form-control">
+        <select name="visit_purpose" id="" class="form-select">
             <option disabled selected>Select Visit Purpose</option>
             <option value="routine"
                 {{ old('visit_purpose')

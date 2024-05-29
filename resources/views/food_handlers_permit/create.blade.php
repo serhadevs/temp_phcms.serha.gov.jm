@@ -71,7 +71,7 @@
                                 <span class="text-danger">*</span>
                                 Permit Category
                             </label>
-                            <select id="" class="form-control" name="permit_category_id">
+                            <select id="" class="form-select" name="permit_category_id">
                                 <option readonly disabled selected>Please select a category</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}"
@@ -269,7 +269,7 @@
                             <div class="col">
                                 <span class="text-danger">*</span>
                                 <label for="" class="form-label">Schedule Appointment</label>
-                                <select id="" class="form-control" name="exam_session">
+                                <select id="" class="form-select" name="exam_session">
                                     @if (isset($clinic_permit))
                                         <option value="{{ $clinic_permit->id }}">
                                             {{ $clinic_permit->address }} - {{ $clinic_permit->proposed_time }}

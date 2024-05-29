@@ -135,7 +135,7 @@
                             <div class="card-body">
                                 <div>
                                     <label for="" class="form-label">Establishment Category</label>
-                                    <select name="establishment_category_id" id="establishment_category_id" class="form-control"
+                                    <select name="establishment_category_id" id="establishment_category_id" class="form-select"
                                         disabled>
                                         @foreach ($establishment_categories as $category)
                                             <option value="{{ $category->id }}"

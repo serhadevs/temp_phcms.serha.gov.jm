@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Enter Test Results for permit')
+@section('title', 'Edit Food Handlers Test Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -9,12 +9,13 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="text-muted">Add Test Results</h2>
+                    <h2 class="text-muted">Edit Test Results
+                        {{ $permit_application->firstname . '' . $permit_application->lastname }}</h2>
                     <hr>
-                    <form method="POST" action="{{ route('test-results.permit.add') }}">
-                        @method('POST')
+                    <form method="POST"
+                        action="{{ route('test-results.permit.update', ['id' => $permit_application->testResults?->id]) }}">
+                        @method('PUT')
                         @csrf
-                        {{-- @foreach ($permit_applications as $permit_application) --}}
                         <div class="mt-3">
                             <label for="" class="form-label">Permit Type</label>
                             <select name="" id="" class="form-select" readonly disabled>
@@ -26,8 +27,6 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <input type="text" name="application_type_id" value="1" hidden>
-                            <input type="text" name="application_id" value="{{ $permit_application->id }}" hidden>
                         </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Photo</label>
@@ -81,7 +80,7 @@
                             <div class="col">
                                 <label for="" class="form-label">Trainer(s)</label>
                                 <input type="text" class="form-control" name="staff_contact"
-                                    value="{{ old('staff_contact') }}">
+                                    value="{{ old('staff_contact') ? old('staff_contact') : $permit_application->testResults?->staff_contact }}">
                                 @error('staff_contact')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -89,7 +88,7 @@
                             <div class="col">
                                 <label for="" class="form-label">Test Score(in %)</label>
                                 <input type="number" class="form-control" name="overall_score"
-                                    value="{{ old('overall_score') }}">
+                                    value="{{ old('overall_score') ? old('overall_score') : $permit_application->testResults?->overall_score }}">
                                 @error('overall_score')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -111,17 +110,23 @@
                         </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Comments</label>
-                            <textarea class="form-control" name="comments">{{ old('comments') }}</textarea>
+                            <textarea class="form-control" name="comments">{{ old('comments') ? old('comments') : $permit_application->testResults?->comments }}</textarea>
+                        </div>
+                        <div class="mt-3">
+                            <label for="" class="form-label">Reason for edit</label>
+                                <textarea name="edit_reason" class="form-control">{{ old('edit_reason') }}</textarea>
+                            @error('edit_reason')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="mt-4">
                             <button type="button" class="btn btn-primary" onclick="showLoading(this)">
-                                Submit
+                                Update Test Results
                             </button>
                             <a class="btn btn-danger" onclick="history.back()">
                                 Cancel
                             </a>
                         </div>
-                        {{-- @endforeach --}}
                     </form>
                 </div>
             </div>

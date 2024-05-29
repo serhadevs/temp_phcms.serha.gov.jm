@@ -229,7 +229,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Whitlow
                                 </label>
-                                <select name="whitlow" id="" class="form-control">
+                                <select name="whitlow" id="" class="form-select">
                                     <option selected disabled>Select an option</option>
                                     <option value="absent" {{ old('whitlow') == 'absent' ? 'selected' : '' }}>Absent
                                     </option>
@@ -247,7 +247,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Hands
                                 </label>
-                                <select name="hands_condition" id="" class="form-control">
+                                <select name="hands_condition" id="" class="form-select">
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('hands_condition') == 'satisfactory' ? 'selected' : '' }}>Satisfactory
@@ -270,7 +270,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Fingernails
                                 </label>
-                                <select name="fingernails_condition" id="" class="form-control">
+                                <select name="fingernails_condition" id="" class="form-select">
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('fingernails_condition') == 'satisfactory' ? 'selected' : '' }}>Satisfactory
@@ -291,7 +291,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Teeth
                                 </label>
-                                <select name="teeth_condition" id="" class="form-control">
+                                <select name="teeth_condition" id="" class="form-select">
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('teeth_condition') == 'satisfactory' ? 'selected' : '' }}>Satisfactory

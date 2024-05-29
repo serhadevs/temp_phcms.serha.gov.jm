@@ -23,7 +23,7 @@
                 <td>{{ $result?->gender }}</td>
                 <td>{{ $result->testResults?->staff_contact }}</td>
                 <td>{{ $result->testResults?->overall_score }}</td>
-                <td>
+                <td class="text-nowrap">
                     @if (isset($module))
                         @if (empty($result->testResults))
                             <a href="/test-results/permits/{{ $result->id }}/create" class="btn btn-info mx-1 btn-sm">
@@ -33,7 +33,8 @@
                     @endif
                     <button href="" class="btn btn-primary btn-sm" onclick="" data-bs-toggle="modal"
                         data-bs-target="#view-payment-{{ $result->id }}">View</button>
-                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="/test-results/permits/edit/{{ $result->testResults?->id }}"
+                        class="btn btn-warning btn-sm">Edit</a>
                 </td>
             </tr>
         @endforeach
