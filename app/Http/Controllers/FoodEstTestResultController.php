@@ -14,37 +14,41 @@ class FoodEstTestResultController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        $id = $request->route('id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+        $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
         $app_type_id = 3;
 
         if ($id == "0") {
-            $today = date_format(new Datetime(), "Y-m-d");
+            $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
                 ->has('testResults')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->whereRelation('testResults', 'created_at', '>', $today)
+                ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
+                ->whereRelation('testResults', 'created_at', '<', $today)
                 ->get();
             return view('test_center.food_est.index', compact('applications', 'app_type_id'));
-        } else if ($id == "1") {
-            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
             ->has('testResults')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
-            ->whereRelation('testResults', 'created_at', '<', date_format(new Datetime(), "Y-m-d"))
             ->get();
-
         return view('test_center.food_est.index', compact('applications', 'app_type_id'));
     }
 
@@ -120,35 +124,40 @@ class FoodEstTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function outstanding(Request $request)
+    public function outstanding($id)
     {
-        $id = $request->route('id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
         $app_type_id = 3;
 
         if ($id == "0") {
+            $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user')
                 ->doesntHave('testResults')
-                ->where('created_at', '>', $today)
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->get();
 
             return view('test_center.food_est.outstanding', compact('applications', 'app_type_id'));
-        } else if ($id == "1") {
-            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user')
             ->doesntHave('testResults')
             ->where('created_at', '>', $filterTimeline)
-            ->where('created_at', '<', $today)
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->get();
 

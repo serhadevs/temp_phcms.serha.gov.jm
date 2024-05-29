@@ -63,7 +63,7 @@ class HealthCertApplications extends Model
 
     public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
     }
 
     public function signOff(): HasOne

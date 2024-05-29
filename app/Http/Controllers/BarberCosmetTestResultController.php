@@ -17,6 +17,10 @@ class BarberCosmetTestResultController extends Controller
      */
     public function index($id)
     {
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
         if ($id == "0") {
@@ -39,7 +43,10 @@ class BarberCosmetTestResultController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
+
         $test_results = HealthCertApplications::with('payment', 'testResults')
             ->has('testResults')
             ->whereHas('testResults', function ($query) {
@@ -76,6 +83,10 @@ class BarberCosmetTestResultController extends Controller
     public function outstanding($id)
     {
         $today = date_format(new Datetime(), "Y-m-d");
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+        
         $filterTimeline = "";
         if ($id == "0") {
             $filterTimeline = $today;
@@ -97,6 +108,8 @@ class BarberCosmetTestResultController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $applications = HealthCertApplications::with('testResults', 'payment', 'signOff')

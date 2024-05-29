@@ -30,41 +30,37 @@ class PermitApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        $permit_array = [];
-        $id = $request->route('id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
         $today = date_format(new Datetime(), "Y-m-d");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
         $filterTimeline = "";
-
-        $i = 0;
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
-                ->where('created_at', '>', $today)
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
                 ->get();
             return view('food_handlers_permit.index', compact('permit_applications'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
             ->get();
-
         return view('food_handlers_permit.index', compact('permit_applications'));
     }
 

@@ -18,45 +18,45 @@ class DownloadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function food_handlers(Request $request)
+    public function food_handlers($id)
     {
-        $id = $request->route('id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         $today = date_format(new Datetime(), "Y-m-d");
-        $tonight = new DateTime($today . " 23:59:59");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
         $application_type_id = 1;
 
         $filterTimeline = "";
 
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $downloads = Downloads::with('zippedApplications.payment.facility')
                 ->where('application_type_id', 1)
-                // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
-                ->where('created_at', '>', $today)
+                ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
-                //dd($downloads);
 
             return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $downloads = Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 1)
+            ->where('created_at', '>', $filterTimeline)
             ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
-            ->whereBetween('created_at', [$filterTimeline, $today])
             ->get();
 
+        // dd($downloads);
         return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
     }
 
@@ -82,42 +82,41 @@ class DownloadsController extends Controller
         return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
     }
 
-    public function food_est(Request $request)
+    public function food_est($id)
     {
-        $id = $request->route('id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
         $today = date_format(new Datetime(), "Y-m-d");
-        $tonight = new DateTime($today . " 23:59:59");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
         $application_type_id = 3;
 
         $filterTimeline = "";
 
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $downloads = Downloads::with('zippedApplications.payment.facility')
                 ->where('application_type_id', 3)
                 ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
-                ->where('created_at', '>', $filterTimeline)
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
 
             return view('downloads.food_est', compact('downloads', 'application_type_id'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $downloads = Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 3)
             ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->get();
 
         return view('downloads.food_est', compact('downloads', 'application_type_id'));
@@ -167,38 +166,36 @@ class DownloadsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function tourist_est(Request $request)
+    public function tourist_est($id)
     {
-        $id = $request->route('id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
         $today = date_format(new Datetime(), "Y-m-d");
-        $tonight = new DateTime($today . " 23:59:59");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
         $application_type_id = 1;
 
         $filterTimeline = "";
 
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication')
                 ->has('signOffs')
                 ->has('payments')
                 ->has('printableApplication')
                 ->where('sign_off_status', 1)
-                ->where('created_at', '>', $filterTimeline)
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
-
             return view('downloads.tourist_est', compact('tourist_ests'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication')
@@ -206,7 +203,7 @@ class DownloadsController extends Controller
             ->has('payments')
             ->has('printableApplication')
             ->where('sign_off_status', 1)
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->get();
 
         return view('downloads.tourist_est', compact('tourist_ests'));

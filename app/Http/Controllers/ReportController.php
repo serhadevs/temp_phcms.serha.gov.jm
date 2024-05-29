@@ -49,6 +49,9 @@ class ReportController extends Controller
             "type" => "required",
             "interval" => 'required|numeric|min:0|max:6'
         ]);
+
+        $criteria['ending_date'] = $criteria['ending_date'] . ' 23:59:59';
+        
         $application_type = $criteria['type'];
         $is_general_report = true;
 

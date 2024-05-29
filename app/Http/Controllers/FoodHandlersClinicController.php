@@ -23,39 +23,38 @@ class FoodHandlersClinicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        $id = $request->route('id');
-        $today = date_format(new Datetime(), "Y-m-d");
-        $tonight = new DateTime($today . " 23:59:59");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
 
+        $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
 
         if ($id == "0") {
             $filterTimeline = $today;
-            $food_clinics = EstablishmentClinics::with('payment', 'user')->withCount('permits')
-                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->where('created_at', '>', $filterTimeline)
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+            $food_clinics = EstablishmentClinics::with('payment', 'user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)->withCount('permits')
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
 
             return view('food_handlers_clinic.index', compact('food_clinics'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $food_clinics = EstablishmentClinics::with('payment', 'user')
-            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)->withCount('permits')
-            ->whereBetween('created_at', [$filterTimeline, $today])
+        $food_clinics = EstablishmentClinics::with('payment', 'user')->withCount('permits')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->where('created_at', '>', $filterTimeline)
             ->get();
 
         return view('food_handlers_clinic.index', compact('food_clinics'));
@@ -278,30 +277,28 @@ class FoodHandlersClinicController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        try{
-            if($food_clinic = EstablishmentClinics::with('permits')->find($id)){
+        try {
+            if ($food_clinic = EstablishmentClinics::with('permits')->find($id)) {
                 DB::beginTransaction();
-                if(EditTransactions::create([
-                    'application_type_id'=>4,
-                    'table_id'=>$id,
-                    'system_operation_type_id'=> 1,
-                    'edit_type_id'=>2,
-                    'user_id'=>auth()->user()->id,
-                    'facility_id'=>auth()->user()->facility_id,
-                    'reason'=>$request->data['reason']
-                ])){
-                    foreach($food_clinic->permits as $permit){
+                if (EditTransactions::create([
+                    'application_type_id' => 4,
+                    'table_id' => $id,
+                    'system_operation_type_id' => 1,
+                    'edit_type_id' => 2,
+                    'user_id' => auth()->user()->id,
+                    'facility_id' => auth()->user()->facility_id,
+                    'reason' => $request->data['reason']
+                ])) {
+                    foreach ($food_clinic->permits as $permit) {
                         // PermitApplicationController->destroy($request, $permit->id);
-                        
-                    }
-                }else{
 
+                    }
+                } else {
                 }
-            }else{
+            } else {
                 throw new Exception("This Food Establishment does not exist.");
             }
-        }catch(Exception $e){
-
+        } catch (Exception $e) {
         }
     }
 }

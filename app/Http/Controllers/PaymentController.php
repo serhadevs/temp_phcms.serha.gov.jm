@@ -36,39 +36,40 @@ class PaymentController extends Controller
         // return view('payments.applications', compact('json_applications'));
     }
 
-    public function filterProcessedPayments(Request $request)
+    public function filterProcessedPayments($id)
     {
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         date_default_timezone_set('Etc/GMT+5');
         $today = date_format(new Datetime(), "Y-m-d");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
         $filterTimeline = "";
-        $id = $request->route('id');
 
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $payments_info = Payments::with('applicationType', 'paymentCancellation', 'cashier')
-                ->where('created_at', '>', $filterTimeline)
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('deleted_at', NULL)
                 ->get();
 
             return view('payments.index', compact('payments_info'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $payments_info = Payments::with('applicationType', 'paymentCancellation', 'cashier')
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->where('facility_id', auth()->user()->facility_id)
             ->where('deleted_at', NULL)
             ->get();
@@ -94,91 +95,90 @@ class PaymentController extends Controller
         return view('payments.index', compact('payments_info'));
     }
 
-    public function filterOutstandingPayments(Request $request)
+    public function filterOutstandingPayments($id)
     {
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
         $applications = [];
         date_default_timezone_set('Etc/GMT+5');
         $today = date_format(new Datetime(), "Y-m-d");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
         $filterTimeline = "";
-        $id = $request->route('id');
         $prices = Prices::all();
         $application_type = ApplicationType::all();
 
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $permit_applications = PermitApplication::with('payment', 'user')
                 ->selectRaw('"1" as application_type_id, concat("' . $application_type->where('id', 1)->first()->name . '", " - ", permit_applications.permit_type) as app_type, permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, if(permit_applications.permit_type="regular", ' . $prices[0]->price . ', (if(permit_applications.permit_type="student", ' . $prices[6]->price . ',' . $prices[7]->price . '  ))) as price')
                 ->doesntHave('payment')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->where('created_at', '>', $today);
+                ->whereBetween('created_at', [$filterTimeline, $today]);
 
             $est_applications = EstablishmentApplications::with('payment', 'user')
                 ->selectRaw('"3" as application_type_id, "' . $application_type->where('id', 3)->first()->name . '" as app_type, establishment_applications.id as app_number, establishment_name as name, establishment_applications.permit_no, establishment_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 3)->first()->price . '')
                 ->doesntHave('payment')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->where('created_at', '>', $today);
-
-            $health_cert_applications = HealthCertApplications::with('payment', 'user')
-                ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 2)->first()->price . '')
-                ->doesntHave('payment')
-                ->doesntHave('payment')
-                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->where('created_at', '>', $today);
+                ->whereBetween('created_at', [$filterTimeline, $today]);
 
             $clinic_application = EstablishmentClinics::with('payment', 'user')
                 ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
                 ->doesntHave('payment')
                 ->doesntHave('payment')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->where('created_at', '>', $today);
+                ->whereBetween('created_at', [$filterTimeline, $today]);
+
+            $health_cert_applications = HealthCertApplications::with('payment', 'user')
+                ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 2)->first()->price . '')
+                ->doesntHave('payment')
+                ->doesntHave('payment')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->whereBetween('created_at', [$filterTimeline, $today]);
 
             $applications = $permit_applications
                 ->union($est_applications)
                 ->union($clinic_application)
                 // ->union($health_cert_applications)
                 ->get();
-
             return view('payments.applications', compact('applications'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $permit_applications = PermitApplication::with('payment', 'user')
             ->selectRaw('"1" as application_type_id, concat("' . $application_type->where('id', 1)->first()->name . '", " - ", permit_applications.permit_type) as app_type, permit_applications.id as app_number, concat(permit_applications.firstname, " ", permit_applications.lastname) as name, permit_applications.permit_no, permit_applications.trn, permit_applications.permit_type, if(permit_applications.permit_type="regular", ' . $prices[0]->price . ', (if(permit_applications.permit_type="student", ' . $prices[6]->price . ',' . $prices[7]->price . '  ))) as price')
             ->doesntHave('payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-            ->whereBetween('created_at', [$filterTimeline, $today]);
+            ->where('created_at', '>', $filterTimeline);
 
         $est_applications = EstablishmentApplications::with('payment', 'user')
             ->selectRaw('"3" as application_type_id, "' . $application_type->where('id', 3)->first()->name . '" as app_type, establishment_applications.id as app_number, establishment_name as name, establishment_applications.permit_no, establishment_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 3)->first()->price . '')
             ->doesntHave('payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-            ->whereBetween('created_at', [$filterTimeline, $today]);
-
-        $clinic_application = EstablishmentClinics::with('payment', 'user')
-            ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
-            ->doesntHave('payment')
-            ->doesntHave('payment')
-            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-            ->whereBetween('created_at', [$filterTimeline, $today]);
+            ->where('created_at', '>', $filterTimeline);
 
         $health_cert_applications = HealthCertApplications::with('payment', 'user')
             ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 2)->first()->price . '')
             ->doesntHave('payment')
             ->doesntHave('payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-            ->whereBetween('created_at', [$filterTimeline, $today]);
+            ->where('created_at', '>', $filterTimeline);
+
+        $clinic_application = EstablishmentClinics::with('payment', 'user')
+            ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
+            ->doesntHave('payment')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->where('created_at', '>', $filterTimeline);
 
         $applications = $permit_applications
             ->union($est_applications)

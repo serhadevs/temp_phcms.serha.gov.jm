@@ -19,32 +19,38 @@ class BarberCosmetApplicationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        $id = $request->route('id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
 
         if ($id == "0") {
-            $applications = HealthCertApplications::with('user', 'appointment.examDate.examSites')
-                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->where('created_at', '>', $today)
-                ->get();
-
+            $filterTimeline = $today;
             return view('barbercosmet.index', compact('applications'));
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+            $applications = HealthCertApplications::with('user', 'appointment.examDate.examSites')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->whereBetween('created_at', [$filterTimeline, $today])
+                ->get();
+            return view('barbercosmet.index', compact('applications'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $applications = HealthCertApplications::with('user', 'appointment.examDate.examSites')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->get();
 
         return view('barbercosmet.index', compact('applications'));

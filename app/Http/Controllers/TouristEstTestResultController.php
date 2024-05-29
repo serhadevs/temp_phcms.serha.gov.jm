@@ -17,6 +17,10 @@ class TouristEstTestResultController extends Controller
      */
     public function index($id)
     {
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
 
@@ -39,6 +43,8 @@ class TouristEstTestResultController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $app_type_id = 6;
@@ -90,6 +96,10 @@ class TouristEstTestResultController extends Controller
 
     public function outstanding($id)
     {
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
 
@@ -112,6 +122,8 @@ class TouristEstTestResultController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $is_results = 1;

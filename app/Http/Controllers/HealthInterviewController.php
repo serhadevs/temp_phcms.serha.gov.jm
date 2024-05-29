@@ -25,33 +25,32 @@ class HealthInterviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        $id = $request->route('id');
-        $today = date_format(new Datetime(), "Y-m-d");
-        $tonight = new DateTime($today . " 23:59:59");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
 
+        $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
 
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
-                ->whereBetween('created_at', [$filterTimeline, $tonight])
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->get();
             return view('test_center.health_interviews.index', compact('health_interviews'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
@@ -79,31 +78,32 @@ class HealthInterviewController extends Controller
         return view('test_center.health_interviews.index', compact('health_interviews'));
     }
 
-    public function outstandingApplications(Request $request)
+    public function outstandingApplications($filter_id, $app_type_id)
     {
-        $id = $request->route('filter_id');
-        $app_type_id = $request->route('app_type_id');
+        // $id = $request->route('filter_id');
+        // $app_type_id = $request->route('app_type_id');
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        } else {
+            $id = $filter_id;
+        }
         $today = date_format(new Datetime(), "Y-m-d");
-        $tonight = new DateTime($today . " 23:59:59");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
-
         $filterTimeline = "";
 
         if ($id == "0") {
             $filterTimeline = $today;
-            if ($request->route('app_type_id') == "1") {
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+            if ($app_type_id == "1") {
                 $applications = PermitApplication::with('permitCategory', 'appointment.examDate.examSites', 'establishmentClinics', 'payment', 'user', 'healthInterviews')
-                    ->whereBetween('created_at', [$filterTimeline, $tonight])
+                    ->whereBetween('created_at', [$filterTimeline, $today])
                     ->has('payment')
                     ->doesntHave('healthInterviews')
                     ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                     ->get();
-            } else if ($request->route('app_type_id') == '2') {
+            } else if ($app_type_id == '2') {
                 $applications = HealthCertApplications::with('appointment.examDate.examSites', 'payment', 'user', 'healthInterviews')
-                    ->whereBetween('created_at', [$filterTimeline, $tonight])
+                    ->whereBetween('created_at', [$filterTimeline, $today])
                     ->has('payment')
                     ->doesntHave('healthInterviews')
                     ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
@@ -111,26 +111,26 @@ class HealthInterviewController extends Controller
             }
 
             return view('test_center.health_interviews.outstanding_applications', compact('applications', 'app_type_id'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        if ($request->route('app_type_id') == "1") {
+        if ($app_type_id == "1") {
             $applications = PermitApplication::with('permitCategory', 'appointment.examDate.examSites', 'establishmentClinics', 'payment', 'user', 'healthInterviews')
-                ->whereBetween('created_at', [$filterTimeline, $today])
+                ->whereBetween('created_at', '>', $filterTimeline)
                 ->has('payment')
                 ->doesntHave('healthInterviews')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->get();
-        } else if ($request->route('app_type_id') == '2') {
+        } else if ($app_type_id == '2') {
             $applications = HealthCertApplications::with('appointment.examDate.examSites', 'payment', 'user', 'healthInterviews')
-                ->whereBetween('created_at', [$filterTimeline, $today])
+                ->whereBetween('created_at', '>', $filterTimeline)
                 ->has('payment')
                 ->doesntHave('healthInterviews')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)

@@ -29,7 +29,11 @@ class User extends Authenticatable
         'telephone',
         'last_seen',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'deleted_at',
+        'status',
+        'last_seen',
+        'default_filter_id'
     ];
 
     /**
@@ -74,9 +78,6 @@ class User extends Authenticatable
     {
         return $this->hasOne(Facility::class, 'id', 'facility_id');
     }
-
-    
-    
 
     public $timestamps = true;
 }

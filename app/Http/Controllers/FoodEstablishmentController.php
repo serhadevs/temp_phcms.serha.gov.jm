@@ -18,38 +18,38 @@ use Exception;
 
 class FoodEstablishmentController extends Controller
 {
-    public function index(Request $request)
+    public function index($id)
     {
-        $id = $request->route('id');
-        $today = date_format(new Datetime(), "Y-m-d");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
 
+        $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
         if ($id == "0") {
             $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
             $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-                ->where('created_at', '>', $filterTimeline)
+                ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
+
             return view('establishments.index', compact('food_establishments'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->get();
-
         return view('establishments.index', compact('food_establishments'));
     }
 
@@ -292,18 +292,16 @@ class FoodEstablishmentController extends Controller
 
         //Find the establishments in the database by joining the establishment_applications and the test_results table
 
-        
-
         $filterTimeline = "";
         if ($id == "0") {
             $filterTimeline = $today;
             $inspections = EstablishmentApplications::with('testResults', 'user')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 // ->where('created_at', '>', $filterTimeline)
-                ->where('id',23603)
+                ->where('id', 23603)
                 ->get();
 
-                //dd($inspections);
+            //dd($inspections);
             return view('establishments.inspections', compact('inspections'));
         } else if ($id == "1") {
             $filterTimeline = $yesterday;
@@ -313,18 +311,16 @@ class FoodEstablishmentController extends Controller
             $filterTimeline = $thirty_days;
         } else if ($id == "90") {
             $filterTimeline = $last_ninety_days;
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-       
-            $inspections = EstablishmentApplications::with('testResults','user')
-            ->whereRelation('user','facility_id',auth()->user()->facility_id)
+
+        $inspections = EstablishmentApplications::with('testResults', 'user')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', [$filterTimeline, $today])
             ->get();
 
         return view('establishments.inspections', compact('inspections'));
     }
-
-    
-
-
 }

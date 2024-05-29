@@ -21,40 +21,47 @@ class PermitTestResultsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function outstanding(Request $request)
+    public function outstanding($id)
     {
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         date_default_timezone_set('Etc/GMT+5');
         $filterTimeline = "";
-        $id = $request->route('id');
         $today = date_format(new Datetime(), "Y-m-d");
 
         if ($id == "0") {
-            $outstanding_permits = Payments::with('permitApplications.permitCategory', 'permitApplications.testResults')
-                ->has('permitApplications')
-                ->where('facility_id', auth()->user()->facility_id)
-                ->where('application_type_id', 1)
-                ->where('created_at', '>', $today)
-                ->doesntHave('permitApplications.testResults')
-                ->get();
-            return view('test_center.food_handlers_permit.oustanding', compact('outstanding_permits'));
+            $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+
+            $outstanding_permits = Payments::with('permitApplications.permitCategory', 'permitApplications.testResults')
+                ->where('facility_id', auth()->user()->facility_id)
+                ->has('permitApplications')
+                ->where('application_type_id', 1)
+                ->whereBetween('created_at', [$filterTimeline, $today])
+                ->doesntHave('permitApplications.testResults')
+                ->get();
+
+            return view('test_center.food_handlers_permit.oustanding', compact('outstanding_permits'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
         $outstanding_permits = Payments::with('permitApplications.permitCategory', 'permitApplications.testResults')
-            ->where('facility_id', auth()->user()->facility_id)
             ->has('permitApplications')
+            ->where('facility_id', auth()->user()->facility_id)
             ->where('application_type_id', 1)
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->doesntHave('permitApplications.testResults')
             ->get();
-
         return view('test_center.food_handlers_permit.oustanding', compact('outstanding_permits'));
     }
 
@@ -78,43 +85,45 @@ class PermitTestResultsController extends Controller
         return view('test_center.food_handlers_permit.oustanding', compact('outstanding_permits'));
     }
 
-    public function index(Request $request)
+    public function index($id)
     {
+        if (auth()->user()->default_filter_id != "") {
+            $id = auth()->user()->default_filter_id;
+        }
+
         $test_results = [];
         date_default_timezone_set('Etc/GMT+5');
         $filterTimeline = "";
-        $id = $request->route('id');
         $today = date_format(new Datetime(), "Y-m-d");
-        $tonight = new DateTime($today . " 23:59:59");
-        $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-        $last_week = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
-        $thirty_days = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
-        $last_ninety_days = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
 
         if ($id == "0") {
-            $test_results =  PermitApplication::with('permitCategory', 'testResults')
+            $filterTimeline = $today;
+        } else if ($id == "1") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
+
+            $test_results =  PermitApplication::with('permitCategory', 'user', 'testResults')
                 ->whereRelation('testResults', 'facility_id', Auth()->user()->facility_id)
                 ->has('testResults')
-                ->whereRelation('testResults', 'created_at', '>', $today)
+                ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
+                ->whereRelation('testResults', 'created_at', '<', $today)
                 ->get();
+
             return view('test_center.food_handlers_permit.index', compact('test_results'));
-        } else if ($id == "1") {
-            $filterTimeline = $yesterday;
         } else if ($id == "7") {
-            $filterTimeline = $last_week;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
         } else if ($id == "30") {
-            $filterTimeline = $thirty_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
-            $filterTimeline = $last_ninety_days;
+            $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
+        } else if ($id == "180") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $test_results =  PermitApplication::with('permitCategory', 'user', 'testResults')
+        $test_results =  PermitApplication::with('permitCategory', 'testResults')
             ->whereRelation('testResults', 'facility_id', Auth()->user()->facility_id)
             ->has('testResults')
             ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
-            ->whereRelation('testResults', 'created_at', '<', $today)
             ->get();
-
         return view('test_center.food_handlers_permit.index', compact('test_results'));
     }
 
