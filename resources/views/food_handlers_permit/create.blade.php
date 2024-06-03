@@ -8,7 +8,19 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            @include('partials.messages.messages')
+            {{-- @include('partials.messages.messages') --}}
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <p class="text-success"><strong>{{ $message }}</strong></p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <p class="text-danger font-weight-bold">{{ $message }}</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             @if (isset($clinic_permit_data))
                 <h4 class="text-muted">
                     Application
@@ -108,8 +120,8 @@
                                     <span class="text-danger">*</span>
                                     Last Name
                                 </label>
-                                <input type="text" class="form-control" name="lastname" value="{{ old('lastname') }}"
-                                    oninput="this.value = this.value.toUpperCase()">
+                                <input type="text" class="form-control" name="lastname"
+                                    value="{{ old('lastname') }}" oninput="this.value = this.value.toUpperCase()">
                                 @error('lastname')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -280,9 +292,9 @@
                                             <option value="{{ $appointment_avaiable->id }}"
                                                 {{ old('exam_session') == $appointment_avaiable->id ? 'selected' : '' }}>
                                                 {{ $appointment_avaiable->permitCategory?->name }}
-                                                - {{ $appointment_avaiable->exam_day }}
+                                                - {{ strtoupper($appointment_avaiable->exam_day) }}
                                                 {{ $appointment_avaiable->exam_start_time }}
-                                                -{{ $appointment_avaiable->examSites?->name }}
+                                                -{{ $appointment_avaiable?->availableSites?->name }}
                                             </option>
                                         @endforeach
                                     @endif

@@ -9,20 +9,8 @@
         <div class="container-fluid">
             @include('partials.messages.table_loading')
             <div class="card">
-                <div class="card-body">
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <p class="text-success"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    @if ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
                                 Food Establishments Test Results/ Inspections
@@ -58,6 +46,21 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                    @include('partials.messages.messages')
+                    {{-- @if ($message = Session::get('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <p class="text-success"><strong>{{ $message }}</strong></p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                    @if ($message = Session::get('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif --}}
                     <form action="{{ route('test-results.food-est.custom.filter') }}" method="POST">
                         @csrf
                         @method('POST')

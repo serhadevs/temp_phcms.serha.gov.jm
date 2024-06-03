@@ -30,7 +30,7 @@ class FoodEstablishmentController extends Controller
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-            $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators')
+            $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'signOff', 'renewal')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
@@ -46,7 +46,7 @@ class FoodEstablishmentController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators')
+        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'signOff', 'renewal')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', $filterTimeline)
             ->get();
@@ -64,7 +64,7 @@ class FoodEstablishmentController extends Controller
 
         $timeline["ending_date"] = $timeline["ending_date"] . " 23:59:59";
 
-        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators')
+        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'signOff', 'renewal')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline["starting_date"], $timeline["ending_date"]])
             ->get();

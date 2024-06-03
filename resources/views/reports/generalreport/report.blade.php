@@ -26,9 +26,9 @@
                         @include('partials.tables.barber_cosmet_table')
                     @elseif($application_type == '3')
                         <?php
-                        $food_establishments = $applications;
+                        $app_type_id = 3;
                         ?>
-                        @include('partials.tables.processed_food_establishment_table')
+                        @include('partials.tables.test_results_est')
                     @elseif($application_type == '4')
                         <?php
                         $food_clinics = $applications;
@@ -52,14 +52,14 @@
             }
         </script>
         <style>
-            div.dt-buttons{
-                width:50%;
-                float:left;
+            div.dt-buttons {
+                width: 50%;
+                float: left;
             }
 
-            .dataTables_info{
-                width:50%;
-                float:left;
+            .dataTables_info {
+                width: 50%;
+                float: left;
             }
         </style>
     </div>

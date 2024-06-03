@@ -9,12 +9,14 @@ use App\Models\EditTransactionsChangedColumns;
 use App\Models\EstablishmentClinics;
 use App\Models\ExamDates;
 use App\Models\HealthInterview;
+use App\Models\HealthInterviewSymptom;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
 use App\Models\Renewals;
 use App\Models\SignOff;
 use App\Models\TestResult;
+use App\Models\TravelHistory;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
@@ -534,8 +536,9 @@ class PermitApplicationController extends Controller
     {
         try {
             DB::beginTransaction();
-            if ($permit = PermitApplication::with('payment', 'appointment')->find($id)) {
-                if (empty($permit->payment)) {
+            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory')->find($id)) {
+                if ($permit->sign_off_status != '1') {
+                    // if (empty($permit->payment)) {
                     if (EditTransactions::create([
                         'application_type_id' => 1,
                         'table_id' => $id,
@@ -550,6 +553,28 @@ class PermitApplicationController extends Controller
                                 throw new Exception("Delete Operation failed. Unable to delete appointment created for this application.");
                             }
                         }
+                        if (!empty($permit->testResults)) {
+                            if (!TestResult::find($permit->testResults?->id)->update(['deleted_at' => new DateTime()])) {
+                                throw new Exception("Delete operation failed. System was unable to delete Test Results");
+                            }
+                        }
+                        if (!empty($permit->healthInterviews)) {
+                            foreach ($permit->healthInterviews?->healthInterviewSymptom as $sym) {
+                                if (!HealthInterviewSymptom::find($sym->id)->update(['deleted_at' => new DateTime()])) {
+                                    throw new Exception("Delete operation failed. Unable to delete symptom added in health interview");
+                                }
+                            }
+                            if (!HealthInterview::find($permit->healthInterviews?->id)->update(['deleted_at' => new DateTime()])) {
+                                throw new Exception('Delete operation failed. Unable to delete health interviews.');
+                            }
+                        }
+                        if (!empty($permit->travelHistory)) {
+                            foreach ($permit->travelHistory as $travel) {
+                                if (!TravelHistory::find($travel->id)->update(['deleted_at' => new DateTime()])) {
+                                    throw new Exception('Delete operation failed. Unable to delete travel history');
+                                }
+                            }
+                        }
                         if ($permit->update(['deleted_at' => new DateTime()])) {
                             DB::commit();
                             return 'success';
@@ -559,8 +584,11 @@ class PermitApplicationController extends Controller
                     } else {
                         throw new Exception('Delete operation failed. Failed to create transaction');
                     }
+                    // } else {
+                    //     throw new Exception('This permit already has a payment. It cannot be deleted.');
+                    // }
                 } else {
-                    throw new Exception('This permit already has a payment. It cannot be deleted.');
+                    throw new Exception('This application has already been signed off. It therefore cannot be deleted');
                 }
             } else {
                 throw new Exception("This permit application does not exist.");

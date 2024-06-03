@@ -4,12 +4,16 @@
             <th class="text-nowrap">ID #</th>
             <th>Name</th>
             <th>Address</th>
-            <th>Type Food</th>
+            <th class="text-nowrap">Type Food</th>
             <th class="text-nowrap">Payment Status</th>
             <th class="text-nowrap">Payment Date</th>
             <th class="text-nowrap">Telphone No.</th>
             <th>Category</th>
+            <th>Sign Off Status</th>
             <th>Opertators</th>
+            <th class="text-nowrap">Added By</th>
+            <th class="text-nowrap">Expiry Date</th>
+            <th class="text-nowrap">App Type</th>
             <th>Options</th>
         </tr>
     </thead>
@@ -29,11 +33,23 @@
                     {{ !empty($est->payment) ? Carbon\Carbon::parse($est->payment?->created_at)->format('F j, Y, g:i a') : 'N/A' }}
                 </td>
                 <td class="text-nowrap">{{ $est->telephone }}</td>
-                <td>{{ $est->establishmentCategory?->name }}</td>
+                <td >{{ $est->establishmentCategory?->name }}</td>
+                <td><span
+                        class="badge text-bg-{{ !empty($est->signOff) ? 'success' : 'danger' }}">{{ !empty($est->signOff) ? 'COMPLETE' : 'INCOMPLETE' }}</span>
+                </td>
                 <td>
                     @foreach ($est->operators as $operator)
                         <span class="">{{ $operator?->name_of_operator . "\n" }}</span>
                     @endforeach
+                </td>
+                <td>
+                    {{ strtoupper($est?->user?->firstname[0] . '.' . $est?->user?->lastname) }}
+                </td>
+                <td>
+                    {{ !empty($est->signOff) ? $est?->signOff?->expiry_date : 'N/A' }}
+                </td>
+                <td>
+                    {{ !empty($est->renewal) ? 'RENEWAL' : 'NEW' }}
                 </td>
                 <td class="text-nowrap">
                     <a class="btn btn-success btn-sm" href="/food-establishments/renewal/{{ $est->id }}">

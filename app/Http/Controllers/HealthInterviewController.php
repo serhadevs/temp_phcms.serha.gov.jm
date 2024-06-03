@@ -54,7 +54,7 @@ class HealthInterviewController extends Controller
         }
 
         $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
-            ->whereBetween('created_at', [$filterTimeline, $today])
+            ->where('created_at', '>', $filterTimeline)
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
         return view('test_center.health_interviews.index', compact('health_interviews'));

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
+use App\Models\FoodEstablishmentOperators;
 use App\Models\HealthCertApplications;
 use App\Models\Payments;
 use App\Models\PermitApplication;
@@ -32,7 +33,13 @@ class AdvanceSearchController extends Controller
             ->orderBy('establishment_name', 'asc')
             ->get();
 
-        return view('advancesearch.create', compact('establishment_clinics', 'food_establishments'));
+        $operators = FoodEstablishmentOperators::with('foodEstablishment.user')
+            ->whereRelation('foodEstablishment.user', 'facility_id', auth()->user()->facility_id)
+            ->orderBy('name_of_operator', 'asc')
+            ->select('name_of_operator')
+            ->get();
+
+        return view('advancesearch.create', compact('establishment_clinics', 'food_establishments', 'operators'));
     }
 
     public function show(Request $request)
@@ -42,7 +49,7 @@ class AdvanceSearchController extends Controller
         ]);
         try {
             if ($module['module'] == '1') {
-                if (!$request->firstname && !$request->lastname && !$request->application_number) {
+                if (!$request->firstname && !$request->lastname && !$request->application_number && !$request->establishment_clinic_name) {
                     return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
                 }
                 $firstname = $request->firstname;
@@ -193,18 +200,22 @@ class AdvanceSearchController extends Controller
                 $module = 5;
                 return view('advancesearch.view', compact('payments_info', 'module'));
             } else if ($module['module'] == '6') {
-                if (!$request->application_number && !$request->food_est_name) {
+                if (!$request->application_number && !$request->food_est_name && !$request->operator_name) {
                     return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
                 }
 
                 $id = $request->application_number;
                 $est_name = $request->food_est_name;
-                $food_establishments = EstablishmentApplications::with('user')
+                $operator_name = $request->operator_name;
+                $food_establishments = EstablishmentApplications::with('user', 'operators')
                     ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                     ->when($id, function ($query, string $id) {
                         $query->where('id', $id);
                     })->when($est_name, function ($query, string $est_name) {
                         $query->where('establishment_name', 'like', '%' . $est_name . '%');
+                    })
+                    ->when($operator_name, function ($query, string $operator_name) {
+                        $query->whereRelation('operators', 'name_of_operator', 'like', '%' . $operator_name . '%');
                     })->get();
                 $module = 6;
 
