@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -72,5 +73,10 @@ class EstablishmentApplications extends Model
     public function signOff(): HasOne
     {
         return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', 3);
+    }
+
+    public function renewal(): BelongsTo
+    {
+        return $this->belongsTo(Renewals::class, 'id', 'new_application_id')->where('application_type_id', 3);
     }
 }

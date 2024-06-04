@@ -1,4 +1,4 @@
-<table class="table table-striped no-warp" id="outstanding_results" style="width:100%">
+<table class="table table-striped no-warp table-bordered" id="outstanding_results" style="width:100%">
     <thead>
         <tr>
             <th>App No.</th>
@@ -9,15 +9,20 @@
             <th>Address</th>
             @if ($app_type_id == '3')
                 <th>Visit Purpose</th>
+                <th>Zone</th>
             @endif
             @if ($app_type_id == '6')
                 <th>Bed Capacity</th>
             @endif
-            <th>Overall Score</th>
-            <th>Critical Score</th>
-            <th>Comments</th>
-            <th>Inspection Date</th>
             <th>Inspector</th>
+            <th>Inspection Date</th>
+            <th>Critical Score</th>
+            <th>Overall Score</th>
+            <th>Sign Off Status</th>
+            @if ($app_type_id == '3')
+                <th>Operators</th>
+            @endif
+            <th>Comments</th>
             <th>Options</th>
         </tr>
     </thead>
@@ -46,15 +51,26 @@
                 </td>
                 @if ($app_type_id == '3')
                     <td>{{ strtoupper($application->testResults?->visit_purpose) }}</td>
+                    <td>{{ strtoupper($application->zone) }}</td>
                 @endif
                 @if ($app_type_id == '6')
                     <td>{{ $application->bed_capacity }}</td>
                 @endif
-                <td>{{ $application->testResults?->overall_score }}</td>
-                <td>{{ $application->testResults?->critical_score }}</td>
-                <td>{{ $application->testResults?->comments }}</td>
-                <td>{{ \Carbon\Carbon::parse($application->testResults?->test_date)->format('M-j-Y') }}</td>
                 <td>{{ $application->testResults?->staff_contact }}</td>
+                <td>{{ \Carbon\Carbon::parse($application->testResults?->test_date)->format('M-j-Y') }}</td>
+                <td>{{ $application->testResults?->critical_score }}</td>
+                <td>{{ $application->testResults?->overall_score }}</td>
+                <td><span
+                        class="badge text-bg-{{ $application->sign_off_stauts == '1' ? 'success' : 'danger' }}">{{ $application->sign_off_stauts == '1' ? 'COMPLETE' : 'INCOMPLETE' }}</span>
+                </td>
+                @if ($app_type_id == '3')
+                    <td>
+                        @foreach ($application->operators as $operator)
+                            {{ strtoupper($operator?->name_of_operator) }}
+                        @endforeach
+                    </td>
+                @endif
+                <td>{{ $application->testResults?->comments }}</td>
                 <td class="text-nowrap">
                     @if (isset($module))
                         @if (empty($application->testResults))
@@ -88,13 +104,35 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
-
-<script>
-    new DataTable('#outstanding_results', {
-        scrollX: true,
-        responsive: true,
-        initComplete: function() {
-            loading.close()
-        }
-    });
-</script>
+@if (isset($is_general_report))
+    {{-- Button Links --}}
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.13.7/api/sum().js"></script>
+    <script>
+        new DataTable('#outstanding_results', {
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            scrollX: true,
+            initComplete: function() {
+                loading.close()
+            }
+        });
+    </script>
+@else
+    <script>
+        new DataTable('#outstanding_results', {
+            scrollX: true,
+            responsive: true,
+            initComplete: function() {
+                loading.close()
+            }
+        });
+    </script>
+@endif

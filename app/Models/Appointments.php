@@ -29,11 +29,13 @@ class Appointments extends Model
 
     public $timestamps = true;
 
-    public function applications():BelongsTo{
+    public function applications(): BelongsTo
+    {
         return $this->belongsTo(PermitApplication::class, 'permit_application_id', 'id');
     }
 
-    public function examDate():HasOne{
-        return $this->hasOne(ExamDates::class, 'id', 'exam_date_id');
+    public function examDate(): HasOne
+    {
+        return $this->hasOne(ExamDates::class, 'id', 'exam_date_id')->withTrashed();
     }
 }

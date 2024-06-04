@@ -28,11 +28,18 @@ class ExamDates extends Model
         'deleted_at'
     ];
 
-    public function examSites():HasOne{
-        return $this->hasOne(ExamSites::class, 'id', 'exam_site_id');
+    public function examSites(): HasOne
+    {
+        return $this->hasOne(ExamSites::class, 'id', 'exam_site_id')->withTrashed();
     }
 
-    public function permitCategory():HasOne{
+    public function permitCategory(): HasOne
+    {
         return $this->hasOne(PermitCategory::class, 'id', 'permit_category_id');
+    }
+
+    public function availableSites(): HasOne
+    {
+        return $this->hasOne(ExamSites::class, 'id', 'exam_site_id');
     }
 }

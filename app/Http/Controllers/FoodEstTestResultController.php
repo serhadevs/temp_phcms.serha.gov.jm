@@ -27,7 +27,7 @@ class FoodEstTestResultController extends Controller
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-            $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
+            $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user', 'operators')
                 ->has('testResults')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
@@ -44,7 +44,7 @@ class FoodEstTestResultController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
+        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user', 'operators')
             ->has('testResults')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
@@ -63,7 +63,7 @@ class FoodEstTestResultController extends Controller
 
         $app_type_id = 3;
 
-        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user')
+        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user', 'operators')
             ->has('testResults')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereRelation('testResults', 'created_at', '>', $timeline['starting_date'])

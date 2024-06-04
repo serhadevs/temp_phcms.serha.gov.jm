@@ -59,11 +59,11 @@
                             <div class="col-md-6" id="est_clinic_name_div" style="display:none">
                                 <label for="establishment" class="form-label">Establishment Clinic Name</label>
                                 <input class="form-control" list="clinicOptions" id="dataList"
-                                    placeholder="Type to search..." name ="establishment_clinic_name">
+                                    placeholder="Type to search..." name="establishment_clinic_name">
                                 <datalist id="clinicOptions">
                                     @foreach ($establishment_clinics as $est)
-                                    <option value="{{ $est->name }}">{{ $est->name }}</option>
-                                @endforeach
+                                        <option value="{{ $est->name }}">{{ $est->name }}</option>
+                                    @endforeach
                                 </datalist>
                             </div>
                             <div class="col-md-6" id="app_type_div" style="display:none">
@@ -99,8 +99,19 @@
                                     @endforeach
                                 </datalist>
                             </div>
+                            <div class="col col-md-6 col-sm-12 mt-3" id="operator_div" style="display:none">
+                                <label for="" class="form-label">Operator Name</label>
+                                <input type="text" class="form-control" name="operator_name"
+                                    placeholder="Type to Search..." list="operatorsList">
+                                <datalist id="operatorsList">
+                                    @foreach ($operators as $operator)
+                                        <option value="{{ $operator->name_of_operator }}">{{ $operator->name_of_operator }}
+                                        </option>
+                                    @endforeach
+                                </datalist>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3">Search</button>
+                        <button type="submit" class="btn btn-primary mt-2">Search</button>
                     </form>
                 </div>
             </div>
@@ -113,6 +124,7 @@
                 document.getElementById('app_type_div').style.display = "none";
                 document.getElementById('receipt_div').style.display = "none";
                 document.getElementById('food_est_name_div').style.display = "none";
+                document.getElementById('operator_div').style.display = "none";
             }
 
             document.getElementById('module').addEventListener('change', function() {
@@ -142,6 +154,7 @@
                 } else if (this.value == '6') {
                     document.getElementById('food_est_name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
+                    document.getElementById('operator_div').style.display = "block";
                 }
             })
 

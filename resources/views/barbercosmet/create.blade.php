@@ -208,7 +208,7 @@
                                     @foreach ($exam_sessions as $session)
                                         <option value="{{ $session->id }}"
                                             {{ old('exam_date_id') ? (old('exam_date_id') == $session->id ? 'selected' : '') : '' }}>
-                                            {{ strtoupper($session?->exam_day . ' - ' . $session?->exam_start_time . ' - ' . $session?->examSites?->name) }}
+                                            {{ strtoupper($session?->exam_day . ' - ' . $session?->exam_start_time . ' - ' . $session?->availableSites?->name) }}
                                         </option>
                                     @endforeach
                                 </select>

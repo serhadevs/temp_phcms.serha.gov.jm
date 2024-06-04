@@ -276,7 +276,7 @@
                                             {{ $appointment_avaiable->permitCategory?->name }}
                                             - {{ $appointment_avaiable->exam_day }}
                                             {{ $appointment_avaiable->exam_start_time }}
-                                            -{{ $appointment_avaiable->examSites?->name }}
+                                            -{{ $appointment_avaiable?->availableSites?->name }}
                                         </option>
                                     @endforeach
                                 </select>
