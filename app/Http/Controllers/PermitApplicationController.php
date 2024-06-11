@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ForgetPasswordMail;
+use App\Mail\SendPermitApplicationMail;
+use App\Http\Requests\PermitApplicationRequest;
 use App\Models\Appointments;
 use App\Models\EditTransactions;
 use App\Models\EditTransactionsChangedColumns;
@@ -19,9 +22,12 @@ use App\Models\TestResult;
 use App\Models\TravelHistory;
 use DateTime;
 use Exception;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\SendPermitApplicationEmailJob;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -277,34 +283,10 @@ class PermitApplicationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PermitApplicationRequest $request)
     {
-        $permit_application = $request->validate([
-            'permit_category_id' => 'required',
-            'firstname' => "required",
-            'middlename' => "nullable",
-            'lastname' => "required",
-            'address' => 'required',
-            'date_of_birth' => 'required',
-            'gender' => 'required',
-            'permit_type' => 'required',
-            'no_of_years' => 'required_if:permit_type,=,student',
-            'cell_phone' => 'nullable',
-            'home_phone' => 'nullable',
-            'work_phone' => 'nullable',
-            'occupation' => 'nullable',
-            'employer' => 'nullable',
-            'employer_address' => 'nullable',
-            'email' => 'nullable|email',
-            'trn' => 'nullable',
-            'applied_before' => 'required',
-            'granted' => 'required_if:applied_before,=,1',
-            'reason' => 'nullable',
-            'photo_upload' => 'nullable',
-            'exam_date' => 'required',
-            'exam_session' => 'required',
-            'application_date' => 'required',
-        ]);
+        
+        $permit_application = $request->validated();
 
         if ($request->establishment_clinic_id) {
             $permit_application['establishment_clinic_id'] = $request->establishment_clinic_id;
@@ -364,14 +346,36 @@ class PermitApplicationController extends Controller
                 $appointment['permit_application_id'] = DB::table('permit_applications')->where('permit_no', $permit_application['permit_no'])->first()->id;
                 $appointment['exam_date_id'] = $request->exam_session;
                 $new_appointment = Appointments::create($appointment);
+                //dd($new_appointment);
                 if (!$new_appointment) {
                     return redirect()->route('permit.index', ['id' => 0])->with('error', 'Appointment was not created successfully');
                 }
+
             }
 
+            //Look up information for email
+
+            $sendEmailInfo = PermitApplication::with('permitCategory','appointment','user')->find($new_permit_application->id);
+            $appointment = DB::table('appointments')
+                ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
+                ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
+                ->where('appointments.facility_id', auth()->user()->facility_id)
+                ->where('appointments.permit_application_id', $sendEmailInfo->id)
+                ->where('exam_dates.application_type_id', 1)
+                ->orderBy('appointments.created_at', 'desc')
+                ->first();
+            //dd($appointment);
+            // dd($sendEmailInfo);
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
+
+                if($sendEmailInfo->email){
+                    dispatch(new SendPermitApplicationEmailJob($sendEmailInfo,$appointment));
+               }
+
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
             } else {
+
+
                 return redirect()
                     ->route('food-handlers-clinic.permit.application', ['clinic_app_id' => $request->establishment_clinic_id])
                     ->with('success', 'The application was entered successfully. The Application ID is: ' . $new_permit_application->id);
@@ -381,34 +385,9 @@ class PermitApplicationController extends Controller
         }
     }
 
-    public function storeRenewal(Request $request)
+    public function storeRenewal(PermitApplicationRequest $request)
     {
-        $permit_application = $request->validate([
-            'permit_category_id' => 'required',
-            'firstname' => "required",
-            'middlename' => "nullable",
-            'lastname' => "required",
-            'address' => 'required',
-            'date_of_birth' => 'required',
-            'gender' => 'required',
-            'permit_type' => 'required',
-            'no_of_years' => 'required_if:permit_type,=,student',
-            'cell_phone' => 'nullable',
-            'home_phone' => 'nullable',
-            'work_phone' => 'nullable',
-            'occupation' => 'nullable',
-            'employer' => 'nullable',
-            'employer_address' => 'nullable',
-            'email' => 'nullable|email',
-            'trn' => 'nullable',
-            'applied_before' => 'required',
-            'granted' => 'required_if:applied_before,=,1',
-            'reason' => 'nullable',
-            'photo_upload' => 'nullable',
-            'exam_date' => 'required',
-            'exam_session' => 'required',
-            'application_date' => 'required',
-        ]);
+        $permit_application = $request->validated();
 
         $old_permit = PermitApplication::find($request->old_application_id);
         DB::beginTransaction();
