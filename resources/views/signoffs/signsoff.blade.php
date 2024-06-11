@@ -20,6 +20,7 @@
                             <table id="sign_offs" class="table table-bordered" style="width: 100%">
                                 <thead>
                                     <th>Permit #</th>
+                                    <th>Application #</th>
                                     <th>Establishment Name</th>
                                     <th>Sign Off Date</th>
                                     <th>Expiry Date</th>
@@ -32,13 +33,14 @@
                                     @foreach ($applications as $applicant )
                                         <tr>
                                             <td>{{ $applicant->permit_no }}</td>
+                                            <td>{{ $applicant->application_id }}</td>
                                             <td>{{ $applicant->establishment_name }}</td>
                                             <td>{{ \Carbon\Carbon::parse($applicant->sign_off_date)->format('d F Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($applicant->expiry_date)->format('d F Y') }}</td>
                                             <td>{{ $applicant->is_grant = 1 ? 'Approved' : 'Awaiting Approval'}}</td>
                                             <td>{{ $applicant->zone }}</td>
                                             <td>{{ $applicant->firstname. " " .$applicant->lastname}}</td>
-                                            <td> <a class="btn btn-primary btn-sm" href="/food-establishments/view/{{ $applicant->id }}">
+                                            <td> <a class="btn btn-primary btn-sm" href="/food-establishments/view/{{ $applicant->application_id }}">
                                                 View
                                             </a></td>
                                            

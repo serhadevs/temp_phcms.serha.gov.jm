@@ -288,6 +288,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
 
      Route::get('/reports/general-report', [ReportController::class, 'index']);
      Route::post('/reports/general-report/view', [ReportController::class, 'generalReport'])->name('reports.general.generate');
+     Route::post('/reports/general-report-count/view',[ReportController::class, 'generalReportCount'])->name('reports.general.count');
 
      //Test Centre Routes
 

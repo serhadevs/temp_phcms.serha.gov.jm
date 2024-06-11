@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ApplicationType;
 use App\Models\Appointment;
+use App\Http\Requests\PaymentRequest;
 use App\Models\BarbershopHairSalons;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
@@ -24,6 +25,9 @@ use Exception;
 
 class PaymentController extends Controller
 {
+
+
+
     public function index()
     {
 
@@ -324,10 +328,14 @@ class PaymentController extends Controller
         $cashier = User::find($payment->cashier_user_id);
         $receipt_info['cashier'] = $cashier->firstname[0] . ". " . $cashier->lastname;
 
+
+
+
+
         return view('payments.receipt', compact('receipt_info'));
     }
 
-    public function registerNewPayment(Request $request)
+    public function registerNewPayment(PaymentRequest $request)
     {
         // date_default_timezone_set('Etc/GMT+5');
         //Write API
@@ -336,17 +344,8 @@ class PaymentController extends Controller
         //Success Message => Done
         //Check if application id exists => Done
         //Check if receipt number exists => New Schema for this
-        $new_payment = $request->validate(
-            [
-                'price_id' => 'required',
-                'application_id' => 'required',
-                'amount_paid' => 'required',
-                'total_cost' => 'required',
-                'change_amt' => 'required|numeric|min:0',
-                'manual_receipt_no' => 'required_if:is_backlog,1',
-                'manual_receipt_date' => 'required_if:is_backlog,1'
-            ]
-        );
+        $new_payment = $request->validated();
+            
         $app_id = $new_payment['application_id'];
         $app_type = Prices::find($new_payment['price_id'])->application_type_id;
 
@@ -367,6 +366,8 @@ class PaymentController extends Controller
         $new_payment['cashier_user_id'] = Auth()->user()->id;
         $new_payment['receipt_no'] = rand(1000000, 9999999);
         $register_new_payment = Payments::create($new_payment);
+       
+        //Get the same information from the printReciept
 
         if (!$register_new_payment) {
         }

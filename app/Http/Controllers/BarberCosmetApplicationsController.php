@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointments;
 use App\Models\ExamDates;
+use App\Http\Requests\HealthCertificateRequest;
 use App\Models\HealthCertApplications;
 use App\Models\HealthInterview;
 use App\Models\Renewals;
@@ -91,28 +92,9 @@ class BarberCosmetApplicationsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HealthCertificateRequest $request)
     {
-        $health_cert_app = $request->validate([
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'middlename' => 'nullable',
-            'date_of_birth' => 'required|date',
-            'sex' => 'required',
-            'email' => 'nullable|email',
-            'trn' => 'nullable|regex:/^[0-9]{3}\-[0-9]{3}\-[0-9]{3}+$/',
-            'occupation' => 'nullable',
-            'employer_address' => 'nullable',
-            'employer' => 'nullable',
-            'granted' => 'required_if:applied_before,1',
-            'appointment_date' => 'required',
-            'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
-            'applied_before' => 'required',
-            'reason' => 'required_if:granted,0|max:255',
-            'exam_date_id' => 'required',
-            'application_date' => 'required',
-            'address' => 'required'
-        ]);
+        $health_cert_app = $request->validated();
 
         $health_cert_app['user_id'] = auth()->user()->id;
         $health_cert_app['permit_no'] = $this->generateHealthCertificatePermitNo();

@@ -186,6 +186,8 @@ class SignOffController extends Controller
                 ->where('users.facility_id', auth()->user()->facility_id)
                 ->get();
 
+                // dd($applications);
+
             return view('signoffs.signsoff', compact('applications'));
         } catch (Exception $e) {
             return redirect()->with('error', 'Unknown error occured', $e->getMessage());

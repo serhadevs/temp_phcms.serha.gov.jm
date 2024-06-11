@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewApplicationEmail extends Mailable
+class SendPermitApplicationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -18,9 +18,14 @@ class NewApplicationEmail extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public $sendEmailInfo;
+    public $appointment;
+  
+    public function __construct($sendEmailInfo,$appointment)
     {
-        //
+        $this->sendEmailInfo = $sendEmailInfo;
+        $this->appointment = $appointment;
+        
     }
 
     /**
@@ -31,7 +36,7 @@ class NewApplicationEmail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Food Handlers Permit Application',
+            subject: 'Appointment Confirmation',
         );
     }
 
@@ -43,7 +48,12 @@ class NewApplicationEmail extends Mailable
     public function content()
     {
         return new Content(
-            view: 'view.name',
+            markdown: 'emails.foodpermitapplication',
+            with:[
+                'new_permit_application' => $this->sendEmailInfo,
+                'appointment' => $this->appointment,
+                
+            ]
         );
     }
 
@@ -56,4 +66,6 @@ class NewApplicationEmail extends Mailable
     {
         return [];
     }
+
+   
 }

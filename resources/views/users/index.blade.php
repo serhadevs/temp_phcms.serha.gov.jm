@@ -7,7 +7,7 @@
 
     <div class="main">
         @include('partials.navbar._navbar')
-        @include('partials.messages.messages')
+        @include('partials.messages.confirmmessage')
 
         <main class="content px-3 py-4">
             <div class="container-fluid">
