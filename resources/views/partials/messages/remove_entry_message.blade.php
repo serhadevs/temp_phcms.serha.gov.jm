@@ -33,7 +33,7 @@
                             if (data == "success") {
                                 swal.fire(
                                     "Done!",
-                                    "Download was successfully deleted!.",
+                                    "Travel History was successfully deleted!.",
                                     "success").then(esc => {
                                     if (esc) {
                                         location.reload();

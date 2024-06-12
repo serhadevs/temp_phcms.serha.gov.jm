@@ -1,4 +1,4 @@
-<table class="table table-striped no-warp" id="processed_health_interviews" style="width:100%">
+<table class="table table-striped no-warp table-bordered" id="processed_health_interviews" style="width:100%">
     <thead>
         <tr>
             <th>App#</th>
@@ -6,6 +6,7 @@
             <th class="text-nowrap">First Name</th>
             <th class="text-nowrap">Middle Name</th>
             <th class="text-nowrap">Last Name</th>
+            <th class="text-nowrap">Image Status</th>
             <th>Literacy</th>
             <th>Thypoid</th>
             <th class="text-nowrap">Lived Abroad</th>
@@ -33,6 +34,10 @@
                 <td>{{ empty($interview->healthCertApplication) ? $interview->permitApplication?->middlename : $interview->healthCertApplication?->middlename }}
                 </td>
                 <td>{{ empty($interview->healthCertApplication) ? $interview->permitApplication?->lastname : $interview->healthCertApplication?->lastname }}
+                </td>
+                <td class="text-center">
+                    <span
+                        class="badge text-bg-{{ !empty($interview->healthCertApplication) ? 'warning' : ($interview->permitApplication?->photo_upload ? ($interview->permitApplication?->photo_upload == 0 ? 'danger' : 'success') : 'danger') }}">{{ !empty($interview->healthCertApplication) ? 'N/A' : ($interview->permitApplication?->photo_upload ? ($interview->permitApplication?->photo_upload == 0 ? 'Not Uploaded' : 'Uploaded') : 'Not Uploaded') }}</span>
                 </td>
                 <td>
                     @if ($interview->literate)

@@ -153,7 +153,7 @@ class AdvanceSearchController extends Controller
                 $module = 4;
                 if ($request->app_type == 1) {
                     $app_type_id = 1;
-                    $applications = PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms', 'user', 'payment')
+                    $applications = PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms', 'user', 'payment', 'signOffs')
                         ->has('payment')
                         ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                         ->when($firstname, function ($query, string $firstname) {

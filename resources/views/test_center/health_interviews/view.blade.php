@@ -9,7 +9,8 @@
         <div class="container-fluid">
             {{-- <div class="card"> --}}
             {{-- <div class="card-header"> --}}
-            <h2 class="text-muted">View Health Interview for {{ $application->firstname . ' ' . $application->lastname }}</h2>
+            <h2 class="text-muted">View Health Interview for {{ $application->firstname . ' ' . $application->lastname }}
+            </h2>
             {{-- </div> --}}
             {{-- <div class="card-body"> --}}
             <div class="card">
@@ -368,7 +369,17 @@
                 <div class="col col-md-6 col-sm-12">
                     <div class="card" style="height:100%">
                         <div class="card-header">
-                            <h4 class="text-muted">Travel Hitory</h4>
+                            <div class="row">
+                                <div class="col">
+                                    <h4 class="text-muted">Travel Hitory</h4>
+                                </div>
+                                <div class="col col-auto">
+                                    <button class="btn btn-primary"
+                                        onclick="addTravelHistory({{ json_encode($application->firstname . ' ' . $application->lastname) }}, {{ json_encode($application->id) }}, {{ json_encode($application->healthInterviews?->permit_application_id ? 1 : 2) }})">
+                                        Add History
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             @include('partials.tables.travel_history')
@@ -390,6 +401,87 @@
             {{-- </div> --}}
         </div>
         <script>
+            function addTravelHistory(applicant_name, applicant_id, application_type) {
+                swal.fire({
+                    title: "Add Travel History to " + applicant_name,
+                    text: 'Enter destination of travel',
+                    input: 'text',
+                    icon: 'question',
+                    inputAttributes: {
+                        required: true
+                    },
+                    showCancelButton: true,
+                    showConfirmButton: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        swal.fire({
+                            title: "Enter Travel Date of Travel Histroy",
+                            text: 'This is required',
+                            icon: 'question',
+                            input: 'date',
+                            inputAttributes: {
+                                required: true
+                            },
+                            showCancelButton: true,
+                            showCancelButton: false
+                        }).then((result2) => {
+                            if (result2.isConfirmed) {
+                                swal.fire({
+                                    title: "Enter reason for editing travel history.",
+                                    input: 'textarea',
+                                    icon: 'question',
+                                    inputAttributes: {
+                                        required: true
+                                    },
+                                    showCancelButton: true,
+                                    showCancelButton: true
+                                }).then((result4) => {
+                                    if (result4.isConfirmed) {
+                                        swal.fire({
+                                            title: 'Are you sure you want to add Travel History',
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            showConfirmButton: true
+                                        }).then((result3) => {
+                                            if (result3.isConfirmed) {
+                                                $.post({!! json_encode(url('/health-interviews/travel-history/create/')) !!} + '/' +
+                                                    applicant_id, {
+                                                        _method: "POST",
+                                                        data: {
+                                                            destination: result.value,
+                                                            travel_date: result2.value,
+                                                            edit_reason: result4.value,
+                                                            application_type: application_type
+                                                        },
+                                                        _token: "{{ csrf_token() }}"
+                                                    }).then((data) => {
+                                                    if (data == 'success') {
+                                                        swal.fire({
+                                                            icon: 'success',
+                                                            title: "Travel History has been added successfully"
+                                                        }).then(esc => {
+                                                            if (esc) {
+                                                                location
+                                                                    .reload();
+                                                            }
+                                                        })
+                                                    } else {
+                                                        swal.fire({
+                                                            title: 'Error adding Travel History',
+                                                            icon: 'error',
+                                                            text: data
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
             window.onload = () => {
                 if (document.getElementById('edit_mode').value == '1' || document.querySelectorAll('p.text-danger')[0]) {
                     makeInterviewEditable();

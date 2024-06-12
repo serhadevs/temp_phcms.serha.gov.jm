@@ -2,10 +2,10 @@
     <thead>
         {{-- Only shows your facility --}}
         <tr>
-            @if (isset($module))
+            @if (!isset($is_general_report))
                 <th></th>
             @endif
-            <th>App #</th>
+            <th class="text-nowrap">App #</th>
             <th>Permit No.</th>{{-- THERE --}}
             <th>First Name</th>{{-- THERE --}}
             <th>Last Name</th>{{-- THERE --}}
@@ -22,13 +22,14 @@
             <th class="text-nowrap">Sign Off Status</th>{{-- THERE --}}
             <th>TRN</th>{{-- THERE --}}
             <th class="text-nowrap">Payment Date</th>
+            <th class="text-nowrap">Expiry Date</th>
             <th>Options</th>{{-- THERE --}}
         </tr>
     </thead>
     <tbody>
         @foreach ($permit_applications as $permit_application)
             <tr>
-                @if (isset($module))
+                @if (!isset($is_general_report))
                     <td>
                         @if ($permit_application->photo_upload && $permit_application->photo_upload != 0)
                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -72,6 +73,9 @@
                 </td>
                 <td class="text-nowrap">{{ $permit_application->trn }}</td>
                 <td>{{ !empty($permit_application->payment) ? $permit_application?->payment?->created_at : 'N/A' }}
+                </td>
+                <td>
+                    {{ !empty($permit_application->signOffs) ? $permit_application->signOffs?->expiry_date : 'N/A' }}
                 </td>
                 <td class="text-nowrap">
                     <a href="/permit/application/edit/{{ $permit_application->id }}"
@@ -125,7 +129,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
-@if (isset($module))
+@if (!isset($is_general_report))
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

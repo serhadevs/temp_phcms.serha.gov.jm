@@ -513,6 +513,56 @@ class HealthInterviewController extends Controller
         }
     }
 
+    public function addTravelHistory(Request $request, $id)
+    {
+        try {
+            if ($request->data['destination'] && $request->data['travel_date']) {
+                if ($application = $request->data['application_type'] == '1' ? PermitApplication::find($id) : HealthCertApplications::find($id)) {
+                    if ($application->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if ($travel_history = $request->data['application_type'] == 1 ?
+                            TravelHistory::create([
+                                'permit_application_id' => $id,
+                                'destination' => $request->data['destination'],
+                                'travel_date' => $request->data['travel_date']
+                            ]) : TravelHistory::create([
+                                'health_cert_application_id' => $id,
+                                'destination' => $request->data['destination'],
+                                'travel_date' => $request->data['travel_date']
+                            ])
+                        ) {
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => $request->data["application_type"],
+                                'table_id' => $travel_history->id,
+                                'system_operation_type_id' => 8,
+                                'edit_type_id' => 3,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $request->data['edit_reason']
+                            ])) {
+                                DB::commit();
+                                return 'success';
+                            } else {
+                                throw new Exception("Error storing new travel history. Edit Transaction was not created successfully.");
+                            }
+                        } else {
+                            throw new Exception("Travel History was not added successfully. Error storing data.");
+                        }
+                    } else {
+                        throw new Exception("This application has already signed off. It cannot be edited");
+                    }
+                } else {
+                    throw new Exception("This application was either deleted or doesn't exist");
+                }
+            } else {
+                throw new Exception("Required fields have not been entered.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
     public function destroyTravelHistory(Request $request, $id)
     {
         try {

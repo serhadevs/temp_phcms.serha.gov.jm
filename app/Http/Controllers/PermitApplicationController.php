@@ -50,7 +50,7 @@ class PermitApplicationController extends Controller
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-            $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
+            $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites', 'signOffs')
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
                 ->get();
@@ -65,7 +65,7 @@ class PermitApplicationController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
+        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites', 'signOffs')
             ->where('created_at', '>', $filterTimeline)
             ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
             ->get();
@@ -84,7 +84,7 @@ class PermitApplicationController extends Controller
 
         $permit_array = [];
 
-        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
+        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites', 'signOffs')
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
             ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
             ->get();
@@ -123,7 +123,7 @@ class PermitApplicationController extends Controller
     public function editView(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs')
+        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms')
             ->find($application_id);
 
         $categories = PermitCategory::all();
@@ -285,7 +285,7 @@ class PermitApplicationController extends Controller
      */
     public function store(PermitApplicationRequest $request)
     {
-        
+
         $permit_application = $request->validated();
 
         if ($request->establishment_clinic_id) {
@@ -350,12 +350,11 @@ class PermitApplicationController extends Controller
                 if (!$new_appointment) {
                     return redirect()->route('permit.index', ['id' => 0])->with('error', 'Appointment was not created successfully');
                 }
-
             }
 
             //Look up information for email
 
-            $sendEmailInfo = PermitApplication::with('permitCategory','appointment','user')->find($new_permit_application->id);
+            $sendEmailInfo = PermitApplication::with('permitCategory', 'appointment', 'user')->find($new_permit_application->id);
             $appointment = DB::table('appointments')
                 ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
                 ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
@@ -368,9 +367,9 @@ class PermitApplicationController extends Controller
             // dd($sendEmailInfo);
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
 
-                if($sendEmailInfo->email){
-                    dispatch(new SendPermitApplicationEmailJob($sendEmailInfo,$appointment));
-               }
+                if ($sendEmailInfo->email) {
+                    dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
+                }
 
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
             } else {
