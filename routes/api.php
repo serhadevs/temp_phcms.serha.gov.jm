@@ -6,9 +6,9 @@ use App\Http\Controllers\PermitApplicationApi;
 
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::post('/applications', [PermitApplicationApi::class, 'fetchApplications']);
 
