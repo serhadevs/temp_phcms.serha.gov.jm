@@ -138,9 +138,7 @@ class ReportController extends Controller
     }
 
     public function numberApplicationsByCategory(){
-        $permit_categories = PermitCategory::all();
-        $establishment_categories = EstablishmentCategories::all();
-        return view('reports.establishments.index',compact('permit_categories','establishment_categories')); 
+        return view('reports.establishments.index'); 
     }
 
     public function numberApplicationsByCategoryShow(NumberApplicationsByCategory $request){
