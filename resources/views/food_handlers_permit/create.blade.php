@@ -168,7 +168,7 @@
                                     Date of Birth
                                 </label>
                                 <input type="date" class="form-control" name="date_of_birth"
-                                    value="{{ old('date_of_birth') }}">
+                                    value="{{ old('date_of_birth') }}" max = "{{ date('Y-m-d') }}">
                                 @error('date_of_birth')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -318,7 +318,7 @@
                             <span class="text-danger">*</span>
                             <label for="" class="form-label">Application Date</label>
                             <input type="date" class="form-control" name="application_date"
-                                value="{{ old('application_date') }}">
+                                value="{{ old('application_date') }}" max="{{ date('Y-m-d') }}">
                             @error('application_date')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
