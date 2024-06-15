@@ -251,6 +251,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::delete('/health-interview/delete/{id}', [HealthInterviewController::class, 'destroy'])->name('health-interview.delete');
      Route::delete('/health-interview/symptoms/delete/{id}', [HealthInterviewController::class, 'destroySymptom'])->name('health-interview.symptoms.delete');
      Route::delete('/health-interview/travel-history/delete/{id}', [HealthInterviewController::class, 'destroyTravelHistory'])->name('health-interview.travel-history.delete');
+     Route::post('/health-interviews/travel-history/create/{id}', [HealthInterviewController::class, 'addTravelHistory'])->name('health-interview.travel-history.create');
 
    
      //Food Establishments Route

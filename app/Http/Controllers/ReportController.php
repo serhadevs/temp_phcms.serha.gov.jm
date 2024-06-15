@@ -59,7 +59,7 @@ class ReportController extends Controller
             switch ($criteria['type']) {
                 case '1':
                     $permit_category_id = $request->permit_category;
-                    $applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites')
+                    $applications = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'appointment.examDate.examSites', 'signOffs')
                         ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->when(
