@@ -182,4 +182,33 @@ class ReportController extends Controller
 
         return view('reports.establishments.view',['counts'=> $counts]);
     }
+
+    public function numberOnsiteApplications(){
+        return view('reports.onsite.index'); 
+    }
+
+    public function numberOnsiteApplicationsShow(NumberApplicationsByCategory $request){
+
+        $incomingFields = $request->validated();
+
+        $start_date = $incomingFields['starting_date'];
+        $end_date = $incomingFields['ending_date'];
+
+        if($incomingFields['module'] == '1'){
+            $food_clinics = EstablishmentClinics::with('payment','signOff')->whereBetween('created_at',[$incomingFields['starting_date'],$incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))
+            ->count();
+            $module = 1;
+
+        }else{
+            $food_clinics = EstablishmentClinics::with('payment','signOff')->whereBetween('created_at',[$incomingFields['starting_date'],$incomingFields['ending_date']])
+            ->whereIn('user_id', User::facilityUsers()->pluck('id'))
+            ->get(); 
+
+            $module = 2;
+        }
+        
+        //dd($onsite);
+
+        return view('reports.onsite.view',compact('food_clinics','start_date','end_date','module'));
+    }
 }

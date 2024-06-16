@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Applications By Category Report')
+@section('title', 'Onsite Applications Report')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -8,9 +8,9 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                <h2 class="card-header text-muted mb-2">Applications By Category</h2>
+                <h2 class="card-header text-muted mb-2">Applications Received and Processed</h2>
                 <div class="card-body">
-                    <form action="{{ route('reports.appcount') }}" method="POST">
+                    <form action="{{ route('reports.onsite.show') }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="row">
@@ -21,7 +21,6 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
-
                             <div class="col">
                                 <label for="ending_date" class="form-label">End Date</label>
                                 <input type="date" value = "{{ date('Y-m-d') }}" class="form-control @error('ending_date') is-invalid @enderror" name="ending_date" id="ending_date" max="{{ date('Y-m-d') }}">
@@ -36,8 +35,8 @@
                             <select name="module" id="selectCategory"
                                 class="form-control @error('module') is-invalid @enderror">
                                 <option value="0">Select an option</option>
-                                <option value="1">Food Handlers Permit</option>
-                                <option value="2">Establishment Licenses</option>
+                                <option value="1">Onsite Count</option>
+                                <option value="2">List of Clinics</option>
                             </select>
 
                         </div>
@@ -67,9 +66,10 @@
                             </select>
                         </div> --}}
 
-                        
-                        <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger mt-3">Back to Dashboard</a>
-                        <button class="btn btn-success mt-3" type="submit">Generate Report</button>
+                       
+                            <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger mt-3" type="submit">Back to Dashboard</a>
+                            <button class="btn btn-success mt-3" type="submit">Generate Report</button>
+                    
                     </form>
                 </div>
             </div>

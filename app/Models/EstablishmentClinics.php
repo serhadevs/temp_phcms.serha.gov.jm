@@ -50,4 +50,9 @@ class EstablishmentClinics extends Model
     {
         return $this->hasMany(PermitApplication::class, 'establishment_clinic_id', 'id');
     }
+
+    public function signOff(): HasOne
+    {
+        return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', 3);
+    }
 }

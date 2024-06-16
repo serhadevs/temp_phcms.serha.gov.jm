@@ -1,4 +1,4 @@
-<table class="table table-striped no-warp" id="food_clinics" style="width:100%">
+<table class="table table-striped nowarp" id="food_clinics" style="width:100%">
     <thead>
         <tr>
             <th>Options</th>

@@ -10,7 +10,6 @@
             {{-- Enter after logic has been implemented --}}
             <th>No. of Permits</th>
             <th>No. of Employees</th>
-            <th>Options</th>
         </tr>
     </thead>
     <tbody>
@@ -45,29 +44,7 @@
                 <td>
                     {{ $application->no_of_employees }}
                 </td>
-                <td class="text-nowrap">
-                    <a href="/food-handlers-clinics/edit/{{ $application->id }}" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="/food-handlers-clinics/view/{{ $application->id }}" class="btn btn-primary btn-sm">View</a>
-                    @if (!empty($application->payment))
-                        <a href="/food-handlers-clinics/permit/application/{{ $application->id }}"
-                            class="btn btn-info btn-sm">Add Employees</a>
-                    @endif
-                    {{-- @if (empty($application->payment))
-                        <button class="btn btn-sm btn-danger" onclick="removeEntry('/food-establishments', {{ json_encode($application->id) }})">Remove</button>
-                    @endif --}}
-                    <?php
-                    $interval = explode(
-                        ',',
-                        (new DateTime())
-                            ->diff(new DateTime($application->proposed_date))
-                            ->format('%y,%m'),
-                    );
-                    ?>
-                    @if ($interval[0] > 0 || $interval[1] > 10)
-                        <a href="/food-handlers-clinics/renewal/{{ $application->id }}"
-                            class="btn btn-success btn-sm">Renew</a>
-                    @endif
-                </td>
+               
             </tr>
         @endforeach
     </tbody>
@@ -82,7 +59,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 @include('partials.messages.remove_entry_message')
-@if (isset($is_general_report))
+
     {{-- Button links --}}
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -93,26 +70,27 @@
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/api/sum().js"></script>
     
     <script>
-        new DataTable('#food_clinics', {
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
-            scrollX: true,
-            initComplete: function() {
-                loading.close()
-            },
-            responsive: true
-        })
+        document.addEventListener('DOMContentLoaded', function() {
+            const dataTableElement = document.getElementById('food_clinics');
+    
+            if (dataTableElement) {
+                const dataTable = new DataTable(dataTableElement, {
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ],
+                    scrollX: true,
+                    responsive: true,
+                    initComplete: function() {
+                        // Assuming `loading` is a function or object that manages a loading indicator
+                        if (typeof loading !== 'undefined') {
+                            loading.close();
+                        }
+                    }
+                });
+            }
+        });
+
     </script>
-@else
-    <script>
-        new DataTable('#food_clinics', {
-            scrollX: true,
-            initComplete: function() {
-                loading.close()
-            },
-            responsive: true
-        })
-    </script>
-@endif
+
+  

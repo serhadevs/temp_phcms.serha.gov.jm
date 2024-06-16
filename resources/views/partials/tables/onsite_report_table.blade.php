@@ -3,16 +3,15 @@
         <tr>
             <th>Category</th>
             <th>Totals</th>
-         
+
         </tr>
     </thead>
     <tbody>
-        @foreach ($counts as $categoryId => $data)
-            <tr>
-                <td>{{ $data['category_name'] }}</td>
-                <td>{{ $data['count'] }}</td>
-            </tr>
-        @endforeach
+        <tr>
+            <td>Onsite Applications</td>
+            <td>{{ $food_clinics }}</td>
+        </tr>
+
     </tbody>
 </table>
 

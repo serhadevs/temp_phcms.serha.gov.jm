@@ -25,8 +25,6 @@ class NumberApplicationsByCategory extends FormRequest
     {
         return [
                 'module' => 'required|integer',
-                // 'permit_categories' => 'required_if:module,1|integer',
-                // 'categories' => 'required_if:module,2|integer',
                 'starting_date' => 'required|date',
                 'ending_date' => 'required|date'
         ];

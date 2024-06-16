@@ -292,6 +292,8 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/reports/general-report-count/view',[ReportController::class, 'generalReportCount'])->name('reports.general.count');
      Route::get('/reports/app-by-category/create',[ReportController::class, 'numberApplicationsByCategory'])->name('reports.appcount.create');
      Route::post('/reports/app-by-category',[ReportController::class, 'numberApplicationsByCategoryShow'])->name('reports.appcount');
+     Route::get('/reports/onsite-app/create',[ReportController::class, 'numberOnsiteApplications'])->name('reports.onsite');
+     Route::post('/reports/onsite-app',[ReportController::class, 'numberOnsiteApplicationsShow'])->name('reports.onsite.show');
 
      //Test Centre Routes
 
