@@ -268,8 +268,8 @@ class ReportController extends Controller
 
     public function backLogReport(){
         
-        $backlog = Payments::whereNotNull('manual_receipt_date')->count();
+        $backlog = Payments::with('application_id')->whereNotNull('manual_receipt_date')->count();
         dd($backlog);
-        return view('reports.backlog.index');
+        return view('reports.backlog.index',compact('backlog'));
     }
 }

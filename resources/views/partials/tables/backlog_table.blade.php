@@ -7,12 +7,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($counts as $categoryId => $data)
+      
             <tr>
-                <td>{{ $data['category_name'] }}</td>
-                <td>{{ $data['count'] }}</td>
+                <td>Backlog Amount</td>
+                <td>{{ $backlog }}</td>
             </tr>
-        @endforeach
+       
     </tbody>
 </table>
 

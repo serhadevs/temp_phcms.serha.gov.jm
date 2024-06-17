@@ -58,4 +58,8 @@ class Payments extends Model
     {
         return $this->hasOne(User::class, 'id', 'cashier_user_id')->withTrashed();
     }
+
+    public function application_id(): HasOne{
+        return $this->hasOne(SignOff::class,'id','application_id');
+    }
 }
