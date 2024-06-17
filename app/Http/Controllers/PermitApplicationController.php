@@ -317,9 +317,10 @@ class PermitApplicationController extends Controller
             $permit_application['photo_upload'] = $path;
 
             if ($permit_application['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
-                $file = request()->file('photo_upload');
+                $file = $request->file('photo_upload');
                 $permit_application['photo_upload'] = 'photo_upload/' . $permit_application['permit_no'] . '.' . $file->extension();
             }
+
         } else {
             $permit_application['photo_upload'] = "";
         }
