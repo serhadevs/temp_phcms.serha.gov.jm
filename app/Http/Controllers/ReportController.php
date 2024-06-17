@@ -147,6 +147,7 @@ class ReportController extends Controller
         $counts = [];
         $permitcategorysArray = PermitCategory::pluck('id')->toArray();
         $establishmentcategorysArray = EstablishmentCategories::pluck('id')->toArray();
+        
 
         try {
             if ($incomingFields['module'] == '1') {
@@ -178,9 +179,12 @@ class ReportController extends Controller
         } catch (QueryException $e){
             return redirect()->with('error','There was an issue with you query' . $e);
         }
-       
 
-        return view('reports.establishments.view',['counts'=> $counts]);
+        $start_date = $incomingFields['starting_date'];
+        $end_date = $incomingFields['ending_date'];
+       
+        
+        return view('reports.establishments.view',['counts'=> $counts,'start_date'=>$start_date,'end_date'=>$end_date]);
     }
 
     public function numberOnsiteApplications(){

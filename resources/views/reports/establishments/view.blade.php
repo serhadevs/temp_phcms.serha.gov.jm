@@ -9,7 +9,7 @@
         <div class="container-fluid">
             @include('partials.messages.table_loading')
             <div class="card">
-                <h2 class="card-header">Applications By Category Report</h2>
+                <h2 class="card-header">Applications By Category Report from {{ \Carbon\Carbon::parse($start_date)->format('F d,Y') }} to {{ \Carbon\Carbon::parse($end_date)->format('F d, Y') }}</h2></h2>
                 <div class="card-body">
                     @include('partials.tables.app_count_category_table')
                 </div>
