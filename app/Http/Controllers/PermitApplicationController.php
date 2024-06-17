@@ -394,11 +394,22 @@ class PermitApplicationController extends Controller
 
         $permit_application['user_id'] = Auth()->user()->id;
         if ($request->file('photo_upload')) {
+            if ($old_permit->photo_upload) {
+                $old_image_name = explode('.', explode('/', $old_permit->photo_upload)[1]);
+                $new_image_name = $old_image_name[0] . '_' . time() . '_' . $old_permit->id . '.' . $old_image_name[1];
+                Storage::disk('public')->move($old_permit->photo_upload, '/photo_uploads/archives/' . $new_image_name);
+            }
             $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
             $permit_application['photo_upload'] = $path;
         } else {
             $permit_application['photo_upload'] = $old_permit->photo_upload;
         }
+        // if ($request->file('photo_upload')) {
+        //     $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
+        //     $permit_application['photo_upload'] = $path;
+        // } else {
+        //     $permit_application['photo_upload'] = $old_permit->photo_upload;
+        // }
 
         if (PermitApplication::create($permit_application)) {
             HealthInterview::where('permit_application_id', $request->old_application_id)->update([
