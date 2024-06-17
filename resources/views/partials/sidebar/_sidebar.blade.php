@@ -264,7 +264,7 @@
                 <li class="sidebar-item">
                     <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
                 </li>
-                @if (in_array(auth()->user()->role_id, [4, 9]))
+                @if (in_array(auth()->user()->role_id, [1,4,9]))
                     <li class="sidebar-item">
                         <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                     </li>
@@ -278,7 +278,9 @@
                     </li>
                 @endif
                 @if (in_array(auth()->user()->role_id, [1,5,10]))
-                
+                <li class="sidebar-item">
+                    <a href="/reports/sign-off/create" class="sidebar-link">Sign Off Report</a>
+                </li>
             @endif
             </ul>
 

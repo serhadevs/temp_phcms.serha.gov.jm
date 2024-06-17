@@ -34,4 +34,8 @@ class SignOff extends Model
     public function user():HasOne{
         return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
     }
+
+    public function application_type():HasOne{
+        return $this->hasOne(ApplicationType::class,'id','application_type_id');
+    }
 }

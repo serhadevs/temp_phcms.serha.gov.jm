@@ -11,6 +11,7 @@ use App\Models\ExamDates;
 use App\Models\HealthCertApplications;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
+use App\Models\SignOff;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
@@ -53,7 +54,7 @@ class ReportController extends Controller
         ]);
 
         $criteria['ending_date'] = $criteria['ending_date'] . ' 23:59:59';
-        
+
         $application_type = $criteria['type'];
         $is_general_report = true;
 
@@ -137,17 +138,19 @@ class ReportController extends Controller
         }
     }
 
-    public function numberApplicationsByCategory(){
-        return view('reports.establishments.index'); 
+    public function numberApplicationsByCategory()
+    {
+        return view('reports.establishments.index');
     }
 
-    public function numberApplicationsByCategoryShow(NumberApplicationsByCategory $request){
-       
+    public function numberApplicationsByCategoryShow(NumberApplicationsByCategory $request)
+    {
+
         $incomingFields = $request->validated();
         $counts = [];
         $permitcategorysArray = PermitCategory::pluck('id')->toArray();
         $establishmentcategorysArray = EstablishmentCategories::pluck('id')->toArray();
-        
+
 
         try {
             if ($incomingFields['module'] == '1') {
@@ -155,7 +158,7 @@ class ReportController extends Controller
                     ->whereIn('user_id', User::facilityUsers()->pluck('id'))
                     ->with('permitCategory')
                     ->get();
-        
+
                 foreach ($permitcategorysArray as $categoryId) {
                     $count = $query->where('permit_category_id', $categoryId)->count();
                     $category_name = PermitCategory::where('id', $categoryId)->first();
@@ -166,53 +169,99 @@ class ReportController extends Controller
                     ->whereIn('user_id', User::facilityUsers()->pluck('id'))
                     ->with('establishmentCategory')
                     ->get();
-        
+
                 foreach ($establishmentcategorysArray as $categoryId) {
                     $count = $query->where('establishment_category_id', $categoryId)->count();
                     $category_name = EstablishmentCategories::where('id', $categoryId)->first();
                     $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
                 }
             }
-               
         } catch (Exception $e) {
-                return redirect()->with('error','Unable to fullfil request' . $e);
-        } catch (QueryException $e){
-            return redirect()->with('error','There was an issue with you query' . $e);
+            return redirect()->with('error', 'Unable to fullfil request' . $e);
+        } catch (QueryException $e) {
+            return redirect()->with('error', 'There was an issue with you query' . $e);
         }
 
         $start_date = $incomingFields['starting_date'];
         $end_date = $incomingFields['ending_date'];
-       
-        
-        return view('reports.establishments.view',['counts'=> $counts,'start_date'=>$start_date,'end_date'=>$end_date]);
+
+
+        return view('reports.establishments.view', ['counts' => $counts, 'start_date' => $start_date, 'end_date' => $end_date]);
     }
 
-    public function numberOnsiteApplications(){
-        return view('reports.onsite.index'); 
+    public function numberOnsiteApplications()
+    {
+        return view('reports.onsite.index');
     }
 
-    public function numberOnsiteApplicationsShow(NumberApplicationsByCategory $request){
+    public function numberOnsiteApplicationsShow(NumberApplicationsByCategory $request)
+    {
 
         $incomingFields = $request->validated();
 
         $start_date = $incomingFields['starting_date'];
         $end_date = $incomingFields['ending_date'];
 
-        if($incomingFields['module'] == '1'){
-            $food_clinics = EstablishmentClinics::with('payment','signOff')->whereBetween('created_at',[$incomingFields['starting_date'],$incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))
-            ->count();
+        if ($incomingFields['module'] == '1') {
+            $food_clinics = EstablishmentClinics::with('payment', 'signOff')->whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))
+                ->count();
             $module = 1;
-
-        }else{
-            $food_clinics = EstablishmentClinics::with('payment','signOff')->whereBetween('created_at',[$incomingFields['starting_date'],$incomingFields['ending_date']])
-            ->whereIn('user_id', User::facilityUsers()->pluck('id'))
-            ->get(); 
+        } else {
+            $food_clinics = EstablishmentClinics::with('payment', 'signOff')->whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])
+                ->whereIn('user_id', User::facilityUsers()->pluck('id'))
+                ->get();
 
             $module = 2;
         }
-        
+
         //dd($onsite);
 
-        return view('reports.onsite.view',compact('food_clinics','start_date','end_date','module'));
+        return view('reports.onsite.view', compact('food_clinics', 'start_date', 'end_date', 'module'));
+    }
+
+    public function numberSignOffs()
+    {
+        $application_types = ApplicationType::all();
+        return view('reports.signoffs.index', compact('application_types'));
+    }
+
+    public function numberSignOffsShow(Request $request)
+    {
+
+        $incomingFields = $request->validate([
+            'starting_date' => 'required|date',
+            'ending_date' => 'required|date'
+        ]);
+
+        $counts = [];
+        $applicationTypesArray = ApplicationType::pluck('id')->toArray();
+        $start_date = $incomingFields['starting_date'];
+        $end_date = $incomingFields['ending_date'];
+
+        try {
+            if (in_array(auth()->user()->role_id, [1])) {
+                $query = SignOff::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->with('application_type')->get();
+            } else {
+                $query = SignOff::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('application_type')->get();
+            }
+
+
+            if (!$query) {
+                return redirect()->with('error', 'There is no data for the signoff');
+            }
+
+            foreach ($applicationTypesArray as $categoryId) {
+                $count = $query->where('application_type_id', $categoryId)->count();
+                $category_name = ApplicationType::where('id', $categoryId)->first();
+                $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
+            }
+            
+        } catch (Exception $e) {
+            return redirect()->with('error', 'Unable to fullfil request' . $e);
+        } catch (QueryException $e) {
+            return redirect()->with('error', 'There was an issue with you query' . $e);
+        }
+
+        return view('reports.signoffs.view', ['counts' => $counts, 'start_date' => $start_date, 'end_date' => $end_date]);
     }
 }
