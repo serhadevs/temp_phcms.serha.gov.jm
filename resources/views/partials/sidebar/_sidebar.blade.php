@@ -269,6 +269,17 @@
                         <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                     </li>
                 @endif
+                @if (in_array(auth()->user()->role_id, [1,5,10]))
+                    <li class="sidebar-item">
+                        <a href="/reports/app-by-category/create" class="sidebar-link">Applications By Category</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/reports/onsite-app/create" class="sidebar-link">Onsite Applications Report</a>
+                    </li>
+                @endif
+                @if (in_array(auth()->user()->role_id, [1,5,10]))
+                
+            @endif
             </ul>
 
         </li>

@@ -85,7 +85,7 @@
                         <div class="mt-3">
                             <label for="" class="form-label">Application Date</label>
                             <input type="date" class="form-control" name="application_date"
-                                value="{{ old('application_date') }}">
+                                value="{{ old('application_date') }}" max="{{ date('Y-m-d') }}">
                             @error('application_date')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror

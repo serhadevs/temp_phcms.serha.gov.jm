@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\NumberApplicationsByCategory;
 use App\Models\ApplicationType;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentCategories;
@@ -17,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Exception;
+use Illuminate\Database\QueryException;
 
 class ReportController extends Controller
 {
@@ -133,5 +135,80 @@ class ReportController extends Controller
         } catch (Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function numberApplicationsByCategory(){
+        return view('reports.establishments.index'); 
+    }
+
+    public function numberApplicationsByCategoryShow(NumberApplicationsByCategory $request){
+       
+        $incomingFields = $request->validated();
+        $counts = [];
+        $permitcategorysArray = PermitCategory::pluck('id')->toArray();
+        $establishmentcategorysArray = EstablishmentCategories::pluck('id')->toArray();
+
+        try {
+            if ($incomingFields['module'] == '1') {
+                $query = PermitApplication::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])
+                    ->whereIn('user_id', User::facilityUsers()->pluck('id'))
+                    ->with('permitCategory')
+                    ->get();
+        
+                foreach ($permitcategorysArray as $categoryId) {
+                    $count = $query->where('permit_category_id', $categoryId)->count();
+                    $category_name = PermitCategory::where('id', $categoryId)->first();
+                    $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
+                }
+            } elseif ($incomingFields['module'] == '2') {
+                $query = EstablishmentApplications::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])
+                    ->whereIn('user_id', User::facilityUsers()->pluck('id'))
+                    ->with('establishmentCategory')
+                    ->get();
+        
+                foreach ($establishmentcategorysArray as $categoryId) {
+                    $count = $query->where('establishment_category_id', $categoryId)->count();
+                    $category_name = EstablishmentCategories::where('id', $categoryId)->first();
+                    $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
+                }
+            }
+               
+        } catch (Exception $e) {
+                return redirect()->with('error','Unable to fullfil request' . $e);
+        } catch (QueryException $e){
+            return redirect()->with('error','There was an issue with you query' . $e);
+        }
+       
+
+        return view('reports.establishments.view',['counts'=> $counts]);
+    }
+
+    public function numberOnsiteApplications(){
+        return view('reports.onsite.index'); 
+    }
+
+    public function numberOnsiteApplicationsShow(NumberApplicationsByCategory $request){
+
+        $incomingFields = $request->validated();
+
+        $start_date = $incomingFields['starting_date'];
+        $end_date = $incomingFields['ending_date'];
+
+        if($incomingFields['module'] == '1'){
+            $food_clinics = EstablishmentClinics::with('payment','signOff')->whereBetween('created_at',[$incomingFields['starting_date'],$incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))
+            ->count();
+            $module = 1;
+
+        }else{
+            $food_clinics = EstablishmentClinics::with('payment','signOff')->whereBetween('created_at',[$incomingFields['starting_date'],$incomingFields['ending_date']])
+            ->whereIn('user_id', User::facilityUsers()->pluck('id'))
+            ->get(); 
+
+            $module = 2;
+        }
+        
+        //dd($onsite);
+
+        return view('reports.onsite.view',compact('food_clinics','start_date','end_date','module'));
     }
 }
