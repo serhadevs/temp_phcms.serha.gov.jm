@@ -9,6 +9,7 @@ use App\Models\EstablishmentCategories;
 use App\Models\EstablishmentClinics;
 use App\Models\ExamDates;
 use App\Models\HealthCertApplications;
+use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
 use App\Models\SignOff;
@@ -16,10 +17,10 @@ use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class ReportController extends Controller
 {
@@ -255,7 +256,7 @@ class ReportController extends Controller
                 $category_name = ApplicationType::where('id', $categoryId)->first();
                 $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
             }
-            
+
         } catch (Exception $e) {
             return redirect()->with('error', 'Unable to fullfil request' . $e);
         } catch (QueryException $e) {
@@ -263,5 +264,12 @@ class ReportController extends Controller
         }
 
         return view('reports.signoffs.view', ['counts' => $counts, 'start_date' => $start_date, 'end_date' => $end_date]);
+    }
+
+    public function backLogReport(){
+        
+        $backlog = Payments::whereNotNull('manual_receipt_date')->get();
+        dd($backlog);
+        return view('reports.backlog.index');
     }
 }

@@ -296,6 +296,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/reports/onsite-app',[ReportController::class, 'numberOnsiteApplicationsShow'])->name('reports.onsite.show');
      Route::get('/reports/sign-off/create',[ReportController::class, 'numberSignOffs'])->name('reports.signoffs');
      Route::post('/reports/sign-off',[ReportController::class, 'numberSignOffsShow'])->name('reports.signoffs.show');
+     Route::get('/reports/backlog-report',[ReportController::class, 'backLogReport'])->name('reports.backlog');
 
      //Test Centre Routes
 

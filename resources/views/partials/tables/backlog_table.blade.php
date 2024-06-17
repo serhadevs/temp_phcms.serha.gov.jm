@@ -1,4 +1,4 @@
-<table class="table table-striped nowrap table-bordered table-sm" id="sign_off_count" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="app_count" style="width:100%">
     <thead>
         <tr>
             <th>Category</th>
@@ -35,9 +35,8 @@
 
 
 <script>
-    new DataTable('#sign_off_count', {
+    new DataTable('#app_count', {
         scrollX: true,
-        responsive: true,
         initComplete: function() {
             loading.close()
         },
