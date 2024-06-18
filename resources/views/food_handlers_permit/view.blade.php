@@ -448,7 +448,7 @@
                                             </div>
                                         </div>
                                         {{-- <div class="row mt-3"> --}}
-                                            {{-- <div class="col">
+                                        {{-- <div class="col">
                                                     <label for="" class="form-label">Permit Type</label>
                                                     <input type="text" class="form-control"
                                                         value="{{ strtoupper($permit_application->permit_type) }}"
@@ -489,16 +489,33 @@
                                                     disabled>
                                             </div>
                                             <div class="col">
-                                                <label for="" class="form-label">Payment Status</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ empty($permit_application->payment) ? 'NOT PAID' : 'PAID' }}"
-                                                    disabled>
-                                            </div>
-                                            <div class="col">
                                                 <label for="" class="form-label">Establishment</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ strtoupper(empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
                                                     disabled>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div
+                                                        class="col {{ !empty($permit_application->payment) ? 'col-md-7' : '' }}">
+                                                        <label for="" class="form-label">Payment Status</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ empty($permit_application->payment) ? 'NOT PAID' : 'PAID' }}"
+                                                            disabled>
+                                                    </div>
+                                                    @if (!empty($permit_application->payment))
+                                                        <div class="col col-md-5 mx-auto" style="align-self:end">
+                                                            <button class="btn btn-success" style="align-items:center"
+                                                                type="button" data-bs-toggle="modal"
+                                                                data-bs-target="#staticBackdrop2"
+                                                                onclick="populatePaymentModal({{ json_encode($permit_application->payment) }}, {{ json_encode($permit_application?->appointment?->first()?->appointment_date) }} )">
+                                                                <i class="bi bi-coin fs-6"></i>
+                                                                View Payment
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                </div>
+
                                             </div>
                                         </div>
                                         <div class="row mt-3">
@@ -598,6 +615,65 @@
                 </div>
             </div>
         </div>
+
+        {{-- Payment Modal --}}
+        <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 payment-header" id="staticBackdropLabel"></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="">
+                            <label for="" class="form-label">Application ID</label>
+                            <label for="" class="form-control" style="background:#e9ecef"
+                                id="payment_ap_id"></label>
+                        </div>
+                        <div class="mt-3">
+                            <label for="" class="form-label">Receipt Number</label>
+                            <label for="" class="form-control" style="background:#e9ecef"
+                                id="payment_receipt_no"></label>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="" class="form-label">Payment Date</label>
+                                <label for="" class="form-control" style="background:#e9ecef"
+                                    id="payment_payment_date"></label>
+                            </div>
+                            <div class="col">
+                                <label for="" class="form-label">Appointment Date</label>
+                                <label for="" class="form-control" style="background:#e9ecef"
+                                    id="payment_appointment_date"></label>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="" class="form-label">Total Cost</label>
+                                <label for="" class="form-control" style="background:#e9ecef"
+                                    id="payment_tot_cost"></label>
+                            </div>
+                            <div class="col">
+                                <label for="" class="form-label">Amt. Paid</label>
+                                <label for="" class="form-control" style="background:#e9ecef"
+                                    id="payment_amt_paid"></label>
+                            </div>
+                            <div class="col">
+                                <label for="" class="form-label">Change</label>
+                                <label for="" class="form-control" style="background:#e9ecef"
+                                    id="payment_change"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Close Payment
+                            Info</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="https://unpkg.com/imask"></script>
         <script>
             trn = document.getElementById('trn');
@@ -665,6 +741,18 @@
                     top: 0,
                     behavior: 'smooth'
                 });
+            }
+        </script>
+        <script>
+            function populatePaymentModal(payment_info, appointment_date) {
+                document.querySelector('h1.payment-header').innerHTML = "Payment ID - " + payment_info['id'];
+                document.getElementById('payment_ap_id').innerHTML = payment_info['application_id'];
+                document.getElementById('payment_receipt_no').innerHTML = payment_info['receipt_no'];
+                document.getElementById('payment_payment_date').innerHTML = new Date(payment_info['created_at']).toLocaleString();
+                document.getElementById('payment_appointment_date').innerHTML = appointment_date;
+                document.getElementById('payment_tot_cost').innerHTML = payment_info['total_cost'];
+                document.getElementById('payment_amt_paid').innerHTML = payment_info['amount_paid'];
+                document.getElementById('payment_change').innerHTML = payment_info['change_amt'];
             }
         </script>
         @include('partials.messages.loading_message')
