@@ -32,7 +32,7 @@ class UserController extends Controller
                 ->join('roles', 'roles.id', '=', 'users.role_id')
                 ->latest('users.created_at')
                 ->select('users.id', 'users.firstname', 'users.lastname', 'users.facility_id', 'users.role_id', 'users.telephone', 'users.email', 'users.status', 'users.created_at', 'users.updated_at', 'roles.name', 'roles.description')
-                ->whereNotNull('deleted_at')
+                ->whereNotNull('users.deleted_at')
                 ->get();
 
             //dd($users);
