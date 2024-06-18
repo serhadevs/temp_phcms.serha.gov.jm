@@ -1,55 +1,20 @@
-<table class="table table-bordered table-striped nowrap table-sm" id="food_clinics" style="width:100%">
+<table class="table table-striped nowrap table-bordered table-sm" id="sign_off_count" style="width:100%">
     <thead>
         <tr>
-            <th>App #</th>
-            <th>Est. Name</th>
-            <th>Address</th>
-            <th>Telphone No.</th>
-            <th>Payment Staus</th>
-            <th>Clinic Date & Time</th>
-            {{-- Enter after logic has been implemented --}}
-            <th>No. of Permits</th>
-            <th>No. of Employees</th>
+            <th>Category</th>
+            <th>Totals</th>
+         
         </tr>
     </thead>
     <tbody>
-        @foreach ($food_clinics as $application)
+        @foreach ($counts as $categoryId => $data)
             <tr>
-                <td>
-                    {{ $application->id }}
-                </td>
-                <td>
-                    {{ $application->name }}
-                </td>
-                <td>
-                    {{ $application->address }}
-                </td>
-                <td>
-                    {{ $application->telephone }}
-                </td>
-                <td class="text-center">
-                    @if (empty($application->payment))
-                        <span class="badge text-bg-danger">Not Paid</span>
-                    @endif
-                    @if (!empty($application->payment))
-                        <span class="badge text-bg-success">Paid</span>
-                    @endif
-                </td>
-                <td>
-                    {{ $application->proposed_date }} - {{ $application->proposed_time }}
-                </td>
-                <td>
-                    {{ $application->permits_count }}
-                </td>
-                <td>
-                    {{ $application->no_of_employees }}
-                </td>
-               
+                <td>{{ $data['category_name'] }}</td>
+                <td>{{ $data['count'] }}</td>
             </tr>
         @endforeach
     </tbody>
 </table>
-
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -70,8 +35,9 @@
 
 
 <script>
-    new DataTable('#food_clinics', {
+    new DataTable('#sign_off_count', {
         scrollX: true,
+        responsive: true,
         initComplete: function() {
             loading.close()
         },
@@ -100,5 +66,3 @@
         })
     }
 </script>
-
-  

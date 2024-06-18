@@ -8,7 +8,7 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                <h2 class="card-header text-muted mb-2">Applications Received and Processed</h2>
+                <h2 class="card-header text-muted mb-2">Onsite Applications Received and Processed Report</h2>
                 <div class="card-body">
                     <form action="{{ route('reports.onsite.show') }}" method="POST">
                         @csrf
