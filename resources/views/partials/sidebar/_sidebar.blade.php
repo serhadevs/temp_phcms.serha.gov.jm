@@ -281,7 +281,10 @@
                 <li class="sidebar-item">
                     <a href="/reports/sign-off/create" class="sidebar-link">Sign Off Report</a>
                 </li>
-            @endif
+                <li class="sidebar-item">
+                    <a href="/reports/backlog-report" class="sidebar-link">Back Log Report</a>
+                </li>
+                 @endif
             </ul>
 
         </li>

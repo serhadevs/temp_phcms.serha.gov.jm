@@ -11,7 +11,7 @@
             <div class="card">
                 <h2 class="card-header">Back Log Report</h2></h2>
                 <div class="card-body">
-                    @include('partials.tables.backlog_table')
+                    @include('partials.tables.signoff_table_count')
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('reports.appcount.create') }}" class="btn btn-danger">Back to Search</a>

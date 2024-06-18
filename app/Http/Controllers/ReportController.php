@@ -268,8 +268,14 @@ class ReportController extends Controller
 
     public function backLogReport(){
         
-        $backlog = Payments::with('application_id')->whereNotNull('manual_receipt_date')->count();
-        dd($backlog);
-        return view('reports.backlog.index',compact('backlog'));
+        $counts = [];
+        $applicationTypesArray = ApplicationType::pluck('id')->toArray();
+        $backlog = Payments::with('applicationType')->whereNotNull('manual_receipt_date')->get();
+        foreach ($applicationTypesArray as $categoryId) {
+            $count = $backlog->where('application_type_id', $categoryId)->where('facility_id',auth()->user()->facility_id)->count();
+            $category_name = ApplicationType::where('id', $categoryId)->first();
+            $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
+        }
+        return view('reports.backlog.index',['counts' => $counts]);
     }
 }
