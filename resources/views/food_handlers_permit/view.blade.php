@@ -508,7 +508,7 @@
                                                             <button class="btn btn-success" style="align-items:center"
                                                                 type="button" data-bs-toggle="modal"
                                                                 data-bs-target="#staticBackdrop2"
-                                                                onclick="populatePaymentModal({{ json_encode($permit_application->payment) }}, {{ json_encode($permit_application?->appointment?->first()?->appointment_date) }} )">
+                                                                onclick="populatePaymentModal({{ json_encode($permit_application->payment) }}, {{ json_encode($permit_application?->appointment?->first()?->appointment_date) }}, {{ json_encode(!empty($permit_application->establishmentClinics) ? $permit_application->establishmentClinics?->proposed_date : '') }} )">
                                                                 <i class="bi bi-coin fs-6"></i>
                                                                 View Payment
                                                             </button>
@@ -744,12 +744,14 @@
             }
         </script>
         <script>
-            function populatePaymentModal(payment_info, appointment_date) {
+            function populatePaymentModal(payment_info, appointment_date, est_appointment_date) {
                 document.querySelector('h1.payment-header').innerHTML = "Payment ID - " + payment_info['id'];
                 document.getElementById('payment_ap_id').innerHTML = payment_info['application_id'];
                 document.getElementById('payment_receipt_no').innerHTML = payment_info['receipt_no'];
-                document.getElementById('payment_payment_date').innerHTML = new Date(payment_info['created_at']).toLocaleString();
-                document.getElementById('payment_appointment_date').innerHTML = appointment_date;
+                document.getElementById('payment_payment_date').innerHTML = new Date(payment_info['created_at'])
+                    .toLocaleString();
+                document.getElementById('payment_appointment_date').innerHTML = est_appointment_date == "" ? appointment_date :
+                    est_appointment_date;
                 document.getElementById('payment_tot_cost').innerHTML = payment_info['total_cost'];
                 document.getElementById('payment_amt_paid').innerHTML = payment_info['amount_paid'];
                 document.getElementById('payment_change').innerHTML = payment_info['change_amt'];
