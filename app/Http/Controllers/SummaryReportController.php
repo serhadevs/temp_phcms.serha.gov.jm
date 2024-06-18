@@ -285,9 +285,12 @@ class SummaryReportController extends Controller
             ->selectRaw('total_cost')
             ->get();
 
-        $persons_trained = TestResult::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
-        ->where('facility_id', auth()->user()->facility_id)
-        ->where('application_type_id', 6)->count();
+        // $persons_trained = TestResult::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+        // ->where('facility_id', auth()->user()->facility_id)
+        // ->where('application_type_id', 6)->count();
+        $noTrainingSessions = Appointments::where('facility_id', auth()->user()->facility_id)
+            ->whereBetween('appointment_date', [$starting_date, $ending_date])
+            ->count();
 
         //dd($persons_trained);
 
@@ -300,7 +303,7 @@ class SummaryReportController extends Controller
             $noSignOffs,
             'N/A',
             'N/A',
-            $persons_trained,
+            $noTrainingSessions,
             $sum_touristEstablishments
         );
     }
