@@ -365,7 +365,7 @@ class UserController extends Controller
         $user_id = $request->user_id;
         $user = User::find($user_id);
 
-        dd($user);
+        //dd($user);
         //Throw error if there is no results from the query 
         if (!$user) {
             return redirect()->back()->with('error', 'Unable to find the user in the database');
