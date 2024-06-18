@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Appointments;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
 use App\Models\HealthCertApplications;
+use App\Models\TestResult;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\Renewals;
@@ -283,6 +285,12 @@ class SummaryReportController extends Controller
             ->selectRaw('total_cost')
             ->get();
 
+        $persons_trained = TestResult::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+        ->where('facility_id', auth()->user()->facility_id)
+        ->where('application_type_id', 6)->count();
+
+        //dd($persons_trained);
+
         $sum_touristEstablishments = $sum_touristEstablishments->sum('total_cost');
 
         return array(
@@ -292,7 +300,7 @@ class SummaryReportController extends Controller
             $noSignOffs,
             'N/A',
             'N/A',
-            'N/A',
+            $persons_trained,
             $sum_touristEstablishments
         );
     }
