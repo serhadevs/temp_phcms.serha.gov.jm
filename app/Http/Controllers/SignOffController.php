@@ -69,6 +69,7 @@ class SignOffController extends Controller
                     ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', $exam_site)
                     ->doesntHave('permitApplication.establishmentClinics')
                     ->has('permitApplication.testResults')
+                    ->orderBy('permitApplication.lastname')
                     ->orderBy('sign_off_status')
                     ->get();
             }
