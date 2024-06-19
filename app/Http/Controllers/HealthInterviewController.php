@@ -130,7 +130,7 @@ class HealthInterviewController extends Controller
                 ->get();
         } else if ($app_type_id == '2') {
             $applications = HealthCertApplications::with('appointment.examDate.examSites', 'payment', 'user', 'healthInterviews')
-                ->whereBetween('created_at', '>', $filterTimeline)
+                ->where('created_at', '>', $filterTimeline)
                 ->has('payment')
                 ->doesntHave('healthInterviews')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
@@ -447,7 +447,7 @@ class HealthInterviewController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($interview = HealthInterview::find($id)) {
+            if ($interview = HealthInterview::with('permitApplication', 'healthCertApplication')->find($id)) {
                 if ($interview->sign_off_status != '1') {
                     DB::beginTransaction();
                     if (EditTransactions::create([
@@ -462,7 +462,10 @@ class HealthInterviewController extends Controller
                         if ($interview->update(['deleted_at' => new DateTime()])) {
                             //Delete all symptoms and travel history
                             DB::commit();
-                            return 'success';
+                            return [
+                                'success',
+                                $interview->permit_application_id != '' ? ('Health Interview for ' . $interview->permitApplication?->firstname . ' ' . $interview->permitApplication?->lastname . ':' . $interview->permit_application_id . ' has been deleted successfully.') : ('Health Interview for ' . $interview->healthCertApplication?->firstname . ' ' . $interview->healthCertApplication?->lastname . ':' . $interview->health_cert_application_id . ' has been deleted successfully.')
+                            ];
                         } else {
                             throw new Exception("Unable to delete health interview. Unable to update interview.");
                         }
@@ -497,7 +500,10 @@ class HealthInterviewController extends Controller
                 ])) {
                     if ($interview_sym->update(['deleted_at' => new DateTime()])) {
                         DB::commit();
-                        return 'success';
+                        return [
+                            'success',
+                            'Health Symptoms have been deleted successfully.'
+                        ];
                     } else {
                         throw new Exception('This health interview symptoms has not be deleted. Unable to delete health interview symptoms.');
                     }
@@ -579,7 +585,10 @@ class HealthInterviewController extends Controller
                 ])) {
                     if ($trip->update(['deleted_at' => new DateTime()])) {
                         DB::commit();
-                        return 'success';
+                        return [
+                            'success',
+                            'Travel History has been deleted successfully.'
+                        ];
                     } else {
                         throw new Exception("Travel History was not deleted. Unable to delete symptom record.");
                     }

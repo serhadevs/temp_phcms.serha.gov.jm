@@ -114,7 +114,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::get('/food-handlers-clinics/view/{id}', [FoodHandlersClinicController::class, 'show'])->name('food-handlers-clinics.view');
      Route::get('/food-handlers-clinics/edit/{id}', [FoodHandlersClinicController::class, 'edit'])->name('food-handlers-clinics.edit');
      Route::get('/food-handlers-clinics/permit/application/{clinic_app_id}', [ClinicPermitApplicationController::class, 'create'])->name('food-handlers-clinic.permit.application');
-     Route::post('/food-handlers-clinics/update', [FoodHandlersClinicController::class, 'update'])->name('food-handlers-clinic.update');
+     Route::post('/food-handlers-clinics/update/{id}', [FoodHandlersClinicController::class, 'update'])->name('food-handlers-clinic.update');
      Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinic.renewal');
      Route::post('/food-handlers-clinics/renew', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinic.renew');
      Route::delete('/food-handlers-clinics/delete/{id}', [FoodHandlersClinicController::class, 'destroy'])->name('food-handlers-clinic.delete');

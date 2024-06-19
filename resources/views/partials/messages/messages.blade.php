@@ -1,5 +1,5 @@
 <script>
-    loading.close();
+    // loading.close();
     @if ($message = Session::get('success'))
         Swal.fire({
             title: "Success!",
