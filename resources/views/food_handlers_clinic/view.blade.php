@@ -6,17 +6,31 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
-        <div class="container-fluid">
+        @include('partials.messages.messages')
+        {{-- @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <p class="text-success"><strong>{{ $message }}</strong></p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if ($message = Session::get('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif --}}
+        <div class="container-fluid mb-4">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h2 class="text-muted">
                         Application for {{ $application->name }}
                     </h2>
-                    <hr>
-                    <form action="{{ route('food-handlers-clinic.update') }}" method="POST">
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('food-handlers-clinic.update', ['id' => $application->id]) }}" method="POST">
                         @csrf
                         @method('POST')
-                        <div class="mt-3">
+                        <div class="">
                             <label for="" class="form-label">Application ID</label>
                             <input type="text" name="id" class="form-control" value="{{ $application->id }}"
                                 readonly>
@@ -98,26 +112,53 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
+                        <div class="mt-3" style="display:none" id="edit_reason_div">
+                            <label for="" class="form-label">
+                                <span class="fw-bold text-danger">*</span>
+                                Reason for edit
+                            </label>
+                            <textarea name="edit_reason" class="form-control">{{ old('edit_reason') }}</textarea>
+                            @error('edit_reason')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <input type="text" class="form-control mt-3" value="{{ isset($edit_mode) ? '1' : '' }}"
                             id="edit_mode_status" hidden>
-                        <button id="update-button" type="button" class="btn btn-primary mt-4"
-                            style="display:none" onclick="showLoading(this)">Update
+                        <button id="update-button" type="button" class="btn btn-primary mt-4" style="display:none"
+                            onclick="showLoading(this)">Update
                             information</button>
+                        <button id="enable-editting" class="btn btn-warning mt-3" type="button"
+                            onclick="enableEditing()">
+                            Edit Application
+                        </button>
                     </form>
+                </div>
+                <div class="card mx-3">
+                    <div class="card-header">
+                        <h4 class="text-muted">Edit Transactions</h2>
+                    </div>
+                    <div class="card-body">
+                        @include('partials.tables.edit_transactions_table')
+                    </div>
                 </div>
             </div>
         </div>
         <script>
+            function enableEditing() {
+                document.getElementById('update-button').style.display = "";
+                document.getElementById('name').removeAttribute('disabled');
+                document.getElementById('address').removeAttribute('disabled');
+                document.getElementById('telephone').removeAttribute('disabled');
+                document.getElementById('fax_no').removeAttribute('disabled');
+                document.getElementById('contact_person').removeAttribute('disabled');
+                document.getElementById('proposed_date').removeAttribute('disabled');
+                document.getElementById('proposed_time').removeAttribute('disabled');
+                document.getElementById('edit_reason_div').style.display = '';
+                document.getElementById('enable-editting').style.display = 'none';
+            }
             window.onload = () => {
                 if (document.getElementById('edit_mode_status').value == '1') {
-                    document.getElementById('update-button').style.display = "";
-                    document.getElementById('name').removeAttribute('disabled');
-                    document.getElementById('address').removeAttribute('disabled');
-                    document.getElementById('telephone').removeAttribute('disabled');
-                    document.getElementById('fax_no').removeAttribute('disabled');
-                    document.getElementById('contact_person').removeAttribute('disabled');
-                    document.getElementById('proposed_date').removeAttribute('disabled');
-                    document.getElementById('proposed_time').removeAttribute('disabled');
+                    enableEditing();
                 }
             }
         </script>

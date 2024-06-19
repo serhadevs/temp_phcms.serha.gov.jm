@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointments;
 use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\EstablishmentClinics;
 use App\Models\HealthInterview;
 use App\Models\PermitApplication;
@@ -212,7 +213,7 @@ class FoodHandlersClinicController extends Controller
      */
     public function show(Request $request)
     {
-        $application = EstablishmentClinics::find($request->route('id'));
+        $application = EstablishmentClinics::with('editTransactions')->find($request->route('id'));
 
         return view('food_handlers_clinic.view', compact('application'));
     }
@@ -225,7 +226,7 @@ class FoodHandlersClinicController extends Controller
      */
     public function edit(Request $request)
     {
-        $application = EstablishmentClinics::find($request->route('id'));
+        $application = EstablishmentClinics::with('editTransactions')->find($request->route('id'));
 
         $edit_mode = 1;
 
@@ -239,7 +240,7 @@ class FoodHandlersClinicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $food_handlers_clinic = $request->validate([
             'name' => 'required',
@@ -250,8 +251,55 @@ class FoodHandlersClinicController extends Controller
             'no_of_employees' => 'numeric|required',
             'proposed_date' => 'required',
             'proposed_time' => 'required',
-            'application_date' => 'required|date'
+            'application_date' => 'required|date',
+            'edit_reason' => 'required'
         ]);
+
+        try {
+            if ($food_clinic = EstablishmentClinics::find($id)) {
+                $edit_reason = $food_handlers_clinic['edit_reason'];
+                unset($food_handlers_clinic['edit_reason']);
+                if (!empty($differences = array_diff_assoc(
+                    EstablishmentClinics::select('name', 'address', 'contact_person', 'telephone', 'fax_no', 'no_of_employees', 'proposed_date', 'proposed_time', 'application_date')->find($id)->toArray(),
+                    $food_handlers_clinic
+                ))) {
+                    DB::beginTransaction();
+                    if ($edit_transaction = EditTransactions::create([
+                        'application_type_id' => 4,
+                        'table_id' => $food_clinic->id,
+                        'system_operation_type_id' =>  1,
+                        'edit_type_id' => 1,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $edit_reason
+                    ])) {
+                        foreach ($differences as $key => $value) {
+                            if (!EditTransactionsChangedColumns::create([
+                                'edit_transaction_id' => $edit_transaction->id,
+                                'column_name' => $key,
+                                'old_value' => $food_clinic->toArray()[$key],
+                                'new_value' => $food_handlers_clinic[$key]
+                            ])) {
+                                throw new Exception("Unable to create food handlers clinic. Unable to record the fields changed");
+                            }
+                        }
+                        if ($food_clinic->update($food_handlers_clinic)) {
+                            DB::commit();
+                            return redirect()->route('food-handlers-clinics.view', ['id' => $food_clinic->id])->with('success', 'The Establishment Clinic Application for ' . $food_clinic->name . ':' . $food_clinic->id . ' has been updated successfully');
+                        }
+                    } else {
+                        throw new Exception("This application was not updated. Unable to create edit transactions.");
+                    }
+                } else {
+                    throw new Exception("None of the fields in this application were changed. Therefore nothing was updated.");
+                }
+            } else {
+                throw new Exception("This establishment clinic does not exist. Therefore it cannot be edited.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
 
         if (EstablishmentClinics::find($request->id)->update(
             [
@@ -278,27 +326,34 @@ class FoodHandlersClinicController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($food_clinic = EstablishmentClinics::with('permits')->find($id)) {
-                DB::beginTransaction();
-                if (EditTransactions::create([
-                    'application_type_id' => 4,
-                    'table_id' => $id,
-                    'system_operation_type_id' => 1,
-                    'edit_type_id' => 2,
-                    'user_id' => auth()->user()->id,
-                    'facility_id' => auth()->user()->facility_id,
-                    'reason' => $request->data['reason']
-                ])) {
-                    foreach ($food_clinic->permits as $permit) {
-                        // PermitApplicationController->destroy($request, $permit->id);
-
+            if ($food_clinic = EstablishmentClinics::withCount('permits')->find($id)) {
+                if ($food_clinic->permits_count == 0) {
+                    DB::beginTransaction();
+                    if (EditTransactions::create([
+                        'application_type_id' => 4,
+                        'table_id' => $id,
+                        'system_operation_type_id' => 1,
+                        'edit_type_id' => 2,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $request->data['reason']
+                    ])) {
+                        if ($food_clinic->update(['deleted_at' => new DateTime()])) {
+                            DB::commit();
+                            return ['success', 'Food Establishment Clinic ' . $food_clinic->name . ' was deleted successfully'];
+                        }
+                    } else {
+                        throw new Exception("This establishment clinic could not be deleted. Unable to initiate transaction.");
                     }
                 } else {
+                    throw new Exception("Permits have already been added to this food establishment clinic. THis clinic cannot be deleted.");
                 }
             } else {
                 throw new Exception("This Food Establishment does not exist.");
             }
         } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

@@ -55,4 +55,11 @@ class EstablishmentClinics extends Model
     {
         return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', 3);
     }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('application_type_id', 4)
+            ->where('system_operation_type_id', 1);
+    }
 }

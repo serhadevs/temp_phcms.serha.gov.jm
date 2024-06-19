@@ -30,10 +30,10 @@
                             _token: "{{ csrf_token() }}"
                         }).then(function(data) {
                             console.log(data);
-                            if (data == "success") {
+                            if (data[0] == "success") {
                                 swal.fire(
                                     "Done!",
-                                    "Travel History was successfully deleted!.",
+                                    data[1],
                                     "success").then(esc => {
                                     if (esc) {
                                         location.reload();

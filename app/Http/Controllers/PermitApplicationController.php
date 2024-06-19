@@ -320,12 +320,11 @@ class PermitApplicationController extends Controller
                 $file = $request->file('photo_upload');
                 $permit_application['photo_upload'] = 'photo_upload/' . $permit_application['permit_no'] . '.' . $file->extension();
             }
-
         } else {
             $permit_application['photo_upload'] = "";
         }
 
-    
+
 
         $new_permit_application = PermitApplication::create($permit_application);
 
@@ -545,7 +544,7 @@ class PermitApplicationController extends Controller
                         'facility_id' => auth()->user()->facility_id,
                         'reason' => $request->data['reason']
                     ])) {
-                        if (!empty($permit->appointment)) {
+                        if (!empty($permit->appointment->first())) {
                             if (!Appointments::where('permit_application_id', $id)->first()->update(['deleted_at' => new DateTime()])) {
                                 throw new Exception("Delete Operation failed. Unable to delete appointment created for this application.");
                             }
@@ -574,7 +573,10 @@ class PermitApplicationController extends Controller
                         }
                         if ($permit->update(['deleted_at' => new DateTime()])) {
                             DB::commit();
-                            return 'success';
+                            return [
+                                'success',
+                                'Permit Application for ' . $permit->firstname . ' ' . $permit->lastname . ':' . $permit->id . ' has been deleted successfully.'
+                            ];
                         } else {
                             throw new Exception("Delete Operation Failed. Failed to delete application.");
                         }

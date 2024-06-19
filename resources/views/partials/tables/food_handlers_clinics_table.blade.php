@@ -52,9 +52,6 @@
                         <a href="/food-handlers-clinics/permit/application/{{ $application->id }}"
                             class="btn btn-info btn-sm">Add Employees</a>
                     @endif
-                    {{-- @if (empty($application->payment))
-                        <button class="btn btn-sm btn-danger" onclick="removeEntry('/food-establishments', {{ json_encode($application->id) }})">Remove</button>
-                    @endif --}}
                     <?php
                     $interval = explode(
                         ',',
@@ -66,6 +63,12 @@
                     @if ($interval[0] > 0 || $interval[1] > 10)
                         <a href="/food-handlers-clinics/renewal/{{ $application->id }}"
                             class="btn btn-success btn-sm">Renew</a>
+                    @endif
+                    @if ($application->permits_count == 0)
+                        <button class="btn btn-sm btn-danger" type="button"
+                            onclick="removeEntry('/food-handlers-clinics', {{ json_encode($application->id) }})">
+                            Remove
+                        </button>
                     @endif
                 </td>
             </tr>
@@ -91,7 +94,7 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.13.7/api/sum().js"></script>
-    
+
     <script>
         new DataTable('#food_clinics', {
             dom: 'Bfrtip',
