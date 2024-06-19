@@ -19,6 +19,7 @@ class User extends Authenticatable
     // use Loggable;
 
     protected $fillable = [
+        'id',
         'email',
         'password',
         'status',

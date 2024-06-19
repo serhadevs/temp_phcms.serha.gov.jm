@@ -7,7 +7,7 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            @include('partials.messages.table_loading')
+             {{--@include('partials.messages.table_loading') --}}
             <div class="card">
                 <div class="card-header">
                     <h3 class="text-muted">

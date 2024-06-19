@@ -362,8 +362,10 @@ class UserController extends Controller
     public function destroy(Request $request,$id)
     {
         //Find the user in the database
-        $user = User::find($id);
+        $user_id = $request->user_id;
+        $user = User::find($user_id);
 
+        //dd($user);
         //Throw error if there is no results from the query 
         if (!$user) {
             return redirect()->back()->with('error', 'Unable to find the user in the database');

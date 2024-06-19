@@ -278,4 +278,10 @@ class ReportController extends Controller
         }
         return view('reports.backlog.index',['counts' => $counts]);
     }
+
+    public function newTouristEstablishmentReport(NumberApplicationsByCategory $request){
+
+    
+        
+    }
 }

@@ -24,7 +24,8 @@
                                 <form method="post" action="{{ url('/settings/user/deactivate/' . $user->id) }}">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-{{ $user->status == 1 ? "danger" : "success" }} btn-sm">
+                                    <input type="text" hidden value="{{ $user->id }}" name="user_id">
+                                    <button type="submit" name = "submit" class="btn btn-{{ $user->status == 1 ? "danger" : "success" }} btn-sm">
                                         {{ $user->status == 1 ? "Active" : "Inactive" }}
                                     </button>
                                     
