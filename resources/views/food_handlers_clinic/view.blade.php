@@ -7,18 +7,6 @@
     <div class="main">
         @include('partials.navbar._navbar')
         @include('partials.messages.messages')
-        {{-- @if ($message = Session::get('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <p class="text-success"><strong>{{ $message }}</strong></p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-        @if ($message = Session::get('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif --}}
         <div class="container-fluid mb-4">
             <div class="card">
                 <div class="card-header">

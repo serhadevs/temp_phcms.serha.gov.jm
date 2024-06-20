@@ -116,6 +116,7 @@
             <th class="text-nowrap">Sign Off Status</th>{{-- THERE --}}
             <th>TRN</th>{{-- THERE --}}
             <th>Payment Date</th>
+            <th>Expiry Date</th>
             <th>Options</th>{{-- THERE --}}
         </tr>
     </tfoot>
@@ -202,6 +203,7 @@
     <script>
         var table = new DataTable('#food_handlers_permit', {
             initComplete: function() {
+                // loading.close();
                 this.api()
                     .columns()
                     .every(function() {

@@ -60,7 +60,9 @@ class SignOffController extends Controller
                     ->where('facility_id', auth()->user()->facility_id)
                     ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
                     ->has('permitApplication.testResults')
-                    ->orderBy('sign_off_status')
+                    ->with(['permitApplication' => function ($query) {
+                        $query->orderBy('lastname');
+                    }])
                     ->get();
             } else if ($clinic_mode == "regular") {
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites')
@@ -69,8 +71,14 @@ class SignOffController extends Controller
                     ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', $exam_site)
                     ->doesntHave('permitApplication.establishmentClinics')
                     ->has('permitApplication.testResults')
+<<<<<<< HEAD
                     // ->orderBy('lastname')
                     ->orderBy('sign_off_status')
+=======
+                    ->with(['permitApplication' => function ($query) {
+                        $query->orderBy('lastname');
+                    }])
+>>>>>>> 52c612936014577afc005a4b1821be2d2cff882c
                     ->get();
             }
         } elseif ($app_type_id == 2) {
@@ -187,7 +195,7 @@ class SignOffController extends Controller
                 ->where('users.facility_id', auth()->user()->facility_id)
                 ->get();
 
-                // dd($applications);
+            // dd($applications);
 
             return view('signoffs.signsoff', compact('applications'));
         } catch (Exception $e) {
