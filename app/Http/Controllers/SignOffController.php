@@ -71,14 +71,9 @@ class SignOffController extends Controller
                     ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', $exam_site)
                     ->doesntHave('permitApplication.establishmentClinics')
                     ->has('permitApplication.testResults')
-<<<<<<< HEAD
-                    // ->orderBy('lastname')
-                    ->orderBy('sign_off_status')
-=======
                     ->with(['permitApplication' => function ($query) {
                         $query->orderBy('lastname');
                     }])
->>>>>>> 52c612936014577afc005a4b1821be2d2cff882c
                     ->get();
             }
         } elseif ($app_type_id == 2) {
