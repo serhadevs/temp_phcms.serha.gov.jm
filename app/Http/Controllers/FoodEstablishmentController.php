@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentCategories;
 use App\Models\FoodEstablishment;
@@ -258,9 +260,9 @@ class FoodEstablishmentController extends Controller
         return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature'));
     }
 
-    public function edit(Request $request)
+    public function edit(Request $request, $id)
     {
-        $food_est_application = $request->validate([
+        $food_est_updated = $request->validate([
             'current_est_closed' => 'required',
             'prev_est_closed' => 'required',
             'telephone' => 'required|regex:/^\+1+\(+[0-9]{3}+\)+[0-9]{3}+\-+[0-9]{4}+$/',
@@ -272,11 +274,95 @@ class FoodEstablishmentController extends Controller
             'establishment_address' => 'required',
             'trn' => 'nullable',
             'email' => 'nullable|email',
-            'closure_date' => 'required_if:current_est_closed,1|required_if:prev_est_closed,1'
+            'closure_date' => 'required_if:current_est_closed,1|required_if:prev_est_closed,1',
+            'edit_reason' => 'required'
         ]);
 
-        if (EstablishmentApplications::find($request->application_id)->update($food_est_application)) {
-            return redirect()->route('food-establishment.filter', 0)->with('success', 'Food Establishment has been successfully updated.');
+        try {
+            if ($food_est = EstablishmentApplications::find($id)) {
+                if ($food_est->sign_off_status != '1') {
+                    $edit_reason = $food_est_updated['edit_reason'];
+                    unset($food_est_updated['edit_reason']);
+                    if (!empty($differences = array_diff_assoc(
+                        $food_est_updated,
+                        EstablishmentApplications::select('current_est_closed', 'prev_est_closed', 'telephone', 'alt_telephone', 'food_type', 'zone', 'establishment_name', 'establishment_category_id', 'establishment_address', 'trn', 'email', 'closure_date')->find($id)->toArray()
+                    ))) {
+                        DB::beginTransaction();
+                        if ($edit_transaction = EditTransactions::create([
+                            'application_type_id' => 3,
+                            'table_id' => $food_est->id,
+                            'system_operation_type_id' => 1,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $edit_reason
+                        ])) {
+                            foreach ($differences as $key => $value) {
+                                if (!EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => $key,
+                                    'old_value' => $food_est->toArray()[$key],
+                                    'new_value' => $food_est_updated[$key]
+                                ])) {
+                                    throw new Exception("This food establishment could not be edited. Error recording fields changed.");
+                                }
+                            }
+                            if ($food_est->update($food_est_updated)) {
+                                DB::commit();
+                                return redirect()->route('food-establishment.view', ['id' => $food_est->id])->with('success', 'Food establishment Application for ' . $food_est->name . ':' . $food_est->id . ' has been updated successfully.');
+                            }
+                        } else {
+                            throw new Exception("This food establishment application could not be edited. Error processing edit transaction.");
+                        }
+                    } else {
+                        throw new Exception("None of the fields were changed. This application was not edited.");
+                    }
+                } else {
+                    throw new Exception("This food establishment has already been signed off. It cannot be edited.");
+                }
+            } else {
+                throw new Exception("This food establishment does not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        try {
+            if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
+                if ($food_est->sign_off_status != '1') {
+                    DB::beginTransaction();
+                    if (EditTransactions::create([
+                        'application_type_id' => 3,
+                        'table_id' => $food_est->id,
+                        'system_operation_type_id' => 1,
+                        'edit_type_id' => 2,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $request->data['reason']
+                    ])) {
+                        if ($food_est->update(['deleted_at' => new DateTime()])) {
+                            return ['success', 'Food Establishment ' . $food_est->establishment_name . ':' . $food_est->id . ' has been deleted successfully.'];
+                        } else {
+                            throw new Exception("This application was not deleted. Error updating application record.");
+                        }
+                    } else {
+                        throw new Exception("This application could not be deleted. Error creating transaction.");
+                    }
+                } else {
+                    throw new Exception("This application has already been signed off. It cannot be deleted.");
+                }
+            } else {
+                throw new Exception('This application does not exist. This cannot be deleted.');
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
         }
     }
 
