@@ -347,6 +347,7 @@ class FoodEstablishmentController extends Controller
                         'reason' => $request->data['reason']
                     ])) {
                         if ($food_est->update(['deleted_at' => new DateTime()])) {
+                            DB::commit();
                             return ['success', 'Food Establishment ' . $food_est->establishment_name . ':' . $food_est->id . ' has been deleted successfully.'];
                         } else {
                             throw new Exception("This application was not deleted. Error updating application record.");
