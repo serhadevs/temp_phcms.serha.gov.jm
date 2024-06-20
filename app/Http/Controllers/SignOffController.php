@@ -186,7 +186,7 @@ class SignOffController extends Controller
                 ->where('sign_offs.application_type_id', '=', 3)
                 ->where('sign_offs.created_at', '>', '2024-01-01')
                 ->join('users', 'users.id', '=', 'sign_offs.user_id')
-                ->orderBy('sign_offs.expiry_date', 'desc')
+                ->orderBy('sign_offs.sign_off_date', 'desc')
                 ->where('users.facility_id', auth()->user()->facility_id)
                 ->get();
 
