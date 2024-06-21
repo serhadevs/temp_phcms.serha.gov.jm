@@ -41,7 +41,7 @@
     function editEstOperator(operator_name, operator_id) {
         swal.fire({
                 title: "Edit operator name for \n application.",
-                icon: "info",
+                icon: "question",
                 input: "text",
                 inputValue: operator_name,
                 inputAttributes: {
@@ -54,30 +54,53 @@
             })
             .then(result => {
                 if (result.isConfirmed) {
-                    console.log(result.value);
-                    $.post({!! json_encode(url('/food-establishments/edit/operators')) !!}, {
-                        _method: "POST",
-                        data: {
-                            name_of_operator: result.value,
-                            operator_id: operator_id
+                    swal.fire({
+                        title: 'What is the reason you are\n editing this operator?',
+                        text: 'Reason will be recorded.',
+                        icon: 'question',
+                        input: 'textarea',
+                        inputAttributes: {
+                            required: true
                         },
-                        _token: "{{ csrf_token() }}"
-                    }).then(function(data) {
-                        console.log(data);
-                        if (data == "success") {
-                            swal.fire(
-                                "Done!",
-                                "Payment Cancellation has been successfully Requested.",
-                                "success").then(esc => {
-                                if (esc) {
-                                    location.reload();
+                        showCancelButton: true,
+                        showConfirmButton: true
+                    }).then((result5) => {
+                        if (result5.isConfirmed) {
+                            swal.fire({
+                                title: 'Are you sure you want to edit this operator?',
+                                text: 'Ensure correct operator was selected',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                showConfirmButton: true
+                            }).then((result6) => {
+                                if (result6.isConfirmed) {
+                                    $.post({!! json_encode(url('/food-establishments/edit/operators')) !!}, {
+                                        _method: "POST",
+                                        data: {
+                                            name_of_operator: result.value,
+                                            operator_id: operator_id,
+                                            reason: result5.value
+                                        },
+                                        _token: "{{ csrf_token() }}"
+                                    }).then(function(data) {
+                                        if (data == "success") {
+                                            swal.fire(
+                                                "Done!",
+                                                "Name of Operator was updated successfully.",
+                                                "success").then(esc => {
+                                                if (esc) {
+                                                    location.reload();
+                                                }
+                                            });
+                                        } else {
+                                            swal.fire(
+                                                "Oops! Something went wrong.",
+                                                data,
+                                                "error");
+                                        }
+                                    })
                                 }
-                            });
-                        } else {
-                            swal.fire(
-                                "Oops! Something went wrong.",
-                                data,
-                                "error");
+                            })
                         }
                     })
                 }
@@ -86,41 +109,55 @@
 
     function deleteEstOperator(establishment_app_id, operator_id) {
         swal.fire({
-                title: "Are you sure you \nwant to delete this \noperator?",
-                icon: "warning",
-                showCancelButton: true,
-                showConfirmButton: true,
-                confirmButtonText: `Yes, I am sure!`,
-                cancelButtonText: `No, Cancel it!`
-            })
-            .then(result => {
-                if (result.isConfirmed) {
-                    $.post({!! json_encode(url('/food-establishments/delete/operators')) !!}, {
-                        _method: "POST",
-                        data: {
-                            est_app_id: establishment_app_id,
-                            operator_id: operator_id
-                        },
-                        _token: "{{ csrf_token() }}"
-                    }).then(function(data) {
-                        console.log(data);
-                        if (data == "success") {
-                            swal.fire(
-                                "Done!",
-                                "Payment Cancellation has been successfully Requested.",
-                                "success").then(esc => {
-                                if (esc) {
-                                    location.reload();
+            title: 'Are you sure you want to delete this operator?',
+            text: 'This reason will be editted',
+            icon: 'question',
+            input: 'textarea',
+            inputAttribute: {
+                required: true
+            },
+            showCancelButton: true,
+            showCancelButton: true
+        }).then((result3) => {
+            if (result3.isConfirmed) {
+                swal.fire({
+                        title: "Are you sure you \nwant to delete this \noperator?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: `Yes, I am sure!`,
+                        cancelButtonText: `No, Cancel it!`
+                    })
+                    .then(result => {
+                        if (result.isConfirmed) {
+                            $.post({!! json_encode(url('/food-establishments/delete/operators')) !!}, {
+                                _method: "POST",
+                                data: {
+                                    est_app_id: establishment_app_id,
+                                    operator_id: operator_id,
+                                    reason: result3.value
+                                },
+                                _token: "{{ csrf_token() }}"
+                            }).then(function(data) {
+                                if (data == "success") {
+                                    swal.fire(
+                                        "Done!",
+                                        "Operator has been deleted successfully.",
+                                        "success").then(esc => {
+                                        if (esc) {
+                                            location.reload();
+                                        }
+                                    });
+                                } else {
+                                    swal.fire(
+                                        "Oops! Something went wrong.",
+                                        data,
+                                        "error");
                                 }
-                            });
-                        } else {
-                            swal.fire(
-                                "Oops! Something went wrong.",
-                                data,
-                                "error");
+                            })
                         }
                     })
-                }
-            })
+            }
+        })
     }
 </script>

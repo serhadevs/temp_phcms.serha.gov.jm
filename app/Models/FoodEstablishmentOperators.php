@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
@@ -29,6 +30,12 @@ class FoodEstablishmentOperators extends Model
     public function foodEstablishment(): BelongsTo
     {
         return $this->belongsTo(EstablishmentApplications::class, 'establishment_application_id', 'id');
+    }
+
+    public function editTransactions():HasMany{
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+        ->where('application_type_id', 1)
+        ->where('system_operation_type', );
     }
 
     public $timestamps = true;

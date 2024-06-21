@@ -17,6 +17,8 @@
                 }
             } elseif ($system_operation_type_id == 2) {
                 $transactions = $application->healthInterviews;
+            } elseif ($system_operation_type_id == 3) {
+                $transactions = $est_application;
             }
         } else {
             $transactions = $application;

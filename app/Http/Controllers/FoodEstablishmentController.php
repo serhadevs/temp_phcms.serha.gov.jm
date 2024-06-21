@@ -201,11 +201,11 @@ class FoodEstablishmentController extends Controller
 
     public function view(Request $request)
     {
-        $est_application = EstablishmentApplications::with('operators')->find($request->route('id'));
+        $est_application = EstablishmentApplications::with('operators', 'editTransactions')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::all();
         $enableEditFeature = "0";
-        //dd($est_application);
-        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature'));
+        $system_operation_type_id = 3;
+        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature', 'system_operation_type_id'));
     }
 
     public function renewal(Request $request)
@@ -219,18 +219,54 @@ class FoodEstablishmentController extends Controller
     public function editOperators(Request $request)
     {
         try {
-            if (FoodEstablishmentOperators::find($request->data["operator_id"])) {
-                if (FoodEstablishmentOperators::find($request->data["operator_id"])->update(
-                    ['name_of_operator' => $request->data["name_of_operator"]]
-                )) {
-                    return "success";
+            if ($operator = FoodEstablishmentOperators::find($request->data["operator_id"])) {
+                if ($food_est = EstablishmentApplications::find($operator->establishment_application_id)) {
+                    if ($food_est->sign_off_status != '1') {
+                        if ($request->data['name_of_operator'] != $operator->name_of_operator) {
+                            DB::beginTransaction();
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 3,
+                                'table_id' => $operator->id,
+                                'system_operation_type_id' => 9,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $request->data['reason']
+                            ])) {
+                                if (EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => 'name_of_operator',
+                                    'old_value' => $operator->name_of_operator,
+                                    'new_value' => $request->data['name_of_operator']
+                                ])) {
+                                    if ($operator->update(
+                                        ['name_of_operator' => $request->data["name_of_operator"]]
+                                    )) {
+                                        DB::commit();
+                                        return "success";
+                                    } else {
+                                        throw new Exception("Error updating operator.");
+                                    }
+                                } else {
+                                    throw new Exception("Operator was not edited. Error recording column changed.");
+                                }
+                            } else {
+                                throw new Exception("This operator was not edited. Error initiating transaction.");
+                            }
+                        } else {
+                            throw new Exception("Name of Operator was not edited. Nothing was updated");
+                        }
+                    } else {
+                        throw new Exception("This food establishment has already been signed off. Operator cannot be edited.");
+                    }
                 } else {
-                    throw new Exception("Error updating operator.");
+                    throw new Exception("Food Establishment Application for this operator does not exist. Operator cannot be deleted.");
                 }
             } else {
                 throw new Exception("Operator not found");
             }
         } catch (Exception $e) {
+            DB::rollBack();
             return $e->getMessage();
         }
     }
@@ -238,26 +274,52 @@ class FoodEstablishmentController extends Controller
     public function deleteOperator(Request $request)
     {
         try {
-            if (count(FoodEstablishmentOperators::where('establishment_application_id', $request->data["est_app_id"])->get()) == 1) {
-                throw new Exception("Cannot delete operator if only one exist.");
-            } else {
-                if (FoodEstablishmentOperators::where('id', $request->data["operator_id"])->update(['deleted_at' => new DateTime()])) {
-                    return "success";
+            if ($food_est = EstablishmentApplications::find($request->data['est_app_id'])) {
+                if ($food_est->sign_off_status != '1') {
+                    if ($operator = FoodEstablishmentOperators::find($request->data['operator_id'])) {
+                        if (count(FoodEstablishmentOperators::where('establishment_application_id', $request->data["est_app_id"])->get()) == 1) {
+                            throw new Exception("Cannot delete operator if only one exist.");
+                        } else {
+                            DB::beginTransaction();
+                            if (EditTransactions::create([
+                                'application_type_id' => 3,
+                                'table_id' => $operator->id,
+                                'system_operation_type_id' => 9,
+                                'edit_type_id' => 2,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $request->data['reason']
+                            ])) {
+                                if ($operator->update(['deleted_at' => new DateTime()])) {
+                                    DB::commit();
+                                    return "success";
+                                } else {
+                                    throw new Exception("Error deleting operator");
+                                }
+                            }
+                        }
+                    } else {
+                        throw new Exception("This operator does not exist. It cannot be deleted.");
+                    }
                 } else {
-                    throw new Exception("Error deleting operator");
+                    throw new Exception("This food establishment application has already been signed off. Operator cannot be deleted.");
                 }
+            } else {
+                throw new Exception("The food establishment application for this operator does not exist");
             }
         } catch (Exception $e) {
+            DB::rollBack();
             return $e->getMessage();
         }
     }
 
     public function getEdit(Request $request)
     {
-        $est_application = EstablishmentApplications::with('operators')->find($request->route('id'));
+        $est_application = EstablishmentApplications::with('operators', 'editTransactions')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::all();
+        $system_operation_type_id = 3;
         $enableEditFeature = "1";
-        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature'));
+        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature', 'system_operation_type_id'));
     }
 
     public function edit(Request $request, $id)

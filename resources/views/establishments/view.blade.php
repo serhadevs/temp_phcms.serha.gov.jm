@@ -241,15 +241,39 @@
                         </div> --}}
 
                     </form>
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            <h4 class="text-muted">Operators</h4>
+                    <div class="row mt-3">
+                        <div class="col col-md-6">
+                            <div class="card" style="height:100%">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="text-muted">Operators</h4>
+                                        </div>
+                                        <div class="col col-auto">
+                                            {{-- <button class="btn-primary btn">
+                                                <i class="bi bi-plus fs-4"></i>
+                                                Add Operator
+                                            </button> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    @include('partials.tables.establishment_operators_table')
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-
-                            @include('partials.tables.establishment_operators_table')
+                        <div class="col col-md-6">
+                            <div class="card" style="height:100%">
+                                <div class="card-header">
+                                    <h4 class="text-muted">Edit Transactions</h4>
+                                </div>
+                                <div class="card-body">
+                                    @include('partials.tables.edit_transactions_table')
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="card-footer">
                     <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous Page</a>
