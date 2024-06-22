@@ -264,6 +264,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/food-establishments/edit/operators', [FoodEstablishmentController::class, 'editOperators'])->name('food-establishment.edit.operators');
      Route::post('/food-establishments/delete/operators', [FoodEstablishmentController::class, 'deleteOperator'])->name('food-establishment.delete.operators');
      Route::delete('/food-establishments/delete/{id}', [FoodEstablishmentController::class, 'destroy'])->name('food-establishment.destroy');
+     Route::post('/food-establishments/operators/create', [FoodEstablishmentController::class, 'createOperator'])->name('food-establishments.operators.add');
      Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class, 'getEdit']);
 
      //Test Exports

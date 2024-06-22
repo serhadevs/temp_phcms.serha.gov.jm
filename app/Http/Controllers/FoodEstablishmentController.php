@@ -201,7 +201,7 @@ class FoodEstablishmentController extends Controller
 
     public function view(Request $request)
     {
-        $est_application = EstablishmentApplications::with('operators', 'editTransactions')->find($request->route('id'));
+        $est_application = EstablishmentApplications::with('operators.editTransactions', 'editTransactions')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::all();
         $enableEditFeature = "0";
         $system_operation_type_id = 3;
@@ -214,6 +214,41 @@ class FoodEstablishmentController extends Controller
         $establishment_categories = EstablishmentCategories::all();
 
         return view('establishments.renew', compact('establishment_categories', 'application'));
+    }
+
+    public function createOperator(Request $request)
+    {
+        try {
+            if ($food_est = EstablishmentApplications::find($request->data['food_establishment_id'])) {
+                if ($food_est->sign_off_status != '1') {
+                    DB::beginTransaction();
+                    if ($operator = FoodEstablishmentOperators::create([
+                        'establishment_application_id' => $request->data['food_establishment_id'],
+                        'name_of_operator' => $request->data['name_of_operator']
+                    ])) {
+                        if (EditTransactions::create([
+                            'application_type_id' => 3,
+                            'table_id' => $operator->id,
+                            'system_operation_type_id' => 9,
+                            'edit_type_id' => 3,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            DB::commit();
+                            return 'success';
+                        }
+                    }
+                } else {
+                    throw new Exception('This food establishment has already been signed off. No operators can be added');
+                }
+            } else {
+                throw new Exception('This Establishment does not exist');
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 
     public function editOperators(Request $request)

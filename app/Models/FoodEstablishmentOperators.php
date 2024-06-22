@@ -34,8 +34,8 @@ class FoodEstablishmentOperators extends Model
 
     public function editTransactions():HasMany{
         return $this->hasMany(EditTransactions::class, 'table_id', 'id')
-        ->where('application_type_id', 1)
-        ->where('system_operation_type', );
+        ->where('application_type_id', 3)
+        ->where('system_operation_type_id', 9);
     }
 
     public $timestamps = true;

@@ -250,10 +250,10 @@
                                             <h4 class="text-muted">Operators</h4>
                                         </div>
                                         <div class="col col-auto">
-                                            {{-- <button class="btn-primary btn">
-                                                <i class="bi bi-plus fs-4"></i>
+                                            <button class="btn-primary btn"
+                                                onclick="addOperator({{ json_encode($est_application->id) }})">
                                                 Add Operator
-                                            </button> --}}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -338,5 +338,73 @@
         </script>
     </div>
     @include('partials.messages.loading_message')
+
+    <script>
+        function addOperator(food_est_id) {
+            swal.fire({
+                icon: 'question',
+                title: 'Add new operator',
+                text: 'Enter name of operator',
+                input: 'text',
+                inputAttributes: {
+                    required: true
+                },
+                showCancelButton: true,
+                showConfirmButton: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swal.fire({
+                        icon: 'question',
+                        title: 'What is the reason you are\n adding this operator?',
+                        text: 'Reason will be recorded.',
+                        input: 'textarea',
+                        inputAttributes: {
+                            required: true
+                        },
+                        showConfirmButton: true,
+                        showCancelButton: true
+                    }).then((result2) => {
+                        swal.fire({
+                            icon: 'warning',
+                            title: 'Are you sure you want to add \n this operator?',
+                            text: 'Ensure correct information was entered.',
+                            showCancelButton: true,
+                            showConfirmButton: true
+                        }).then((result3) => {
+                            if (result3.isConfirmed) {
+                                $.post({!! json_encode(url('/food-establishments/operators/create')) !!}, {
+                                    _method: "POST",
+                                    data: {
+                                        name_of_operator: result.value,
+                                        reason: result2.value,
+                                        food_establishment_id: food_est_id
+                                    },
+                                    _token: "{{ csrf_token() }}"
+                                }).then((data) => {
+                                    if (data == 'success') {
+                                        swal.fire({
+                                            icon: 'success',
+                                            title: 'Done',
+                                            text: 'Operator was added successfully.'
+                                        }).then(esc => {
+                                            if (esc) {
+                                                location.reload();
+                                            }
+                                        })
+                                    } else {
+                                        swal.fire({
+                                            icon: 'error',
+                                            title: 'error',
+                                            text: data
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    })
+                }
+            })
+        }
+    </script>
 
 @endsection
