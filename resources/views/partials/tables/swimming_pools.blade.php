@@ -50,15 +50,15 @@
                         @if ($application->sign_off_status != '1')
                             <a href="/swimming-pools/edit/{{ $application->id }}"
                                 class="btn btn-sm btn-warning mx-1">Edit</a>
+                            <button class="btn btn-sm btn-danger"
+                                onclick="removeEntry('/swimming-pools', {{ json_encode($application->id) }})">
+                                Remove
+                            </button>
                         @endif
                         @if ($application->sign_off_status == '1')
                             <a href="/swimming-pools/renewal/{{ $application->id }}"
                                 class="btn btn-success btn-sm">Renew</a>
                         @endif
-                        <button class="btn btn-sm btn-danger"
-                            onclick="removeEntry('/swimming-pools', {{ json_encode($application->id) }})">
-                            Remove
-                        </button>
                     </td>
                 @endif
             </tr>
