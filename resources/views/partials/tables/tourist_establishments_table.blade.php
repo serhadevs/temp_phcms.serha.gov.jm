@@ -1,4 +1,4 @@
-<table id="tourist_est_table" class="table table-striped" style="width:100%;max-width:100%">
+<table id="tourist_est_table" class="table table-striped table-bordered" style="width:100%;max-width:100%">
     <thead>
         <tr>
             @if (isset($is_results))

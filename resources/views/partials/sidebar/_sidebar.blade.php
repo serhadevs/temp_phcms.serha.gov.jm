@@ -39,7 +39,7 @@
             </a>
         </li>
         <li class="sidebar-item">
-            <a href="/tourist-establishments/filter/0" class="sidebar-link">
+            <a href="/tourist-establishments/filter/00" class="sidebar-link">
                 <i class="bi bi-luggage"></i>
                 <span>Tourist Establishments</span>
             </a>

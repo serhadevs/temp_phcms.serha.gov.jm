@@ -138,7 +138,8 @@ class FoodEstTestResultController extends Controller
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-            $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user')
+            $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user', 'payment')
+                ->has('payment')
                 ->doesntHave('testResults')
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
@@ -155,7 +156,8 @@ class FoodEstTestResultController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user')
+        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user', 'payment')
+            ->has('payment')
             ->doesntHave('testResults')
             ->where('created_at', '>', $filterTimeline)
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
@@ -175,8 +177,9 @@ class FoodEstTestResultController extends Controller
 
         $app_type_id = 3;
 
-        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user')
+        $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'operators', 'user', 'payment')
             ->doesntHave('testResults')
+            ->has('payment')
             ->where('created_at', '>', $timeline['starting_date'])
             ->where('created_at', '<', $timeline['ending_date'] . " 23:59:59")
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)

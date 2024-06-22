@@ -30,7 +30,9 @@ class TouristEstApplicationsController extends Controller
         $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
 
-        if ($id == "0") {
+        // dd($id);
+
+        if ($id === "0") {
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
@@ -47,6 +49,13 @@ class TouristEstApplicationsController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
         } else if ($id == "180") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
+        } else if ($id == '00') {
+            $applications = TouristEstablishments::with('payments', 'managers', 'services')
+                ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->where('created_at', '>', "2022-01-01")
+                ->get();
+
+            return view('tourist_est.index', compact('applications'));
         }
 
         $applications = TouristEstablishments::with('payments', 'managers', 'services')
