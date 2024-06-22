@@ -1,4 +1,4 @@
-<table id="swimming_pool_table" class="table table-striped" style="width:100%;max-width:100%">
+<table id="swimming_pool_table" class="table table-striped table-bordered" style="width:100%;max-width:100%">
     <thead>
         <tr>
             @if (isset($is_results))
@@ -44,18 +44,28 @@
                 <td>{{ $application->application_date }}</td>
                 @if (!isset($is_results))
                     <td>
-                        <a href="/swimming-pools/edit/{{ $application->id }}"
-                            class="btn btn-sm btn-warning mx-1">Edit</a>
+                        <a href="/swimming-pools/view/{{ $application->id }}" class="btn btn-sm btn-primary">
+                            View
+                        </a>
+                        @if ($application->sign_off_status != '1')
+                            <a href="/swimming-pools/edit/{{ $application->id }}"
+                                class="btn btn-sm btn-warning mx-1">Edit</a>
+                        @endif
                         @if ($application->sign_off_status == '1')
                             <a href="/swimming-pools/renewal/{{ $application->id }}"
                                 class="btn btn-success btn-sm">Renew</a>
                         @endif
+                        <button class="btn btn-sm btn-danger"
+                            onclick="removeEntry('/swimming-pools', {{ json_encode($application->id) }})">
+                            Remove
+                        </button>
                     </td>
                 @endif
             </tr>
         @endforeach
     </tbody>
 </table>
+@include('partials.messages.remove_entry_message')
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
