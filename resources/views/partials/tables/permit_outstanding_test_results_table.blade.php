@@ -1,4 +1,4 @@
-<table class="table table-bordered table-striped table-sm nowrap" id="outstanding_results" style="width:100%">
+<table class="table table-bordered table-striped table-sm " id="outstanding_results" style="width:100%">
     <thead>
         <tr>
             <th>Options</th>
