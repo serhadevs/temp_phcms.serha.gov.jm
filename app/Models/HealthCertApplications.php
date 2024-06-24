@@ -80,4 +80,11 @@ class HealthCertApplications extends Model
     {
         return $this->hasMany(TravelHistory::class, 'health_cert_application_id', 'id');
     }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('application_type_id', 2)
+            ->where('system_operation_type_id', 1);
+    }
 }
