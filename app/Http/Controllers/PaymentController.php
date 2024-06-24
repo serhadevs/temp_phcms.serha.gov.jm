@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use DateTime;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Faker\Provider\ar_EG\Payment;
 
 class PaymentController extends Controller
 {
@@ -345,7 +346,7 @@ class PaymentController extends Controller
         //Check if application id exists => Done
         //Check if receipt number exists => New Schema for this
         $new_payment = $request->validated();
-            
+
         $app_id = $new_payment['application_id'];
         $app_type = Prices::find($new_payment['price_id'])->application_type_id;
 
@@ -366,7 +367,7 @@ class PaymentController extends Controller
         $new_payment['cashier_user_id'] = Auth()->user()->id;
         $new_payment['receipt_no'] = rand(1000000, 9999999);
         $register_new_payment = Payments::create($new_payment);
-       
+
         //Get the same information from the printReciept
 
         if (!$register_new_payment) {
@@ -527,6 +528,31 @@ class PaymentController extends Controller
                 }
                 echo $output;
             }
+        }
+    }
+
+    public function fixRobertsIssue()
+    {
+        try {
+            $establishment_clinic = EstablishmentApplications::find(2398);
+            $est_permits = PermitApplication::where('establishment_clinic_id', 2398)->get();
+            // dd($est_permits);
+            foreach ($est_permits as $permit) {
+                Payments::create(
+                    [
+                        'application_type_id' => 1,
+                        'application_id' => $permit->id,
+                        'facility_id' => 2,
+                        'receipt_no' => 6739761,
+                        'amount_paid' => 0,
+                        'total_cost' => 0,
+                        'change_amt' => 0.0,
+                        'cashier_user_id' => 96
+                    ]
+                );
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
     }
 
