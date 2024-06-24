@@ -33,7 +33,7 @@
                     {{ !empty($est->payment) ? Carbon\Carbon::parse($est->payment?->created_at)->format('F j, Y, g:i a') : 'N/A' }}
                 </td>
                 <td class="text-nowrap">{{ $est->telephone }}</td>
-                <td >{{ $est->establishmentCategory?->name }}</td>
+                <td>{{ $est->establishmentCategory?->name }}</td>
                 <td><span
                         class="badge text-bg-{{ !empty($est->signOff) ? 'success' : 'danger' }}">{{ !empty($est->signOff) ? 'COMPLETE' : 'INCOMPLETE' }}</span>
                 </td>
@@ -61,12 +61,19 @@
                     <a class="btn btn-warning btn-sm" href="/food-establishments/edit/{{ $est->id }}">
                         Edit
                     </a>
+                    @if ($est->sign_off_status != '1')
+                        <button class="btn btn-sm btn-danger"
+                            onclick="removeEntry('/food-establishments', {{ json_encode($est->id) }})">
+                            Remove
+                        </button>
+                    @endif
                 </td>
             </tr>
         @endforeach
     </tbody>
 </table>
 
+@include('partials.messages.remove_entry_message')
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>

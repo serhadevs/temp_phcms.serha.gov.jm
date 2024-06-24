@@ -17,6 +17,8 @@
                 }
             } elseif ($system_operation_type_id == 2) {
                 $transactions = $application->healthInterviews;
+            } elseif ($system_operation_type_id == 3) {
+                $transactions = $est_application;
             }
         } else {
             $transactions = $application;
@@ -40,6 +42,24 @@
             @if ($system_operation_type_id == 2)
                 @foreach ($transactions->symptomsWithTrashed as $item)
                     @foreach ($item->editTransactions as $edit)
+                        <tr>
+                            <td>{{ $edit->editType?->name }}</td>
+                            <td>{{ $edit->reason }}</td>
+                            <td>{{ $edit->user?->firstname . ' ' . $edit->user?->lastname }}</td>
+                            <td>{{ $edit->created_at }}</td>
+                            <td>
+                                <button class="btn btn-primary mx-2 btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"
+                                    onclick="popChangedTable({{ json_encode($edit->changedColumns) }})" type="button">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
+            @elseif($system_operation_type_id == 3)
+                @foreach ($transactions->operators as $operator)
+                    @foreach ($operator->editTransactions as $edit)
                         <tr>
                             <td>{{ $edit->editType?->name }}</td>
                             <td>{{ $edit->reason }}</td>

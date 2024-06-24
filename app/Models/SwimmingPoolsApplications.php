@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class SwimmingPoolsApplications extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     // use Loggable;
 
     protected $table = "swimming_pools_applications";
@@ -45,5 +48,12 @@ class SwimmingPoolsApplications extends Model
     public function signOff(): HasOne
     {
         return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', 5);
+    }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('application_type_id', 5)
+            ->where('system_operation_type_id', 1);
     }
 }

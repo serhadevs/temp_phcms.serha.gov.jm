@@ -124,8 +124,10 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/swimming-pools/store', [SwimmingPoolsApplicationController::class, 'store'])->name('swimming-pools.store');
      Route::get('/swimming-pools/filter/{id}', [SwimmingPoolsApplicationController::class, 'index'])->name('swimming-pools.index.filter');
      Route::post('/swimming-pools/filter', [SwimmingPoolsApplicationController::class, 'customIndex'])->name('swimming-pools.custom.filter');
+     Route::get('/swimming-pools/view/{id}', [SwimmingPoolsApplicationController::class, 'view'])->name('swimming-pools.view');
      Route::get('/swimming-pools/edit/{id}', [SwimmingPoolsApplicationController::class, 'edit'])->name('swimming-pools.edit');
      Route::put('/swimming-pools/update/{id}', [SwimmingPoolsApplicationController::class, 'update'])->name('swimming-pools.update');
+     Route::delete('/swimming-pools/delete/{id}', [SwimmingPoolsApplicationController::class, 'destroy'])->name('swimming-pools.delete');
 
      //Payment Routes
      Route::get("/payments/create", [PaymentController::class, 'create'])->name('payments.create');
@@ -263,6 +265,8 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::post('/food-establishments/update/{id}', [FoodEstablishmentController::class, 'edit'])->name('food-establishment.update');
      Route::post('/food-establishments/edit/operators', [FoodEstablishmentController::class, 'editOperators'])->name('food-establishment.edit.operators');
      Route::post('/food-establishments/delete/operators', [FoodEstablishmentController::class, 'deleteOperator'])->name('food-establishment.delete.operators');
+     Route::delete('/food-establishments/delete/{id}', [FoodEstablishmentController::class, 'destroy'])->name('food-establishment.destroy');
+     Route::post('/food-establishments/operators/create', [FoodEstablishmentController::class, 'createOperator'])->name('food-establishments.operators.add');
      Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class, 'getEdit']);
 
      //Test Exports

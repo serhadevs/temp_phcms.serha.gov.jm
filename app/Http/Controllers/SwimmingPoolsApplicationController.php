@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\Renewals;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TestResult;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class SwimmingPoolsApplicationController extends Controller
 {
@@ -125,9 +129,12 @@ class SwimmingPoolsApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function view($id)
     {
-        //
+        $application = SwimmingPoolsApplications::find($id);
+        $is_edit = 0;
+
+        return view('swimming_pools.edit', compact('application', 'is_edit'));
     }
 
     /**
@@ -157,16 +164,57 @@ class SwimmingPoolsApplicationController extends Controller
             'firstname' => 'required',
             'middlename' => 'required',
             'lastname' => 'required',
-            'swimming_pool_address' => 'required'
+            'swimming_pool_address' => 'required',
+            'edit_reason' => 'required'
         ]);
 
-        $application = SwimmingPoolsApplications::find($id);
-
-        if ($application->update($update_pool)) {
-            return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('success', 'Swimming Pool Application for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+        try {
+            if ($s_pool = SwimmingPoolsApplications::find($id)) {
+                if ($s_pool->sign_off_status != '1') {
+                    $edit_reason = $update_pool['edit_reason'];
+                    unset($update_pool['edit_reason']);
+                    if (!empty($differences = array_diff_assoc($update_pool, SwimmingPoolsApplications::select('firstname', 'middlename', 'lastname', 'swimming_pool_address')->find($id)->toArray()))) {
+                        DB::beginTransaction();
+                        if ($edit_trans = EditTransactions::create([
+                            'application_type_id' => 5,
+                            'table_id' => $s_pool->id,
+                            'system_operation_type_id' => 1,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $edit_reason
+                        ])) {
+                            foreach ($differences as $key => $value) {
+                                if (!EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_trans->id,
+                                    'column_name' => $key,
+                                    'old_value' => $s_pool->toArray()[$key],
+                                    'new_value' => $update_pool[$key]
+                                ])) {
+                                    throw new Exception("Error updating Swimming Pool. Issue recording the changed columns");
+                                }
+                            }
+                            if ($s_pool->update($update_pool)) {
+                                DB::commit();
+                                return redirect()->route('swimming-pools.view', ['id' => $s_pool->id])->with('success', 'Swimming Pool Application for ' . $s_pool->firstname . ' ' . $s_pool->lastname . ':' . $s_pool->id . ' has been updated successfully.');
+                            } else {
+                                throw new Exception("Error updating swimming pool.");
+                            }
+                        } else {
+                            throw new Exception("Swimming Pool was not edited. Error initiating transaction");
+                        }
+                    } else {
+                        throw new Exception("No fields were changed. Nothing was updated.");
+                    }
+                } else {
+                    throw new Exception("This swimming pool has already been signed off. Application cannot be edited.");
+                }
+            } else {
+                throw new Exception("This Swimming Pool does not exist");
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('error', 'Error processing application information.');
     }
 
     public function renewal($id)
@@ -211,8 +259,42 @@ class SwimmingPoolsApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try {
+            if ($s_pool = SwimmingPoolsApplications::find($id)) {
+                if ($s_pool->sign_off_status != '1') {
+                    DB::beginTransaction();
+                    if (EditTransactions::create([
+                        'application_type_id' => 5,
+                        'table_id' => $s_pool->id,
+                        'system_operation_type_id' => 1,
+                        'edit_type_id' => 2,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $request->data['reason']
+                    ])) {
+                        if ($s_pool->update(['deleted_at' => new DateTime()])) {
+                            DB::commit();
+                            return [
+                                'success',
+                                'Swimming Pool Application for ' . $s_pool->firstname . ' ' . $s_pool->lastname . ':' . $s_pool->id . ' has been deleted successfully'
+                            ];
+                        } else {
+                            throw new Exception('Error deleting swimming pool.');
+                        }
+                    } else {
+                        throw new Exception('Error initiating transaction. This swimming pool was not deleted.');
+                    }
+                } else {
+                    throw new Exception('This swimming pool has already been signed off. Application cannot be deleted.');
+                }
+            } else {
+                throw new Exception("This swimming pool application does not exist");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

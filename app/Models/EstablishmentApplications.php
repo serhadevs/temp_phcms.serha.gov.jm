@@ -79,4 +79,11 @@ class EstablishmentApplications extends Model
     {
         return $this->belongsTo(Renewals::class, 'id', 'new_application_id')->where('application_type_id', 3);
     }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('application_type_id', 3)
+            ->where('system_operation_type_id', 1);
+    }
 }
