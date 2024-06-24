@@ -1,4 +1,4 @@
-<table class="table table-striped no-wrap" id="food_handlers_permit" style="width:100%">
+<table class="table table-striped nowrap table-bordered table-responsive-sm" id="food_handlers_permit" style="width:100%">
     <thead>
         {{-- Only shows your facility --}}
         <tr>

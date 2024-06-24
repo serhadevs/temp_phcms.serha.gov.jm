@@ -1,4 +1,4 @@
-<table id="edit_transactions_table" class="table table-striped" style="width:100%;max-width:100%">
+<table id="edit_transactions_table" class="table table-striped table-sm nowrap" style="width:100%;max-width:100%">
     <thead>
         <tr>
             <th>Edit Type</th>

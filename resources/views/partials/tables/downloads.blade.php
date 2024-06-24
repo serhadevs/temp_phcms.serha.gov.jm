@@ -1,4 +1,4 @@
-<table class="table table-striped no-warp" id="downloads_table" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="downloads_table" style="width:100%">
     <thead>
         <tr>
             <th class="sorting_disabled">

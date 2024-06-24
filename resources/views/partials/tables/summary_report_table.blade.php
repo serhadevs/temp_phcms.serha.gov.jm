@@ -1,4 +1,4 @@
-<table class="table table-striped no-wrap" id="summary_report" style="width:100%">
+<table class="table table-striped nowrap" id="summary_report" style="width:100%">
     <thead>
         <tr>
             <th class="sorting_disabled">Application Type</th>
