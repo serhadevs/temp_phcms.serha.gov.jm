@@ -1,4 +1,4 @@
-<table class="table table-striped nowrap table-bordered table-responsive-sm" id="processed_health_interviews" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="processed_health_interviews" style="width:100%">
     <thead>
         <tr>
             <th>App#</th>

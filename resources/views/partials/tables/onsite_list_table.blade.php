@@ -1,4 +1,4 @@
-<table class="table table-bordered table-striped nowrap table-sm" id="food_clinics" style="width:100%">
+<table class="table table-bordered table-striped nowrap" id="food_clinics" style="width:100%">
     <thead>
         <tr>
             <th>App #</th>

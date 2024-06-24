@@ -1,4 +1,4 @@
-<table class="table table-striped nowrap table-bordered table-responsive-sm" id="payment_info" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="payment_info" style="width:100%">
     <thead>
         <tr>
             <th>
