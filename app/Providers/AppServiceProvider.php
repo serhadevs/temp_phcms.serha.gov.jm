@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\StmpSettings;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +26,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if (Schema::hasTable('stmp_settings')) {
+            $stmpsettings = StmpSettings::first();
+    
+            if ($stmpsettings) {
+                $data = [
+                    'host' => $stmpsettings->host,
+                    'port' => $stmpsettings->port,
+                    'username' => $stmpsettings->username,
+                    'password' => $stmpsettings->password,
+                    'encryption' => $stmpsettings->encryption,
+                    'from' => [
+                        'address' => $stmpsettings->from_address,
+                        'name' => 'PHCMS'
+                    ]
+                ];
+    
+                Config::set('mail', array_merge(Config::get('mail'), $data));
+            }
+        }
     }
 }

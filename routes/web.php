@@ -14,7 +14,7 @@ use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
 use App\Http\Controllers\PermitApplicationController;
-
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PermitTestResultsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SignOffController;
@@ -317,6 +317,11 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
 
       Route::get('/inspections/filter/{id}',[FoodEstablishmentController::class, 'showInspections']);
       Route::get('/inspections/filter',[FoodEstablishmentController::class, 'showInspectionsCustom']);
+
+      //Admin Settings
+      Route::get('/admin/settings',[SettingsController::class, 'index'])->name('admin.index');
+      Route::get('/admin/settings/stmp',[SettingsController::class,'create'])->name('admin.create.stmp');
+      Route::post('/admin/stmp/update',[SettingsController::class, 'store'])->name('admin.stmp.update');
 
     
      //Logout Routes

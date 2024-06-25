@@ -29,7 +29,7 @@ class PermitApplicationRequest extends FormRequest
             'middlename' => "nullable",
             'lastname' => "required",
             'address' => 'required',
-            'date_of_birth' => 'required',
+            'date_of_birth' => 'required|date',
             'gender' => 'required',
             'permit_type' => 'required',
             'no_of_years' => 'required_if:permit_type,=,student',
