@@ -79,9 +79,9 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::get('/barber-cosmet/view/{id}', [BarberCosmetApplicationsController::class, 'show'])->name('barber-cosmet.view');
 
      //Edit Health Cert Applications
-     Route::put('/barber-cosmet/edit/applicant', [BarberCosmetApplicationsController::class, 'editApplicant'])->name('barber-cosmet.edit.applicant');
-     Route::put('/barber-cosmet/edit/employment', [BarberCosmetApplicationsController::class, 'editEmp'])->name('barber-cosmet.edit.employment');
-     Route::put('/barber-cosmet/edit/appointment', [BarberCosmetApplicationsController::class, 'editAppointment'])->name('barber-cosmet.edit.appointments');
+     Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
+     Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
+     Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
      Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
 
      //Tourist Establishment Route

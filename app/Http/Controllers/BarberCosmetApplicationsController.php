@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Appointments;
 use App\Models\ExamDates;
 use App\Http\Requests\HealthCertificateRequest;
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
+use App\Models\ExamSites;
 use App\Models\HealthCertApplications;
 use App\Models\HealthInterview;
 use App\Models\Renewals;
@@ -12,6 +15,8 @@ use App\Models\TestResult;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class BarberCosmetApplicationsController extends Controller
 {
@@ -145,7 +150,9 @@ class BarberCosmetApplicationsController extends Controller
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
 
-        return view('barbercosmet.view', compact('application', 'exam_sessions'));
+        $system_operation_type_id = 6;
+
+        return view('barbercosmet.view', compact('application', 'exam_sessions', 'system_operation_type_id'));
     }
 
     /**
@@ -154,7 +161,7 @@ class BarberCosmetApplicationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editApplicant(Request $request)
+    public function updateApplicant(Request $request, $id)
     {
         $applicant_info = $request->validate([
             'firstname' => 'required',
@@ -164,16 +171,58 @@ class BarberCosmetApplicationsController extends Controller
             'date_of_birth' => 'required|date',
             'sex' => 'required',
             'telephone' => 'required',
-            'email' => 'nullable|email'
+            'email' => 'nullable|email',
+            'edit_reason_one' => 'required'
         ]);
 
-        $application = HealthCertApplications::find($request->id);
-
-        if ($application->update($applicant_info)) {
-            return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Applicant Information for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+        try {
+            if ($bar_application = HealthCertApplications::find($id)) {
+                if ($bar_application->sign_off_status != '1') {
+                    $edit_reason = $applicant_info['edit_reason_one'];
+                    unset($applicant_info['edit_reason_one']);
+                    if (!empty($differences = array_diff_assoc($applicant_info, HealthCertApplications::select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'sex', 'telephone', 'email')->find($id)->toArray()))) {
+                        DB::beginTransaction();
+                        if ($edit_transaction = EditTransactions::create([
+                            'application_type_id' => 2,
+                            'table_id' => $bar_application->id,
+                            'system_operation_type_id' => 1,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $edit_reason
+                        ])) {
+                            foreach ($differences as $key => $value) {
+                                if (!EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => $key,
+                                    'old_value' => $bar_application->toArray()[$key],
+                                    'new_value' => $applicant_info[$key]
+                                ])) {
+                                    throw new Exception("Error updating application. Error recording fields changed.");
+                                }
+                            }
+                            if ($bar_application->update($applicant_info)) {
+                                DB::commit();
+                                return redirect()->route('barber-cosmet.view', ['id' => $id])->with('success', 'Applicant Information for ' . $bar_application->firstname . ' ' . $bar_application->lastname . ' has been updated successfully.');
+                            } else {
+                                throw new Exception("Error updating application. Unable to update record.");
+                            }
+                        } else {
+                            throw new Exception("Application was not updated. Error initiating transaction.");
+                        }
+                    } else {
+                        throw new Exception("No fields were changed. Update was not processed");
+                    }
+                } else {
+                    throw new Exception("This application has already been signed off. Application cannot be edited.");
+                }
+            } else {
+                throw new Exception("This application does not exist");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->route('barber-cosmet.view', ['id' => $id])->with('error', $e->getMessage());
         }
-
-        return redirect()->route('barber-cosmet.index', ['id' => 0])->with('error', 'Employment and Application Information was not updated');
     }
 
     public function edit(Request $request)
@@ -185,48 +234,139 @@ class BarberCosmetApplicationsController extends Controller
             ->get();
 
         $edit_mode = 1;
+        $system_operation_type_id = 6;
 
-        return view('barbercosmet.view', compact('application', 'exam_sessions', 'edit_mode'));
+        return view('barbercosmet.view', compact('application', 'exam_sessions', 'edit_mode', 'system_operation_type_id'));
     }
 
-    public function editEmp(Request $request)
+    public function updateEmp(Request $request, $id)
     {
-        $application_info = $request->validate([
+        $updated_info = $request->validate([
             'occupation' => 'nullable',
             'employer' => 'nullable',
             'employer_address' => 'nullable',
             'applied_before' => 'required',
             'granted' => 'required_if:applied_before,1',
-            'reason' => 'required_if:granted,0|max:255'
+            'reason' => 'required_if:granted,0|max:255',
+            'edit_reason_two' => 'required'
         ]);
 
-        $application = HealthCertApplications::find($request->id);
-
-        if ($application->update($application_info)) {
-            return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Employment and Application Information for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+        try {
+            if ($bar_application = HealthCertApplications::find($id)) {
+                if ($bar_application->sign_off_status != '1') {
+                    $edit_reason = $updated_info['edit_reason_two'];
+                    unset($updated_info['edit_reason_two']);
+                    if (!empty($differences = array_diff_assoc($updated_info, HealthCertApplications::select('occupation', 'employer', 'employer_address', 'applied_before', 'granted', 'reason')->find($id)->toArray()))) {
+                        DB::beginTransaction();
+                        if ($edit_transaction = EditTransactions::create([
+                            'application_type_id' => 2,
+                            'table_id' => $bar_application->id,
+                            'system_operation_type_id' => 1,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $edit_reason
+                        ])) {
+                            foreach ($differences as $key => $value) {
+                                if (!EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => $key,
+                                    'old_value' => $bar_application->toArray()[$key],
+                                    'new_value' => $updated_info[$key]
+                                ])) {
+                                    throw new Exception("Error updating application. Error recording fields changed.");
+                                }
+                            }
+                            if ($bar_application->update($updated_info)) {
+                                DB::commit();
+                                return redirect()->route('barber-cosmet.view', ['id' => $id])->with('success', 'Employment and Application Information for ' . $bar_application->firstname . ' ' . $bar_application->lastname . ' has been updated successfully.');
+                            } else {
+                                throw new Exception("Error updating application. Unable to update record.");
+                            }
+                        } else {
+                            throw new Exception("Application was not updated. Error initiating transaction.");
+                        }
+                    } else {
+                        throw new Exception("No fields were changed. Update was not processed");
+                    }
+                } else {
+                    throw new Exception("This application has already been signed off. Application cannot be edited.");
+                }
+            } else {
+                throw new Exception("This application does not exist");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->route('barber-cosmet.view', ['id' => $id])->with('error', $e->getMessage());
         }
 
-        return redirect()->route('barber-cosmet.index', ['id' => 0])->with('error', 'Employment and Application Information was not updated');
+        // $application = HealthCertApplications::find($request->id);
+
+        // if ($application->update($application_info)) {
+        //     return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Employment and Application Information for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+        // }
+
+        // return redirect()->route('barber-cosmet.index', ['id' => 0])->with('error', 'Employment and Application Information was not updated');
     }
 
-    public function editAppointment(Request $request)
+    public function updateAppointment(Request $request, $id)
     {
         $appointment_info = $request->validate([
             'appointment_date' => 'required',
-            'exam_date_id' => 'required'
+            'exam_date_id' => 'required',
+            'edit_reason_three' => 'required'
         ]);
 
-        $application = HealthCertApplications::find($request->id);
-
-        if (Appointments::where('health_cert_application_id', $request->id)
-            ->orderBy('created_at', 'desc')
-            ->first()
-            ->update($appointment_info)
-        ) {
-            return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Appointment information for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+        try {
+            if ($appointment = Appointments::find($id)) {
+                if ($bar_application = HealthCertApplications::find($appointment->health_cert_application_id)) {
+                    if ($bar_application->sign_off_status != '1') {
+                        $edit_reason = $appointment_info['edit_reason_three'];
+                        unset($appointment_info['edit_reason_three']);
+                        if (!empty($differences = array_diff_assoc($appointment_info, Appointments::select('appointment_date', 'exam_date_id')->find($id)->toArray()))) {
+                            DB::beginTransaction();
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 2,
+                                'table_id' => $appointment->id,
+                                'system_operation_type_id' => 6,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $edit_reason
+                            ])) {
+                                foreach ($differences as $key => $value) {
+                                    if (!EditTransactionsChangedColumns::create([
+                                        'edit_transaction_id' => $edit_transaction->id,
+                                        'column_name' => $key,
+                                        'old_value' => $key == 'exam_date_id' ? ExamDates::find($appointment->exam_date_id)->exam_day . ' ' . ExamDates::find($appointment->exam_date_id)->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($appointment->exam_date_id)->exam_site_id)->name : $appointment->toArray()[$key],
+                                        'new_value' => $key == 'exam_date_id' ? ExamDates::find($appointment_info['exam_date_id'])->exam_day . ' ' . ExamDates::find($appointment_info['exam_date_id'])->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($appointment_info['exam_date_id'])->exam_site_id)->name : $appointment_info[$key]
+                                    ])) {
+                                        throw new Exception("Error processing update. Unable to record changed fields.");
+                                    }
+                                }
+                                if ($appointment->update($appointment_info)) {
+                                    DB::commit();
+                                    return redirect()->route('barber-cosmet.view', ['id' => $bar_application->id])->with('success', 'Appointment information for ' . $bar_application->firstname . ' ' . $bar_application->lastname . ' has been updated successfully.');
+                                }
+                            } else {
+                                throw new Exception("Error updating appointment. Error initiating transaction.");
+                            }
+                        } else {
+                            throw new Exception("No fields were changed. Nothing was updated.");
+                        }
+                    } else {
+                        throw new Exception("This application has already been signed off. Edits are not permitted.");
+                    }
+                } else {
+                    throw new Exception("This application does exist.");
+                }
+            } else {
+                throw new Exception("This appointment does not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        return redirect()->route('barber-cosmet.index', ['id' => 0])->with('error', 'Appointment information was not updated.');
     }
 
 

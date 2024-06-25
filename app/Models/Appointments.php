@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -37,5 +38,11 @@ class Appointments extends Model
     public function examDate(): HasOne
     {
         return $this->hasOne(ExamDates::class, 'id', 'exam_date_id')->withTrashed();
+    }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('system_operation_type_id', 6);
     }
 }

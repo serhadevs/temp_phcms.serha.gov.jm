@@ -21,8 +21,8 @@
             @endif
             <div class="card">
                 @include('partials.messages.table_loading')
-                <div class="card-body">
-                    <div class="row justify-content-between mb-4">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
                                 All Barber/Cosmet.etc Applications
@@ -44,7 +44,8 @@
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item" href="/barber-cosmet/filter/0">Today</a>
                                             </li>
-                                            <li><a class="dropdown-item" href="/barber-cosmet/filter/1">Yesterday</a></li>
+                                            <li><a class="dropdown-item" href="/barber-cosmet/filter/1">Yesterday</a>
+                                            </li>
                                             <li><a class="dropdown-item" href="/barber-cosmet/filter/7">Last
                                                     Week</a></li>
                                             <li><a class="dropdown-item" href="/barber-cosmet/filter/30">Last
@@ -59,38 +60,40 @@
                                 </div>
                             </div>
                         </div>
-                        <form action="{{ route('baber-cosmet.custom.filter') }}" method="POST">
-                            @csrf
-                            @method('POST')
-                            <div class="row text-center justify-content-md-center" id="search-row" style="display:none">
-                                <div class="col col-md-3">
-                                    <input type="date" class="form-control" placeholder="Starting Date"
-                                        name="starting_date" value="{{ old('starting_date') }}" id="starting_date">
-                                    <input type="text" id="interval" class="form-control" name="interval" hidden>
-                                    @error('starting_date')
-                                        <p class="fw-bold text-danger errors">{{ $message }}</p>
-                                    @enderror
-                                    @error('interval')
-                                        <p class="fw-bold text-danger errors">Interval must be 6 months or less</p>
-                                    @enderror
-                                </div>
-                                To
-                                <div class="col col-md-3">
-                                    <input type="date" class="form-control" placeholder="Ending Date" name="ending_date"
-                                        value="{{ old('ending_date') }}" id="ending_date">
-                                    @error('ending_date')
-                                        <p class="fw-bold text-danger errors">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div class="col col-md-1">
-                                    <button class="btn btn-md btn-success" type="submit">
-                                        Submit
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
                     </div>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('baber-cosmet.custom.filter') }}" method="POST">
+                        @csrf
+                        @method('POST')
+                        <div class="row text-center justify-content-md-center" id="search-row" style="display:none">
+                            <div class="col col-md-3">
+                                <input type="date" class="form-control" placeholder="Starting Date" name="starting_date"
+                                    value="{{ old('starting_date') }}" id="starting_date">
+                                <input type="text" id="interval" class="form-control" name="interval" hidden>
+                                @error('starting_date')
+                                    <p class="fw-bold text-danger errors">{{ $message }}</p>
+                                @enderror
+                                @error('interval')
+                                    <p class="fw-bold text-danger errors">Interval must be 6 months or less</p>
+                                @enderror
+                            </div>
+                            To
+                            <div class="col col-md-3">
+                                <input type="date" class="form-control" placeholder="Ending Date" name="ending_date"
+                                    value="{{ old('ending_date') }}" id="ending_date">
+                                @error('ending_date')
+                                    <p class="fw-bold text-danger errors">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="col col-md-1">
+                                <button class="btn btn-md btn-success" type="submit">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                     @include('partials.tables.barber_cosmet_table')
                 </div>
 
