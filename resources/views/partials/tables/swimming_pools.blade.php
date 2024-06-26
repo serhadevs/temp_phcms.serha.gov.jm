@@ -1,4 +1,4 @@
-<table id="swimming_pool_table" class="table table-striped table-bordered" style="width:100%;max-width:100%">
+<table id="swimming_pool_table" class="table table-striped table-bordered nowrap" style="width:100%;max-width:100%">
     <thead>
         <tr>
             @if (isset($is_results))

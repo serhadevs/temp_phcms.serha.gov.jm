@@ -1,4 +1,4 @@
-<table id="tourist_est_managers_table" class="table table-striped " style="width:100%;">
+<table id="tourist_est_managers_table" class="table table-striped nowrap table-bordered" style="width:100%;">
     <thead>
         <tr>
             <th>First Name</th>

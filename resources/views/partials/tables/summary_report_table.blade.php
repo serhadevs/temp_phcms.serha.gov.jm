@@ -1,4 +1,4 @@
-<table class="table table-striped no-wrap" id="summary_report" style="width:100%">
+<table class="table table-striped table-bordered" id="summary_report" style="width:100%">
     <thead>
         <tr>
             <th class="sorting_disabled">Application Type</th>
@@ -22,7 +22,7 @@
             <td>{{ $foodHandlers[4] }}</td>
             <td>{{ $foodHandlers[5] }}</td>
             <td>{{ $foodHandlers[6] }}</td>
-            <td>{{ $foodHandlers[7] }}</td>
+            <td>${{ $foodHandlers[7] }}</td>
         </tr>
         <tr>
             <td>Barber/Cosmet Etc.</td>
@@ -33,7 +33,7 @@
             <td>{{ $barberCosmet[4] }}</td>
             <td>{{ $barberCosmet[5] }}</td>
             <td>{{ $barberCosmet[6] }}</td>
-            <td>{{ $barberCosmet[7] }}</td>
+            <td>${{ $barberCosmet[7] }}</td>
         </tr>
         <tr>
             <td>Food Establishments</td>
@@ -44,7 +44,7 @@
             <td>{{ $foodEstablishments[4] }}</td>
             <td>{{ $foodEstablishments[5] }}</td>
             <td>{{ $foodEstablishments[6] }}</td>
-            <td>{{ $foodEstablishments[7] }}</td>
+            <td>${{ $foodEstablishments[7] }}</td>
         </tr>
         <tr>
             <td>Swimming Pools</td>
@@ -55,7 +55,7 @@
             <td>{{ $swimmingPools[4] }}</td>
             <td>{{ $swimmingPools[5] }}</td>
             <td>{{ $swimmingPools[6] }}</td>
-            <td>{{ $swimmingPools[7] }}</td>
+            <td>${{ $swimmingPools[7] }}</td>
         </tr>
         <tr>
             <td>Tourist Establishments</td>
@@ -66,7 +66,7 @@
             <td>{{ $touristEstablishments[4] }}</td>
             <td>{{ $touristEstablishments[5] }}</td>
             <td>{{ $touristEstablishments[6] }}</td>
-            <td>{{ $touristEstablishments[7] }}</td>
+            <td>${{ $touristEstablishments[7] }}</td>
         </tr>
         <tr>
             <td>Foodhandler Clinics</td>
@@ -77,7 +77,7 @@
             <td>{{ $foodClinics[4] }}</td>
             <td>{{ $foodClinics[5] }}</td>
             <td>{{ $foodClinics[6] }}</td>
-            <td>{{ $foodClinics[7] }}</td>
+            <td>${{ $foodClinics[7] }}</td>
         </tr>
         <tr>
             <td class="fw-bold">Total</td>
@@ -92,7 +92,7 @@
             <td colspan=""></td>
             <td colspan=""></td>
             <td colspan=""></td>
-            <td>{{ $foodHandlers[7] + $barberCosmet[7] + $foodEstablishments[7] + $swimmingPools[7] + $touristEstablishments[7] + $foodClinics[7] }}
+            <td>${{ $foodHandlers[7] + $barberCosmet[7] + $foodEstablishments[7] + $swimmingPools[7] + $touristEstablishments[7] + $foodClinics[7] }}
             </td>
         </tr>
     </tbody>

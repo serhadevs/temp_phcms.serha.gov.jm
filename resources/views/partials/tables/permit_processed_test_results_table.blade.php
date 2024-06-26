@@ -1,4 +1,4 @@
-<table class="table table-striped no-warp" id="processed_results" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="processed_results" style="width:100%">
     <thead>
         <tr>
             <th>App #</th>

@@ -1,4 +1,4 @@
-<table id="travel_history_table" class="table table-striped" style="width:100%;max-width:100%">
+<table id="travel_history_table" class="table table-striped nowrap" style="width:100%;max-width:100%">
     <thead>
         <tr>
             <th>ID</th>

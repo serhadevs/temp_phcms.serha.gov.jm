@@ -297,6 +297,12 @@
                     <span>User Settings</span>
                 </a>
             </li>
+            <li class="sidebar-item">
+                <a href="/admin/settings" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>Adminsitrative Settings</span>
+                </a>
+            </li>
         @else
             <li class="sidebar-item">
                 <a href="#" class="sidebar-link">

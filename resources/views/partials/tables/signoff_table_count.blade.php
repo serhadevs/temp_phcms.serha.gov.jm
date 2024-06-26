@@ -1,4 +1,4 @@
-<table class="table table-striped nowrap table-bordered table-sm" id="sign_off_count" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="sign_off_count" style="width:100%">
     <thead>
         <tr>
             <th>Category</th>

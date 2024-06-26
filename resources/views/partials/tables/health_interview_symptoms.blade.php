@@ -1,4 +1,4 @@
-<table id="symptoms_table" class="table table-striped" style="width:100%;max-width:100%">
+<table id="symptoms_table" class="table table-striped table-bordered nowrap" style="width:100%;max-width:100%">
     <thead>
         <tr>
             <th>ID</th>

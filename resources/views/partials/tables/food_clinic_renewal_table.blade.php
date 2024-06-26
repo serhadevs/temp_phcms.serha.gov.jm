@@ -1,4 +1,4 @@
-<table id="clinic_renewal" class="table-striped table table-bordered" style="width:100%;min-width:100%">
+<table id="clinic_renewal" class="table-striped table table-bordered nowrap" style="width:100%;min-width:100%">
     <thead style="width:100%">
         <tr style="width:100%">
             <th class="sorting_disabled">

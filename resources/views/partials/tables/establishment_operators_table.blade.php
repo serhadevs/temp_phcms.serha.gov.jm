@@ -1,4 +1,4 @@
-<table class="table table-striped no-wrap" id="est_operators" style="width:100%">
+<table class="table table-striped nowrap table-bordered table-sm" id="est_operators" style="width:100%">
     <thead>
         <tr>
             <th>Operator ID</th>

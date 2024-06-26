@@ -1,4 +1,4 @@
-<table class="table table-striped no-warp" id="outstanding_results" style="width:100%">
+<table class="table table-striped nowarp table-bordered" id="outstanding_results" style="width:100%">
     <thead>
         <tr>
             <th>App No.</th>
@@ -77,6 +77,6 @@
         initComplete: function() {
             loading.close()
         }
-        // responsive: true
+        responsive: true
     });
 </script>

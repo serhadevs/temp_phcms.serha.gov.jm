@@ -1,4 +1,4 @@
-<table class="table table-striped no-wrap" id="payment_report" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="payment_report" style="width:100%">
     <thead>
         <tr>
             <th>Application Type</th>{{-- THERE --}}

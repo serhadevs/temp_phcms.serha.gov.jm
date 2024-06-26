@@ -1,4 +1,4 @@
-<table class="table table-striped no-warp" id="outstanding_payment_cancellations" style="width:100%">
+<table class="table table-striped nowrap table-bordered" id="outstanding_payment_cancellations" style="width:100%">
     <thead>
         <tr>
             <th>Cancellation #</th>

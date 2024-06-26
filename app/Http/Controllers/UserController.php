@@ -32,10 +32,11 @@ class UserController extends Controller
                 ->join('roles', 'roles.id', '=', 'users.role_id')
                 ->latest('users.created_at')
                 ->select('users.id', 'users.firstname', 'users.lastname', 'users.facility_id', 'users.role_id', 'users.telephone', 'users.email', 'users.status', 'users.created_at', 'users.updated_at', 'roles.name', 'roles.description')
-                // ->where('users.id',159)
+                ->whereNull('users.deleted_at')
+                ->where('users.status',1)
                 ->get();
 
-                //dd($users);
+            //dd($users);
             $facilities = Facility::all();
         } elseif (Auth::user()->role_id == 2) {
             $users = User::where('facility_id', Auth::user()->facility_id)->get();
@@ -359,26 +360,52 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(Request $request,$id)
-    {
-        //Find the user in the database
-        $user_id = $request->user_id;
-        $user = User::find($user_id);
+    // public function destroy(Request $request,$id)
+    // {
+    //     //Find the user in the database
+    //     $user_id = $request->user_id;
+    //     $user = User::find($user_id);
 
-        //dd($user);
-        //Throw error if there is no results from the query 
+    //     //dd($user);
+    //     //Throw error if there is no results from the query 
+    //     if (!$user) {
+    //         return redirect()->back()->with('error', 'Unable to find the user in the database');
+    //     }
+
+    //     $newStatus = $user->status === "1" ? "0" : "1";
+    //     User::where('id', $user->id)->update(['status' => $newStatus]);
+
+
+    //     if (!$newStatus) {
+    //         return redirect()->back()->with('error', 'Unable to change status in the database');
+    //     }
+
+    //     return redirect()->back()->with("success", "Success!");
+    // }
+
+    public function deactivateUser($id)
+    {
+        // Find the user in the database by ID
+        $user = User::find($id);
+
+        // Throw error if the user is not found
         if (!$user) {
             return redirect()->back()->with('error', 'Unable to find the user in the database');
         }
 
-        $newStatus = $user->status === "1" ? "0" : "1";
-        User::where('id', $user->id)->update(['status' => $newStatus]);
-
-     
-        if (!$newStatus) {
-            return redirect()->back()->with('error', 'Unable to change status in the database');
+        // Check if the user's status is already 0
+        if ($user->status === "0") {
+            return redirect()->back()->with('error', 'User is already deactivated');
         }
 
-        return redirect()->back()->with("success", "Success!");
+        // Update the user's status to 0
+        $updateResult = User::where('id', $user->id)->update(['status' => "0"]);
+
+        // Check if the update was successful
+        if (!$updateResult) {
+            return redirect()->back()->with('error', 'Unable to deactivate user in the database');
+        }
+
+        return redirect()->back()->with("success", "User successfully deactivated");
     }
 }
