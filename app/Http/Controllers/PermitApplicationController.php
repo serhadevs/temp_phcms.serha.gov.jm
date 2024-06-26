@@ -198,13 +198,13 @@ class PermitApplicationController extends Controller
                                 EditTransactionsChangedColumns::create([
                                     'edit_transaction_id' => $edit_transaction->id,
                                     'column_name' => $key,
-                                    'old_value' => $permit->toArray()[$key],
-                                    'new_value' => $edits[$key]
+                                    'old_value' => $key == 'permit_category_id' ? PermitCategory::find($permit?->permit_category_id)->name : $permit->toArray()[$key],
+                                    'new_value' => $key == 'permit_category_id' ? PermitCategory::find($edits['permit_category_id'])->name : $edits[$key]
                                 ]);
                             }
                             if ($permit->update($edits)) {
                                 DB::commit();
-                                return redirect()->route('permit.index', ['id' => 0])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ' has be updated successfully']);
+                                return redirect()->route('permit.application.view', ['id' => $permit->id])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ':' . $permit->id . ' has be updated successfully']);
                             } else {
                                 throw new Exception("Error updating Food Handlers Application. Unable to update Permit Application.");
                             }
@@ -222,7 +222,7 @@ class PermitApplicationController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->route('permit.index', ['id' => 0])->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
