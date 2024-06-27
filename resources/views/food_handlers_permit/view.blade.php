@@ -240,6 +240,15 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    <div class="card mt-2">
+                                        <h5 class="card-header text-muted">
+                                            Messages
+                                        </h5>
+                                        <div class="card-body">
+                                            No Messages Sent to {{ $permit_application->firstname }} {{ $permit_application->lastname }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col col-md-9">
