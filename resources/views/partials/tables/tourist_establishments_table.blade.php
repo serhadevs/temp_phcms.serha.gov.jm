@@ -55,6 +55,11 @@
                         @if ($application->sign_off_status == '1')
                             <a href="/tourist-establishments/renewal/{{ $application->id }}"
                                 class="btn btn-sm btn-success mx-1">Renew</a>
+                        @else
+                            <button class="btn btn-danger btn-sm" type="button"
+                                onclick="removeEntry('/tourist-establishments', {{ json_encode($application->id) }})">
+                                Remove
+                            </button>
                         @endif
                     @endif
                 </td>
@@ -63,6 +68,7 @@
     </tbody>
 </table>
 
+@include('partials.messages.remove_entry_message')
 {{-- Managers Modal --}}
 @foreach ($applications as $application)
     <div class="modal fade" id="managers-{{ $application->id }}" data-bs-backdrop="static" data-bs-keyboard="false"

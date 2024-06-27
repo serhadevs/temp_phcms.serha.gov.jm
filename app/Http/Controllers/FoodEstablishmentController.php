@@ -146,6 +146,7 @@ class FoodEstablishmentController extends Controller
 
     public function storeRenewal(Request $request)
     {
+        //Delete Test Results
         $food_est_application = $request->validate([
             'current_est_closed' => 'required',
             // 'new_est' => 'accepted:1',

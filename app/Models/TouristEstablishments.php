@@ -41,31 +41,45 @@ class TouristEstablishments extends Model
 
     public $timestamps = true;
 
-    public function signOffs():HasOne{
-        return $this->hasOne(SignOff::class,'application_id', 'id')->where('application_type_id', 6);
+    public function signOffs(): HasOne
+    {
+        return $this->hasOne(SignOff::class, 'application_id', 'id')->where('application_type_id', 6);
     }
 
-    public function testResults():HasOne{
+    public function testResults(): HasOne
+    {
         return $this->hasOne(TestResult::class, 'application_id', 'id')->where('application_type_id', 6);
     }
 
-    public function payments():HasOne{
+    public function payments(): HasOne
+    {
         return $this->hasOne(Payments::class, 'application_id', 'id')->where('application_type_id', 6);
     }
 
-    public function printableApplication():HasOne{
+    public function printableApplication(): HasOne
+    {
         return $this->hasOne(PrintableApplications::class, 'application_id', 'id');
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function managers():HasMany{
+    public function managers(): HasMany
+    {
         return $this->hasMany(TouristEstManagers::class, 'tourist_establishment_id', 'id');
     }
 
-    public function services():HasMany{
+    public function services(): HasMany
+    {
         return $this->hasMany(TouristEstServices::class, 'tourist_establishment_id', 'id');
+    }
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('system_operation_type_id', 1)
+            ->where('application_type_id', 6);
     }
 }

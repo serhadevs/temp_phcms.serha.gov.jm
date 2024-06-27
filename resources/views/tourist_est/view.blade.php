@@ -6,11 +6,13 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
+        @include('partials.messages.messages')
         <div class="container-fluid mb-4">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h2 class="text-muted">Toursist Establishment {{ $application->establishment_name }}</h2>
-                    <hr>
+                </div>
+                <div class="card-body">
                     <div class="row">
                         <div class="col">
                             <label for="" class="form-label">Application ID</label>
@@ -47,7 +49,7 @@
                                 disabled>
                         </div>
                     </div>
-                    <form action="{{ route('tourist-establishments.update') }}" method="POST">
+                    <form action="{{ route('tourist-establishments.update', ['id' => $application->id]) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <input class="form-control" type="hidden" value="{{ $application->id }}" name="app_id">
@@ -158,6 +160,16 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="mt-3" style="display:none" id="edit_reason_div">
+                            <label for="" class="form-label">
+                                <span class="text-danger fw-bold">*</span>
+                                Reason for edit
+                            </label>
+                            <textarea name="edit_reason" class="form-control">{{ old('edit_reason') }}</textarea>
+                            @error('edit_reason')
+                                <p class="text-danger error">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <button type="button" class="btn btn-warning mt-3" onclick="enableEditing()"
                             id="btn_edit">Edit
                             Application</button>
@@ -173,7 +185,7 @@
                         </div>
                     </form>
                     <div class="card mt-4">
-                        <div class="card-body">
+                        <div class="card-header">
                             <div class="row justify-content-between">
                                 <div class="col">
                                     <h4 class="text-muted">Management Team</h4>
@@ -184,24 +196,42 @@
                                         Member</a>
                                 </div>
                             </div>
-                            <hr>
+                        </div>
+                        <div class="card-body">
                             @include('partials.tables.tourist_est_managers')
                         </div>
                     </div>
-                    <div class="card mt-4">
-                        <div class="card-body">
-                            <div class="row justify-content-between">
-                                <div class="col">
-                                    <h4 class="text-muted">Services/Facilities of Establishment</h4>
+                    <div class="row mt-4">
+                        <div class="col col-md-6">
+                            <div class="card" style="height:100%">
+                                <div class="card-header">
+                                    <div class="row justify-content-between">
+                                        <div class="col">
+                                            <h4 class="text-muted">Services/Facilities of Establishment</h4>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button onclick="addService({{ json_encode($application->id) }})"
+                                                class="btn btn-primary">Add New Service</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-auto">
-                                    <button onclick="addService({{ json_encode($application->id) }})" class="btn btn-primary">Add New Service</button>
+                                <div class="card-body">
+                                    @include('partials.tables.tourist_est_services_table')
                                 </div>
                             </div>
-                            <hr>
-                            @include('partials.tables.tourist_est_services_table')
+                        </div>
+                        <div class="col col-md-6">
+                            <div class="card" style="height:100%">
+                                <div class="card-header">
+                                    <h4 class="text-muted">Edit Transactions</h4>
+                                </div>
+                                <div class="card-body">
+                                    @include('partials.tables.edit_transactions_table')
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="card-footer">
                     <button class="btn-danger btn" onclick="history.back()">
@@ -235,6 +265,7 @@
                 document.getElementById('officer_lastname').removeAttribute('disabled');
                 document.getElementById('authorized_officer_statement').removeAttribute('disabled');
                 document.getElementById('statement_date').removeAttribute('disabled');
+                document.getElementById('edit_reason_div').style.display = "";
                 document.getElementById('update_div').style.display = "";
                 document.getElementById('btn_edit').style.display = "none";
             }
@@ -249,6 +280,7 @@
                 document.getElementById('officer_firstname').setAttribute('disabled', 'true');
                 document.getElementById('officer_lastname').setAttribute('disabled', 'true');
                 document.getElementById('authorized_officer_statement').setAttribute('disabled', 'true');
+                document.getElementById('edit_reason_div').style.display = "none";
                 document.getElementById('statement_date').setAttribute('disabled', 'true');
                 document.getElementById('update_div').style.display = "none";
                 document.getElementById('btn_edit').style.display = "";

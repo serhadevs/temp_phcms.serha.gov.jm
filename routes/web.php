@@ -98,7 +98,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/tourist-establishments/filter', [TouristEstApplicationsController::class, 'customIndex'])->name('tourist-establishments.index.custom.filter');
   Route::post('/tourist-establishments/store', [TouristEstApplicationsController::class, 'store'])->name('tourist-establishments.store');
   Route::get('/tourist-establishments/view/{id}', [TouristEstApplicationsController::class, 'view'])->name('tourist-establishments.view');
-  Route::put('/tourist-establishments/update', [TouristEstApplicationsController::class, 'update'])->name('tourist-establishments.update');
+  Route::put('/tourist-establishments/update/{id}', [TouristEstApplicationsController::class, 'update'])->name('tourist-establishments.update');
   Route::get('/tourist-establishments/edit/{id}', [TouristEstApplicationsController::class, 'edit'])->name('tourist-establishments.edit');
   Route::get('/tourist-establishments/managers/create/{tourist_est_id}', [TouristEstApplicationsController::class, 'createManager'])->name('tourist-establishments.manager.create');
   Route::post('/tourist-establishments/managers/store', [TouristEstApplicationsController::class, 'storeManager'])->name('tourist-establishment.managers.store');
@@ -108,6 +108,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::delete('/tourist-establishments/services/delete', [TouristEstApplicationsController::class, 'deleteService'])->name('tourist-establishments.services.delete');
   Route::delete('/tourist-establishments/managers/delete', [TouristEstApplicationsController::class, 'deleteManager'])->name('tourist-establishments.managers.delete');
   Route::post('/tourist-establishments/services/add', [TouristEstApplicationsController::class, 'storeService'])->name('tourist-establishments.services.add');
+  Route::delete('/tourist-establishments/delete/{id}', [TouristEstApplicationsController::class, 'destroy'])->name('tourist-establishments.delete');
 
   //Advance Search 
 
