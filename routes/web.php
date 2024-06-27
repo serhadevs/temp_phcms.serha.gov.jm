@@ -58,7 +58,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
-  //   Route::get('/dashboard', [Dashboard::class, 'fetchAppointments'])->name('dashboard.fetchappointments');
 
   //Permit Application Route
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
@@ -276,9 +275,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class, 'getEdit']);
 
   //Test Exports
-  Route::get('/test/downloads', [TestDownloads::class, 'index']);
-  Route::get('/manual-run/food-est-job', [TestDownloads::class, 'writeAllFoodEstablishments']);
-  Route::get('/test/tourist-establishments', [TestDownloads::class, 'testTourist']);
+  Route::middleware(['checkRole:1'])->group(function(){
+    Route::get('/test/downloads', [TestDownloads::class, 'index']);
+    Route::get('/manual-run/food-est-job', [TestDownloads::class, 'writeAllFoodEstablishments']);
+    Route::get('/test/tourist-establishments', [TestDownloads::class, 'testTourist']);
+  });
+
 
   //Download routes
   Route::middleware(['checkRole:1,6'])->group(function () {
@@ -294,10 +296,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::delete('/downloads/{id}', [DownloadsController::class, 'destroy'])->name('downloads.delete.single');
   });
 
-
-  // Route::get('/food-establishments/view',[FoodEstablishmentController::class,'view']);
-  // Route::get('food-establishments',[FoodEstablishmentController::class, 'showApplications']);
-
   //Reports 
 
   Route::get('/reports/general-report', [ReportController::class, 'index']);
@@ -311,10 +309,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/reports/sign-off', [ReportController::class, 'numberSignOffsShow'])->name('reports.signoffs.show');
   Route::get('/reports/backlog-report', [ReportController::class, 'backLogReport'])->name('reports.backlog');
 
-  //Test Centre Routes
-
-  //Route::get("/test-centre/test-results/food-establishments",[FoodEstResultController::class,'index']);
-
+ 
   //Training Manual Page
   Route::get('/training-manuals', [TrainingManualsController::class, 'index'])->name("training.manuals");
 
