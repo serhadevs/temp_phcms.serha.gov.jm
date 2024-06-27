@@ -14,6 +14,7 @@ use App\Models\PaymentCancellationRequests;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\Prices;
+use App\Models\Renewals;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
@@ -369,6 +370,27 @@ class PaymentController extends Controller
         $register_new_payment = Payments::create($new_payment);
 
         //Get the same information from the printReciept
+
+        if ($app_type == 4) {
+            if (Renewals::where('new_application_id', $new_payment['application_id'])
+                ->where('application_type_id', 4)->first()
+            ) {
+                DB::beginTransaction();
+                foreach (PermitApplication::where('establishment_clinic_id', $new_payment['application_id'])->get() as $permit) {
+                    Payments::create([
+                        'application_type_id' => 1,
+                        'application_id' => $permit->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'receipt_no' => $new_payment['receipt_no'],
+                        'amount_paid' => 0,
+                        'total_cost' => 0,
+                        'change_amt' => 0.0,
+                        'cashier_user_id' => $new_payment['cashier_user_id']
+                    ]);
+                }
+                DB::commit();
+            }
+        }
 
         if (!$register_new_payment) {
         }

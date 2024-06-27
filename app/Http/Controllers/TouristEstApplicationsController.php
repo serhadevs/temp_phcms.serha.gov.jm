@@ -188,11 +188,13 @@ class TouristEstApplicationsController extends Controller
      */
     public function view($id)
     {
-        $application = TouristEstablishments::with('managers', 'services', 'user')->find($id);
+        $application = TouristEstablishments::with('managers.editTransactions', 'services', 'user')->find($id);
+
+        $system_operation_type_id = 10;
 
         $not_modal = 1;
 
-        return view('tourist_est.view', compact('application', 'not_modal'));
+        return view('tourist_est.view', compact('application', 'not_modal', 'system_operation_type_id'));
     }
 
     /**
@@ -204,11 +206,12 @@ class TouristEstApplicationsController extends Controller
     public function edit($id)
     {
         $application = TouristEstablishments::with('managers', 'services', 'user')->find($id);
+        $system_operation_type_id = 10;
 
         $not_modal = 1;
         $edit_mode = 1;
 
-        return view('tourist_est.view', compact('application', 'not_modal', 'edit_mode'));
+        return view('tourist_est.view', compact('application', 'not_modal', 'edit_mode', 'system_operation_type_id'));
     }
 
     /**
@@ -299,23 +302,61 @@ class TouristEstApplicationsController extends Controller
         return view('tourist_est.create_mangers', compact('establishment_name', 'tourist_est_id'));
     }
 
-    public function storeManager(Request $request)
+    public function storeManager(Request $request, $id)
     {
         $tourist_est_managers = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
             'post_held' => 'nullable',
             'qualifications' => 'nullable',
-            'nationality' => 'required'
+            'nationality' => 'required',
+            'edit_reason' => 'required'
         ]);
 
-        $tourist_est = TouristEstablishments::find($request->tourist_est_id);
-
-        $tourist_est_managers['tourist_establishment_id'] = $request->tourist_est_id;
-
-        if (TouristEstManagers::create($tourist_est_managers)) {
-            return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', 'Manager has been added to ' . $tourist_est->establishment_name . ' successfully.');
+        try {
+            if ($est_application = TouristEstablishments::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id)) {
+                if ($est_application->sign_off_status != '1') {
+                    DB::beginTransaction();
+                    $edit_reason = $tourist_est_managers['edit_reason'];
+                    unset($tourist_est_managers['edit_reason']);
+                    $tourist_est_managers['tourist_establishment_id'] = $id;
+                    if ($new_manager = TouristEstManagers::create($tourist_est_managers)) {
+                        if (EditTransactions::create([
+                            'application_type_id' => 6,
+                            'table_id' => $new_manager->id,
+                            'system_operation_type_id' => 10,
+                            'edit_type_id' => 3,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $edit_reason
+                        ])) {
+                            DB::commit();
+                            return redirect()->route('tourist-establishments.view', ['id' => $est_application->id])->with('success', 'Manager has been added to ' . $est_application->establishment_name . ' successfully.');
+                        } else {
+                            throw new Exception("Error storing new manager. Unable to initiate transaction.");
+                        }
+                    } else {
+                        throw new Exception("Error creating new manager. Unable to store manager.");
+                    }
+                } else {
+                    throw new Exception("This application has already been signed off. Manager cannot be added to application.");
+                }
+            } else {
+                throw new Exception("This application does not exist or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
+
+
+        // $tourist_est = TouristEstablishments::find($request->tourist_est_id);
+
+        // $tourist_est_managers['tourist_establishment_id'] = $request->tourist_est_id;
+
+        // if (TouristEstManagers::create($tourist_est_managers)) {
+        //     return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', 'Manager has been added to ' . $tourist_est->establishment_name . ' successfully.');
+        // }
     }
 
     /**
