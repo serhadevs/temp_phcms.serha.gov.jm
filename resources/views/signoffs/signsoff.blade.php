@@ -17,7 +17,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-2">
-                            <table id="sign_offs" class="table table-bordered" style="width: 100%">
+                            <table id="sign_offs" class="table table-bordered nowrap" style="width: 100%">
                                 <thead>
                                     <th>Permit #</th>
                                     <th>Application #</th>
@@ -61,13 +61,13 @@
 </div>
 
 
-<script>
+{{-- <script>
 const hamBurger = document.querySelector(".toggle-btn");
 
 hamBurger.addEventListener("click", function () {
   document.querySelector("#sidebar").classList.toggle("expand");
 });
-</script>
+</script> --}}
 @endsection
 <!-- Include jQuery library -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

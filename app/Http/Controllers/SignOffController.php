@@ -24,6 +24,11 @@ use Exception;
 class SignOffController extends Controller
 {
 
+    // public function __construct()
+    // {
+    //     $this->middleware('checkRole:1,5,7'); // Only allow users with role_id 1 to access this controller
+    // }
+
     public function index()
     {
         $excludedIds = [4, 7];
