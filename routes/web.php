@@ -327,6 +327,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.index');
     Route::get('/admin/settings/stmp', [SettingsController::class, 'create'])->name('admin.create.stmp');
     Route::post('/admin/stmp/update', [SettingsController::class, 'store'])->name('admin.stmp.update');
+    Route::get('/admin/create/role',[SettingsController::class,'createRole'])->name('admin.create.role');
+    Route::post('/admin/role',[SettingsController::class,'storeRole'])->name('admin.store.role');
+    
   });
 
 

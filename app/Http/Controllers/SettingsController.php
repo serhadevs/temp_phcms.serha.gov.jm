@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StmpSettingsRequest;
+use App\Models\Role;
 use App\Models\StmpSettings;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -22,7 +23,9 @@ class SettingsController extends Controller
     {
         
         $stmp = StmpSettings::find(1);
-        return view('admin.index', compact('stmp'));
+        $roles = DB::table('roles')->get();
+        //dd($roles);
+        return view('admin.index', compact('stmp','roles'));
     }
 
     public function store(StmpSettingsRequest $request)

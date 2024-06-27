@@ -243,7 +243,7 @@ class ReportController extends Controller
             // if (in_array(auth()->user()->role_id, [1])) {
             //     $query = SignOff::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->with('application_type')->get();
             // } else {
-                $query = SignOff::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('application_type')->get();
+                $query = SignOff::whereBetween('sign_off_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('application_type')->get();
             // }
 
 
