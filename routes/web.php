@@ -101,7 +101,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::put('/tourist-establishments/update/{id}', [TouristEstApplicationsController::class, 'update'])->name('tourist-establishments.update');
   Route::get('/tourist-establishments/edit/{id}', [TouristEstApplicationsController::class, 'edit'])->name('tourist-establishments.edit');
   Route::get('/tourist-establishments/managers/create/{tourist_est_id}', [TouristEstApplicationsController::class, 'createManager'])->name('tourist-establishments.manager.create');
-  Route::post('/tourist-establishments/managers/store', [TouristEstApplicationsController::class, 'storeManager'])->name('tourist-establishment.managers.store');
+  Route::post('/tourist-establishments/managers/store/{id}', [TouristEstApplicationsController::class, 'storeManager'])->name('tourist-establishment.managers.store');
   Route::get('/tourist-establishments/managers/edit/{id}', [TouristEstApplicationsController::class, 'editManager'])->name('tourist-establishments.managers.edit');
   Route::put('/tourist-establishments/managers/update', [TouristEstApplicationsController::class, 'updateManager'])->name('tourist-establishments.manager.update');
   Route::put('/tourist-establishments/services/update', [TouristEstApplicationsController::class, 'updateService'])->name('tourist-establishments.services.update');
