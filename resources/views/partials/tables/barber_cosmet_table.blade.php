@@ -59,6 +59,11 @@
                         @if ($application->sign_off_status == '1')
                             <a href="/barber-cosmet/renewal/{{ $application->id }}"
                                 class="btn-success btn-sm btn mx-1">Renew</a>
+                        @else
+                            <button class="btn btn-danger btn-sm" type="button"
+                                onclick="removeEntry('/barber-cosmet', {{ json_encode($application->id) }})">
+                                Remove
+                            </button>
                         @endif
                     @endif
                 </td>
@@ -66,7 +71,7 @@
         @endforeach
     </tbody>
 </table>
-
+@include('partials.messages.remove_entry_message')
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>

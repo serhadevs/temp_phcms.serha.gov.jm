@@ -10,8 +10,10 @@ use App\Models\EditTransactionsChangedColumns;
 use App\Models\ExamSites;
 use App\Models\HealthCertApplications;
 use App\Models\HealthInterview;
+use App\Models\HealthInterviewSymptom;
 use App\Models\Renewals;
 use App\Models\TestResult;
+use App\Models\TravelHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
@@ -391,6 +393,7 @@ class BarberCosmetApplicationsController extends Controller
 
     public function renew(Request $request, $id)
     {
+        //Use destroy function in this
         $health_cert_app = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
@@ -458,8 +461,76 @@ class BarberCosmetApplicationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try {
+            if ($application = HealthCertApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
+                if ($application->sign_off_status != '1') {
+                    //Delete Appointment
+                    //Delete Test Result
+                    //Delete Health Interview
+                    //Delete Travel History
+                    //Delete Health Interview Symptoms
+                    DB::beginTransaction();
+                    if (EditTransactions::create([
+                        'application_type_id' => 2,
+                        'table_id' => $application->id,
+                        'system_operation_type_id' => 1,
+                        'edit_type_id' => 2,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $request->data['reason']
+                    ])) {
+                        if (!empty($application->appointment->first())) {
+                            if (!Appointments::where('health_cert_application_id', $id)->first()->update(['deleted_at' => new DateTime()])) {
+                                throw new Exception("Delete Operation failed. Unable to delete appointment created for this application.");
+                            }
+                        }
+                        if (!empty($application->testResults)) {
+                            if (!TestResult::find($application->testResults?->id)->update(['deleted_at' => new DateTime()])) {
+                                throw new Exception("Delete operation failed. System was unable to delete Test Results");
+                            }
+                        }
+                        if (!empty($application->healthInterviews)) {
+                            foreach ($application->healthInterviews?->healthInterviewSymptom as $sym) {
+                                if (!HealthInterviewSymptom::find($sym->id)->update(['deleted_at' => new DateTime()])) {
+                                    throw new Exception("Delete operation failed. Unable to delete symptom added in health interview");
+                                }
+                            }
+                            if (!HealthInterview::find($application->healthInterviews?->id)->update(['deleted_at' => new DateTime()])) {
+                                throw new Exception('Delete operation failed. Unable to delete health interviews.');
+                            }
+                        }
+                        if (!empty($application->travelHistory)) {
+                            foreach ($application->travelHistory as $travel) {
+                                if (!TravelHistory::find($travel->id)->update(['deleted_at' => new DateTime()])) {
+                                    throw new Exception('Delete operation failed. Unable to delete travel history');
+                                }
+                            }
+                        }
+                        if ($application->update(['deleted_at' => new DateTime()])) {
+                            DB::commit();
+                            return [
+                                'success',
+                                "Barber/Cosmet application for " . $application->firstname . " " . $application->lastname . ":" . $application->id . " has been deleted successfully"
+                            ];
+                        } else {
+                            throw new Exception("Error deleting application. Unable to processing delete.");
+                        }
+                    } else {
+                        throw new Exception("Error deleting application. Unable to initiate transaction.");
+                    }
+                } else {
+                    throw new Exception("This application has already been signed off. It can no longer be edited.");
+                }
+            } else {
+                throw new Exception("This application does not exist or is not a part of your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

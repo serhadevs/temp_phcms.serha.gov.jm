@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\EstablishmentApplications;
 use App\Models\Facility;
 use App\Models\Renewals;
@@ -13,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class TouristEstApplicationsController extends Controller
 {
@@ -215,7 +218,7 @@ class TouristEstApplicationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $update_tourist_est = $request->validate([
             'establishment_name' => 'required',
@@ -227,13 +230,57 @@ class TouristEstApplicationsController extends Controller
             'officer_firstname' => 'nullable',
             'officer_lastname' => 'nullable',
             'authorized_officer_statement' => 'nullable',
-            'statement_date' => 'nullable|date'
+            'statement_date' => 'nullable|date',
+            'edit_reason' => 'required'
         ]);
 
-        $tourist_est = TouristEstablishments::find($request->app_id);
-
-        if ($tourist_est->update($update_tourist_est)) {
-            return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', 'Tourist Establishment Application for ' . $tourist_est->establishment_name . ' has been updated successfully.');
+        try {
+            if ($application = TouristEstablishments::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id)) {
+                if ($application->sign_off_status != '1') {
+                    $edit_reason = $update_tourist_est['edit_reason'];
+                    unset($update_tourist_est['edit_reason']);
+                    if (!empty($differences = array_diff_assoc($update_tourist_est, TouristEstablishments::select('establishment_name', 'establishment_address', 'bed_capacity', 'is_eating_establishment', 'eating_establishment_description', 'establishment_state', 'officer_firstname', 'officer_lastname', 'authorized_officer_statement', 'statement_date')->find($id)->toArray()))) {
+                        DB::beginTransaction();
+                        if ($edit_transaction = EditTransactions::create([
+                            'application_type_id' => 6,
+                            'table_id' => $application->id,
+                            'system_operation_type_id' => 1,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $edit_reason
+                        ])) {
+                            foreach ($differences as $key => $value) {
+                                if (!EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => $key,
+                                    'old_value' => $application->toArray()[$key],
+                                    'new_value' => $update_tourist_est[$key]
+                                ])) {
+                                    throw new Exception("Error updating application. Unable to record the fields changed.");
+                                }
+                            }
+                            if ($application->update($update_tourist_est)) {
+                                DB::commit();
+                                return redirect()->route('tourist-establishments.view', ['id' => $application->id])->with('success', 'Tourist Establishment Application for ' . $application->establishment_name . ':' . $application->id . ' has been updated successfully.');
+                            } else {
+                                throw new Exception("Error updating application. Unable to update application");
+                            }
+                        } else {
+                            throw new Exception("Error updating application. Error initiating transaction.");
+                        }
+                    } else {
+                        throw new Exception("None of the fields were changed. Update was not completed.");
+                    }
+                } else {
+                    throw new Exception("This tourist establishment application has already been signed off. It cannot be edited.");
+                }
+            } else {
+                throw new Exception("This tourist establishment application does not exist or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -450,5 +497,64 @@ class TouristEstApplicationsController extends Controller
             }
         }
         return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('error', 'Error processing renewal for Tourist Establishment ' . $old_application->establishment_name . '.');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        try {
+            if ($application = TouristEstablishments::with('testResults', 'managers', 'services')->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id)) {
+                if ($application->sign_off_status != '1') {
+                    DB::beginTransaction();
+                    if (EditTransactions::create([
+                        'application_type_id' => 6,
+                        'table_id' => $application->id,
+                        'system_operation_type_id' => 2,
+                        'edit_type_id' => 2,
+                        'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
+                        'reason' => $request->data['reason']
+                    ])) {
+                        if (!empty($application->testResults)) {
+                            if (!TestResult::find($application->testResults?->id)->update(['deleted_at' => new DateTime()])) {
+                                throw new Exception("Error deleting application. Unable to delete test results");
+                            }
+                        }
+
+                        if (!empty($application->managers->first())) {
+                            foreach ($application->managers as $manager) {
+                                if (!TouristEstManagers::find($manager->id)->update(['deleted_at' => new DateTime()])) {
+                                    throw new Exception("Error deleting application. Unable to delete manger.");
+                                }
+                            }
+                        }
+
+                        if (!empty($application->services->first())) {
+                            foreach ($application->services as $service) {
+                                if (!TouristEstServices::find($service->id)->update(['deleted_at' => new DateTime()])) {
+                                    throw new Exception("Error deleting application. Unable to delete service");
+                                }
+                            }
+                        }
+
+                        if ($application->update(['deleted_at' => new DateTime()])) {
+                            DB::commit();
+                            return [
+                                'success',
+                                'Tourist Establishment Application for ' . $application->establishment_name . ':' . $application->id . ' has been deleted successfully.'
+                            ];
+                        }
+                    } else {
+                        throw new Exception("Error deleting application. Error initiating transaction.");
+                    }
+                } else {
+                    throw new Exception("This application has already been signed off. This application cannot be edited.");
+                }
+            } else {
+                throw new Exception("This establishment does not exist or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }
