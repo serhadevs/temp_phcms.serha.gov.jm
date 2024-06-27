@@ -83,6 +83,7 @@ Route::group(['middleware' => ['auth','prevent-back-history']], function () {
      Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
      Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
      Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
+     Route::delete('/barber-cosmet/delete/{id}', [BarberCosmetApplicationsController::class, 'destroy'])->name('barber-cosmet.delete');
 
      //Tourist Establishment Route
      Route::get('/tourist-establishments/create', [TouristEstApplicationsController::class, 'create'])->name('tourist-establishments.create');
