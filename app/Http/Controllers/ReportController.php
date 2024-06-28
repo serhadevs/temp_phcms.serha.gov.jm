@@ -240,12 +240,8 @@ class ReportController extends Controller
         $end_date = $incomingFields['ending_date'];
 
         try {
-            // if (in_array(auth()->user()->role_id, [1])) {
-            //     $query = SignOff::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->with('application_type')->get();
-            // } else {
-                $query = SignOff::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('application_type')->get();
-            // }
-
+                $query = SignOff::whereBetween('sign_off_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('application_type')->get();
+                
 
             if (!$query) {
                 return redirect()->with('error', 'There is no data for the signoff');
