@@ -578,6 +578,43 @@ class PaymentController extends Controller
         }
     }
 
+    public function fixLattyIssue()
+    {
+        try {
+            $counter = 0;
+            $establishment_clinic = EstablishmentApplications::find(2345);
+            $est_permits = PermitApplication::with('payment')
+                ->doesntHave('payment')
+                ->where('establishment_clinic_id', 2435)
+                ->get();
+
+            // $string = "";
+            // foreach ($est_permits as $permit) {
+            //     $string .= "ID : " . $permit->id . " Name: " . $permit->firstname . ' ' . $permit->lastname . '<br>';
+            // }
+            // dd($string);
+
+            foreach ($est_permits as $permit) {
+                $counter++;
+                Payments::create(
+                    [
+                        'application_type_id' => 1,
+                        'application_id' => $permit->id,
+                        'facility_id' => 3,
+                        'receipt_no' => 5742700,
+                        'amount_paid' => 0,
+                        'total_cost' => 0,
+                        'change_amt' => 0.0,
+                        'cashier_user_id' => 124
+                    ]
+                );
+            }
+            return $counter;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function paymentStatus(int $app_id, $app_type_id)
     {
         $payment = DB::table('payments')
