@@ -66,7 +66,7 @@ class SettingsController extends Controller
 
     public function TestEmail(){
 
-        
+        Mail::to('tywaynebuchanan@gmail.com')->send(new SendTestEmailConfig());
     }
 
    
