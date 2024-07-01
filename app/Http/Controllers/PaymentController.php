@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ApplicationType;
 use App\Models\Appointment;
 use App\Http\Requests\PaymentRequest;
+use App\Mail\PaymentEmail;
 use App\Models\BarbershopHairSalons;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
@@ -24,6 +25,7 @@ use DateTime;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Faker\Provider\ar_EG\Payment;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -298,6 +300,8 @@ class PaymentController extends Controller
                 ->orderBy('appointments.created_at', 'desc')
                 ->first();
 
+
+
             if ($appointment) {
                 $receipt_info['appointment_date'] = date_format(new DateTime($appointment->appointment_date), 'M-d-Y') . " " . $appointment->exam_start_time;
                 $receipt_info['exam_site'] = $appointment->name;
@@ -348,7 +352,10 @@ class PaymentController extends Controller
         //Check if receipt number exists => New Schema for this
         $new_payment = $request->validated();
 
+        //dd($new_payment);
+
         $app_id = $new_payment['application_id'];
+    
         $app_type = Prices::find($new_payment['price_id'])->application_type_id;
 
         $id_exists = $app_type == 1 ? PermitApplication::find($app_id) : ($app_type == 2 ? HealthCertApplications::find($app_id) : ($app_type == 3 ? EstablishmentApplications::find($app_id) : ($app_type == 4 ? EstablishmentClinics::find($app_id) : ($app_type == 5 ? SwimmingPoolsApplications::find($app_id) : ($app_type == 6 ? TouristEstablishments::find($app_id) : ($app_type == 7 ? BarbershopHairSalons::find($app_id) : ''))))));
@@ -368,6 +375,17 @@ class PaymentController extends Controller
         $new_payment['cashier_user_id'] = Auth()->user()->id;
         $new_payment['receipt_no'] = rand(1000000, 9999999);
         $register_new_payment = Payments::create($new_payment);
+
+        
+        //dd($register_new_payment);
+
+       
+
+        // $applicant = PermitApplication::where('id',$app_id)->first();
+        // //dd($applicant);
+        // // if($sendMail){
+        //     Mail::to($applicant->email)->send(new PaymentEmail($applicant,$new_payment));
+        // // }
 
         //Get the same information from the printReciept
 
