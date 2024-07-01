@@ -31,6 +31,16 @@
                                         <input type="hidden" name="id" value="{{ $stmp->id }}">
 
                                         <div class="mb-2 row">
+                                            <label for="Host" class="col-sm-2 col-form-label">Mailer</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="mailer" name="mailer"
+                                                    value="{{ old('mailer', $stmp->mailer ?? '') }}">
+                                            </div>
+                                            @error('mailer')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-2 row">
                                             <label for="Host" class="col-sm-2 col-form-label">Host</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="host" name="host"

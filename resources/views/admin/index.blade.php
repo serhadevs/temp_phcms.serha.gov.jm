@@ -13,7 +13,7 @@
                 <div class="mb-3">
                     <h3 class="fw-bold fs-4 mb-3">Administrative Dashboard</h3>
                     <div class="row">
-                        <div class="col-12 col-md-4 ">
+                        <div class="col-12 col-md">
                             <div class="card shadow">
                                 <div class="card-header">
                                     <h5 class="fw-bold">
@@ -24,6 +24,8 @@
                                     <div class="mb-0">
                                         <span>
                                             <ul class="list-group">
+                                                <li class="list-group-item"><span class="fw-bold">Mailer:</span>
+                                                    {{ $stmp->mailer }}</li>
                                                 <li class="list-group-item"><span class="fw-bold">Host:</span>
                                                     {{ $stmp->host }}</li>
                                                 <li class="list-group-item"><span class="fw-bold">Port:</span>
@@ -47,11 +49,11 @@
                                         class="btn btn-success btn-sm">Test Email</a>
                                 </span> --}}
                                 <span>
-                                    <form  method="post" action="{{ route('admin.test-email') }}">
+                                    {{-- <form  method="post" action="{{ route('admin.test-email') }}">
                                         @csrf
                                         <input type="hidden" name="email" value="{{ $stmp->from_address }}">
                                         <button type="submit">Test Email</button>
-                                    </form>
+                                    </form> --}}
                                 </span>
                                     <span><a href="{{ route('admin.create.stmp') }}"
                                             class="btn btn-success btn-sm">Change</a>
@@ -59,7 +61,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-4 ">
+                        <div class="col-12 col-md">
                             <div class="card shadow">
                                 <div class="card-header">
                                     <h5 class="fw-bold">
