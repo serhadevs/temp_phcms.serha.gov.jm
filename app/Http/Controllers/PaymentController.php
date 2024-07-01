@@ -620,6 +620,7 @@ class PaymentController extends Controller
         $payment = DB::table('payments')
             ->where('application_id', '=', $app_id)
             ->where('application_type_id', $app_type_id)
+            ->where('deleted_at', '=', null)
             ->get();
         $payment->isEmpty() ? $alert_type = "success" : $alert_type = "danger";
         $payment->isEmpty() ? $alert_text = "Payment Outstanding" : $alert_text = "Already Paid";
