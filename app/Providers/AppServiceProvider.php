@@ -28,9 +28,11 @@ class AppServiceProvider extends ServiceProvider
     {
         if (Schema::hasTable('stmp_settings')) {
             $stmpsettings = StmpSettings::first();
+            //dd($stmpsettings);
     
             if ($stmpsettings) {
                 $data = [
+                    'driver' => $stmpsettings->mailer,
                     'host' => $stmpsettings->host,
                     'port' => $stmpsettings->port,
                     'username' => $stmpsettings->username,

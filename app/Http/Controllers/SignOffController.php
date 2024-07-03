@@ -204,4 +204,6 @@ class SignOffController extends Controller
             return redirect()->with('error', 'Unable to fetch data from the database!', $e->getMessage());
         }
     }
+
+    
 }

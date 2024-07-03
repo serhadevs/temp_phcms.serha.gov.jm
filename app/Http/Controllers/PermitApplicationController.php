@@ -28,16 +28,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\SendPermitApplicationEmailJob;
+use App\Mail\SendTestEmailConfig;
+use App\Http\Controllers\EmailController;
 
 // use Faker\Provider\ar_EG\Payment;
 
 class PermitApplicationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index($id)
     {
         if (auth()->user()->default_filter_id != "") {
@@ -324,8 +322,6 @@ class PermitApplicationController extends Controller
             $permit_application['photo_upload'] = "";
         }
 
-
-
         $new_permit_application = PermitApplication::create($permit_application);
 
         if ($new_permit_application) {
@@ -359,28 +355,34 @@ class PermitApplicationController extends Controller
                 }
             }
 
-            //Look up information for email
+            //Appointment email function. 
 
-            $sendEmailInfo = PermitApplication::with('permitCategory', 'appointment', 'user')->find($new_permit_application->id);
-            $appointment = DB::table('appointments')
-                ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
-                ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
-                ->where('appointments.facility_id', auth()->user()->facility_id)
-                ->where('appointments.permit_application_id', $sendEmailInfo->id)
-                ->where('exam_dates.application_type_id', 1)
-                ->orderBy('appointments.created_at', 'desc')
-                ->first();
-            //dd($appointment);
-            // dd($sendEmailInfo);
-            if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
+            function AppointmentEmail($new_permit_application)
+            {
+                $sendEmailInfo = PermitApplication::with('permitCategory', 'appointment', 'user')->find($new_permit_application->id);
+                $appointment = DB::table('appointments')
+                    ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
+                    ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
+                    ->where('appointments.facility_id', auth()->user()->facility_id)
+                    ->where('appointments.permit_application_id', $sendEmailInfo->id)
+                    ->where('exam_dates.application_type_id', 1)
+                    ->orderBy('appointments.created_at', 'desc')
+                    ->first();
 
                 if ($sendEmailInfo->email) {
                     dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
                 }
+            }
+
+            // dd($appointment);
+            // dd($sendEmailInfo);
+
+            if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
+
+                AppointmentEmail($new_permit_application);
 
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
             } else {
-
 
                 return redirect()
                     ->route('food-handlers-clinic.permit.application', ['clinic_app_id' => $request->establishment_clinic_id])

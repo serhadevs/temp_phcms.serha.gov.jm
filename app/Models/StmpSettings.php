@@ -15,6 +15,7 @@ class StmpSettings extends Model
 
     public $fillable = [
         'id',
+        'mailer',
         'host',
         'port',
         'username',

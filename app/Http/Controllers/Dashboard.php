@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Appointments;
 use App\Models\BarbershopHairSalons;
 use App\Models\EstablishmentApplications;
+use App\Models\HealthInterview;
 use App\Models\Payments;
-use App\Models\PermitApplication;
 
+use App\Models\PermitApplication;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -46,11 +47,32 @@ class Dashboard extends Controller
         $paymentCount = $query(Payments::class, $startOfMonth, $endOfMonth, $userId);
 
 
-        return view('dashboard.dashboard', 
-        compact('permitApplicationCount', 
-        'foodestApplicationCount', 
-        'barbercosmApplicationCount',
-        'permitApplicationCountYTD',
-        'paymentCount', 'month', 'year'));
+        // $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites')
+        //     ->where('facility_id', auth()->user()->facility_id)
+        //     ->whereRelation('permitApplication.appointment', 'appointment_date', '2024-05-16')
+        //     ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', '6')
+        //     ->doesntHave('permitApplication.establishmentClinics')
+        //     ->has('permitApplication.testResults')
+        //     ->with(['permitApplication' => function ($query) {
+        //         $query->orderBy('lastname');
+        //     }])
+        //     ->get();
+        // dd($applications);
+
+
+
+
+        return view(
+            'dashboard.dashboard',
+            compact(
+                'permitApplicationCount',
+                'foodestApplicationCount',
+                'barbercosmApplicationCount',
+                'permitApplicationCountYTD',
+                'paymentCount',
+                'month',
+                'year'
+            )
+        );
     }
 }
