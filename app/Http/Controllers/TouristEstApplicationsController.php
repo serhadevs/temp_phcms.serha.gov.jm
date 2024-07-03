@@ -368,33 +368,145 @@ class TouristEstApplicationsController extends Controller
     public function editManager($id)
     {
         $manager = TouristEstManagers::find($id);
-        $establishment_name = TouristEstablishments::find($manager->tourist_establishment_id)->establishment_name;
+        $establishment = TouristEstablishments::find($manager->tourist_establishment_id);
 
-        return view('tourist_est.edit_managers', compact('manager', 'establishment_name'));
+        return view('tourist_est.edit_managers', compact('manager', 'establishment'));
     }
 
-    public function updateManager(Request $request)
+    public function updateManager(Request $request, $id)
     {
         $tourist_est_manager_update = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
             'post_held' => 'nullable',
             'qualifications' => 'nullable',
-            'nationality' => 'required'
+            'nationality' => 'required',
+            'edit_reason' => 'required'
         ]);
 
-        $tourist_est_manager = TouristEstManagers::find($request->manager_id);
-        $establishment_name = TouristEstablishments::find($tourist_est_manager->tourist_establishment_id)->establishment_name;
-
-        if ($tourist_est_manager->update($tourist_est_manager_update)) {
-            return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', $tourist_est_manager->firstname . ' ' . $tourist_est_manager->lastname . ' of Tourist Establishment ' . $establishment_name . ' has been updated successfully.');
-
-            return view('tourist_est.edit_managers', compact('manager', 'establishment_name'));
+        try {
+            if ($manager = TouristEstManagers::find($id)) {
+                if ($application = TouristEstablishments::with('user')
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->find($manager->tourist_establishment_id)
+                ) {
+                    if ($application->sign_off_status != '1') {
+                        $edit_reason = $tourist_est_manager_update['edit_reason'];
+                        unset($tourist_est_manager_update['edit_reason']);
+                        if (!empty($differences = array_diff_assoc($tourist_est_manager_update, TouristEstManagers::select('firstname', 'lastname', 'post_held', 'qualifications', 'nationality')->find($id)->toArray()))) {
+                            DB::beginTransaction();
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 6,
+                                'table_id' => $id,
+                                'system_operation_type_id' => 10,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $edit_reason
+                            ])) {
+                                foreach ($differences as $key => $value) {
+                                    if (!EditTransactionsChangedColumns::create([
+                                        'edit_transaction_id' => $edit_transaction->id,
+                                        'column_name' => $key,
+                                        'old_value' => $manager->toArray()[$key],
+                                        'new_value' => $tourist_est_manager_update[$key]
+                                    ])) {
+                                        throw new Exception("Error updating manager. Unable to initiate transaction.");
+                                    }
+                                }
+                                if ($manager->update($tourist_est_manager_update)) {
+                                    DB::commit();
+                                    return redirect()->route('tourist-establishments.view', ['id' => $application->id])->with('success', 'Manager has been updated for ' . $application->establishment_name . ' successfully.');
+                                } else {
+                                    throw new Exception("Error updating manager. Unable to record update.");
+                                }
+                            } else {
+                                throw new Exception("Error updating manager. Unable to initiate transaction.");
+                            }
+                        } else {
+                            throw new Exception("None of the fields were changed. Nothing was updated");
+                        }
+                    } else {
+                        throw new Exception("This application has already been signed off. Manager can not be edited.");
+                    }
+                } else {
+                    throw new Exception("This application either does not exist or does not belong to your facility.");
+                }
+            } else {
+                throw new Exception("This tourist establishment manager does not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
+
+        // $tourist_est_manager = TouristEstManagers::find($request->manager_id);
+        // $establishment_name = TouristEstablishments::find($tourist_est_manager->tourist_establishment_id)->establishment_name;
+
+        // if ($tourist_est_manager->update($tourist_est_manager_update)) {
+        //     return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', $tourist_est_manager->firstname . ' ' . $tourist_est_manager->lastname . ' of Tourist Establishment ' . $establishment_name . ' has been updated successfully.');
+
+        //     return view('tourist_est.edit_managers', compact('manager', 'establishment_name'));
+        // }
     }
 
-    public function updateService(Request $request)
+    public function updateService(Request $request, $id)
     {
+        try {
+            if ($service = TouristEstServices::find($id)) {
+                if ($application = TouristEstablishments::with('user')
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->find($service->tourist_establishment_id)
+                ) {
+                    if ($application->sign_off_status != '1') {
+                        if ($request->data['name'] != $service->name) {
+                            DB::beginTransaction();
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 6,
+                                'table_id' => $service->id,
+                                'system_operation_type_id' => 11,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $request->data['edit_reason']
+                            ])) {
+                                if (EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => 'name',
+                                    'old_value' => $service->name,
+                                    'new_value' => $request->data['name']
+                                ])) {
+                                    if ($service->update(['name' => $request->data['name']])) {
+                                        DB::commit();
+                                        return [
+                                            'success',
+                                            'Service ' . $request->data['name'] . ' of tourist establishment ' . $application->establishment_name . ' has been updated successfully'
+                                        ];
+                                    } else {
+                                        throw new Exception("Error updating service. Unable to update service record.");
+                                    }
+                                } else {
+                                    throw new Exception("Error editing service. Unable to record field changed");
+                                }
+                            } else {
+                                throw new Exception("Error editing service. Unable to initiate transaction.");
+                            }
+                        } else {
+                            throw new Exception("Service was not changed. There is nothing to be updated.");
+                        }
+                    } else {
+                        throw new Exception("Tourist Establishment has already been signed off. Service cannot be updated.");
+                    }
+                } else {
+                    throw new Exception("This tourist establishment either does not exist or does not belong to your facility.");
+                }
+            } else {
+                throw new Exception("This service does not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
         try {
             if (TouristEstServices::find($request->data['id'])->update([
                 'name' => $request->data['name']
@@ -406,30 +518,141 @@ class TouristEstApplicationsController extends Controller
         }
     }
 
-    public function deleteService(Request $request)
+    public function deleteService(Request $request, $id)
     {
         try {
-            if (TouristEstServices::find($request->data['service_id'])->update(['deleted_at' => new DateTime()])) {
-                return 'success';
+            if ($service = TouristEstServices::find($id)) {
+                if ($application = TouristEstablishments::with('user')
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->find($service->tourist_establishment_id)
+                ) {
+                    if ($application->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => 6,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 11,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['edit_reason']
+                        ])) {
+                            if ($service->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Service ' . $service->name . 'has been deleted from tourist establishment ' . $application->establishment_name . ':' . $application->id . '.'
+                                ];
+                            } else {
+                                throw new Exception(("Error deleting service. Unable to delete record"));
+                            }
+                        } else {
+                            throw new Exception("Error deleting service. Unable to initiate transaction.");
+                        }
+                    } else {
+                        throw new Exception('The tourist establishment application has already been signed off. Service cannot be deleted.');
+                    }
+                } else {
+                    throw new Exception("The tourist establishment that this service belongs to either does not exist or is not a part of your facility.");
+                }
+            } else {
+                throw new Exception("This service does not exist.");
             }
         } catch (Exception $e) {
+            DB::rollBack();
             return $e->getMessage();
         }
     }
 
-    public function deleteManager(Request $request)
+    public function deleteManager(Request $request, $id)
     {
         try {
-            if (TouristEstManagers::find($request->data['manager_id'])->update(['deleted_at' => new DateTime()])) {
-                return 'success';
+            if ($manager = TouristEstManagers::find($id)) {
+                if ($application = TouristEstablishments::with('user')
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->find($manager->tourist_establishment_id)
+                ) {
+                    if ($application->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => 6,
+                            'table_id' => $manager->id,
+                            'system_operation_type_id' => 10,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['edit_reason']
+                        ])) {
+                            if ($manager->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Manager ' . $manager->firstname . ' ' . $manager->lastname . ' for ' . $application->establishment_name . ' has been deleted successfully.'
+                                ];
+                            } else {
+                                throw new Exception("Error deleting manager. Unable to delete record.");
+                            }
+                        } else {
+                            throw new Exception("Error deleting manager. Unable to initiate transaction.");
+                        }
+                    } else {
+                        throw new Exception("This tourist establishment application has already been signed off. This manager cannot be deleted.");
+                    }
+                } else {
+                    throw new Exception("This tourist establishment either does not exist or isn't a part of your facility.");
+                }
+            } else {
+                throw new Exception("This tourist establishment manager does not exist.");
             }
         } catch (Exception $e) {
+            DB::rollBack();
             return $e->getMessage();
         }
     }
 
     public function storeService(Request $request)
     {
+        try {
+            if ($application = TouristEstablishments::with('user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->find($request->data['tourist_est_id'])
+            ) {
+                if ($application->sign_off_status != '1') {
+                    DB::beginTransaction();
+                    if ($tourist_service = TouristEstServices::create([
+                        'tourist_establishment_id' => $request->data['tourist_est_id'],
+                        'name' => $request->data['name']
+                    ])) {
+                        if (EditTransactions::create([
+                            'application_type_id' => 6,
+                            'table_id' => $tourist_service->id,
+                            'system_operation_type_id' => 11,
+                            'edit_type_id' => 3,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['edit_reason']
+                        ])) {
+                            DB::commit();
+                            return [
+                                'success',
+                                'Service ' . $request->data['name'] . ' has been added to tourist establishment ' . $application->establishment_name . ':' . $application->id . '.'
+                            ];
+                        } else {
+                            throw new Exception("Error adding service. Unable to initiate transaction.");
+                        }
+                    } else {
+                        throw new Exception("Error adding new service. Unable to store record.");
+                    }
+                } else {
+                    throw new Exception("This tourist establishment application has already been signed off. Service cannot be added");
+                }
+            } else {
+                throw new Exception("This tourist establishment application either does not exist or doesn't belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
         try {
             if (TouristEstServices::create([
                 'tourist_establishment_id' => $request->data['tourist_est_id'],

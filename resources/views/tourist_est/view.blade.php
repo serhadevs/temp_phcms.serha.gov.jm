@@ -289,7 +289,7 @@
             function addService($tourist_est_id) {
                 swal.fire({
                         title: "Add New Service to Tourist\nEstablishment.",
-                        icon: "info",
+                        icon: "question",
                         input: "text",
                         inputAttributes: {
                             required: true
@@ -301,28 +301,45 @@
                     })
                     .then(result => {
                         if (result.isConfirmed) {
-                            $.post({!! json_encode(url('/tourist-establishments/services/add')) !!}, {
-                                _method: "POST",
-                                data: {
-                                    name: result.value,
-                                    tourist_est_id: $tourist_est_id
+                            swal.fire({
+                                title: 'What is the reason you are\n adding this service?',
+                                text: 'Reason will be recorded.',
+                                icon: 'question',
+                                input: "textarea",
+                                inputAttributes: {
+                                    required: true
                                 },
-                                _token: "{{ csrf_token() }}"
-                            }).then(function(data) {
-                                if (data == "success") {
-                                    swal.fire(
-                                        "Done!",
-                                        "Service has been updated successfully.",
-                                        "success").then(esc => {
-                                        if (esc) {
-                                            location.reload();
+                                showConfirmButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: "Add Service",
+                                cancelButtonText: "Cancel"
+                            }).then((result3) => {
+                                if (result3.isConfirmed) {
+                                    $.post({!! json_encode(url('/tourist-establishments/services/add')) !!}, {
+                                        _method: "POST",
+                                        data: {
+                                            name: result.value,
+                                            tourist_est_id: $tourist_est_id,
+                                            edit_reason: result3.value
+                                        },
+                                        _token: "{{ csrf_token() }}"
+                                    }).then(function(data) {
+                                        if (data[0] == "success") {
+                                            swal.fire(
+                                                "Done!",
+                                                data[1],
+                                                "success").then(esc => {
+                                                if (esc) {
+                                                    location.reload();
+                                                }
+                                            });
+                                        } else {
+                                            swal.fire(
+                                                "Oops! Something went wrong.",
+                                                data,
+                                                "error");
                                         }
-                                    });
-                                } else {
-                                    swal.fire(
-                                        "Oops! Something went wrong.",
-                                        data,
-                                        "error");
+                                    })
                                 }
                             })
                         }

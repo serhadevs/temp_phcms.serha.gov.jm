@@ -1,5 +1,6 @@
 <table id="edit_transactions_table" class="table table-striped table-sm nowrap" style="width:100%;max-width:100%">
     <thead>
+        {{-- Add Servicesssss --}}
         <tr>
             <th>Edit Type</th>
             <th>Reason for edit</th>
@@ -96,6 +97,23 @@
             @elseif($system_operation_type_id == 10)
                 @foreach ($transactions->managers as $manager)
                     @foreach ($manager->editTransactions as $edit)
+                        <tr>
+                            <td>{{ $edit->editType?->name }}</td>
+                            <td>{{ $edit->reason }}</td>
+                            <td>{{ $edit->user?->firstname . ' ' . $edit->user?->lastname }}</td>
+                            <td>{{ $edit->created_at }}</td>
+                            <td>
+                                <button class="btn btn-primary mx-2 btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"
+                                    onclick="popChangedTable({{ json_encode($edit->changedColumns) }})" type="button">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
+                @foreach ($transactions->services as $service)
+                    @foreach ($service->editTransactions as $edit)
                         <tr>
                             <td>{{ $edit->editType?->name }}</td>
                             <td>{{ $edit->reason }}</td>

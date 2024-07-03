@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TouristEstServices extends Model
@@ -23,4 +24,11 @@ class TouristEstServices extends Model
     ];
 
     public $timestamps = true;
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+            ->where('application_type_id', 6)
+            ->where('system_operation_type_id', 11);
+    }
 }

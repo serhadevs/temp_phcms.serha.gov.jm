@@ -10,6 +10,11 @@
         <div class="container-fluid mb-4">
             <div class="card">
                 <div class="card-header">
+                    <a href="/tourist-establishments/view/{{ $tourist_est_id }}" class="btn btn-danger"
+                        style="float:left; margin-right:1%;">
+                        <i class="bi bi-box-arrow-left"></i>
+                        Back
+                    </a>
                     <h2 class="text-muted">Add Manager to {{ $establishment_name }}</h2>
                 </div>
                 <div class="card-body">

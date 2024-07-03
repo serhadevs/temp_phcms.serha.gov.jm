@@ -1,4 +1,4 @@
-<div class="mt-3">
+<div class="">
     <label for="" class="form-label">First Name</label>
     <input type="text" class="form-control" name="firstname"
         value="{{ old('firstname') ? old('firstname') : (isset($manager) ? $manager->firstname : '') }}">

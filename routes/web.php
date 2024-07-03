@@ -103,10 +103,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/tourist-establishments/managers/create/{tourist_est_id}', [TouristEstApplicationsController::class, 'createManager'])->name('tourist-establishments.manager.create');
   Route::post('/tourist-establishments/managers/store/{id}', [TouristEstApplicationsController::class, 'storeManager'])->name('tourist-establishment.managers.store');
   Route::get('/tourist-establishments/managers/edit/{id}', [TouristEstApplicationsController::class, 'editManager'])->name('tourist-establishments.managers.edit');
-  Route::put('/tourist-establishments/managers/update', [TouristEstApplicationsController::class, 'updateManager'])->name('tourist-establishments.manager.update');
-  Route::put('/tourist-establishments/services/update', [TouristEstApplicationsController::class, 'updateService'])->name('tourist-establishments.services.update');
-  Route::delete('/tourist-establishments/services/delete', [TouristEstApplicationsController::class, 'deleteService'])->name('tourist-establishments.services.delete');
-  Route::delete('/tourist-establishments/managers/delete', [TouristEstApplicationsController::class, 'deleteManager'])->name('tourist-establishments.managers.delete');
+  Route::put('/tourist-establishments/managers/update/{id}', [TouristEstApplicationsController::class, 'updateManager'])->name('tourist-establishments.manager.update');
+  Route::put('/tourist-establishments/services/update/{id}', [TouristEstApplicationsController::class, 'updateService'])->name('tourist-establishments.services.update');
+  Route::delete('/tourist-establishments/services/delete/{id}', [TouristEstApplicationsController::class, 'deleteService'])->name('tourist-establishments.services.delete');
+  Route::delete('/tourist-establishments/managers/delete/{id}', [TouristEstApplicationsController::class, 'deleteManager'])->name('tourist-establishments.managers.delete');
   Route::post('/tourist-establishments/services/add', [TouristEstApplicationsController::class, 'storeService'])->name('tourist-establishments.services.add');
   Route::delete('/tourist-establishments/delete/{id}', [TouristEstApplicationsController::class, 'destroy'])->name('tourist-establishments.delete');
 
