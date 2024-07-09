@@ -52,28 +52,44 @@
                 })
                 .then(result => {
                     if (result.isConfirmed) {
-                        $.post({!! json_encode(url('/tourist-establishments/services/update')) !!}, {
-                            _method: "PUT",
-                            data: {
-                                name: result.value,
-                                id: id
+                        swal.fire({
+                            title: 'What is the reason you are\n editing this service?',
+                            text: 'Reason will be recorded.',
+                            icon: 'question',
+                            input: "textarea",
+                            inputAttributes: {
+                                required: true
                             },
-                            _token: "{{ csrf_token() }}"
-                        }).then(function(data) {
-                            if (data == "success") {
-                                swal.fire(
-                                    "Done!",
-                                    "Service has been updated successfully.",
-                                    "success").then(esc => {
-                                    if (esc) {
-                                        location.reload();
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: "Edit Service",
+                            cancelButtonText: "Cancel"
+                        }).then((result2) => {
+                            if (result2.isConfirmed) {
+                                $.post({!! json_encode(url('/tourist-establishments/services/update')) !!} + "/" + id, {
+                                    _method: "PUT",
+                                    data: {
+                                        name: result.value,
+                                        edit_reason: result2.value
+                                    },
+                                    _token: "{{ csrf_token() }}"
+                                }).then(function(data) {
+                                    if (data[0] == "success") {
+                                        swal.fire(
+                                            "Done!",
+                                            data[1],
+                                            "success").then(esc => {
+                                            if (esc) {
+                                                location.reload();
+                                            }
+                                        });
+                                    } else {
+                                        swal.fire(
+                                            "Oops! Something went wrong.",
+                                            data,
+                                            "error");
                                     }
-                                });
-                            } else {
-                                swal.fire(
-                                    "Oops! Something went wrong.",
-                                    data,
-                                    "error");
+                                })
                             }
                         })
                     }
@@ -82,41 +98,57 @@
 
         function deleteService(id) {
             swal.fire({
-                    title: "Are you sure you \nwant to delete this \nservice?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    showConfirmButton: true,
-                    confirmButtonText: `Yes, I am sure!`,
-                    cancelButtonText: `No, Cancel it!`
-                })
-                .then(result => {
-                    if (result.isConfirmed) {
-                        $.post({!! json_encode(url('/tourist-establishments/services/delete')) !!}, {
-                            _method: "DELETE",
-                            data: {
-                                service_id: id
-                            },
-                            _token: "{{ csrf_token() }}"
-                        }).then(function(data) {
-                            console.log(data);
-                            if (data == "success") {
-                                swal.fire(
-                                    "Done!",
-                                    "Payment Cancellation has been successfully Requested.",
-                                    "success").then(esc => {
-                                    if (esc) {
-                                        location.reload();
+                title: 'What is the reason you are\n deleting this service?',
+                text: 'Reason will be recorded.',
+                icon: 'question',
+                input: "textarea",
+                inputAttributes: {
+                    required: true
+                },
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Delete Service",
+                cancelButtonText: "Cancel"
+            }).then((result3) => {
+                if (result3.isConfirmed) {
+                    swal.fire({
+                            title: "Are you sure you \nwant to delete this \nservice?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                            confirmButtonText: `Yes, I am sure!`,
+                            cancelButtonText: `No, Cancel it!`
+                        })
+                        .then(result => {
+                            if (result.isConfirmed) {
+                                $.post({!! json_encode(url('/tourist-establishments/services/delete')) !!} + "/" + id, {
+                                    _method: "DELETE",
+                                    data: {
+                                        edit_reason: result3.value
+                                    },
+                                    _token: "{{ csrf_token() }}"
+                                }).then(function(data) {
+                                    console.log(data);
+                                    if (data[0] == "success") {
+                                        swal.fire(
+                                            "Done!",
+                                            data[1],
+                                            "success").then(esc => {
+                                            if (esc) {
+                                                location.reload();
+                                            }
+                                        });
+                                    } else {
+                                        swal.fire(
+                                            "Oops! Something went wrong.",
+                                            data,
+                                            "error");
                                     }
-                                });
-                            } else {
-                                swal.fire(
-                                    "Oops! Something went wrong.",
-                                    data,
-                                    "error");
+                                })
                             }
                         })
-                    }
-                })
+                }
+            })
         }
     </script>
 @endif

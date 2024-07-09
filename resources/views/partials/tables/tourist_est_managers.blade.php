@@ -45,41 +45,58 @@
 
         function deleteManager(id) {
             swal.fire({
-                    title: "Are you sure you \nwant to delete this \nmanager?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    showConfirmButton: true,
-                    confirmButtonText: `Yes, I am sure!`,
-                    cancelButtonText: `No, Cancel it!`
-                })
-                .then(result => {
-                    if (result.isConfirmed) {
-                        $.post({!! json_encode(url('/tourist-establishments/managers/delete')) !!}, {
-                            _method: "DELETE",
-                            data: {
-                                manager_id: id
-                            },
-                            _token: "{{ csrf_token() }}"
-                        }).then(function(data) {
-                            // console.log(data);
-                            if (data == "success") {
-                                swal.fire(
-                                    "Done!",
-                                    "Payment Cancellation has been successfully Requested.",
-                                    "success").then(esc => {
-                                    if (esc) {
-                                        location.reload();
+                title: 'What is the reason you are\n deleting this entry?',
+                text: 'Reason will be recorded.',
+                icon: 'question',
+                input: "textarea",
+                inputAttributes: {
+                    required: true
+                },
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Delete Entry",
+                cancelButtonText: "Cancel"
+            }).then((result3) => {
+                if (result3.isConfirmed) {
+                    swal.fire({
+                            title: "Are you sure you \nwant to delete this \nmanager?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                            confirmButtonText: `Yes, I am sure!`,
+                            cancelButtonText: `No, Cancel it!`
+                        })
+                        .then(result => {
+                            if (result.isConfirmed) {
+                                $.post({!! json_encode(url('/tourist-establishments/managers/delete')) !!} + "/" + id, {
+                                    _method: "DELETE",
+                                    data: {
+                                        edit_reason: result3.value
+                                    },
+                                    _token: "{{ csrf_token() }}"
+                                }).then(function(data) {
+                                    console.log(data);
+                                    if (data[0] == "success") {
+                                        swal.fire(
+                                            "Done!",
+                                            data[1],
+                                            "success").then(esc => {
+                                            if (esc) {
+                                                location.reload();
+                                            }
+                                        });
+                                    } else {
+                                        swal.fire(
+                                            "Oops! Something went wrong.",
+                                            data,
+                                            "error");
                                     }
-                                });
-                            } else {
-                                swal.fire(
-                                    "Oops! Something went wrong.",
-                                    data,
-                                    "error");
+                                })
                             }
                         })
-                    }
-                })
+
+                }
+            })
         }
     </script>
 @endif
