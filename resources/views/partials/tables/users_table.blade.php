@@ -1,4 +1,18 @@
 <div class="card shadow">
+    <div class="card-header">
+        <div class="row justify-content-between">
+            <div class="col">
+                <div class="h3 text-muted">Users</div>
+            </div>
+            <div class="col-auto">
+                @if (in_array(auth()->user()->role_id, [1, 2]))
+                <div class="col text-end">
+                    <a href="/settings/user/create" class="btn btn-sm btn-success">Add User</a>
+                </div>
+            @endif
+            </div>
+        </div>
+    </div>
     <div class="card-body">
         <div class="row g-3 mt-2 mb-2">
             <table id="users" class="display table nowrap table-sm table-bordered" style="width:100%;max-width:100%">
@@ -56,7 +70,15 @@
                     @endforeach
                 </tbody>
             </table>
+            
     </div>
+
+   
+
+    
+</div>
+<div class="card-footer">
+     <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>   
 </div>
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
