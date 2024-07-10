@@ -98,6 +98,7 @@
             @if (isset($module))
                 <th></th>
             @endif
+            <th></th>
             <th>App #</th>
             <th>Permit No.</th>{{-- THERE --}}
             <th>First Name</th>{{-- THERE --}}
