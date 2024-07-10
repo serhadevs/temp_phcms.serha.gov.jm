@@ -33,13 +33,21 @@ class AdvanceSearchController extends Controller
             ->orderBy('establishment_name', 'asc')
             ->get();
 
+        $food_addresses = EstablishmentApplications::with('user')
+        ->whereRelation('user','facility_id',auth()->user()->facility_id)
+        ->orderBy('establishment_address','asc')
+        // ->where('id',144)
+        ->get();
+
+        //dd($food_addresses);
+
         $operators = FoodEstablishmentOperators::with('foodEstablishment.user')
             ->whereRelation('foodEstablishment.user', 'facility_id', auth()->user()->facility_id)
             ->orderBy('name_of_operator', 'asc')
             ->select('name_of_operator')
             ->get();
 
-        return view('advancesearch.create', compact('establishment_clinics', 'food_establishments', 'operators'));
+        return view('advancesearch.create', compact('establishment_clinics', 'food_establishments', 'operators','food_addresses'));
     }
 
     public function show(Request $request)
@@ -130,6 +138,7 @@ class AdvanceSearchController extends Controller
                     $module = 3;
                     $est_name = $request->food_est_name;
                     $application_id = $request->application_number;
+                    
 
                     $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user', 'signOff')
                         ->when($est_name, function ($query, string $est_name) {
@@ -138,6 +147,7 @@ class AdvanceSearchController extends Controller
                         ->when($application_id, function ($query, string $application_id) {
                             $query->where('id', '=', $application_id);
                         })
+                       
                         ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                         ->get();
 
@@ -200,19 +210,22 @@ class AdvanceSearchController extends Controller
                 $module = 5;
                 return view('advancesearch.view', compact('payments_info', 'module'));
             } else if ($module['module'] == '6') {
-                if (!$request->application_number && !$request->food_est_name && !$request->operator_name) {
+                if (!$request->application_number && !$request->food_est_name && !$request->operator_name && !$request->address) {
                     return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
                 }
 
                 $id = $request->application_number;
                 $est_name = $request->food_est_name;
                 $operator_name = $request->operator_name;
+                $address = $request->address;
                 $food_establishments = EstablishmentApplications::with('user', 'operators')
                     ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                     ->when($id, function ($query, string $id) {
                         $query->where('id', $id);
                     })->when($est_name, function ($query, string $est_name) {
                         $query->where('establishment_name', 'like', '%' . $est_name . '%');
+                    }) ->when($address, function ($query, string $address) {
+                        $query->where('establishment_address', '=', $address);
                     })
                     ->when($operator_name, function ($query, string $operator_name) {
                         $query->whereRelation('operators', 'name_of_operator', 'like', '%' . $operator_name . '%');
