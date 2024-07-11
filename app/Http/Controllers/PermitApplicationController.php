@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Jobs\SendPermitApplicationEmailJob;
 use App\Mail\SendTestEmailConfig;
 use App\Http\Controllers\EmailController;
+use App\Models\ExamSites;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -106,7 +107,7 @@ class PermitApplicationController extends Controller
 
         $appointment_available = [];
         $app_type_id = 1;
-        $system_operation_type_id = 1;
+        $system_operation_type_id = 6;
 
         foreach (ExamDates::with('examSites', 'permitCategory')
             ->where('facility_id', auth()->user()->facility_id)
@@ -169,7 +170,10 @@ class PermitApplicationController extends Controller
             'edit_reason' => 'required'
         ]);
         try {
-            if ($permit = PermitApplication::with('signOffs')->find($id)) {
+            if ($permit = PermitApplication::with('signOffs', 'user')
+                ->whereRelation('user', 'facility_id', '=', auth()->user()->facility_id)
+                ->find($id)
+            ) {
                 if (empty($permit->signOffs)) {
                     unset($edits['edit_reason']);
                     if ($request->file('photo_upload')) {
@@ -216,7 +220,7 @@ class PermitApplicationController extends Controller
                     throw new Exception('This Food Handlers Application has already been signed off. It cannot be updated.');
                 }
             } else {
-                throw new Exception('This Food Handlers Application does not exist');
+                throw new Exception('This Food Handlers Application does not exist or does not belong to your facility.');
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -224,8 +228,78 @@ class PermitApplicationController extends Controller
         }
     }
 
-    public function editPermitAppointment(Request $request)
+    public function updatePermitAppointment(Request $request, $id)
     {
+        try {
+            if ($appointment = Appointments::find($id)) {
+                if ($application = PermitApplication::with('user')
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->find($appointment->permit_application_id)
+                ) {
+                    if ($application->sign_off_status != '1') {
+                        if ($appointment->exam_date_id != $request->data['exam_date_id'] || $appointment->appointment_date != $request->data['appointment_date']) {
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 1,
+                                'table_id' => $id,
+                                'system_operation_type_id' => 6,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $request->data['edit_reason']
+                            ])) {
+                                if ($appointment->exam_date_id != $request->data['exam_date_id']) {
+                                    if (!EditTransactionsChangedColumns::create([
+                                        'edit_transaction_id' => $edit_transaction->id,
+                                        'column_name' => "exam_date_id",
+                                        'old_value' => ExamDates::find($appointment->exam_date_id)->exam_day . ' ' . ExamDates::find($appointment->exam_date_id)->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($appointment->exam_date_id)->exam_site_id)->name,
+                                        'new_value' => ExamDates::find($request->data['exam_date_id'])->exam_day . ' ' . ExamDates::find($request->data['exam_date_id'])->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($request->data['exam_date_id'])->exam_site_id)->name
+                                    ])) {
+                                        throw new Exception("Error updating appointment. Unable to record field changed.");
+                                    }
+                                }
+                                if ($appointment->appointment_date != $request->data['appointment_date']) {
+                                    if (!EditTransactionsChangedColumns::create([
+                                        'edit_transaction_id' => $edit_transaction->id,
+                                        'column_name' => "appointment_date",
+                                        'old_value' => $appointment->appointment_date,
+                                        'new_value' => $request->data['appointment_date']
+                                    ])) {
+                                        throw new Exception("Error updating appointment. Unable to record field changed.");
+                                    }
+                                }
+                                if ($appointment->update(
+                                    [
+                                        'appointment_date' => $request->data["appointment_date"],
+                                        'exam_date_id' => $request->data["exam_date_id"]
+                                    ]
+                                )) {
+                                    DB::commit();
+                                    return [
+                                        'success',
+                                        'Appointment for ' . $application->firstname . ' ' . $application->lastname . ':' . $application->id . ' has been updated successfully.'
+                                    ];
+                                } else {
+                                    throw new Exception("Error updating appointment. Unable to update record.");
+                                }
+                            } else {
+                                throw new Exception("Error updating appointment. Unable to initiate transaction");
+                            }
+                        } else {
+                            throw new Exception("None of the values were changed. Nothing to update");
+                        }
+                    } else {
+                        throw new Exception("Permit Application has already been signed off. Appointment cannot be signed off.");
+                    }
+                } else {
+                    throw new Exception("The application for this appointment either does not exist or does not belong to your facility.");
+                }
+            } else {
+                throw new Exception("This appointment does not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
         try {
             if (Appointments::find($request->data["appointment_id"])) {
                 if (Appointments::find($request->data["appointment_id"])->update(
@@ -533,10 +607,12 @@ class PermitApplicationController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            DB::beginTransaction();
-            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory')->find($id)) {
+            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
                 if ($permit->sign_off_status != '1') {
-                    // if (empty($permit->payment)) {
+                    DB::beginTransaction();
                     if (EditTransactions::create([
                         'application_type_id' => 1,
                         'table_id' => $id,
@@ -585,14 +661,11 @@ class PermitApplicationController extends Controller
                     } else {
                         throw new Exception('Delete operation failed. Failed to create transaction');
                     }
-                    // } else {
-                    //     throw new Exception('This permit already has a payment. It cannot be deleted.');
-                    // }
                 } else {
                     throw new Exception('This application has already been signed off. It therefore cannot be deleted');
                 }
             } else {
-                throw new Exception("This permit application does not exist.");
+                throw new Exception("This permit application does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
             DB::rollBack();

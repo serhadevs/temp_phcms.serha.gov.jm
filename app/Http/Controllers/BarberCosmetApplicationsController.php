@@ -178,7 +178,10 @@ class BarberCosmetApplicationsController extends Controller
         ]);
 
         try {
-            if ($bar_application = HealthCertApplications::find($id)) {
+            if ($bar_application = HealthCertApplications::with('user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
                 if ($bar_application->sign_off_status != '1') {
                     $edit_reason = $applicant_info['edit_reason_one'];
                     unset($applicant_info['edit_reason_one']);
@@ -219,7 +222,7 @@ class BarberCosmetApplicationsController extends Controller
                     throw new Exception("This application has already been signed off. Application cannot be edited.");
                 }
             } else {
-                throw new Exception("This application does not exist");
+                throw new Exception("This application does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -254,7 +257,10 @@ class BarberCosmetApplicationsController extends Controller
         ]);
 
         try {
-            if ($bar_application = HealthCertApplications::find($id)) {
+            if ($bar_application = HealthCertApplications::with('user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
                 if ($bar_application->sign_off_status != '1') {
                     $edit_reason = $updated_info['edit_reason_two'];
                     unset($updated_info['edit_reason_two']);
@@ -321,7 +327,10 @@ class BarberCosmetApplicationsController extends Controller
 
         try {
             if ($appointment = Appointments::find($id)) {
-                if ($bar_application = HealthCertApplications::find($appointment->health_cert_application_id)) {
+                if ($bar_application = HealthCertApplications::with('user')
+                    ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                    ->find($appointment->health_cert_application_id)
+                ) {
                     if ($bar_application->sign_off_status != '1') {
                         $edit_reason = $appointment_info['edit_reason_three'];
                         unset($appointment_info['edit_reason_three']);

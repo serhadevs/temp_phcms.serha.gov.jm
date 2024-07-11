@@ -220,7 +220,9 @@ class FoodEstablishmentController extends Controller
     public function createOperator(Request $request)
     {
         try {
-            if ($food_est = EstablishmentApplications::find($request->data['food_establishment_id'])) {
+            if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($request->data['food_establishment_id'])
+            ) {
                 if ($food_est->sign_off_status != '1') {
                     DB::beginTransaction();
                     if ($operator = FoodEstablishmentOperators::create([
@@ -244,7 +246,7 @@ class FoodEstablishmentController extends Controller
                     throw new Exception('This food establishment has already been signed off. No operators can be added');
                 }
             } else {
-                throw new Exception('This Establishment does not exist');
+                throw new Exception('This Establishment does not exist or does not belong to your facility.');
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -256,7 +258,9 @@ class FoodEstablishmentController extends Controller
     {
         try {
             if ($operator = FoodEstablishmentOperators::find($request->data["operator_id"])) {
-                if ($food_est = EstablishmentApplications::find($operator->establishment_application_id)) {
+                if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                    ->find($operator->establishment_application_id)
+                ) {
                     if ($food_est->sign_off_status != '1') {
                         if ($request->data['name_of_operator'] != $operator->name_of_operator) {
                             DB::beginTransaction();
@@ -296,7 +300,7 @@ class FoodEstablishmentController extends Controller
                         throw new Exception("This food establishment has already been signed off. Operator cannot be edited.");
                     }
                 } else {
-                    throw new Exception("Food Establishment Application for this operator does not exist. Operator cannot be deleted.");
+                    throw new Exception("Food Establishment Application for this operator does not exist or does not belong to your facility. Operator cannot be edited.");
                 }
             } else {
                 throw new Exception("Operator not found");
@@ -310,7 +314,9 @@ class FoodEstablishmentController extends Controller
     public function deleteOperator(Request $request)
     {
         try {
-            if ($food_est = EstablishmentApplications::find($request->data['est_app_id'])) {
+            if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($request->data['est_app_id'])
+            ) {
                 if ($food_est->sign_off_status != '1') {
                     if ($operator = FoodEstablishmentOperators::find($request->data['operator_id'])) {
                         if (count(FoodEstablishmentOperators::where('establishment_application_id', $request->data["est_app_id"])->get()) == 1) {
@@ -341,7 +347,7 @@ class FoodEstablishmentController extends Controller
                     throw new Exception("This food establishment application has already been signed off. Operator cannot be deleted.");
                 }
             } else {
-                throw new Exception("The food establishment application for this operator does not exist");
+                throw new Exception("The food establishment application for this operator does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -377,7 +383,9 @@ class FoodEstablishmentController extends Controller
         ]);
 
         try {
-            if ($food_est = EstablishmentApplications::find($id)) {
+            if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
                 if ($food_est->sign_off_status != '1') {
                     $edit_reason = $food_est_updated['edit_reason'];
                     unset($food_est_updated['edit_reason']);
@@ -419,7 +427,7 @@ class FoodEstablishmentController extends Controller
                     throw new Exception("This food establishment has already been signed off. It cannot be edited.");
                 }
             } else {
-                throw new Exception("This food establishment does not exist.");
+                throw new Exception("This food establishment does not exist or does nopt belong to your facility.");
             }
         } catch (Exception $e) {
             DB::rollBack();

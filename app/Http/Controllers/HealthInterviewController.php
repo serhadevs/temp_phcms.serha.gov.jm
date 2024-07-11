@@ -13,6 +13,7 @@ use App\Models\PermitApplication;
 use App\Models\Symptoms;
 use App\Models\TestResult;
 use App\Models\TravelHistory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DateTime;
@@ -315,11 +316,11 @@ class HealthInterviewController extends Controller
         try {
             if ($interview = HealthInterview::find($id)) {
                 if ($interview->permit_application_id != "") {
-                    if (!$application = PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.symptomsWithTrashed.editTransactions', 'travelHistory')->find($interview->permit_application_id)) {
+                    if (!$application = PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.symptomsWithTrashed.editTransactions', 'travelHistory.editTransactions')->find($interview->permit_application_id)) {
                         throw new Exception("Permit Application associated with this health interview does not exist.");
                     }
                 } else if ($interview->health_cert_application_id != "") {
-                    if (!$application = HealthCertApplications::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.symptomsWithTrashed.editTransactions', 'travelHistory')->find($interview->health_cert_application_id)) {
+                    if (!$application = HealthCertApplications::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.symptomsWithTrashed.editTransactions', 'travelHistory.editTransactions')->find($interview->health_cert_application_id)) {
                         throw new Exception("Health Certification Application this is associated with this health interview does not exist.");
                     }
                 }
@@ -346,7 +347,7 @@ class HealthInterviewController extends Controller
         try {
             if ($interview = HealthInterview::find($id)) {
                 if ($interview->sign_off_status !== 1) {
-                    if ($application = $interview->permit_application_id == "" ? HealthCertApplications::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.healthInterviewSymptom.editTransactions', 'travelHistory')->find($interview->health_cert_application_id) : PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.healthInterviewSymptom.editTransactions', 'travelHistory')->find($interview->permit_application_id)) {
+                    if ($application = $interview->permit_application_id == "" ? HealthCertApplications::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.healthInterviewSymptom.editTransactions', 'travelHistory')->find($interview->health_cert_application_id) : PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms', 'healthInterviews.editTransactions', 'healthInterviews.healthInterviewSymptom.editTransactions', 'travelHistory.editTransactions')->find($interview->permit_application_id)) {
                         $app_type_id = 0;
                         $system_operation_type_id = 2;
                         $edit_mode = 1;
@@ -389,7 +390,9 @@ class HealthInterviewController extends Controller
             'edit_reason' => 'required'
         ]);
         try {
-            if ($old_interview = HealthInterview::find($id)) {
+            if ($old_interview = HealthInterview::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
                 if ($old_interview->sign_off_status != '1') {
                     if ($application = $old_interview->permit_application_id == '' ? HealthCertApplications::find($old_interview->health_cert_application_id) : PermitApplication::find($old_interview->permit_application_id)) {
                         $reason = $updated_interview['edit_reason'];
@@ -409,13 +412,13 @@ class HealthInterviewController extends Controller
                                     EditTransactionsChangedColumns::create([
                                         'edit_transaction_id' => $edit_transaction->id,
                                         'column_name' => $key,
-                                        'old_value' => $old_interview->toArray()[$key],
-                                        'new_value' => $updated_interview[$key]
+                                        'old_value' => $key == 'literate' ? ($old_interview->toArray()[$key] == '1' ? 'YES' : 'NO') : ($key == 'typhoid' ? ($old_interview->toArray()[$key] == '1' ? 'YES' : 'NO') : ($key == 'lived_abroad' ? ($old_interview->toArray()[$key] == '1' ? 'YES' : 'NO') : ($key == 'travel_abroad' ? ($old_interview->toArray()[$key] == '1' ? 'YES' : 'NO') : $old_interview->toArray()[$key]))),
+                                        'new_value' => $key == 'literate' ? ($updated_interview[$key] == '1' ? 'YES' : 'NO') : ($key == 'typhoid' ? ($updated_interview[$key] == '1' ? 'YES' : 'NO') : ($key == 'lived_abroad' ? ($updated_interview[$key] == '1' ? 'YES' : 'NO') : ($key == 'travel_abroad' ? ($updated_interview[$key] == '1' ? 'YES' : 'NO') : $updated_interview[$key])))
                                     ]);
                                 }
                                 if ($old_interview->update($updated_interview)) {
                                     DB::commit();
-                                    return redirect()->route('health-interview.index', ['id' => 0])->with('success', 'Health Interview for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+                                    return redirect()->route('health-interview.view', ['id' => $old_interview->id])->with('success', 'Health Interview for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
                                 }
                             } else {
                                 throw new Exception('Unable to update health interview. Could not created transaction.');
@@ -430,11 +433,11 @@ class HealthInterviewController extends Controller
                     throw new Exception("This application has already been signed off. It cannot be updated.");
                 }
             } else {
-                throw new Exception('This Health Interview does not exist');
+                throw new Exception('This Health Interview does not exist or does not belong to your facility.');
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->route('health-interview.index', ['id' => 0])->with('error', $e->getMessage());
+            return redirect()->route('health-interview.view', ['id' => $old_interview->id])->with('error', $e->getMessage());
         }
     }
 
@@ -447,7 +450,10 @@ class HealthInterviewController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($interview = HealthInterview::with('permitApplication', 'healthCertApplication')->find($id)) {
+            if ($interview = HealthInterview::with('permitApplication', 'healthCertApplication')
+                ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
                 if ($interview->sign_off_status != '1') {
                     DB::beginTransaction();
                     if (EditTransactions::create([
@@ -476,7 +482,7 @@ class HealthInterviewController extends Controller
                     throw new Exception("The application associated to this health interview has already be signed off. It cannot be deleted.");
                 }
             } else {
-                throw new Exception("This interview does not exist. It cannot be deleted");
+                throw new Exception("This interview does not exist or does not belong to your facility. It cannot be deleted");
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -488,27 +494,35 @@ class HealthInterviewController extends Controller
     {
         try {
             if ($interview_sym = HealthInterviewSymptom::find($id)) {
-                DB::beginTransaction();
-                if (EditTransactions::create([
-                    'application_type_id' => HealthInterview::find($interview_sym->health_interview_id) ? (HealthInterview::find($interview_sym->health_interview_id)->permit_application_id == "" ? 2 : 1) : 0,
-                    'table_id' => $id,
-                    'system_operation_type_id' => 7,
-                    'edit_type_id' => 2,
-                    'user_id' => auth()->user()->id,
-                    'facility_id' => auth()->user()->facility_id,
-                    'reason' => $request->data['reason']
-                ])) {
-                    if ($interview_sym->update(['deleted_at' => new DateTime()])) {
-                        DB::commit();
-                        return [
-                            'success',
-                            'Health Symptoms have been deleted successfully.'
-                        ];
+                if ($interview = HealthInterview::find($interview_sym->health_interview_id)) {
+                    if ($interview->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => HealthInterview::find($interview_sym->health_interview_id) ? (HealthInterview::find($interview_sym->health_interview_id)->permit_application_id == "" ? 2 : 1) : 0,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 7,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            if ($interview_sym->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Health Symptoms have been deleted successfully.'
+                                ];
+                            } else {
+                                throw new Exception('This health interview symptoms has not be deleted. Unable to delete health interview symptoms.');
+                            }
+                        } else {
+                            throw new Exception("This health interview symptom has not been deleted. Unable to create transactions");
+                        }
                     } else {
-                        throw new Exception('This health interview symptoms has not be deleted. Unable to delete health interview symptoms.');
+                        new Exception("This application has already been signed off.");
                     }
                 } else {
-                    throw new Exception("This health interview symptom has not been deleted. Unable to create transactions");
+                    throw new Exception("This interview does not exist.");
                 }
             } else {
                 throw new Exception("This health interview symptom does not exist.");
@@ -523,7 +537,7 @@ class HealthInterviewController extends Controller
     {
         try {
             if ($request->data['destination'] && $request->data['travel_date']) {
-                if ($application = $request->data['application_type'] == '1' ? PermitApplication::find($id) : HealthCertApplications::find($id)) {
+                if ($application = $request->data['application_type'] == '1' ? PermitApplication::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id) : HealthCertApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id)) {
                     if ($application->sign_off_status != '1') {
                         DB::beginTransaction();
                         if ($travel_history = $request->data['application_type'] == 1 ?
@@ -573,27 +587,37 @@ class HealthInterviewController extends Controller
     {
         try {
             if ($trip = TravelHistory::find($id)) {
-                DB::beginTransaction();
-                if (EditTransactions::create([
-                    'application_type_id' => $trip->permit_application_id == '' ? 2 : 1,
-                    'table_id' => $id,
-                    'system_operation_type_id' => 8,
-                    'edit_type_id' => 2,
-                    'user_id' => auth()->user()->id,
-                    'facility_id' => auth()->user()->facility_id,
-                    'reason' => $request->data['reason']
-                ])) {
-                    if ($trip->update(['deleted_at' => new DateTime()])) {
-                        DB::commit();
-                        return [
-                            'success',
-                            'Travel History has been deleted successfully.'
-                        ];
+                if ($interview = $trip->health_cert_application_id == "" ? HealthInterview::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                    ->where('permit_application_id', $trip->permit_application_id)->first() : HealthInterview::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->where('health_cert_application_id', $trip->health_cert_application_id)->first()
+                ) {
+                    if ($interview->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => $trip->permit_application_id == '' ? 2 : 1,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 8,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            if ($trip->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Travel History has been deleted successfully.'
+                                ];
+                            } else {
+                                throw new Exception("Travel History was not deleted. Unable to delete symptom record.");
+                            }
+                        } else {
+                            throw new Exception('Travel History was not deleted. Unable to create transaction.');
+                        }
                     } else {
-                        throw new Exception("Travel History was not deleted. Unable to delete symptom record.");
+                        throw new Exception("This interview has already been signed off. Travel history cannot be destroyed");
                     }
                 } else {
-                    throw new Exception('Travel History was not deleted. Unable to create transaction.');
+                    throw new Exception("This interview does not exist or does not belong to your facility.");
                 }
             } else {
                 throw new Exception('This travel history record does not exist.');

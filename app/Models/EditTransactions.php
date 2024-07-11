@@ -36,7 +36,7 @@ class EditTransactions extends Model
     }
 
     public function systemOperationType():HasOne{
-        return $this->hasOne(SystemOperationTypes::class, 'id', 'system_operation_id');
+        return $this->hasOne(SystemOperationTypes::class, 'id', 'system_operation_type_id');
     }
 
     public function user():HasOne{

@@ -256,7 +256,10 @@ class FoodHandlersClinicController extends Controller
         ]);
 
         try {
-            if ($food_clinic = EstablishmentClinics::find($id)) {
+            if ($food_clinic = EstablishmentClinics::with('user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
                 $edit_reason = $food_handlers_clinic['edit_reason'];
                 unset($food_handlers_clinic['edit_reason']);
                 if (!empty($differences = array_diff_assoc(
@@ -294,7 +297,7 @@ class FoodHandlersClinicController extends Controller
                     throw new Exception("None of the fields in this application were changed. Therefore nothing was updated.");
                 }
             } else {
-                throw new Exception("This establishment clinic does not exist. Therefore it cannot be edited.");
+                throw new Exception("This establishment clinic does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -326,7 +329,10 @@ class FoodHandlersClinicController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($food_clinic = EstablishmentClinics::withCount('permits')->find($id)) {
+            if ($food_clinic = EstablishmentClinics::with('user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->withCount('permits')->find($id)
+            ) {
                 if ($food_clinic->permits_count == 0) {
                     DB::beginTransaction();
                     if (EditTransactions::create([
@@ -349,7 +355,7 @@ class FoodHandlersClinicController extends Controller
                     throw new Exception("Permits have already been added to this food establishment clinic. THis clinic cannot be deleted.");
                 }
             } else {
-                throw new Exception("This Food Establishment does not exist.");
+                throw new Exception("This Food Establishment does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
             DB::rollBack();
