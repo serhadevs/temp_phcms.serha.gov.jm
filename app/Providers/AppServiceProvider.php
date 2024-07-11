@@ -26,26 +26,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // if (Schema::hasTable('stmp_settings')) {
-        //     $stmpsettings = StmpSettings::first();
-        //     //dd($stmpsettings);
+        if (Schema::hasTable('stmp_settings')) {
+            $stmpsettings = StmpSettings::first();
+            //dd($stmpsettings);
     
-        //     if ($stmpsettings) {
-        //         $data = [
-        //             'driver' => $stmpsettings->mailer,
-        //             'host' => $stmpsettings->host,
-        //             'port' => $stmpsettings->port,
-        //             'username' => $stmpsettings->username,
-        //             'password' => $stmpsettings->password,
-        //             'encryption' => $stmpsettings->encryption,
-        //             'from' => [
-        //                 'address' => $stmpsettings->from_address,
-        //                 'name' => 'PHCMS'
-        //             ]
-        //         ];
+            if ($stmpsettings) {
+                $data = [
+                    'driver' => $stmpsettings->mailer,
+                    'host' => $stmpsettings->host,
+                    'port' => $stmpsettings->port,
+                    'username' => $stmpsettings->username,
+                    'password' => $stmpsettings->password,
+                    'encryption' => $stmpsettings->encryption,
+                    'from' => [
+                        'address' => $stmpsettings->from_address,
+                        'name' => 'PHCMS'
+                    ]
+                ];
     
-        //         Config::set('mail', array_merge(Config::get('mail'), $data));
-        //     }
-        // }
+                Config::set('mail', array_merge(Config::get('mail'), $data));
+            }
+        }
     }
 }
