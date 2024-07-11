@@ -10,8 +10,8 @@
             @include('partials.messages.table_loading')
             @include('partials.messages.messages')
             <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-between mb-4">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
                                 All Food Handler's Clinics
@@ -49,6 +49,10 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-between">
                         <form action="{{ route('food-handlers-clinic.custom.filter') }}" method="POST">
                             @csrf
                             @method('POST')
@@ -82,6 +86,9 @@
                         </form>
                     </div>
                     @include('partials.tables.food_handlers_clinics_table')
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
                 </div>
             </div>
         </div>

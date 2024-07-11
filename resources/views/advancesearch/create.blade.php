@@ -110,6 +110,18 @@
                                     @endforeach
                                 </datalist>
                             </div>
+
+                            <div class="col col-md-6 col-sm-12 mt-3" id ="address" style="display: none">
+                                <label for="" class="form-label">Establishment Address</label>
+                                <input type = "text" class="form-control" list="establishmentAddress"
+                                    placeholder="Type to search..." name ="address">
+                                <datalist id="establishmentAddress">
+                                    @foreach ($food_addresses as $food_est_address)
+                                        <option value="{{ $food_est_address->establishment_address }}">
+                                            {{ $food_est_address->establishment_address }}</option>
+                                    @endforeach
+                                </datalist>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Search</button>
                     </form>
@@ -148,13 +160,16 @@
                     document.getElementById('app_type_div').style.display = "";
                     document.querySelector('#app_type option:nth-child(3)').style.display = "";
                     document.querySelector('#app_type option:nth-child(2)').style.display = "none";
+                    
                 } else if (this.value == '5') {
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('receipt_div').style.display = "";
+                    
                 } else if (this.value == '6') {
                     document.getElementById('food_est_name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('operator_div').style.display = "block";
+                    document.getElementById('address').style.display = ""
                 }
             })
 

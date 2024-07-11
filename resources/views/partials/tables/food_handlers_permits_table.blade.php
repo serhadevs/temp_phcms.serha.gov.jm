@@ -5,6 +5,7 @@
             @if (!isset($is_general_report))
                 <th></th>
             @endif
+            {{-- <th></th> --}}
             <th class="text-nowrap">App #</th>
             <th>Permit No.</th>{{-- THERE --}}
             <th>First Name</th>{{-- THERE --}}
@@ -40,6 +41,7 @@
                         @endif
                     </td>
                 @endif
+                {{-- <td></td> --}}
                 <td>{{ $permit_application->id }}</td>
                 <td>{{ strtoupper($permit_application->permit_no) }}</td>
                 <td>{{ strtoupper($permit_application->firstname) }}</td>
@@ -95,9 +97,13 @@
     </tbody>
     <tfoot>
         <tr>
-            @if (isset($module))
+            {{-- @if (isset($module))
+                <th></th>
+            @endif --}}
+            @if (!isset($is_general_report))
                 <th></th>
             @endif
+            {{-- <th></th> --}}
             <th>App #</th>
             <th>Permit No.</th>{{-- THERE --}}
             <th>First Name</th>{{-- THERE --}}

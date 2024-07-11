@@ -30,14 +30,16 @@
                 </h4>
             @endif
             <div class="card">
+                <div class="card-header">
+                    <h3 class="text-muted">
+                        Create Food Handler Application
+                    </h3>
+                </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('food_handlers_permit.store') }}" enctype="multipart/form-data">
                         @method('POST')
                         @csrf
-                        <h3>
-                            Create Food Handler Application
-                        </h3>
-                        <hr>
+
                         @if (isset($clinic_permit))
                             <input type="text" class="form-control" name="establishment_clinic_id"
                                 value="{{ $clinic_permit_data['clinic_app_id'] }}" hidden>
@@ -273,9 +275,12 @@
                             </div>
                         </div>
                         <div class="row mt-3">
-                            <label for="" class="form-label">If refused, state reason(20 chars min, 100
-                                max)</label>
-                            <textarea name="reason" id="" class="form-control" oninput="this.value = this.value.toUpperCase()">{{ old('reason') }}</textarea>
+                            <div class="col">
+                                <label for="" class="form-label">If refused, state reason(20 chars min, 100
+                                    max)</label>
+                                <textarea name="reason" id="" class="form-control" oninput="this.value = this.value.toUpperCase()">{{ old('reason') }}</textarea>
+                            </div>
+                            
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -323,7 +328,11 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
+                       
                         <div class="mt-4">
+                            <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">
+                                Cancel Application
+                            </a>
                             <button class="btn btn-primary" onclick="showLoading(this)" type="button">
                                 Submit
                             </button>
@@ -352,11 +361,11 @@
             const mask3 = IMask(work_phone, maskOptions2);
             const mask4 = IMask(home_phone, maskOptions2);
 
-            const hamBurger = document.querySelector(".toggle-btn");
+            // const hamBurger = document.querySelector(".toggle-btn");
 
-            hamBurger.addEventListener("click", function() {
-                document.querySelector("#sidebar").classList.toggle("expand");
-            });
+            // hamBurger.addEventListener("click", function() {
+            //     document.querySelector("#sidebar").classList.toggle("expand");
+            // });
         </script>
         <script>
             $(document).ready(function() {
