@@ -90,6 +90,10 @@
                             Edit
                         </a>
                     @endif
+                    <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/view' : ($app_type_id == '6' ? 'tourist-establishments/view' : ($app_type_id == '5' ? 'swimming-pools/view' : '')) }}/{{ $application->id }}"
+                        class="btn btn-sm btn-primary">
+                        View
+                    </a>
                 </td>
             </tr>
         @endforeach
@@ -129,7 +133,7 @@
     <script>
         new DataTable('#outstanding_results', {
             scrollX: true,
-            responsive: true,
+            // responsive: true,
             initComplete: function() {
                 loading.close()
             }

@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\EstablishmentApplications;
 use App\Models\TestResult;
+use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class FoodEstTestResultController extends Controller
 {
@@ -194,20 +199,35 @@ class FoodEstTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request)
+    public function edit($id)
     {
         $application = EstablishmentApplications::with('establishmentCategory')
-            ->find($request->route('id'));
+            ->find($id);
 
         $app_type_id = '3';
 
-        $result = TestResult::where('application_id', $request->route('id'))
+        $result = TestResult::where('application_id', $id)
             ->where('application_type_id', 3)
             ->first();
 
         return view('test_center.food_est.edit', compact('application', 'result', 'app_type_id'));
     }
 
+    public function show($id)
+    {
+        $application = EstablishmentApplications::with('establishmentCategory')
+            ->find($id);
+
+        $app_type_id = '3';
+
+        $is_view = 1;
+
+        $result = TestResult::where('application_id', $id)
+            ->where('application_type_id', 3)
+            ->first();
+
+        return view('test_center.food_est.view', compact('application', 'result', 'app_type_id', 'is_view'));
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -215,29 +235,73 @@ class FoodEstTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $food_est = $request->validate([
+        $updated_est_results = $request->validate([
             'visit_purpose' => 'required',
             'staff_contact' => 'required',
             'test_date' => 'required',
             'overall_score' => 'required|numeric|min:0|max:100',
             'critical_score' => 'required|numeric|min:0|max:100',
             'comments' => 'nullable',
-            'test_location' => 'required'
+            'test_location' => 'required',
+            'edit_reason' => 'required'
         ]);
 
-        $food_est_info = EstablishmentApplications::find($request->application_id);
-
-        if ($test_results = TestResult::where('application_id', $request->application_id)->where('application_type_id', 3)->first()) {
-            if ($test_results->update(
-                $food_est
-            )) {
-                return redirect()->route('test-results.food-est.index', ['id' => 0])->with('success', 'Test Result for ' . $food_est_info->establishment_name . ' has been updated successfully.');
+        try {
+            if ($old_results = TestResult::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
+                if ($application = EstablishmentApplications::find($old_results->application_id)) {
+                    if ($application->sign_off_status != '1') {
+                        $edit_reason = $updated_est_results['edit_reason'];
+                        unset($updated_est_results['edit_reason']);
+                        if (!empty($differences = array_diff_assoc($updated_est_results, TestResult::select('visit_purpose', 'staff_contact', 'test_date', 'overall_score', 'critical_score', 'comments', 'test_location')->find($id)->toArray()))) {
+                            DB::beginTransaction();
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 3,
+                                'table_id' => $id,
+                                'system_operation_type_id' => 3,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $edit_reason
+                            ])) {
+                                foreach ($differences as $key => $value) {
+                                    if (!EditTransactionsChangedColumns::create([
+                                        'edit_transaction_id' => $edit_transaction->id,
+                                        'column_name' => $key,
+                                        'old_value' => $old_results->toArray()[$key],
+                                        'new_value' => $updated_est_results[$key]
+                                    ])) {
+                                        throw new Exception("Error updating test results. Unable to record field changed.");
+                                    }
+                                }
+                                if ($old_results->update($updated_est_results)) {
+                                    DB::commit();
+                                    return redirect()->route('test-results.food-est.view', ['id' => $application->id])->with('success', 'Test Results for ' . $application->establishment_name . ':' . $application->id . ' has been updated successfully');
+                                } else {
+                                    throw new Exception("Error updating test results. Unable to updating record.");
+                                }
+                            } else {
+                                throw new Exception("Error updating test results. Unable to initiate transaction.");
+                            }
+                        } else {
+                            throw new Exception("No fields were changed. Nothing to update");
+                        }
+                    } else {
+                        throw new Exception("The food establishment application was already signed off. These results cannot be edited.");
+                    }
+                } else {
+                    throw new Exception("The food establishment application for this test result does not exist");
+                }
+            } else {
+                throw new Exception("This Test Result does not exist or does not belong to your facility.");
             }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        return redirect()->route('test-results.food-est.index', ['id' => 0])->with('error', 'Error updating test Result for ' . $food_est_info->establishment_name . '.');
     }
 
     /**

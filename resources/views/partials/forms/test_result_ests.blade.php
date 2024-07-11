@@ -2,7 +2,7 @@
 @if ($app_type_id == '3')
     <div class="mt-3">
         <label for="" class="form-label">Purpose of Visit</label>
-        <select name="visit_purpose" id="" class="form-select">
+        <select name="visit_purpose" id="" class="form-select" {{ isset($is_view) ? 'disabled' : '' }}>
             <option disabled selected>Select Visit Purpose</option>
             <option value="routine"
                 {{ old('visit_purpose')
@@ -61,7 +61,8 @@
     <div class="col">
         <label for="" class="form-label">Name of all Inspectors</label>
         <input type="text" class="form-control" name="staff_contact" placeholder="Separate each name with a comma"
-            value="{{ old('staff_contact') ? old('staff_contact') : (isset($result) ? $result->staff_contact : '') }}">
+            value="{{ old('staff_contact') ? old('staff_contact') : (isset($result) ? $result->staff_contact : '') }}"
+            {{ isset($is_view) ? 'disabled' : '' }}>
         @error('staff_contact')
             <p class="text-danger">{{ $message }}</p>
         @enderror
@@ -69,7 +70,8 @@
     <div class="col">
         <label for="" class="form-label">Inspection Location</label>
         <input type="text" class="form-control" name="test_location"
-            value="{{ $app_type_id == '5' ? $application->swimming_pool_address : $application->establishment_address }}">
+            value="{{ $app_type_id == '5' ? $application->swimming_pool_address : $application->establishment_address }}"
+            {{ isset($is_view) ? 'disabled' : '' }}>
         @error('test_location')
             <p class="text-danger">{{ $message }}</p>
         @enderror
@@ -78,7 +80,8 @@
 <div class="mt-3">
     <label for="" class="form-label">Date of Inspection</label>
     <input type="date" class="form-control" name="test_date"
-        value="{{ old('test_date') ? old('test_date') : (isset($result) ? $result->test_date : '') }}">
+        value="{{ old('test_date') ? old('test_date') : (isset($result) ? $result->test_date : '') }}"
+        {{ isset($is_view) ? 'disabled' : '' }}>
     @error('test_date')
         <p class="text-danger">{{ $message }}</p>
     @enderror
@@ -87,7 +90,8 @@
     <div class="col">
         <label for="" class="form-label">Critical Score</label>
         <input type="text" class="form-control" placeholder="" name="critical_score"
-            value="{{ old('critical_score') ? old('critical_score') : (isset($result) ? $result->critical_score : '') }}">
+            value="{{ old('critical_score') ? old('critical_score') : (isset($result) ? $result->critical_score : '') }}"
+            {{ isset($is_view) ? 'disabled' : '' }}>
         @error('critical_score')
             <p class="text-danger">{{ $message }}</p>
         @enderror
@@ -95,7 +99,8 @@
     <div class="col">
         <label for="" class="form-label">Overall Score</label>
         <input type="text" class="form-control" name="overall_score"
-            value="{{ old('overall_score') ? old('overall_score') : (isset($result) ? $result->overall_score : '') }}">
+            value="{{ old('overall_score') ? old('overall_score') : (isset($result) ? $result->overall_score : '') }}"
+            {{ isset($is_view) ? 'disabled' : '' }}>
         @error('overall_score')
             <p class="text-danger">{{ $message }}</p>
         @enderror
@@ -103,16 +108,10 @@
 </div>
 <div class="mt-3">
     <label for="" class="form-label">Comments</label>
-    <textarea class="form-control" name="comments">{{ old('comments') ? old('comments') : (isset($result) ? $result->comments : '') }}</textarea>
+    <textarea class="form-control" name="comments" {{ isset($is_view) ? 'disabled' : '' }}>{{ old('comments') ? old('comments') : (isset($result) ? $result->comments : '') }}</textarea>
     @error('comments')
         <p class="text-danger">{{ $message }}</p>
     @enderror
 </div>
-
-<a href="/test-results/food-establishments/outstanding/filter/0" class="btn btn-danger mt-3">Back</a>
-<button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
-    Submit
-</button>
-
 
 @include('partials.messages.loading_message')
