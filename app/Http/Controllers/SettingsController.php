@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -64,9 +65,10 @@ class SettingsController extends Controller
         return view('admin.stmp', compact('stmp'));
     }
 
-    public function TestEmail(){
+    public function TestEmail($event){
 
         Mail::to('tywayneb@serha.gov.jm')->send(new SendTestEmailConfig());
+        Log::info($event->message);
     }
 
    
