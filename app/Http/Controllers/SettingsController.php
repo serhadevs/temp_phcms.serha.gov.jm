@@ -65,10 +65,10 @@ class SettingsController extends Controller
         return view('admin.stmp', compact('stmp'));
     }
 
-    public function TestEmail($event){
+    public function TestEmail(){
 
         Mail::to('tywayneb@serha.gov.jm')->send(new SendTestEmailConfig());
-        Log::info($event->message);
+       
     }
 
    
