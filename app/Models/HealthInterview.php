@@ -73,6 +73,6 @@ class HealthInterview extends Model
     }
 
     public function user():HasOne{
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
     }
 }

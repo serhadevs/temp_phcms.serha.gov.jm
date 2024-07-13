@@ -86,29 +86,58 @@
                                     "Nothing was changed",
                                     "error");
                             } else {
-                                $.post({!! json_encode(url('/permit/application/edit/appointment')) !!}, {
-                                    _method: "POST",
-                                    data: {
-                                        exam_date_id: result.value,
-                                        appointment_date: result2.value,
-                                        appointment_id: appointment_id
+                                swal.fire({
+                                    title: "What is your reason for editing appointment?",
+                                    text: "Reason will be recorded",
+                                    icon: 'question',
+                                    input: 'textarea',
+                                    inputAttributes: {
+                                        required: true
                                     },
-                                    _token: "{{ csrf_token() }}"
-                                }).then(function(data) {
-                                    if (data == "success") {
-                                        swal.fire(
-                                            "Done!",
-                                            "Payment Cancellation has been successfully Requested.",
-                                            "success").then(esc => {
-                                            if (esc) {
-                                                location.reload();
+                                    showConfirmButton: true,
+                                    showCancelButton: true,
+                                    confirmButtonText: "Update Appointment"
+                                }).then((result3) => {
+                                    if (result3.isConfirmed) {
+                                        swal.fire({
+                                            icon: 'warning',
+                                            title: 'Are you sure you want to update appointment',
+                                            showCancelButton: true,
+                                            showConfirmButton: true,
+                                            confirmButtonText: "Update Appointment"
+                                        }).then((result4) => {
+                                            if (result4.isConfirmed) {
+                                                $.post({!! json_encode(url('/permit/application/update/appointment')) !!} + "/" +
+                                                    appointment_id, {
+                                                        _method: "PUT",
+                                                        data: {
+                                                            exam_date_id: result.value,
+                                                            appointment_date: result2
+                                                                .value,
+                                                            edit_reason: result3.value
+                                                        },
+                                                        _token: "{{ csrf_token() }}"
+                                                    }).then(function(data) {
+                                                    if (data[0] == "success") {
+                                                        swal.fire(
+                                                            "Done!",
+                                                            data[1],
+                                                            "success").then(
+                                                            esc => {
+                                                                if (esc) {
+                                                                    location
+                                                                        .reload();
+                                                                }
+                                                            });
+                                                    } else {
+                                                        swal.fire(
+                                                            "Oops! Something went wrong.",
+                                                            data,
+                                                            "error");
+                                                    }
+                                                })
                                             }
-                                        });
-                                    } else {
-                                        swal.fire(
-                                            "Oops! Something went wrong.",
-                                            data,
-                                            "error");
+                                        })
                                     }
                                 })
                             }

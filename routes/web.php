@@ -65,8 +65,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get("/permit/filter/{id}", [PermitApplicationController::class, 'index'])->name('permit.index');
   Route::post("/permit/filter", [PermitApplicationController::class, 'customFilterApplications'])->name('permit.index.custom');
   Route::get('/permit/view/{id}', [PermitApplicationController::class, 'viewApplication'])->name('permit.application.view');
+  Route::put('/permit/application/update/appointment/{id}', [PermitApplicationController::class, 'updatePermitAppointment'])->name('permit.application.update.appointment');
   Route::put('/permit/application/update/{id}', [PermitApplicationController::class, 'editApplication'])->name('permit.application.update');
-  Route::post('/permit/application/edit/appointment', [PermitApplicationController::class, 'editPermitAppointment'])->name('permit.application.edit.appointment');
   Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
   Route::delete('/permit/application/delete/{id}', [PermitApplicationController::class, 'destroy'])->name('permit.application.delete');
 
@@ -77,20 +77,20 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/barber-cosmet/filter', [BarberCosmetApplicationsController::class, 'customIndex'])->name('baber-cosmet.custom.filter');
   Route::get('/barber-cosmet/view/{id}', [BarberCosmetApplicationsController::class, 'show'])->name('barber-cosmet.view');
 
-// <<<<<<< HEAD
-     //Edit Health Cert Applications
-     Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
-     Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
-     Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
-     Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
-     Route::delete('/barber-cosmet/delete/{id}', [BarberCosmetApplicationsController::class, 'destroy'])->name('barber-cosmet.delete');
-// =======
-//   //Edit Health Cert Applications
-//   Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
-//   Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
-//   Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
-//   Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
-// >>>>>>> 0067a7bfae91e1d23711d5649e782a9137fa4649
+  // <<<<<<< HEAD
+  //Edit Health Cert Applications
+  Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
+  Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
+  Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
+  Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
+  Route::delete('/barber-cosmet/delete/{id}', [BarberCosmetApplicationsController::class, 'destroy'])->name('barber-cosmet.delete');
+  // =======
+  //   //Edit Health Cert Applications
+  //   Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
+  //   Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
+  //   Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
+  //   Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
+  // >>>>>>> 0067a7bfae91e1d23711d5649e782a9137fa4649
 
   //Tourist Establishment Route
   Route::get('/tourist-establishments/create', [TouristEstApplicationsController::class, 'create'])->name('tourist-establishments.create');
@@ -182,7 +182,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/test-results/food-establishments/outstanding', [FoodEstTestResultController::class, 'outstandingCustom'])->name('test-results.food-est.outstanding.custom.filter');
   Route::post('/test-results/food-establishments', [FoodEstTestResultController::class, 'store'])->name('test-results.food-est.store');
   Route::get('/test-results/food-establishments/edit/{id}', [FoodEstTestResultController::class, 'edit'])->name('test-results.food-est.edit');
-  Route::post('/test-results/food-establishments/update', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update');
+  Route::get('/test-results/food-establishments/view/{id}', [FoodEstTestResultController::class, 'show'])->name('test-results.food-est.view');
+  Route::post('/test-results/food-establishments/update/{id}', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update');
 
   //Baber/Cosmet Results
   Route::get('/test-results/barber-cosmet/filter/{id}', [BarberCosmetTestResultController::class, 'index'])->name('test-results.barber-cosmet.processed');
@@ -285,10 +286,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class, 'getEdit']);
 
   //Test Exports
-  Route::middleware(['checkRole:1'])->group(function(){
+  Route::middleware(['checkRole:1'])->group(function () {
     Route::get('/test/downloads', [TestDownloads::class, 'index']);
     Route::get('/manual-run/food-est-job', [TestDownloads::class, 'writeAllFoodEstablishments']);
     Route::get('/test/tourist-establishments', [TestDownloads::class, 'testTourist']);
+    // Route::get('/fix/downloads/payment', [PaymentController::class, 'fixDownloadsBasedOnPayment']);
   });
 
 
@@ -319,7 +321,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/reports/sign-off', [ReportController::class, 'numberSignOffsShow'])->name('reports.signoffs.show');
   Route::get('/reports/backlog-report', [ReportController::class, 'backLogReport'])->name('reports.backlog');
 
- 
+
   //Training Manual Page
   Route::get('/training-manuals', [TrainingManualsController::class, 'index'])->name("training.manuals");
 
@@ -337,10 +339,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.index');
     Route::get('/admin/settings/stmp', [SettingsController::class, 'create'])->name('admin.create.stmp');
     Route::post('/admin/stmp/update', [SettingsController::class, 'store'])->name('admin.stmp.update');
-    Route::get('/admin/create/role',[SettingsController::class,'createRole'])->name('admin.create.role');
-    Route::post('/admin/role',[SettingsController::class,'storeRole'])->name('admin.store.role');
-    Route::get('/admin/send-test-email',[SettingsController::class,'TestEmail'])->name('admin.test-email');
-    
+    Route::get('/admin/create/role', [SettingsController::class, 'createRole'])->name('admin.create.role');
+    Route::post('/admin/role', [SettingsController::class, 'storeRole'])->name('admin.store.role');
+    Route::get('/admin/send-test-email', [SettingsController::class, 'TestEmail'])->name('admin.test-email');
   });
 
 

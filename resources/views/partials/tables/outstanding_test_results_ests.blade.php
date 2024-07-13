@@ -77,6 +77,7 @@
         initComplete: function() {
             loading.close()
         }
-        responsive: true
+        // ,
+        // responsive: true
     });
 </script>

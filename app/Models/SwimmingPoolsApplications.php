@@ -56,4 +56,9 @@ class SwimmingPoolsApplications extends Model
             ->where('application_type_id', 5)
             ->where('system_operation_type_id', 1);
     }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
+    }
 }

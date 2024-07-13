@@ -169,7 +169,10 @@ class SwimmingPoolsApplicationController extends Controller
         ]);
 
         try {
-            if ($s_pool = SwimmingPoolsApplications::find($id)) {
+            if ($s_pool = SwimmingPoolsApplications::with('user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
                 if ($s_pool->sign_off_status != '1') {
                     $edit_reason = $update_pool['edit_reason'];
                     unset($update_pool['edit_reason']);
@@ -210,7 +213,7 @@ class SwimmingPoolsApplicationController extends Controller
                     throw new Exception("This swimming pool has already been signed off. Application cannot be edited.");
                 }
             } else {
-                throw new Exception("This Swimming Pool does not exist");
+                throw new Exception("This Swimming Pool does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -262,7 +265,10 @@ class SwimmingPoolsApplicationController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($s_pool = SwimmingPoolsApplications::find($id)) {
+            if ($s_pool = SwimmingPoolsApplications::with('user')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
                 if ($s_pool->sign_off_status != '1') {
                     DB::beginTransaction();
                     if (EditTransactions::create([
@@ -290,7 +296,7 @@ class SwimmingPoolsApplicationController extends Controller
                     throw new Exception('This swimming pool has already been signed off. Application cannot be deleted.');
                 }
             } else {
-                throw new Exception("This swimming pool application does not exist");
+                throw new Exception("This swimming pool application does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
             DB::rollBack();

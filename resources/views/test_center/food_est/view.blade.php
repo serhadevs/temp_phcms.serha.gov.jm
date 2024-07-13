@@ -1,18 +1,21 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'Processed Test Results')
+@section('title', 'Edit Test Results')
 
 @section('content')
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
+        @include('partials.messages.messages')
         <div class="container-fluid">
             <div class="card">
-                <h4 class="card-header">
-                    Create Food Establishment Inspection Results
-                </h4>
+                <div class="card-header">
+                    <h2 class="text-muted">
+                        Food Est. Results {{ $application->establishment_name }}
+                    </h2>
+                </div>
                 <div class="card-body">
-                    <div class="mt-3">
+                    <div class="">
                         <label for="" class="form-label">Establishment Name</label>
                         <input type="text" class="form-control" value="{{ $application->establishment_name }}" disabled>
                     </div>
@@ -26,16 +29,14 @@
                         <input type="text" class="form-control" value="{{ $application->establishment_address }}"
                             disabled>
                     </div>
-                    <form action="{{ route('test-results.food-est.store') }}" method="POST">
-                        @method('POST')
-                        @csrf
-                        @include('partials.forms.test_result_ests')
-                        <a href="/test-results/food-establishments/outstanding/filter/0"
-                            class="btn btn-danger mt-3">Back</a>
-                        <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
-                            Submit Results
-                        </button>
-                    </form>
+                    @include('partials.forms.test_result_ests')
+
+                </div>
+                <div class="card-footer">
+                    <a href="/test-results/food-establishments/filter/0" class="btn btn-danger">Dashboard</a>
+                    <a href="/test-results/food-establishments/edit/{{ $application->id }}" class="btn btn-warning">
+                        Edit Results
+                    </a>
                 </div>
             </div>
         </div>
