@@ -48,4 +48,8 @@ class TestResult extends Model
     {
         return $this->belongsTo(EstablishmentApplications::class, 'application_id', 'id');
     }
+
+    public function swimmingPool():BelongsTo{
+        return $this->belongsTo(SwimmingPoolsApplications::class, 'application_id', 'id');
+    }
 }

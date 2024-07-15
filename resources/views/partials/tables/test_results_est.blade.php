@@ -95,7 +95,7 @@
                                 Edit
                             </a>
                             <button
-                                onclick="removeEntry('/test-results/food-establishments', {{ json_encode($application->testResults?->id) }})"
+                                onclick="removeEntry({{ $app_type_id == '3' ? json_encode('/test-results/food-establishments') : json_encode('/test-results/swimming-pools') }}, {{ json_encode($application->testResults?->id) }})"
                                 class="btn btn-danger btn-sm">
                                 Delete
                             </button>

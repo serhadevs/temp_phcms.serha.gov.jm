@@ -218,7 +218,25 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            if ($application = SwimmingPoolsApplications::with('payment', 'testResults')
+                ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
+                if (!empty($application->payment)) {
+                    $is_view = 1;
+                    $system_operation_type_id = 3;
+                    $app_type_id = 5;
+                    return view('test_center.swimming_pool.edit', compact('application', 'is_view', 'system_operation_type_id', 'app_type_id'));
+                } else {
+                    throw new Exception("There is no payment for this swimming pool so it cannot be processed");
+                }
+            } else {
+                throw new Exception('This test results entry does not exist or does not belong to your facility.');
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -230,22 +248,19 @@ class SwimmingPoolTestResultController extends Controller
     public function edit($id)
     {
         try {
-            if($result = TestResult::find($id)){
-                if ($application = SwimmingPoolsApplications::with('payment', 'testResults')->find($id)) {
+            if ($application = SwimmingPoolsApplications::with('payment', 'testResults')->find($id)) {
                 if (!empty($application->payment)) {
-                    return view('test_center.swimming_pool.edit', compact('application'));
+                    $system_operation_type_id = 3;
+                    $app_type_id = 5;
+                    return view('test_center.swimming_pool.edit', compact('application', 'system_operation_type_id', 'app_type_id'));
                 } else {
                     throw new Exception("There is no payment for this swimming pool so it cannot be processed");
                 }
             } else {
                 throw new Exception('This test results entry does not exist.');
             }
-            }else{
-                throw new Exception("This result does not does not exist.");
-            }
-            
         } catch (Exception $e) {
-            return redirect()->route('test-results.swimming-pools.index', ['id' => 0])->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -296,7 +311,7 @@ class SwimmingPoolTestResultController extends Controller
                                 }
                                 if ($old_results->update($results_edit)) {
                                     DB::commit();
-                                    return redirect()->route('test-results.swimming-pools.index', ['id' => 0])->with('success', 'Swimming Pool Test Results for ' . $swimming_pool->firstname . ' ' . $swimming_pool->lastname . ' was updated successfully');
+                                    return redirect()->route('test-results.swimming-pools.view', ['id' => $swimming_pool->id])->with('success', 'Swimming Pool Test Results for ' . $swimming_pool->firstname . ' ' . $swimming_pool->lastname . ':' . $swimming_pool->id . ' was updated successfully');
                                 } else {
                                     throw new Exception("Error updating test results for swimming pool. Unable to update results.");
                                 }
@@ -317,7 +332,7 @@ class SwimmingPoolTestResultController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->route('test-results.swimming-pools.index', ['id' => 0])->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -327,8 +342,48 @@ class SwimmingPoolTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try {
+            if ($result = TestResult::where('facility_id', auth()->user()->facility_id)
+                ->where('application_type_id', 5)
+                ->with('swimmingPool')
+                ->find($id)
+            ) {
+                if (!empty($result->swimmingPool)) {
+                    if ($result->swimmingPool?->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => 5,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 3,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            if ($result->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Test Result for Swimming Pool ' . $result->swimmingPool?->firstname . ' ' . $result->swimmingPool?->lastname . ':' . $result->swimmingPool?->id . ' has been deleted successfully.'
+                                ];
+                            }
+                        } else {
+                            throw new Exception("Error deleting test result. Unable to initiate transaction.");
+                        }
+                    } else {
+                        throw new Exception("Swimming Pool has already been signed off. This test result cannot be deleted.");
+                    }
+                } else {
+                    throw new Exception('Swimming Pool associated to this test result does not exist.');
+                }
+            } else {
+                throw new Exception("This test results does not exist or does not belong your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

@@ -315,13 +315,13 @@ class FoodEstTestResultController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($result = TestResult::with('application')
+            if ($result = TestResult::with('establishmentApplication')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 3)
                 ->find($id)
             ) {
-                if (!empty($result->application)) {
-                    if ($result->application?->sign_off_status != '1') {
+                if (!empty($result->establishmentApplication)) {
+                    if ($result->establishmentApplication?->sign_off_status != '1') {
                         DB::beginTransaction();
                         if (EditTransactions::create([
                             'application_type_id' => 3,
@@ -336,7 +336,7 @@ class FoodEstTestResultController extends Controller
                                 DB::commit();
                                 return [
                                     'success',
-                                    'Test Results for ' . $result->application?->establishment_name . ':' . $result->application?->id . ' have been deleted successfully.'
+                                    'Test Results for ' . $result->establishmentApplication?->establishment_name . ':' . $result->establishmentApplication?->id . ' have been deleted successfully.'
                                 ];
                             } else {
                                 throw new Exception("Error deleting result. Unable to delete record.");

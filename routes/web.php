@@ -215,6 +215,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/test-results/swimming-pools/store/{id}', [SwimmingPoolTestResultController::class, 'store'])->name('test-results.swimming-pools.store');
   Route::get('/test-results/swimming-pools/edit/{id}', [SwimmingPoolTestResultController::class, 'edit'])->name('test-results.swimming-pools.edit');
   Route::put('/test-results/swimming-pools/update/{id}', [SwimmingPoolTestResultController::class, 'update'])->name('test-results.swimming-pools.update');
+  Route::get('/test-results/swimming-pools/view/{id}', [SwimmingPoolTestResultController::class, 'show'])->name('test-results.swimming-pools.view');
+  Route::delete('/test-results/swimming-pools/delete/{id}', [SwimmingPoolTestResultController::class, 'destroy'])->name('test-results.swimming-pools.delete');
 
   //Report
   Route::get('/report/payment', [PaymentReportController::class, 'index'])->name('reports.payment.index');

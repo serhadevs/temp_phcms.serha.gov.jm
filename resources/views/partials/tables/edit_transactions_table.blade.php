@@ -15,7 +15,13 @@
             if ($system_operation_type_id == 2) {
                 $transactions = $application->healthInterviews;
             } elseif ($system_operation_type_id == 3) {
-                $transactions = $result;
+                if (isset($app_type_id)) {
+                    if ($app_type_id == 5) {
+                        $transactions = $application->testResults;
+                    } else {
+                        $transactions = $result;
+                    }
+                }
             } else {
                 if (isset($app_type_id)) {
                     if ($app_type_id == 1) {
