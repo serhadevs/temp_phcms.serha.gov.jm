@@ -241,14 +241,57 @@
                                         </div>
                                     </div>
 
-                                    <div class="card mt-2">
+                                    {{-- <div class="card mt-2">
                                         <h5 class="card-header text-muted">
                                             Messages
                                         </h5>
-                                        <div class="card-body">
-                                            No Messages Sent to {{ $permit_application->firstname }} {{ $permit_application->lastname }}
-                                        </div>
-                                    </div>
+                                        @if (!$permit_application->email)
+                                            <div class="card-body">
+                                                No Email Address for {{ $permit_application->firstname }}
+                                                {{ $permit_application->lastname }}
+                                            </div>
+                                        @elseif($permit_application->messages->isEmpty())
+                                            <div class="card-body">
+                                                No Messages Sent to {{ $permit_application->firstname }}
+                                                {{ $permit_application->lastname }}
+                                            </div>
+                                        @else
+                                            <div class="card-body">
+                                                <ul>
+                                                    @foreach ($permit_application->messages as $message)
+                                                        <p class ="card-text">Email Type: {{ $message->emailtypes->name ?? 'N/A' }} </p>
+                                                        <p class = "card-text">Status: {{ $message->status }}</p>
+                                                        <p class = "card-text">Date Sent: {{ \Carbon\Carbon::parse($message->sent_at)->format('d F y') }}</p>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+
+                                            <div class="card-body">
+                                                <table class="table table-bordered table-sm nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Type</th>
+                                                            <th>Status</th>
+                                                            <th>Date Sent</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      
+                                                            @foreach ($permit_application->messages as $message)
+                                                            <tr>
+                                                                <td><span class="badge text-bg-danger">{{ $message->emailtypes->name ?? 'N/A' }}</span></td>
+                                                                <td><span class = "badge text-bg-success">{{ $message->status }}</span></td>
+                                                                <td> {{ \Carbon\Carbon::parse($message->sent_at)->format('d F y') }}
+                                                                </td>
+                                                            </tr>
+                                                            @endforeach
+                                                       
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        @endif
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="col col-md-9">

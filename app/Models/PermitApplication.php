@@ -112,4 +112,8 @@ class PermitApplication extends Model
             ->where('system_operation_type_id', 1)
             ->where('application_type_id', 1);
     }
+
+    public function messages(): HasMany{
+        return $this->hasMany(Messages::class,'permit_application_id','id');
+    }
 }

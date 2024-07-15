@@ -97,6 +97,8 @@ class PermitApplicationController extends Controller
         $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms')
             ->find($application_id);
 
+        //dd($permit_application);
+
         $categories = PermitCategory::all();
 
         $appointments = Appointments::with('examDate.examSites')
