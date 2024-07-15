@@ -4,7 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class TestResult extends Model
@@ -34,4 +38,14 @@ class TestResult extends Model
     ];
 
     public $timestamps = true;
+
+    public function editTransactions(): HasMany
+    {
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id');
+    }
+
+    public function establishmentApplication(): BelongsTo
+    {
+        return $this->belongsTo(EstablishmentApplications::class, 'application_id', 'id');
+    }
 }

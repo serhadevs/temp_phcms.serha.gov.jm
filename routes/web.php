@@ -183,7 +183,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/test-results/food-establishments', [FoodEstTestResultController::class, 'store'])->name('test-results.food-est.store');
   Route::get('/test-results/food-establishments/edit/{id}', [FoodEstTestResultController::class, 'edit'])->name('test-results.food-est.edit');
   Route::get('/test-results/food-establishments/view/{id}', [FoodEstTestResultController::class, 'show'])->name('test-results.food-est.view');
-  Route::post('/test-results/food-establishments/update/{id}', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update');
+  Route::post('/test-results/food-establishments/update/{id}', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update'); 
+  Route::delete('/test-results/food-establishments/delete/{id}', [FoodEstTestResultController::class, 'destroy'])->name('test-results.food-est.delete');
 
   //Baber/Cosmet Results
   Route::get('/test-results/barber-cosmet/filter/{id}', [BarberCosmetTestResultController::class, 'index'])->name('test-results.barber-cosmet.processed');

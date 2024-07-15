@@ -205,12 +205,13 @@ class FoodEstTestResultController extends Controller
             ->find($id);
 
         $app_type_id = '3';
+        $system_operation_type_id = 3;
 
-        $result = TestResult::where('application_id', $id)
+        $result = TestResult::with('editTransactions')->where('application_id', $id)
             ->where('application_type_id', 3)
             ->first();
 
-        return view('test_center.food_est.edit', compact('application', 'result', 'app_type_id'));
+        return view('test_center.food_est.edit', compact('application', 'result', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function show($id)
@@ -219,6 +220,7 @@ class FoodEstTestResultController extends Controller
             ->find($id);
 
         $app_type_id = '3';
+        $system_operation_type_id = 3;
 
         $is_view = 1;
 
@@ -226,7 +228,7 @@ class FoodEstTestResultController extends Controller
             ->where('application_type_id', 3)
             ->first();
 
-        return view('test_center.food_est.view', compact('application', 'result', 'app_type_id', 'is_view'));
+        return view('test_center.food_est.edit', compact('application', 'result', 'app_type_id', 'is_view', 'system_operation_type_id'));
     }
     /**
      * Update the specified resource in storage.
@@ -310,8 +312,50 @@ class FoodEstTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try {
+            if ($result = TestResult::with('application')
+                ->where('facility_id', auth()->user()->facility_id)
+                ->where('application_type_id', 3)
+                ->find($id)
+            ) {
+                if (!empty($result->application)) {
+                    if ($result->application?->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => 3,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 3,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            if ($result->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Test Results for ' . $result->application?->establishment_name . ':' . $result->application?->id . ' have been deleted successfully.'
+                                ];
+                            } else {
+                                throw new Exception("Error deleting result. Unable to delete record.");
+                            }
+                        } else {
+                            throw new Exception("Error deleting test result. Unable to initiate transaction.");
+                        }
+                    } else {
+                        throw new Exception("The application for this test result has already been signed off. Test Result cannot be deleted.");
+                    }
+                } else {
+                    throw new Exception("The application for this test result does not exist.");
+                }
+            } else {
+                throw new Exception("These test results either does not exist or is not a part of your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

@@ -15,11 +15,13 @@
             if ($system_operation_type_id == 2) {
                 $transactions = $application->healthInterviews;
             } elseif ($system_operation_type_id == 3) {
-                $transactions = $est_application;
+                $transactions = $result;
             } else {
                 if (isset($app_type_id)) {
                     if ($app_type_id == 1) {
                         $transactions = $permit_application;
+                    } elseif ($app_type_id == 3) {
+                        $transactions = $est_application;
                     }
                 } else {
                     $transactions = $application;
@@ -79,24 +81,27 @@
                         </tr>
                     @endforeach
                 @endforeach
-            @elseif($system_operation_type_id == 3)
-                @foreach ($transactions->operators as $operator)
-                    @foreach ($operator->editTransactions as $edit)
-                        <tr>
-                            <td>{{ $edit->editType?->name }} - {{ $edit->systemOperationType?->name }}</td>
-                            <td>{{ $edit->reason }}</td>
-                            <td>{{ $edit->user?->firstname . ' ' . $edit->user?->lastname }}</td>
-                            <td>{{ $edit->created_at }}</td>
-                            <td>
-                                <button class="btn btn-primary mx-2 btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"
-                                    onclick="popChangedTable({{ json_encode($edit->changedColumns) }})" type="button">
-                                    View
-                                </button>
-                            </td>
-                        </tr>
+            @elseif(isset($app_type_id) && isset($system_operation_type_id))
+                @if ($system_operation_type_id == 1 && $app_type_id == 3)
+                    @foreach ($transactions->operators as $operator)
+                        @foreach ($operator->editTransactions as $edit)
+                            <tr>
+                                <td>{{ $edit->editType?->name }} - {{ $edit->systemOperationType?->name }}</td>
+                                <td>{{ $edit->reason }}</td>
+                                <td>{{ $edit->user?->firstname . ' ' . $edit->user?->lastname }}</td>
+                                <td>{{ $edit->created_at }}</td>
+                                <td>
+                                    <button class="btn btn-primary mx-2 btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        onclick="popChangedTable({{ json_encode($edit->changedColumns) }})"
+                                        type="button">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
                     @endforeach
-                @endforeach
+                @endif
             @elseif($system_operation_type_id == 6)
                 @foreach ($transactions?->appointment?->first()?->editTransactions as $edit)
                     <tr>

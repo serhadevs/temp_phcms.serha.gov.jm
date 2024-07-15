@@ -205,8 +205,9 @@ class FoodEstablishmentController extends Controller
         $est_application = EstablishmentApplications::with('operators.editTransactions', 'editTransactions')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::all();
         $enableEditFeature = "0";
-        $system_operation_type_id = 3;
-        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature', 'system_operation_type_id'));
+        $app_type_id = 3;
+        $system_operation_type_id = 1;
+        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function renewal(Request $request)
@@ -359,9 +360,10 @@ class FoodEstablishmentController extends Controller
     {
         $est_application = EstablishmentApplications::with('operators', 'editTransactions')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::all();
-        $system_operation_type_id = 3;
+        $app_type_id = 3;
+        $system_operation_type_id = 1;
         $enableEditFeature = "1";
-        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature', 'system_operation_type_id'));
+        return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function edit(Request $request, $id)

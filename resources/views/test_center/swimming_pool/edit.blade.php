@@ -8,12 +8,11 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
-                    <h2 class="text-muted">
+                <h2 class="card-header text-muted">
                         Edit {{ $application->firstname . ' ' . $application->lastname }} Swimming Pool Results
                     </h2>
-                    <hr>
-                    <div class="row mt-3">
+                <div class="card-body">
+                    <div class="row">
                         <div class="col">
                             <label for="" class="form-label">First Name</label>
                             <input type="text" class="form-control" disabled value="{{ $application->firstname }}">

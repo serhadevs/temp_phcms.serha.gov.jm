@@ -84,21 +84,29 @@
                                 class="btn btn-sm btn-success">Renew</a>
                         @endif
                     @endif
-                    @if ($application->sign_off_status != '1')
-                        <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/edit' : ($app_type_id == '6' ? 'tourist-establishments/edit' : ($app_type_id == '5' ? 'swimming-pools/edit' : '')) }}/{{ $application->id }}"
-                            class="btn btn-warning btn-sm">
-                            Edit
+                    @if (!empty($application->testResults))
+                        <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/view' : ($app_type_id == '6' ? 'tourist-establishments/view' : ($app_type_id == '5' ? 'swimming-pools/view' : '')) }}/{{ $application->id }}"
+                            class="btn btn-sm btn-primary">
+                            View
                         </a>
+                        @if ($application->sign_off_status != '1')
+                            <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/edit' : ($app_type_id == '6' ? 'tourist-establishments/edit' : ($app_type_id == '5' ? 'swimming-pools/edit' : '')) }}/{{ $application->id }}"
+                                class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+                            <button
+                                onclick="removeEntry('/test-results/food-establishments', {{ json_encode($application->testResults?->id) }})"
+                                class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        @endif
                     @endif
-                    <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/view' : ($app_type_id == '6' ? 'tourist-establishments/view' : ($app_type_id == '5' ? 'swimming-pools/view' : '')) }}/{{ $application->id }}"
-                        class="btn btn-sm btn-primary">
-                        View
-                    </a>
                 </td>
             </tr>
         @endforeach
     </tbody>
 </table>
+@include('partials.messages.remove_entry_message')
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

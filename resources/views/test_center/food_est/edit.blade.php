@@ -9,12 +9,13 @@
         @include('partials.messages.messages')
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h2 class="text-muted">
                         Edit Food Est. Results {{ $application->establishment_name }}
                     </h2>
-                    <hr>
-                    <div class="mt-3">
+                </div>
+                <div class="card-body">
+                    <div class="">
                         <label for="" class="form-label">Establishment Name</label>
                         <input type="text" class="form-control" value="{{ $application->establishment_name }}" disabled>
                     </div>
@@ -32,7 +33,7 @@
                         @method('POST')
                         @csrf
                         @include('partials.forms.test_result_ests')
-                        <div class="mt-3">
+                        <div class="mt-3" id="reason_div" style="{{ isset($is_view) ? 'display:none' : '' }}">
                             <label for="" class="form-label">
                                 <span class="fw-bold text-danger">
                                     *
@@ -44,14 +45,45 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                        <a href="/test-results/food-establishments/outstanding/filter/0"
-                            class="btn btn-danger mt-3">Back</a>
-                        <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
+                        <a href="/test-results/food-establishments/filter/0" class="btn btn-danger mt-3">Back</a>
+                        <button class="btn btn-warning mt-3" type="button" onclick="makeEditable()"
+                            style="{{ !isset($is_view) ? 'display:none' : '' }}" id="editBtn">
+                            Edit Results
+                        </button>
+                        <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)"
+                            style="{{ isset($is_view) ? 'display:none' : '' }}" id="updateBtn">
                             Update Results
                         </button>
+
                     </form>
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4 class="text-muted">
+                                Transactions
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            @include('partials.tables.edit_transactions_table')
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <script>
+            window.onload = () => {
+                if (document.querySelectorAll('p.text-danger')[0]) {
+                    makeEditable();
+                }
+            }
+
+            function makeEditable() {
+                document.querySelectorAll('.editable-fields').forEach((element) => {
+                    element.removeAttribute('disabled');
+                });
+                document.getElementById('updateBtn').style.display = "";
+                document.getElementById('editBtn').style.display = "none";
+                document.getElementById('reason_div').style.display = "";
+            }
+        </script>
     </div>
 @endsection

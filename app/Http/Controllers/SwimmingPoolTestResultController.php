@@ -230,7 +230,8 @@ class SwimmingPoolTestResultController extends Controller
     public function edit($id)
     {
         try {
-            if ($application = SwimmingPoolsApplications::with('payment', 'testResults')->find($id)) {
+            if($result = TestResult::find($id)){
+                if ($application = SwimmingPoolsApplications::with('payment', 'testResults')->find($id)) {
                 if (!empty($application->payment)) {
                     return view('test_center.swimming_pool.edit', compact('application'));
                 } else {
@@ -239,6 +240,10 @@ class SwimmingPoolTestResultController extends Controller
             } else {
                 throw new Exception('This test results entry does not exist.');
             }
+            }else{
+                throw new Exception("This result does not does not exist.");
+            }
+            
         } catch (Exception $e) {
             return redirect()->route('test-results.swimming-pools.index', ['id' => 0])->with('error', $e->getMessage());
         }
