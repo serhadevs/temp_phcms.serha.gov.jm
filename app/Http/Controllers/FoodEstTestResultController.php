@@ -253,45 +253,45 @@ class FoodEstTestResultController extends Controller
                 ->find($id)
             ) {
                 if ($application = EstablishmentApplications::find($old_results->application_id)) {
-                    if ($application->sign_off_status != '1') {
-                        $edit_reason = $updated_est_results['edit_reason'];
-                        unset($updated_est_results['edit_reason']);
-                        if (!empty($differences = array_diff_assoc($updated_est_results, TestResult::select('visit_purpose', 'staff_contact', 'test_date', 'overall_score', 'critical_score', 'comments', 'test_location')->find($id)->toArray()))) {
-                            DB::beginTransaction();
-                            if ($edit_transaction = EditTransactions::create([
-                                'application_type_id' => 3,
-                                'table_id' => $id,
-                                'system_operation_type_id' => 3,
-                                'edit_type_id' => 1,
-                                'user_id' => auth()->user()->id,
-                                'facility_id' => auth()->user()->facility_id,
-                                'reason' => $edit_reason
-                            ])) {
-                                foreach ($differences as $key => $value) {
-                                    if (!EditTransactionsChangedColumns::create([
-                                        'edit_transaction_id' => $edit_transaction->id,
-                                        'column_name' => $key,
-                                        'old_value' => $old_results->toArray()[$key],
-                                        'new_value' => $updated_est_results[$key]
-                                    ])) {
-                                        throw new Exception("Error updating test results. Unable to record field changed.");
-                                    }
+                    // if ($application->sign_off_status != '1') {
+                    $edit_reason = $updated_est_results['edit_reason'];
+                    unset($updated_est_results['edit_reason']);
+                    if (!empty($differences = array_diff_assoc($updated_est_results, TestResult::select('visit_purpose', 'staff_contact', 'test_date', 'overall_score', 'critical_score', 'comments', 'test_location')->find($id)->toArray()))) {
+                        DB::beginTransaction();
+                        if ($edit_transaction = EditTransactions::create([
+                            'application_type_id' => 3,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 3,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $edit_reason
+                        ])) {
+                            foreach ($differences as $key => $value) {
+                                if (!EditTransactionsChangedColumns::create([
+                                    'edit_transaction_id' => $edit_transaction->id,
+                                    'column_name' => $key,
+                                    'old_value' => $old_results->toArray()[$key],
+                                    'new_value' => $updated_est_results[$key]
+                                ])) {
+                                    throw new Exception("Error updating test results. Unable to record field changed.");
                                 }
-                                if ($old_results->update($updated_est_results)) {
-                                    DB::commit();
-                                    return redirect()->route('test-results.food-est.view', ['id' => $application->id])->with('success', 'Test Results for ' . $application->establishment_name . ':' . $application->id . ' has been updated successfully');
-                                } else {
-                                    throw new Exception("Error updating test results. Unable to updating record.");
-                                }
+                            }
+                            if ($old_results->update($updated_est_results)) {
+                                DB::commit();
+                                return redirect()->route('test-results.food-est.view', ['id' => $application->id])->with('success', 'Test Results for ' . $application->establishment_name . ':' . $application->id . ' has been updated successfully');
                             } else {
-                                throw new Exception("Error updating test results. Unable to initiate transaction.");
+                                throw new Exception("Error updating test results. Unable to updating record.");
                             }
                         } else {
-                            throw new Exception("No fields were changed. Nothing to update");
+                            throw new Exception("Error updating test results. Unable to initiate transaction.");
                         }
                     } else {
-                        throw new Exception("The food establishment application was already signed off. These results cannot be edited.");
+                        throw new Exception("No fields were changed. Nothing to update");
                     }
+                    // } else {
+                    //     throw new Exception("The food establishment application was already signed off. These results cannot be edited.");
+                    // }
                 } else {
                     throw new Exception("The food establishment application for this test result does not exist");
                 }

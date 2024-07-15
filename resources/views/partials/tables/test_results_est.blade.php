@@ -84,12 +84,12 @@
                                 class="btn btn-sm btn-success">Renew</a>
                         @endif
                     @endif
-                    @if ($application->sign_off_status != '1')
+                    {{-- @if ($application->sign_off_status != '1') --}}
                         <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/edit' : ($app_type_id == '6' ? 'tourist-establishments/edit' : ($app_type_id == '5' ? 'swimming-pools/edit' : '')) }}/{{ $application->id }}"
                             class="btn btn-warning btn-sm">
                             Edit
                         </a>
-                    @endif
+                    {{-- @endif --}}
                     <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/view' : ($app_type_id == '6' ? 'tourist-establishments/view' : ($app_type_id == '5' ? 'swimming-pools/view' : '')) }}/{{ $application->id }}"
                         class="btn btn-sm btn-primary">
                         View
