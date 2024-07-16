@@ -66,7 +66,7 @@
                 @if ($app_type_id == '3')
                     <td>
                         @foreach ($application->operators as $operator)
-                            {{ strtoupper($operator?->name_of_operator) }}
+                            {{ strtoupper($operator?->name_of_operator) }}<br/>
                         @endforeach
                     </td>
                 @endif
@@ -95,7 +95,7 @@
                                 Edit
                             </a>
                             <button
-                                onclick="removeEntry({{ $app_type_id == '3' ? json_encode('/test-results/food-establishments') : json_encode('/test-results/swimming-pools') }}, {{ json_encode($application->testResults?->id) }})"
+                                onclick="removeEntry({{ $app_type_id == '3' ? json_encode('/test-results/food-establishments') : ($app_type_id == 5? json_encode('/test-results/swimming-pools') : json_encode('/test-results/tourist-establishments') ) }}, {{ json_encode($application->testResults?->id) }})"
                                 class="btn btn-danger btn-sm">
                                 Delete
                             </button>

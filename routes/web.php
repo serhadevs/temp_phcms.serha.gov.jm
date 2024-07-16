@@ -183,7 +183,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/test-results/food-establishments', [FoodEstTestResultController::class, 'store'])->name('test-results.food-est.store');
   Route::get('/test-results/food-establishments/edit/{id}', [FoodEstTestResultController::class, 'edit'])->name('test-results.food-est.edit');
   Route::get('/test-results/food-establishments/view/{id}', [FoodEstTestResultController::class, 'show'])->name('test-results.food-est.view');
-  Route::post('/test-results/food-establishments/update/{id}', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update'); 
+  Route::post('/test-results/food-establishments/update/{id}', [FoodEstTestResultController::class, 'update'])->name('test-results.food-est.update');
   Route::delete('/test-results/food-establishments/delete/{id}', [FoodEstTestResultController::class, 'destroy'])->name('test-results.food-est.delete');
 
   //Baber/Cosmet Results
@@ -203,8 +203,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/test-results/tourist-establishments/store/{id}', [TouristEstTestResultController::class, 'store'])->name('test-results.tourist-establishments.store');
   Route::get('/test-results/tourist-establishments/edit/{id}', [TouristEstTestResultController::class, 'edit'])->name('test-results.tourist-establishments.edit');
   Route::put('/test-results/tourist-establishments/update/{id}', [TouristEstTestResultController::class, 'update'])->name('test-results.tourist-establishments.update');
+  Route::get('/test-results/tourist-establishments/view/{id}', [TouristEstTestResultController::class, 'show'])->name('test-results.tourist-establishments.view');
   Route::get('/test-results/tourist-establishments/outstanding/filter/{id}', [TouristEstTestResultController::class, 'outstanding'])->name('test-results.tourist-establishments.outstanding.filter');
   Route::post('/test-results/tourist-establishments/outstanding/filter', [TouristEstTestResultController::class, 'outstandingCustom'])->name('test-results.test-establishments.outstanding.custom');
+  Route::delete('/test-results/tourist-establishments/delete/{id}', [TouristEstTestResultController::class, 'destroy'])->name('test-results.tourist-establishments.delete');
 
   //Swimming Pool Results
   Route::get('/test-results/swimming-pools/filter/{id}', [SwimmingPoolTestResultController::class, 'index'])->name('test-results.swimming-pools.index');

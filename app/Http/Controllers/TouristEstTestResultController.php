@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\TestResult;
 use App\Models\TouristEstablishments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class TouristEstTestResultController extends Controller
 {
@@ -194,7 +198,13 @@ class TouristEstTestResultController extends Controller
      */
     public function show($id)
     {
-        //
+        $application = TouristEstablishments::with('testResults')
+            ->find($id);
+        $is_view = 1;
+        $system_operation_type_id = 3;
+        $app_type_id = 6;
+
+        return view('test_center.tourist_est.edit', compact('application', 'is_view', 'system_operation_type_id', 'app_type_id'));
     }
 
     /**
@@ -207,8 +217,10 @@ class TouristEstTestResultController extends Controller
     {
         $application = TouristEstablishments::with('testResults')
             ->find($id);
+        $system_operation_type_id = 3;
+        $app_type_id = 6;
 
-        return view('test_center.tourist_est.edit', compact('application'));
+        return view('test_center.tourist_est.edit', compact('application', 'system_operation_type_id', 'app_type_id'));
     }
 
     /**
@@ -226,14 +238,65 @@ class TouristEstTestResultController extends Controller
             'overall_score' => 'required|numeric|min:0|max:100',
             'critical_score' => 'required|numeric|min:0|max:100',
             'comments' => 'nullable',
-            'test_location' => 'required'
+            'test_location' => 'required',
+            'edit_reason' => 'required'
         ]);
 
-        $results = TestResult::find($id);
-        $establishment = TouristEstablishments::find($results->application_id);
-
-        if ($results->update($tourist_est_results)) {
-            return redirect()->route('test-results.tourist-establishments.index.filter', ['id' => 0])->with('success', 'Test Results for Tourist Establishment ' . $establishment->establishment_name . ' has been updated successfully.');
+        try {
+            if ($results = TestResult::with('touristEstablishment')
+                ->where('application_type_id', 6)
+                ->where('facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
+                if (!empty($results->touristEstablishment)) {
+                    if ($results->touristEstablishment?->sign_off_status != '1') {
+                        $edit_reason = $tourist_est_results['edit_reason'];
+                        unset($tourist_est_results['edit_reason']);
+                        if (!empty($differences = array_diff_assoc($tourist_est_results, TestResult::select('staff_contact', 'test_date', 'overall_score', 'critical_score', 'comments', 'test_location')->find($id)->toArray()))) {
+                            DB::beginTransaction();
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 6,
+                                'table_id' => $id,
+                                'system_operation_type_id' => 3,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $edit_reason
+                            ])) {
+                                foreach ($differences as $key => $value) {
+                                    if (!EditTransactionsChangedColumns::create([
+                                        'edit_transaction_id' => $edit_transaction->id,
+                                        'column_name' => $key,
+                                        'old_value' => $results->toArray()[$key],
+                                        'new_value' => $tourist_est_results[$key]
+                                    ])) {
+                                        throw new Exception("Error updating test results. Unable to record changed fields.");
+                                    }
+                                }
+                                if ($results->update($tourist_est_results)) {
+                                    DB::commit();
+                                    return redirect()->route('test-results.tourist-establishments.view', ['id' => $results->touristEstablishment?->id])->with('success', 'Test Results for Tourist Establishment ' . $results->touristEstablishment?->establishment_name . ':' . $results->touristEstablishment?->id . ' has been updated successfully.');
+                                } else {
+                                    throw new Exception("Error updating test results. Unable to update record.");
+                                }
+                            } else {
+                                throw new Exception("Error updating test result. Unable to initiate transaction.");
+                            }
+                        } else {
+                            throw new Exception("No fields were changed. Nothing was updated.");
+                        }
+                    } else {
+                        throw new Exception("This application has already been signed off. Results cannot be edited.");
+                    }
+                } else {
+                    throw new Exception("The is no tourist establishment application that is associated to these results");
+                }
+            } else {
+                throw new Exception("These results do not exist.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -243,8 +306,50 @@ class TouristEstTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try {
+            if ($results = TestResult::with('touristEstablishment')
+                ->where('application_type_id', 6)
+                ->where('facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
+                if (!empty($results->touristEstablishment)) {
+                    if ($results->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => 6,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 3,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            if ($results->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Tourist Establishment ' . $results->touristEstablishment?->establishment_name . ':' . $results->touristEstablishment?->id . 'has been deleted successfully'
+                                ];
+                            } else {
+                                throw new Exception("Error deleting test results. Unable to delete record.");
+                            }
+                        } else {
+                            throw new Exception("Error deleting test results. Unable to initiate transaction");
+                        }
+                    } else {
+                        throw new Exception("This application has already been signed off. Results cannot be edited");
+                    }
+                } else {
+                    throw new Exception("The tourist establishment application for these results does not exist.");
+                }
+            } else {
+                throw new Exception("This test result either does not exist or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

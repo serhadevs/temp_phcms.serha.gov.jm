@@ -49,7 +49,13 @@ class TestResult extends Model
         return $this->belongsTo(EstablishmentApplications::class, 'application_id', 'id');
     }
 
-    public function swimmingPool():BelongsTo{
+    public function swimmingPool(): BelongsTo
+    {
         return $this->belongsTo(SwimmingPoolsApplications::class, 'application_id', 'id');
+    }
+
+    public function touristEstablishment(): BelongsTo
+    {
+        return $this->belongsTo(TouristEstablishments::class, 'application_id', 'id');
     }
 }

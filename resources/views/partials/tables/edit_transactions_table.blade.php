@@ -16,10 +16,10 @@
                 $transactions = $application->healthInterviews;
             } elseif ($system_operation_type_id == 3) {
                 if (isset($app_type_id)) {
-                    if ($app_type_id == 5) {
-                        $transactions = $application->testResults;
-                    } else {
+                    if ($app_type_id == 3) {
                         $transactions = $result;
+                    } else {
+                        $transactions = $application->testResults;
                     }
                 }
             } else {
