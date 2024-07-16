@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditTransactions;
+use App\Models\EditTransactionsChangedColumns;
 use App\Models\HealthCertApplications;
 use App\Models\TestResult;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class BarberCosmetTestResultController extends Controller
 {
@@ -86,7 +90,7 @@ class BarberCosmetTestResultController extends Controller
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
-        
+
         $filterTimeline = "";
         if ($id == "0") {
             $filterTimeline = $today;
@@ -196,7 +200,14 @@ class BarberCosmetTestResultController extends Controller
      */
     public function show($id)
     {
-        //
+        $application = HealthCertApplications::with('appointment.examDate.examSites', 'testResults')
+            ->find($id);
+
+        $is_view = 1;
+        $system_operation_type_id = 3;
+        $app_type_id = 6;
+
+        return view('test_center.barber_cosmet.edit', compact('application', 'is_view', 'system_operation_type_id', 'app_type_id'));
     }
 
     /**
@@ -209,8 +220,10 @@ class BarberCosmetTestResultController extends Controller
     {
         $application = HealthCertApplications::with('appointment.examDate.examSites', 'testResults')
             ->find($id);
+        $system_operation_type_id = 3;
+        $app_type_id = 6;
 
-        return view('test_center.barber_cosmet.edit', compact('application'));
+        return view('test_center.barber_cosmet.edit', compact('application', 'system_operation_type_id', 'app_type_id'));
     }
 
     /**
@@ -222,18 +235,74 @@ class BarberCosmetTestResultController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $test_results = $request->validate([
+        $test_results_updated = $request->validate([
             'staff_contact' => 'required',
             'comments' => 'nullable',
-            'overall_score' => 'required|numeric|max:100|min:0'
+            'overall_score' => 'required|numeric|max:100|min:0',
+            'edit_reason' => 'required'
         ]);
 
-        $result = TestResult::find($id);
-        $application = HealthCertApplications::where('id', $result->application_id)->first();
-
-        if ($result->update($test_results)) {
-            return redirect()->route('test-results.barber-cosmet.processed', ['id' => 0])->with('success', 'Test Results for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+        try {
+            if ($results = TestResult::with('healthCertApplication')
+                ->where('facility_id', auth()->user()->facility_id)
+                ->where('application_type_id', 2)
+                ->find($id)
+            ) {
+                if (!empty($results->healthCertApplication)) {
+                    if ($results->healthCertApplication?->sign_off_status != '1') {
+                        $edit_reason = $test_results_updated["edit_reason"];
+                        unset($test_results_updated["edit_reason"]);
+                        if (!empty($differences = array_diff_assoc($test_results_updated, TestResult::select('staff_contact', 'comments', 'overall_score')->find($id)->toArray()))) {
+                            DB::beginTransaction();
+                            if ($edit_transaction = EditTransactions::create([
+                                'application_type_id' => 2,
+                                'table_id' => $id,
+                                'system_operation_type_id' => 3,
+                                'edit_type_id' => 1,
+                                'user_id' => auth()->user()->id,
+                                'facility_id' => auth()->user()->facility_id,
+                                'reason' => $edit_reason
+                            ])) {
+                                foreach ($differences as $key => $value) {
+                                    if (!EditTransactionsChangedColumns::create([
+                                        'edit_transaction_id' => $edit_transaction->id,
+                                        'column_name' => $key,
+                                        'old_value' => $results->toArray()[$key],
+                                        'new_value' => $test_results_updated[$key]
+                                    ])) {
+                                        throw new Exception("Error updating test results. Unable to record changed fields");
+                                    }
+                                }
+                                if ($results->update($test_results_updated)) {
+                                    DB::commit();
+                                    return redirect()->route('test-results.barber-cosmet.view', ['id' => $results->healthCertApplication?->id])->with('success', 'Test Results for Barber/Cosmet Application' . $results->healthCertApplication?->firstname . ' ' . $results->healthCertApplication?->lastname . ':' . $results->healthCertApplication?->id . ' has been updated successfully.');
+                                }
+                            } else {
+                                throw new Exception("Error updating test results. Unable to initiate transaction");
+                            }
+                        } else {
+                            throw new Exception("No fields were changed. Nothing to be updated.");
+                        }
+                    } else {
+                        throw new Exception("This application was already signed off. Results cannot be edited");
+                    }
+                } else {
+                    throw new Exception("The application for these results no longer exist.");
+                }
+            } else {
+                throw new Exception("This test result either no longer exists or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
+
+        // $result = TestResult::find($id);
+        // $application = HealthCertApplications::where('id', $result->application_id)->first();
+
+        // if ($result->update($test_results)) {
+        //     return redirect()->route('test-results.barber-cosmet.processed', ['id' => 0])->with('success', 'Test Results for ' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+        // }
     }
 
     /**
@@ -242,8 +311,50 @@ class BarberCosmetTestResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try {
+            if ($results = TestResult::with('healthCertApplication')
+                ->where('facility_id', auth()->user()->facility_id)
+                ->where('application_type_id', 2)
+                ->find($id)
+            ) {
+                if (!empty($results->healthCertApplication)) {
+                    if ($results->healthCertApplication?->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => 2,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 3,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            if ($results->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Test Results for ' . $results->healthCertApplication?->firstname . ' ' . $results->healthCertApplication?->lastname . ':' . $results->healthCertApplication?->id . ' has been deleted successfully.'
+                                ];
+                            } else {
+                                throw new Exception("Unable to delete test results. Error deleting record");
+                            }
+                        } else {
+                            throw new Exception("Error deleting test results. Unable to initiate transaction");
+                        }
+                    } else {
+                        throw new Exception('This application has already been signed off. Results cannot be edited');
+                    }
+                } else {
+                    throw new Exception('Application for these results no longer exist');
+                }
+            } else {
+                throw new Exception("These test results either no longer exist or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

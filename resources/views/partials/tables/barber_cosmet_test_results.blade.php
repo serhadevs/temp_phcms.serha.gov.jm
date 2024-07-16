@@ -22,9 +22,17 @@
                 <td>{{ $result->testResults?->staff_contact }}</td>
                 <td>{{ $result->testResults?->overall_score }}</td>
                 <td>
-                    <button href="" class="btn btn-primary btn-sm" onclick="" data-bs-toggle="modal"
-                        data-bs-target="#view-payment-{{ $result->id }}">View</button>
-                    <a href="/test-results/barber-cosmet/edit/{{ $result->id }}" class="btn btn-warning btn-sm">Edit</a>
+                    <button href="" class="btn btn-info btn-sm" onclick="" data-bs-toggle="modal"
+                        data-bs-target="#view-payment-{{ $result->id }}">Preview</button>
+                    <a href="/test-results/barber-cosmet/view/{{ $result->id }}" class="btn btn-sm btn-primary">
+                        View
+                    </a>
+                    <a href="/test-results/barber-cosmet/edit/{{ $result->id }}"
+                        class="btn btn-warning btn-sm">Edit</a>
+                    <button class="btn btn-danger btn-sm"
+                        onclick="removeEntry('/test-results/barber-cosmet', {{ json_encode($result->testResults?->id) }})">
+                        Delete
+                    </button>
                 </td>
             </tr>
         @endforeach
@@ -96,6 +104,7 @@
         </div>
     </div>
 @endforeach
+@include('partials.messages.remove_entry_message')
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

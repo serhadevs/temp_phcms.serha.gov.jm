@@ -195,6 +195,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::put('/test-results/barber-cosmet/update/{id}', [BarberCosmetTestResultController::class, 'update'])->name('test-results.barber-cosmet.update');
   Route::get('/test-results/barber-cosmet/create/{id}', [BarberCosmetTestResultController::class, 'create'])->name('test-results.barber-cosmet.create');
   Route::post('/test-results/barber-cosmet/store/{id}', [BarberCosmetTestResultController::class, 'store'])->name('test-results.barber-cosmet.store');
+  Route::get('/test-results/barber-cosmet/view/{id}', [BarberCosmetTestResultController::class, 'show'])->name('test-results.barber-cosmet.view');
+  Route::delete('/test-results/barber-cosmet/delete/{id}' , [BarberCosmetTestResultController::class, 'destroy'])->name('test-results.barber-cosmet.delete');
 
   //Tourist Establishment Results
   Route::get('/test-results/tourist-establishments/filter/{id}', [TouristEstTestResultController::class, 'index'])->name('test-results.tourist-establishments.index.filter');

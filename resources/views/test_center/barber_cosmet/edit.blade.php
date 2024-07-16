@@ -6,14 +6,14 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
+        @include('partials.messages.messages')
         <div class="container-fluid mb-4">
             <div class="card">
+                <h2 class="text-muted card-header">
+                    Edit Barber/Cosmet Test Results {{ $application->firstname }} {{ $application->lastname }}
+                </h2>
                 <div class="card-body">
-                    <h2 class="text-muted">
-                        Edit Barber/Cosmet Test Results {{ $application->firstname }} {{ $application->lastname }}
-                    </h2>
-                    <hr>
-                    <div class="row mt-3">
+                    <div class="row">
                         <div class="col">
                             <label for="" class="form-label">First Name</label>
                             <input type="text" class="form-control" disabled value="{{ $application->firstname }}">
@@ -51,12 +51,53 @@
                         @method('PUT')
                         @csrf
                         @include('partials.forms.barber_cosmet_test_results')
-                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
-                            Update Results
+                        <div class="mt-3" style="{{ isset($is_view) ? 'display:none' : '' }}" id="edit_div">
+                            <label for="" class="form-label">
+                                <span class="text-danger fw-bold">*</span>
+                                Reason for edit
+                            </label>
+                            <textarea name="edit_reason" class="form-control">{{ old('edit_reason') }}</textarea>
+                            @error('edit_reason')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <button class="btn btn-primary mt-4" type="button"
+                            style="{{ isset($is_view) ? 'display:none' : '' }}" onclick="showLoading(this)" id="updateBtn">
+                            Update Test Results
+                        </button>
+                        <button class="btn btn-warning mt-4" type="button"
+                            style="{{ !isset($is_view) ? 'display:none' : '' }}" onclick="allowEdit()" id="editBtn">
+                            Edit Test Results
                         </button>
                     </form>
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4 class="text-muted">
+                                Transactions
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            @include('partials.tables.edit_transactions_table')
+                        </div>
+                    </div>
                 </div>
             </div>
+            <script>
+                window.onload = () => {
+                    if (document.querySelectorAll('p.text-danger')[0]) {
+                        allowEdit();
+                    }
+                }
+
+                function allowEdit() {
+                    document.querySelectorAll('.editable-fields').forEach((element) => {
+                        element.removeAttribute('disabled');
+                    });
+                    document.getElementById('updateBtn').style.display = "";
+                    document.getElementById('editBtn').style.display = "none";
+                    document.getElementById('edit_div').style.display = "";
+                }
+            </script>
         </div>
         @include('partials.messages.loading_message')
     </div>
