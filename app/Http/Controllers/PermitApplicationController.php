@@ -94,8 +94,9 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms')
+        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions')
             ->find($application_id);
+        // dd($permit_application);
 
         $categories = PermitCategory::all();
 
@@ -122,12 +123,12 @@ class PermitApplicationController extends Controller
     public function editView(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms')
+        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions')
             ->find($application_id);
 
         $categories = PermitCategory::all();
         $app_type_id = 1;
-        $system_operation_type_id = 1;
+        $system_operation_type_id = 6;
 
         $appointments = Appointments::with('examDate.examSites')
             ->where('facility_id', auth()->user()->facility_id)
