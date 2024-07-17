@@ -6,26 +6,15 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
+        @include('partials.messages.table_loading')
+        @include('partials.messages.messages')
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
-                    @include('partials.messages.table_loading')
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <p class="text-success"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    @if ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header text-muted">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
-                                Food Handlers Downloads
+                                Food Handlers Downloads   
                             </h2>
                         </div>
                         <div class="col-auto no-wrap">
@@ -55,6 +44,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
                     <form action="{{ route('downloads.foodhandlers.custom') }}" method="POST">
                         @csrf
                         @method('POST')
