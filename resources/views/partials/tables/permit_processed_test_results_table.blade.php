@@ -31,10 +31,19 @@
                             </a>
                         @endif
                     @endif
-                    <button href="" class="btn btn-primary btn-sm" onclick="" data-bs-toggle="modal"
-                        data-bs-target="#view-payment-{{ $result->id }}">View</button>
-                    <a href="/test-results/permits/edit/{{ $result->testResults?->id }}"
-                        class="btn btn-warning btn-sm">Edit</a>
+                    <button href="" class="btn btn-info btn-sm" onclick="" data-bs-toggle="modal"
+                        data-bs-target="#view-payment-{{ $result->id }}">Preview</button>
+                    <a href="/test-results/permits/view/{{ $result->testResults?->id }}"
+                        class="btn btn-sm btn-primary">
+                        View</a>
+                    @if ($result->sign_off_status != '1')
+                        <a href="/test-results/permits/edit/{{ $result->testResults?->id }}"
+                            class="btn btn-warning btn-sm">Edit</a>
+                        <button type="button" class="btn btn-danger btn-sm"
+                            onclick="removeEntry('/test-results/permits', {{ json_encode($result->testResults?->id) }})">
+                            Delete
+                        </button>
+                    @endif
                 </td>
             </tr>
         @endforeach
@@ -110,7 +119,7 @@
         </div>
     </div>
 @endforeach
-
+@include('partials.messages.remove_entry_message')
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>

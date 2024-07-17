@@ -173,6 +173,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/test-results/permit/outstanding/filter', [PermitTestResultsController::class, 'outstandingCustom'])->name('test-results.permit.outstanding.custom');
   Route::get('/test-results/permits/edit/{id}', [PermitTestResultsController::class, 'edit'])->name('test-results.permit.edit');
   Route::put('/test-results/permits/update/{id}', [PermitTestResultsController::class, 'update'])->name('test-results.permit.update');
+  Route::get('/test-results/permits/view/{id}', [PermitTestResultsController::class, 'show'])->name('test-results.permits.view');
+  Route::delete('/test-results/permits/delete/{id}', [PermitTestResultsController::class, 'destroy'])->name('test-results.permits.delete');
 
   //Food Establishment Results
   Route::get('/test-results/food-establishments/filter/{id}', [FoodEstTestResultController::class, 'index'])->name('test-results.food-est.index');
@@ -196,7 +198,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/test-results/barber-cosmet/create/{id}', [BarberCosmetTestResultController::class, 'create'])->name('test-results.barber-cosmet.create');
   Route::post('/test-results/barber-cosmet/store/{id}', [BarberCosmetTestResultController::class, 'store'])->name('test-results.barber-cosmet.store');
   Route::get('/test-results/barber-cosmet/view/{id}', [BarberCosmetTestResultController::class, 'show'])->name('test-results.barber-cosmet.view');
-  Route::delete('/test-results/barber-cosmet/delete/{id}' , [BarberCosmetTestResultController::class, 'destroy'])->name('test-results.barber-cosmet.delete');
+  Route::delete('/test-results/barber-cosmet/delete/{id}', [BarberCosmetTestResultController::class, 'destroy'])->name('test-results.barber-cosmet.delete');
 
   //Tourist Establishment Results
   Route::get('/test-results/tourist-establishments/filter/{id}', [TouristEstTestResultController::class, 'index'])->name('test-results.tourist-establishments.index.filter');
@@ -327,8 +329,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/sign-off/create', [ReportController::class, 'numberSignOffs'])->name('reports.signoffs');
   Route::post('/reports/sign-off', [ReportController::class, 'numberSignOffsShow'])->name('reports.signoffs.show');
   Route::get('/reports/backlog-report', [ReportController::class, 'backLogReport'])->name('reports.backlog');
-  Route::get('/reports/productivity/create',[ReportController::class, 'productivityReportCreate'])->name('reports.productivity.create');
-  Route::post('/reports/productivity',[ReportController::class, 'productivityReport'])->name('reports.productivity');
+  Route::get('/reports/productivity/create', [ReportController::class, 'productivityReportCreate'])->name('reports.productivity.create');
+  Route::post('/reports/productivity', [ReportController::class, 'productivityReport'])->name('reports.productivity');
 
 
   //Training Manual Page

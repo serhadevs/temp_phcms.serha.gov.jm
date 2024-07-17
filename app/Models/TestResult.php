@@ -63,4 +63,9 @@ class TestResult extends Model
     {
         return $this->belongsTo(HealthCertApplications::class, 'application_id', 'id');
     }
+
+    public function permitApplication(): BelongsTo
+    {
+        return $this->belongsTo(PermitApplication::class, 'application_id', 'id');
+    }
 }

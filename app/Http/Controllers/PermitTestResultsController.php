@@ -206,10 +206,10 @@ class PermitTestResultsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+    // public function show($id)
+    // {
+    //     //
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -225,7 +225,39 @@ class PermitTestResultsController extends Controller
                     if ($permit_application->sign_off_status != '1') {
                         if ($permit_application->user?->facility_id == auth()->user()->facility_id) {
                             $permit_categories = PermitCategory::all();
-                            return view('test_center.food_handlers_permit.edit', compact('permit_application', 'permit_categories'));
+                            $system_operation_type_id = 3;
+                            $app_type_id = 1;
+                            return view('test_center.food_handlers_permit.edit', compact('permit_application', 'permit_categories', 'system_operation_type_id', 'app_type_id'));
+                        } else {
+                            throw new Exception('This application was not added at your location. You cannot edit these test results.');
+                        }
+                    } else {
+                        throw new Exception('This permit application has already been signed off. THerefore test results cannot be edited.');
+                    }
+                } else {
+                    throw new Exception('Permit Application linked to this application does not exist. Therefore these test results cannot be edited.');
+                }
+            } else {
+                throw new Exception('This Test Result does not exist.');
+            }
+        } catch (Exception $e) {
+            return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', $e->getMessage());
+        }
+    }
+
+
+    public function show($id)
+    {
+        try {
+            if ($result = TestResult::find($id)) {
+                if ($permit_application = PermitApplication::with('testResults', 'user')->find($result->application_id)) {
+                    if ($permit_application->sign_off_status != '1') {
+                        if ($permit_application->user?->facility_id == auth()->user()->facility_id) {
+                            $permit_categories = PermitCategory::all();
+                            $system_operation_type_id = 3;
+                            $app_type_id = 1;
+                            $is_view = 1;
+                            return view('test_center.food_handlers_permit.edit', compact('permit_application', 'permit_categories', 'is_view', 'system_operation_type_id', 'app_type_id'));
                         } else {
                             throw new Exception('This application was not added at your location. You cannot edit these test results.');
                         }
@@ -255,6 +287,7 @@ class PermitTestResultsController extends Controller
         $updated_results = $request->validate([
             'staff_contact' => 'required',
             'overall_score' => 'required|numeric|max:100|min:0',
+            'comments' => 'nullable',
             'edit_reason' => 'required'
         ]);
 
@@ -265,7 +298,7 @@ class PermitTestResultsController extends Controller
                         if ($results->facility_id == auth()->user()->facility_id) {
                             $edit_reason = $updated_results['edit_reason'];
                             unset($updated_results['edit_reason']);
-                            if (!empty($differences = array_diff_assoc($updated_results, TestResult::select('staff_contact', 'overall_score')->find($id)->toArray()))) {
+                            if (!empty($differences = array_diff_assoc($updated_results, TestResult::select('staff_contact', 'overall_score', 'comments')->find($id)->toArray()))) {
                                 DB::beginTransaction();
                                 if ($transaction = EditTransactions::create([
                                     'application_type_id' => 1,
@@ -286,7 +319,7 @@ class PermitTestResultsController extends Controller
                                     }
                                     if ($results->update($updated_results)) {
                                         DB::commit();
-                                        return redirect()->route('test-results.permit.index', ['id' => 0])->with('success', 'Test Results for ' . $application->id . ':' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
+                                        return redirect()->route('test-results.permits.view', ['id' => $results->id])->with('success', 'Test Results for ' . $application->id . ':' . $application->firstname . ' ' . $application->lastname . ' has been updated successfully.');
                                     }
                                 }
                             } else {
@@ -305,7 +338,7 @@ class PermitTestResultsController extends Controller
                 throw new Exception('These test results do not exist.');
             }
         } catch (Exception $e) {
-            return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -315,8 +348,50 @@ class PermitTestResultsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        try {
+            if ($results = TestResult::with('permitApplication')
+                ->where('application_type_id', 1)
+                ->where('facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
+                if (!empty($results->permitApplication)) {
+                    if ($results->permitApplication?->sign_off_status != '1') {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => 1,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 3,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            if ($results->update(['deleted_at' => new DateTime()])) {
+                                DB::commit();
+                                return [
+                                    'success',
+                                    'Test Results for Permit Application for ' . $results->permitApplication?->firstname . ' ' . $results->permitApplication?->lastname . ':' . $results->permitApplication?->id . ' has been deleted successfully.'
+                                ];
+                            } else {
+                                throw new Exception("Error deleting test results. Unable to delete record.");
+                            }
+                        } else {
+                            throw new Exception("Error deleting test results. Unable to initiate transaction.");
+                        }
+                    } else {
+                        throw new Exception("The application linked to these test results has already been signed off. Results cannot be deleted");
+                    }
+                } else {
+                    throw new Exception("The application linked to this test result no longer exists");
+                }
+            } else {
+                throw new Exception("This test results either no longer exists or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 }

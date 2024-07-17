@@ -18,6 +18,8 @@
                 if (isset($app_type_id)) {
                     if ($app_type_id == 3) {
                         $transactions = $result;
+                    } elseif ($app_type_id == 1) {
+                        $transactions = $permit_application->testResults;
                     } else {
                         $transactions = $application->testResults;
                     }
