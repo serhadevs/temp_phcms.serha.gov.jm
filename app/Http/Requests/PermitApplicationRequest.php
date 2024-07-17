@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ApplicationDateAfterExamDate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PermitApplicationRequest extends FormRequest
@@ -14,6 +15,13 @@ class PermitApplicationRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'exam_date' => $this->exam_date,
+        ]);
     }
 
     /**
@@ -32,7 +40,7 @@ class PermitApplicationRequest extends FormRequest
             'date_of_birth' => 'required|date',
             'gender' => 'required',
             'permit_type' => 'required',
-            'no_of_years' => 'required_if:permit_type,=,student',
+            'no_of_years' => ['required_if:permit_type,student'],
             'cell_phone' => 'nullable',
             'home_phone' => 'nullable',
             'work_phone' => 'nullable',
@@ -47,7 +55,8 @@ class PermitApplicationRequest extends FormRequest
             'photo_upload' => 'nullable',
             'exam_date' => 'required',
             'exam_session' => 'required',
-            'application_date' => 'required',
+            // 'application_date' => 'required',
+            'application_date' => ['required', 'date', new ApplicationDateAfterExamDate($this->exam_date)],
         ];
     }
 }

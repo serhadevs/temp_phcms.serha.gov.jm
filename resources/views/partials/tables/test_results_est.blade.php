@@ -66,7 +66,7 @@
                 @if ($app_type_id == '3')
                     <td>
                         @foreach ($application->operators as $operator)
-                            {{ strtoupper($operator?->name_of_operator) }}<br/>
+                            {{ strtoupper($operator?->name_of_operator) }}<br />
                         @endforeach
                     </td>
                 @endif
@@ -89,13 +89,13 @@
                             class="btn btn-sm btn-primary">
                             View
                         </a>
-                        @if ($application->sign_off_status != '1')
+                        @if ($application->sign_off_status != '1' || $app_type_id == 3)
                             <a href="/test-results/{{ $app_type_id == '3' ? 'food-establishments/edit' : ($app_type_id == '6' ? 'tourist-establishments/edit' : ($app_type_id == '5' ? 'swimming-pools/edit' : '')) }}/{{ $application->id }}"
                                 class="btn btn-warning btn-sm">
                                 Edit
                             </a>
                             <button
-                                onclick="removeEntry({{ $app_type_id == '3' ? json_encode('/test-results/food-establishments') : ($app_type_id == 5? json_encode('/test-results/swimming-pools') : json_encode('/test-results/tourist-establishments') ) }}, {{ json_encode($application->testResults?->id) }})"
+                                onclick="removeEntry({{ $app_type_id == '3' ? json_encode('/test-results/food-establishments') : ($app_type_id == 5 ? json_encode('/test-results/swimming-pools') : json_encode('/test-results/tourist-establishments')) }}, {{ json_encode($application->testResults?->id) }})"
                                 class="btn btn-danger btn-sm">
                                 Delete
                             </button>

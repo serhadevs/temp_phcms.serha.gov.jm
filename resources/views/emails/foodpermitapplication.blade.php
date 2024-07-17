@@ -67,8 +67,8 @@
         <p>If you miss this date, then you must return, <strong>with your receipt</strong>, for a new date. All applicants are required to arrive on time to participate in lecture followed by a written test.</p>
 
         <h3>Dress Code</h3>
-        <p><strong>Female:</strong> Fingernails must be short, clean, and without nail polish. Hair should be properly groomed. Clothing must <strong>NOT</strong> be short or tight. Sleeveless blouses or shirts are not permitted.</p>
-        <p><strong>Male:</strong> Fingernails must be short, clean, and hair properly groomed. <strong>NO</strong> sleeves shirts or merinos and cut-off pants.</p>
+        <p><strong>Females:</strong> Fingernails must be short, clean, and without nail polish. Hair should be properly groomed. Clothing must <strong>NOT</strong> be short or tight. Sleeveless blouses or shirts are not permitted.</p>
+        <p><strong>Males:</strong> Fingernails must be short, clean, and hair properly groomed. <strong>NO</strong> sleeves shirts or merinos and cut-off pants.</p>
         <p><strong>Bring a Pen to mark your Test Paper</strong></p>
 
         <p>If you have any questions or need further assistance, please feel free to contact us at 876-984-3318.</p>
