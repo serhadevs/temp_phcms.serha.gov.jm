@@ -201,6 +201,7 @@ class PaymentController extends Controller
             'starting_date' => 'required',
             'ending_date' => 'required',
             'interval' => 'nullable|numeric|max:6'
+            
         ]);
 
         $prices = Prices::all();

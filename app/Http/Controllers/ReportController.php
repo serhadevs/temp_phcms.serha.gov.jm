@@ -14,6 +14,7 @@ use App\Models\PermitApplication;
 use App\Models\PermitCategory;
 use App\Models\SignOff;
 use App\Models\SwimmingPoolsApplications;
+use App\Models\TestResult;
 use App\Models\TouristEstablishments;
 use App\Models\User;
 use Carbon\Carbon;
@@ -21,6 +22,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -280,4 +282,62 @@ class ReportController extends Controller
     
         
     }
+
+    // public function productivityReportCreate(){
+    //     return view('reports.productivity.index');
+    // }
+
+    // public function productivityReport(Request $request) {
+    //     // Validate the incoming request fields
+    //     $incomingFields = $request->validate([
+    //         'starting_date' => 'required|date',
+    //         'ending_date' => 'required|date'
+    //     ]);
+    
+    //     // Ensure the dates are formatted correctly
+    //     $start_date = $incomingFields['starting_date'] . ' 17:00:00';
+    //     $end_date = $incomingFields['ending_date'] . ' 21:00:00';
+    
+    //     // Get the facility user IDs once
+    //     $facilityUserIds = User::facilityUsers()->pluck('id')->flatten();
+    
+    //     // Retrieve the permit applications and group by user
+    //     $permits = PermitApplication::with('user')
+    //         ->whereBetween('created_at', [$start_date, $end_date])
+    //         ->whereIn('user_id', $facilityUserIds)
+    //         ->get()
+    //         ->groupBy('user_id');
+
+    //         dd($permits);
+    
+    //     // Retrieve the establishment applications and group by user
+    //     $establishments = EstablishmentApplications::with('user')
+    //         ->whereBetween('created_at', [$start_date, $end_date])
+    //         ->whereIn('user_id', $facilityUserIds)
+    //         ->get()
+    //         ->groupBy('user_id');
+    
+    //     // Retrieve the test results and group by user
+    //     $tests = TestResult::with('user')
+    //         ->whereBetween('created_at', [$start_date, $end_date])
+    //         ->whereIn('user_id', $facilityUserIds)
+    //         ->get()
+    //         ->groupBy('user_id');
+    
+    //     // Count the number of applications for each user
+    //     $permitCounts = $permits->map(function ($items, $userId) {
+    //         return ['user' => $items->first()->user, 'count' => $items->count()];
+    //     });
+    
+    //     $establishmentCounts = $establishments->map(function ($items, $userId) {
+    //         return ['user' => $items->first()->user, 'count' => $items->count()];
+    //     });
+    
+    //     $testCounts = $tests->map(function ($items, $userId) {
+    //         return ['user' => $items->first()->user, 'count' => $items->count()];
+    //     });
+    
+    //     return view('reports.productivity.view', compact('permitCounts', 'establishmentCounts', 'testCounts', 'start_date', 'end_date'));
+    // }
+    
 }

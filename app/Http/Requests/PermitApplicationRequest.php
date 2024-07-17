@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ApplicationDateAfterExamDate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PermitApplicationRequest extends FormRequest
@@ -47,7 +48,8 @@ class PermitApplicationRequest extends FormRequest
             'photo_upload' => 'nullable',
             'exam_date' => 'required',
             'exam_session' => 'required',
-            'application_date' => 'required',
+            // 'application_date' => 'required',
+            'application_date' => ['required', 'date', new ApplicationDateAfterExamDate('exam_date')],
         ];
     }
 }
