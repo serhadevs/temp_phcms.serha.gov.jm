@@ -183,7 +183,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Whitlow
                                 </label>
-                                <select name="" id="" class="form-select" disabled>
+                                <select name="whitlow" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="absent"
                                         {{ old('whitlow') ? (old('whitlow') == 'absent' ? 'selected' : '') : ($application->healthInterviews?->whitlow == 'absent' ? 'selected' : '') }}>
@@ -206,7 +206,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Hands
                                 </label>
-                                <select name="" id="" class="form-select" disabled>
+                                <select name="hands_condition" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('hands_condition') ? (old('hands_condition') == 'satisfactory' ? 'selected' : '') : ($application->healthInterviews?->hands_condition == 'satisfactory' ? 'selected' : '') }}>
@@ -232,7 +232,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Fingernails
                                 </label>
-                                <select name="" id="" class="form-select" disabled>
+                                <select name="fingernails_condition" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('fingernails_condition') ? (old('fingernails_condition') == 'satisfactory' ? 'selected' : '') : ($application->healthInterviews?->fingernails_condition == 'satisfactory' ? 'selected' : '') }}>
@@ -255,7 +255,7 @@
                                     <span class="text-danger fw-bold">*</span>
                                     Teeth
                                 </label>
-                                <select name="" id="" class="form-select" disabled>
+                                <select name="teeth_condition" id="" class="form-select" disabled>
                                     <option selected disabled>Select an option</option>
                                     <option value="satisfactory"
                                         {{ old('teeth_condition') ? (old('teeth_condition') == 'satisfactory' ? 'selected' : '') : ($application->healthInterviews?->teeth_condition == 'satisfactory' ? 'selected' : '') }}>
@@ -501,6 +501,10 @@
                 document.querySelector('input[name=doctor_name]').removeAttribute('disabled');
                 document.querySelector('input[name=doctor_address]').removeAttribute('disabled');
                 document.querySelector('input[name=doctor_tele]').removeAttribute('disabled');
+                document.querySelector('select[name=whitlow]').removeAttribute('disabled');
+                document.querySelector('select[name=hands_condition]').removeAttribute('disabled');
+                document.querySelector('select[name=fingernails_condition]').removeAttribute('disabled');
+                document.querySelector('select[name=teeth_condition]').removeAttribute('disabled');
                 document.getElementById('editBtn').style.display = "none";
                 document.getElementById('updBtn').style.display = "";
                 document.getElementById('reason_div').style.display = "";

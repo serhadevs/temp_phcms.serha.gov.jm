@@ -382,6 +382,10 @@ class HealthInterviewController extends Controller
             'lived_abroad_location' => 'required_if:lived_abroad, 1',
             'lived_abroad_date' => 'required_if:lived_abroad, 1',
             'travel_abroad' => 'required',
+            'whitlow' => 'required',
+            'hands_condition' => 'required',
+            'fingernails_condition' => 'required',
+            'teeth_condition' => 'required',
             'tests_recommended' => 'nullable',
             'tests_results' => 'nullable',
             'doctor_name' => 'nullable',
@@ -397,7 +401,7 @@ class HealthInterviewController extends Controller
                     if ($application = $old_interview->permit_application_id == '' ? HealthCertApplications::find($old_interview->health_cert_application_id) : PermitApplication::find($old_interview->permit_application_id)) {
                         $reason = $updated_interview['edit_reason'];
                         unset($updated_interview['edit_reason']);
-                        if (!empty($differences = array_diff_assoc(HealthInterview::select('typhoid', 'literate', 'lived_abroad', 'lived_abroad_location', 'lived_abroad_date', 'travel_abroad', 'tests_recommended', 'tests_results', 'doctor_name', 'doctor_address', 'doctor_tele')->find($id)->toArray(), $updated_interview))) {
+                        if (!empty($differences = array_diff_assoc(HealthInterview::select('typhoid', 'literate', 'lived_abroad', 'lived_abroad_location', 'whitlow', 'hands_condition', 'fingernails_condition', 'teeth_condition', 'lived_abroad_date', 'travel_abroad', 'tests_recommended', 'tests_results', 'doctor_name', 'doctor_address', 'doctor_tele')->find($id)->toArray(), $updated_interview))) {
                             DB::beginTransaction();
                             if ($edit_transaction = EditTransactions::create([
                                 'application_type_id' => $old_interview->permit_application_id == '' ? 2 : 1,
