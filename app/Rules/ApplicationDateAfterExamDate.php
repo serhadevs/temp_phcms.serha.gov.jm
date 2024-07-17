@@ -22,7 +22,7 @@ class ApplicationDateAfterExamDate implements Rule
      */
     public function passes($attribute, $value)
     {
-        return strtotime($value) < strtotime($this->examDate);
+        return strtotime($this->examDate) > strtotime($value);
     }
 
     /**
