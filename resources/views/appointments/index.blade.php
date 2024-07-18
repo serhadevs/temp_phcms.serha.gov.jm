@@ -23,28 +23,22 @@
                                 @enderror
                             </div>
                         </div>
-
+                     
                         <div class="col mt-2">
-                            <label for="selectExamSite" class="form-label fw-bold">Exam Site</label>
-                            <select name="exam_site" id="selectExamSite"
-                                class="form-control @error('exam_site') is-invalid @enderror">
-                                <option disabled selected>Select an exam site</option>
-                                @foreach ($exam_sites as $exam_site )
-                                <option value="{{ $exam_site->id }}">{{ $exam_site->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('module')
-                            <p class="text-danger">{{ $message }}</div>
-                        @enderror
-                        </div>
-                        <div class="col mt-2">
-                            <label for="start_time" class="form-label fw-bold">Exam Time</label>
-                            {{-- <input type="text" value="09:00 AM" name="start_time"> --}}
-                            <select name="start_time" id="" class="form-control">
-                                <option value="09:00 AM">9am</option>
-                                <option value="01:00 PM">1pm</option>
+                            <label for="exam_date" class="form-label fw-bold">Exam Site</label>
+                            <select name="exam_date" id="exam_site" class="form-control">
+                                <option disabled selected>Please select an exam session</option>
+                            @foreach ($exam_dates as $appointment_avaiable)
+                                <option value="{{ $appointment_avaiable->id }}">
+                                    {{ $appointment_avaiable->permitCategory?->name }}
+                                    - {{ strtoupper($appointment_avaiable->exam_day) }}
+                                    {{ $appointment_avaiable->exam_start_time }}
+                                    -{{ $appointment_avaiable?->availableSites?->name }}
+                                </option>
+                            @endforeach
                             </select>
                         </div>
+                        
 
                     </div>
 

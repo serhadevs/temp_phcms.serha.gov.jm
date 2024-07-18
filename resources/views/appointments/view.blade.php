@@ -17,7 +17,7 @@
                     @include('partials.tables.appointmentstable')
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-danger">Back to Dashboard</button>
+                    <a href = "{{ route('appointments.index') }}" class="btn btn-danger">Back to Dashboard</a>
                 </div>
 
             </div>
