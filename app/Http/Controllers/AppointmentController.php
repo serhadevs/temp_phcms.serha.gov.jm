@@ -27,22 +27,23 @@ class AppointmentController extends Controller
         $incomingFields = $request->validate([
             "app_date" => "required|date",
             "exam_site" => "required",
-            // "start_time" => "required"
+            "start_time" => "required"
         ]);
 
         //dd($incomingFields['app_date']);
 
-        $appointments = Appointments::with('applications','testSites','examDate','examDate.permitCategory')
-        ->where('appointment_date', $incomingFields['app_date'])
-        ->whereRelation('testSites','facility_id',$incomingFields['exam_site'])
-        // ->whereRelation('examDate','exam_start_time',$incomingFields['start_time'])
-        ->get();
+        $appointments = Appointments::with('applications.permitCategory', 'examDate.examSites')
+            ->where('appointment_date', $incomingFields['app_date'])
+            ->whereRelation('examDate.examSites', 'id', $incomingFields['exam_site'])
+            ->whereRelation('examDate', 'exam_start_time', $incomingFields['start_time'])
+            ->get();
+
 
         // // $appointments = PermitApplication::join('appointments', 'appointments.permit_application_id', '=', 'permit_applications.id')
         // //     ->join('exam_dates','exam_dates.exam_date_id','=','appointments.')
         // //     ->where('appointments.appointment_date', $incomingFields['app_date'])->get();
 
-            //dd($incomingFields['exam_site']);
+        //dd($incomingFields['exam_site']);
         // $appointments = PermitApplication::with('appointments')
         // ->whereRelation('appointments','appointment_date',$incomingFields['app_date'])->get();
         // $exam_info = ExamSites::where('facility_id',$incomingFields['exam_site'])->first();
@@ -57,11 +58,11 @@ class AppointmentController extends Controller
         // dd($incomingFields['exam_site']);
         // $exam_info = ExamSites::where('facility_id',$incomingFields['exam_site'])->first();
 
-      
 
-      
 
-       //dd($exam_info);
+
+
+        //dd($exam_info);
         if ($appointments->isEmpty()) {
             return redirect()->back()->with('error', 'Unable to find appointments for that date');
         }
