@@ -40,9 +40,24 @@ class Appointments extends Model
         return $this->hasOne(ExamDates::class, 'id', 'exam_date_id')->withTrashed();
     }
 
+    public function examSites(): HasOne
+    {
+        return $this->hasOne(ExamSites::class, 'facility_id', 'facility_id')->withTrashed();
+    }
+
+    public function testSites(): HasOne{
+        return $this->hasOne(ExamSites::class,'id','facility_id');
+    }
+
+    // public function permitCategory(): HasOne{
+    //     return $this->hasOne(PermitCategory::class,'id',)
+    // }
+
     public function editTransactions(): HasMany
     {
         return $this->hasMany(EditTransactions::class, 'table_id', 'id')
             ->where('system_operation_type_id', 6);
     }
+
+
 }

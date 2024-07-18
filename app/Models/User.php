@@ -80,5 +80,9 @@ class User extends Authenticatable
         return $this->hasOne(Facility::class, 'id', 'facility_id');
     }
 
+    public function examSite(): HasOne{
+        return $this->hasOne(ExamSites::class,'facility_id','facility_id');
+    }
+
     public $timestamps = true;
 }

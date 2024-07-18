@@ -116,4 +116,12 @@ class PermitApplication extends Model
     public function messages(): HasMany{
         return $this->hasMany(Messages::class,'permit_application_id','id');
     }
+
+    public function appointments(): HasOne{
+        return $this->hasOne(Appointments::class,'permit_application_id','id');
+    }
+
+    
+
+    
 }

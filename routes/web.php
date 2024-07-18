@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdvanceSearchController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberCosmetApplicationsController;
 use App\Http\Controllers\BarberCosmetTestResultController;
@@ -14,24 +15,25 @@ use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
 use App\Http\Controllers\PermitApplicationController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PermitTestResultsController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SignOffController;
 use App\Http\Controllers\SummaryReportController;
 use App\Http\Controllers\SwimmingPoolsApplicationController;
 use App\Http\Controllers\SwimmingPoolTestResultController;
-use App\Http\Controllers\TestDownloads;
-use App\Http\Controllers\TrainingManualsController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\SwitchFacilityController;
+use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
+use App\Http\Controllers\TrainingManualsController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Downloads;
 use App\Models\HealthInterview;
 use App\Models\SwimmingPoolsApplications;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +61,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
 
+
+  //Appointments
+
+  Route::get('/appointments',[AppointmentController::class, 'index'])->name('appointmens.index');
+  Route::post('/appointments/show',[AppointmentController::class, 'show'])->name('appointments.show');
   //Permit Application Route
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
   Route::post("/permit/application", [PermitApplicationController::class, 'store'])->name('food_handlers_permit.store');
