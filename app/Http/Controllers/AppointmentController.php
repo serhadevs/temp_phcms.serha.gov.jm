@@ -30,6 +30,8 @@ class AppointmentController extends Controller
             // "start_time" => "required"
         ]);
 
+        dd($incomingFields['app_date']);
+
         $appointments = Appointments::with('applications','testSites','examDate','examDate.permitCategory')
         ->where('appointment_date', $incomingFields['app_date'])
         ->whereRelation('testSites','facility_id',$incomingFields['exam_site'])
