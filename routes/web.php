@@ -64,7 +64,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Appointments
 
-  Route::get('/appointments',[AppointmentController::class, 'index'])->name('appointmens.index');
+  Route::get('/appointments',[AppointmentController::class, 'index'])->name('appointments.index');
   Route::post('/appointments/show',[AppointmentController::class, 'show'])->name('appointments.show');
   //Permit Application Route
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
