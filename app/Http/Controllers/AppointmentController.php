@@ -26,7 +26,7 @@ class AppointmentController extends Controller
     {
         $incomingFields = $request->validate([
             "app_date" => "required|date",
-            //"exam_site" => "required",
+            "exam_site" => "required",
             // "start_time" => "required"
         ]);
 
@@ -34,7 +34,7 @@ class AppointmentController extends Controller
 
         $appointments = Appointments::with('applications','testSites','examDate','examDate.permitCategory')
         ->where('appointment_date', $incomingFields['app_date'])
-        //->whereRelation('testSites','facility_id',$incomingFields['exam_site'])
+        ->whereRelation('testSites','facility_id',$incomingFields['exam_site'])
         // ->whereRelation('examDate','exam_start_time',$incomingFields['start_time'])
         ->get();
 
