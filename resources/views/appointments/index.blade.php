@@ -39,7 +39,7 @@
                         </div>
                         <div class="col mt-2">
                             <label for="start_time" class="form-label fw-bold">Exam Time</label>
-                            <input type="text" value="09:00 AM" name="start_time">
+                            {{-- <input type="text" value="09:00 AM" name="start_time"> --}}
                             <select name="start_time" id="" class="form-control">
                                 <option value="09:00 AM">9am</option>
                                 <option value="01:00 PM">1pm</option>
