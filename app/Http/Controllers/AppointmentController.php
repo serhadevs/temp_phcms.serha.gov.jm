@@ -47,7 +47,7 @@ class AppointmentController extends Controller
         // //->whereRelation('user','facility_id',auth()->user()->facility_id)
         // // ->whereRelation('user.examSite','id',$incomingFields['exam_site'])->get();
 
-        //dd($appointments);
+        dd($appointments);
         // // foreach ($appointments as $appointment) {
         // //     $exam = $appointment->appointments->facility_id;
         // // }
