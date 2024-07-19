@@ -179,16 +179,34 @@ class PermitApplicationController extends Controller
             ) {
                 if (empty($permit->signOffs)) {
                     unset($edits['edit_reason']);
+                    // if ($request->file('photo_upload')) {
+                    //     if ($permit->photo_upload) {
+                    //         Storage::disk('public')->move($permit->photo_upload, '/photo_uploads/archives/' . explode('/', $permit->photo_upload)[1]);
+                    //     }
+                    //     $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit->permit_no . '.' . $request->photo_upload->extension(), 'public');
+                    //     $edits['photo_upload'] = $path;
+                    // } else {
+                    //     
+                    // }
                     if ($request->file('photo_upload')) {
                         if ($permit->photo_upload) {
-                            Storage::disk('public')->move($permit->photo_upload, '/photo_uploads/archives/' . explode('/', $permit->photo_upload)[1]);
+                            $old_image_name = explode('.', explode('/', $permit->photo_upload)[1]);
+                            $new_image_name = $old_image_name[0] . '_' . time() . '_' . $permit->id . '.' . $old_image_name[1];
+                            Storage::disk('public')->move($permit->photo_upload, '/photo_uploads/archives/' . $new_image_name);
                         }
-                        $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit->permit_no . '.' . $request->photo_upload->extension(), 'public');
+                        $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
                         $edits['photo_upload'] = $path;
                     } else {
                         $edits['photo_upload'] = $permit->photo_upload;
                     }
-                    if (!empty($differences = array_diff_assoc($edits, PermitApplication::where('id', $id)->select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'gender', 'cell_phone', 'home_phone', 'work_phone', 'trn', 'email', 'permit_no', 'photo_upload', 'permit_category_id', 'permit_type')->first()->toArray()))) {
+
+                    $permit_array_used_compare = PermitApplication::where('id', $id)->select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'gender', 'cell_phone', 'home_phone', 'work_phone', 'trn', 'email', 'permit_no', 'photo_upload', 'permit_category_id', 'permit_type')->first()->toArray();
+
+                    if (isset($new_image_name)) {
+                        $permit_array_used_compare['photo_upload'] = 'photo_uploads/archives/' . $new_image_name;
+                    }
+
+                    if (!empty($differences = array_diff_assoc($edits, $permit_array_used_compare))) {
                         DB::beginTransaction();
                         if ($edit_transaction = EditTransactions::create([
                             'application_type_id' => 1,
@@ -203,7 +221,7 @@ class PermitApplicationController extends Controller
                                 EditTransactionsChangedColumns::create([
                                     'edit_transaction_id' => $edit_transaction->id,
                                     'column_name' => $key,
-                                    'old_value' => $key == 'permit_category_id' ? PermitCategory::find($permit?->permit_category_id)->name : $permit->toArray()[$key],
+                                    'old_value' => $key == 'permit_category_id' ? PermitCategory::find($permit?->permit_category_id)->name : ($key == 'photo_upload' ? $permit_array_used_compare[$key] : $permit->toArray()[$key]),
                                     'new_value' => $key == 'permit_category_id' ? PermitCategory::find($edits['permit_category_id'])->name : $edits[$key]
                                 ]);
                             }

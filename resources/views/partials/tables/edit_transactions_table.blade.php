@@ -90,21 +90,23 @@
                     @endforeach
                 @endforeach
             @elseif($system_operation_type_id == 6)
-                @foreach ($transactions?->appointment?->first()?->editTransactions as $edit)
-                    <tr>
-                        <td>{{ $edit->editType?->name }} - {{ $edit->systemOperationType?->name }}</td>
-                        <td>{{ $edit->reason }}</td>
-                        <td>{{ $edit->user?->firstname . ' ' . $edit->user?->lastname }}</td>
-                        <td>{{ $edit->created_at }}</td>
-                        <td>
-                            <button class="btn btn-primary mx-2 btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop"
-                                onclick="popChangedTable({{ json_encode($edit->changedColumns) }})" type="button">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
+                @if (!empty($transactions?->appointment?->first()))
+                    @foreach ($transactions?->appointment?->first()?->editTransactions as $edit)
+                        <tr>
+                            <td>{{ $edit->editType?->name }} - {{ $edit->systemOperationType?->name }}</td>
+                            <td>{{ $edit->reason }}</td>
+                            <td>{{ $edit->user?->firstname . ' ' . $edit->user?->lastname }}</td>
+                            <td>{{ $edit->created_at }}</td>
+                            <td>
+                                <button class="btn btn-primary mx-2 btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"
+                                    onclick="popChangedTable({{ json_encode($edit->changedColumns) }})" type="button">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             @elseif($system_operation_type_id == 10)
                 @foreach ($transactions->managers as $manager)
                     @foreach ($manager->editTransactions as $edit)
@@ -184,11 +186,33 @@
             var td1 = document.createElement('td');
             var td2 = document.createElement('td');
             var td3 = document.createElement('td');
+            if (element['column_name'] == 'photo_upload') {
+                if (element['old_value'].includes('archives')) {
+                    var img = document.createElement('img');
+                    img.setAttribute('src', "{{ asset('storage/') }}" + "/" + element['old_value']);
+                    img.classList.add('w-75');
+                    img.classList.add('mx-auto');
+                    td2.append(img);
+                } else {
+                    td2.innerHTML = element['old_value'] ? element['old_value'].toUpperCase() : '';
+                }
+
+                if (element['new_value'].includes('photo_uploads')) {
+                    var img2 = document.createElement('img');
+                    img2.setAttribute('src', "{{ asset('storage/') }}" + "/" + element['new_value']);
+                    img2.classList.add('w-75');
+                    img2.classList.add('mx-auto');
+                    td3.append(img2);
+                } else {
+                    td3.innerHTML = element['new_value'] ? element['new_value'].toUpperCase() : '';
+                }
+            } else {
+                td2.innerHTML = element['old_value'] ? element['old_value'].toUpperCase() : '';
+                td3.innerHTML = element['new_value'] ? element['new_value'].toUpperCase() : '';
+            }
             column_name = element['column_name'].replace('_id', '');
             td1.innerHTML = element['column_name'] ? column_name.toUpperCase().replaceAll('_', ' ') :
                 '';
-            td2.innerHTML = element['old_value'] ? element['old_value'].toUpperCase() : '';
-            td3.innerHTML = element['new_value'] ? element['new_value'].toUpperCase() : '';
             tr.append(td1, td2, td3);
             table.append(tr);
         })
