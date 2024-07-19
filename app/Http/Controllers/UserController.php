@@ -35,8 +35,7 @@ class UserController extends Controller
                 ->whereNull('users.deleted_at')
                 ->where('users.status',1)
                 ->get();
-
-            //dd($users);
+                
             $facilities = Facility::all();
         } elseif (Auth::user()->role_id == 2) {
             $users = User::where('facility_id', Auth::user()->facility_id)->get();
