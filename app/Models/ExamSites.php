@@ -27,4 +27,6 @@ class ExamSites extends Model
     public function examDate():BelongsTo{
         return $this->belongsTo(ExamDates::class, 'id', 'exam_sites_id');
     }
+
+
 }

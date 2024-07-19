@@ -45,28 +45,6 @@
                             <p class="text-danger">{{ $message }}</div>
                         @enderror
 
-
-                        {{-- <div id="permit_categories" class="col mt-3 hide">
-                            <label for="permit_category_select" class="form-label">Food Permit Categories</label>
-                            <select name="permit_categories" id="permit_category_select" class="form-control">
-                                <option selected disabled>--Select an Option--</option>
-                                @foreach ($permit_categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                                <option value="20">All</option>
-                            </select>
-                        </div>
-
-                        <div id="establishment_categories" class="col mt-3 hide">
-                            <label for="establishment_category_select" class="form-label">Food Establishment Categories</label>
-                            <select name="categories" id="establishment_category_select" class="form-control">
-                                <option selected disabled>--Select an Option--</option>
-                                @foreach ($establishment_categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div> --}}
-
                         
                         <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger mt-3">Back to Dashboard</a>
                         <button class="btn btn-success mt-3" type="submit">Generate Report</button>
@@ -77,26 +55,4 @@
     </div>
 @endsection
 
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectCategory = document.getElementById('selectCategory');
-        const permitCategory = document.getElementById('permit_categories');
-        const establishmentCategory = document.getElementById('establishment_categories');
 
-        function handleDropdownChange() {
-            // Hide both categories initially
-            permitCategory.classList.add('hide');
-            establishmentCategory.classList.add('hide');
-
-            // Show the relevant category based on the dropdown value
-            if (selectCategory.value === "1") {
-                permitCategory.classList.remove('hide');
-            } else if (selectCategory.value === "2") {
-                establishmentCategory.classList.remove('hide');
-            }
-        }
-
-        selectCategory.addEventListener('change', handleDropdownChange);
-        handleDropdownChange(); // Initialize visibility on page load
-    });
-</script> --}}
