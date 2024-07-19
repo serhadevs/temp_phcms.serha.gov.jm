@@ -55,10 +55,11 @@
               <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
           @endforeach
       </select>
-      @error('roles')
+      @error('role_id')
           <div class="invalid-feedback">{{ $message }}</div>
       @enderror
   </div>
+  <a href = "{{ route('users') }}"class="btn btn-danger">Back to Users</a>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
