@@ -1,6 +1,6 @@
 @extends('partials.layouts.layout')
 
-@section('title', 'User Dashboard')
+@section('title', ' User Dashboard')
 
 @section('content')
     @include('partials.sidebar._sidebar')
@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
+                <div>
                     
                     <div class="row">
                         <div class="col">
@@ -30,12 +30,4 @@
             </div>
         </main>
     </div>
-
-    <script>
-        const hamBurger = document.querySelector(".toggle-btn");
-
-        hamBurger.addEventListener("click", function() {
-            document.querySelector("#sidebar").classList.toggle("expand");
-        });
-    </script>
 @endsection

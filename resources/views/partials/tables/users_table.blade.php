@@ -42,7 +42,6 @@
                                     <button type="submit" name = "submit" class="btn btn-{{ $user->status == 1 ? "danger" : "success" }} btn-sm">
                                         {{ $user->status == 1 ? "Active" : "Inactive" }}
                                     </button>
-                                    
                                 </form>
                                 
                                 
@@ -76,9 +75,7 @@
 <div class="card-footer">
      <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>   
 </div>
-{{-- <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script> --}}
+
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
