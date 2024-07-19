@@ -7,7 +7,10 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            <div class="card">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h2 class="text-muted">Create New Payment</h2>
+                </div>
                 <div class="card-body">
                     @if ($message = Session::get('error'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -15,7 +18,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    <h2>Create New Payment</h2>
+                    
                     <div class="row">
                         <div class="col">
                             <form action="{{ route('payments.create.store') }}" method="POST">
@@ -215,15 +218,9 @@
                         </script>
                     </div>
                 </div>
+
             </div>
         </div>
-        <script>
-            const hamBurger = document.querySelector(".toggle-btn");
-
-            hamBurger.addEventListener("click", function() {
-                document.querySelector("#sidebar").classList.toggle("expand");
-            });
-        </script>
         @include('partials.messages.loading_message')
     </div>
 @endsection

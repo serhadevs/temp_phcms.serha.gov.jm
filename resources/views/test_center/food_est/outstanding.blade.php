@@ -95,6 +95,9 @@
                     </form>
                     @include('partials.tables.outstanding_test_results_ests')
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                </div>
             </div>
         </div>
         <script>

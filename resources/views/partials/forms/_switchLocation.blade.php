@@ -17,6 +17,7 @@
             </div>
         </div>
         <div class="card-footer">
+            <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
     </div>

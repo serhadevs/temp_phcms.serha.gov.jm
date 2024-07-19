@@ -9,8 +9,8 @@
         <div class="container-fluid">
             @include('partials.messages.table_loading')
             <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2>
                                 Outstanding Food Handlers Results
@@ -42,6 +42,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                    
                     <form action="{{ route('test-results.permit.outstanding.custom') }}" method="POST">
                         @csrf
                         @method('POST')
@@ -74,6 +77,9 @@
                         </div>
                     </form>
                     @include('partials.tables.permit_outstanding_test_results_table')
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
                 </div>
             </div>
             <script>

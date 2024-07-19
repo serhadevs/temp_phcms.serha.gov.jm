@@ -8,32 +8,36 @@
 <div class="main">
     @include('partials.navbar._navbar')
 
-    <main class="content px-3 py-4">
+    <main class="content py-4">
         <div class="container-fluid">
-            <div class="mb-3">
-                <h3 class="fw-bold fs-4 mb-3">Sign Off Applications</h3>
-                <div class="row mb-2">
-                    
-                    @foreach ($application_type as $app_type )
-                    
-                    <div class="col-12 col-md-3 mb-3">
-
-                    <div class="card ">
-                        <div class="card-body py-4">
-                            <a href="/sign-off/create/{{ $app_type->id }}">
-                                <h5 class="mb-2 fw-bold">
-                                    {{ $app_type->name }}
-                                </h5>
-                            </a>
+            <div class="card shadow">
+                <h4 class="card-header text-muted">
+                    Sign Off Applications
+                </h4>
+                <div class="card-body">
+                    <div>
+                        <div class="row mb-2">
+                            @foreach ($application_type as $app_type )
+                            <div class="col-12 col-md-3 mb-3">
+                            <div class="card">
+                                <div class="card-body py-4">
+                                    <a href="/sign-off/create/{{ $app_type->id }}" class="text-decoration-none text-secondary">
+                                        <h5 class="mb-2 fw-bold">
+                                            {{ $app_type->name }}
+                                        </h5>
+                                    </a>
+                                </div>
+                            </div>
+                            </div>
+                            @endforeach
                         </div>
                     </div>
-                    </div>
-                    @endforeach
-                    
                 </div>
-
-                
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                </div>
             </div>
+            
         </div>
     </main>
 </div>

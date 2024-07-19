@@ -78,7 +78,11 @@
                         </div>
                     </form>
                     @include('partials.tables.downloads')
+                    <div class="card-footer">
+                        <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    </div>
                 </div>
+                
             </div>
         </div>
         <script>

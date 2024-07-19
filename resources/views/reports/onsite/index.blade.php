@@ -16,14 +16,18 @@
                         <div class="row">
                             <div class="col">
                                 <label for="starting_date" class="form-label">Start Date</label>
-                                <input type="date" class="form-control " name="starting_date" id="starting_date">
+                                <input type="date" class="form-control @error('starting_date') is-invalid
+                                    
+                                @enderror" name="starting_date" id="starting_date">
                                 @error('starting_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="col">
                                 <label for="ending_date" class="form-label">End Date</label>
-                                <input type="date" value = "{{ date('Y-m-d') }}" class="form-control @error('ending_date') is-invalid @enderror" name="ending_date" id="ending_date" max="{{ date('Y-m-d') }}">
+                                <input type="date" value = "{{ date('Y-m-d') }}"
+                                    class="form-control @error('ending_date') is-invalid @enderror" name="ending_date"
+                                    id="ending_date" max="{{ date('Y-m-d') }}">
                                 @error('ending_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -41,39 +45,18 @@
 
                         </div>
                         @error('module')
-                            <p class="text-danger">{{ $message }}</div>
-                        @enderror
-
-
-                        {{-- <div id="permit_categories" class="col mt-3 hide">
-                            <label for="permit_category_select" class="form-label">Food Permit Categories</label>
-                            <select name="permit_categories" id="permit_category_select" class="form-control">
-                                <option selected disabled>--Select an Option--</option>
-                                @foreach ($permit_categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                                <option value="20">All</option>
-                            </select>
-                        </div>
-
-                        <div id="establishment_categories" class="col mt-3 hide">
-                            <label for="establishment_category_select" class="form-label">Food Establishment Categories</label>
-                            <select name="categories" id="establishment_category_select" class="form-control">
-                                <option selected disabled>--Select an Option--</option>
-                                @foreach ($establishment_categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div> --}}
-
-                       
-                            <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger mt-3" type="submit">Back to Dashboard</a>
-                            <button class="btn btn-success mt-3" type="submit">Generate Report</button>
-                    
-                    </form>
-                </div>
+                            <p class="text-danger">{{ $message }}
+                    </div>
+                @enderror
             </div>
+            <div class="card-footer">
+                <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger mt-3" type="submit">Back to
+                    Dashboard</a>
+                <button class="btn btn-success mt-3" type="submit">Generate Report</button>
+            </div>
+            </form>
         </div>
+    </div>
     </div>
 @endsection
 

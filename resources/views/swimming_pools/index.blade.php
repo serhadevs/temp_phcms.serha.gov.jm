@@ -8,19 +8,8 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             @include('partials.messages.table_loading')
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <p class="text-success"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if ($message = Session::get('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <p class="text-danger font-weight-bold">{{ $message }}</p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            <div class="card">
+            @include('partials.messages.messages')
+            <div class="card shadow">
                 <div class="card-header">
                     <div class="row justify-content-between">
                         <div class="col">
@@ -93,6 +82,9 @@
                         </div>
                     </form>
                     @include('partials.tables.swimming_pools')
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class = "btn btn-danger">Back to Dashboard</a>
                 </div>
             </div>
 

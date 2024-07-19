@@ -9,10 +9,10 @@
         <div class="container-fluid">
             @include('partials.messages.table_loading')
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">        
                     <div class="row justify-content-between">
                         <div class="col">
-                            <h3>Outstanding Payments</h3>
+                            <h3 class="text-muted">Outstanding Payments</h3>
                         </div>
                         <div class="col-auto">
                             <div class="dropdown">
@@ -34,6 +34,9 @@
 
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                   
                     <form action="{{ route('payments.applications.filter.custom') }}" method="POST">
                         @csrf
                         @method('POST')
@@ -68,6 +71,9 @@
                     <div class="mt-3">
                         @include('partials.tables.payments_applications_table')
                     </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
                 </div>
             </div>
         </div>

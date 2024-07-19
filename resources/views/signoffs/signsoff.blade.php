@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous Page</a>
+                        <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger"> Back to Dashboard</a>
                     </div>
                 </div>
             </div>

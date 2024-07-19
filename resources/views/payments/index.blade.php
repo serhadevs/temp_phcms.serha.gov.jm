@@ -9,11 +9,13 @@
         <div class="container-fluid">
             @include('partials.messages.table_loading')
             <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    
+                    <div class="row justify-content-between">
                         <div class="col">
-                            <h3>Processed Payments</h3>
+                            <h3 class="text-muted">Processed Payments</h3>
                         </div>
+                       
                         <div class="col-auto">
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -34,6 +36,9 @@
 
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                    
                     <form action="{{ route('payments.index.filter.custom') }}" method="POST">
                         @csrf
                         @method('POST')
@@ -65,6 +70,9 @@
                         </div>
                     </form>
                     @include('partials.tables.processed_payments_table')
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
                 </div>
             </div>
         </div>

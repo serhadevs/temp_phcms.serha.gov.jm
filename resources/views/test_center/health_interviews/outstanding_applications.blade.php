@@ -8,9 +8,8 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
-                    @include('partials.messages.table_loading')
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h3>
                                 {{ $app_type_id == '1' ? 'Outstanding Food Hand. Health Interviews' : ($app_type_id == '2' ? 'Outstanding Barber & Cos. Health Interviews ' : '') }}
@@ -47,6 +46,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                    @include('partials.messages.table_loading')
+                    
                     <form action="{{ route('health-interview.outstanding.custom') }}" method="POST">
                         @csrf
                         @method('POST')
@@ -80,6 +83,9 @@
                         </div>
                     </form>
                     @include('partials.tables.outstanding_health_interviews_table')
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
                 </div>
             </div>
         </div>
