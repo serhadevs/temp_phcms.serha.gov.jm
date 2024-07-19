@@ -11,15 +11,14 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            <h2>Advanced Search</h2>
             @include('partials.messages.messages')
             <div class="card shadow my-2">
-                <div class="card-header">Select the module you would like to search</div>
+                <h4 class="card-header text-muted">Advanced Search</h4>
                 <div class="card-body">
                     <form method="POST" id="permit_form" action="{{ route('advance.search.show') }}">
                         @csrf
                         @method('POST')
-                        <div class="input-group mb-3">
+                        <div class="input-group">
                             <label class="input-group-text" for="inputGroupSelect01">Module</label>
                             <select class="form-select" id="module" name="module">
                                 <option selected disabled>Select Module </option>
@@ -123,10 +122,13 @@
                                 </datalist>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-2">Search</button>
-                    </form>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>
+            </form>
         </div>
         <script>
             function hideAll() {
@@ -154,17 +156,18 @@
                     document.getElementById('app_type_div').style.display = "";
                     document.querySelector('#app_type option:nth-child(3)').style.display = "none";
                     document.querySelector('#app_type option:nth-child(2)').style.display = "";
+                    document.getElementById('address').style.display = "none"
                 } else if (this.value == "4") {
                     document.getElementById('name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('app_type_div').style.display = "";
                     document.querySelector('#app_type option:nth-child(3)').style.display = "";
                     document.querySelector('#app_type option:nth-child(2)').style.display = "none";
-                    
+
                 } else if (this.value == '5') {
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('receipt_div').style.display = "";
-                    
+
                 } else if (this.value == '6') {
                     document.getElementById('food_est_name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
@@ -181,9 +184,11 @@
                     document.querySelector('#app_type option:nth-child(3)').style.display = "none";
                     document.querySelector('#app_type option:nth-child(2)').style.display = "";
                     document.getElementById('food_est_name_div').style.display = "none";
+                    document.getElementById('address').style.display = "none"
                 } else if (this.value == '2') {
                     document.getElementById('name_div').style.display = "none";
                     document.getElementById('food_est_name_div').style.display = "";
+                    document.getElementById('address').style.display = "none"
                 }
             })
         </script>

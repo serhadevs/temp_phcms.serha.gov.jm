@@ -46,6 +46,7 @@ class SettingsController extends Controller
         }
 
         // dd($stmp_settings);
+        // dispatch(new SendTestEmailConfig());
         Mail::to($email)->send(new SendTestEmailConfig());
 
         return redirect()->route('admin.index')->with('success', 'Successfully Updated STMP Settings. Test Email was sent to: ' . $email);
