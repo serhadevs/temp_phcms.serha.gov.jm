@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Mail\ForgetPasswordMail;
 use App\Mail\SendPermitApplicationMail;
+use App\Models\User;
 use App\Http\Requests\PermitApplicationRequest;
 use App\Models\Appointments;
 use App\Models\EditTransactions;
@@ -17,7 +18,6 @@ use App\Models\Payments;
 use App\Models\PermitApplication;
 use App\Models\PermitCategory;
 use App\Models\Renewals;
-use App\Models\SignOff;
 use App\Models\TestResult;
 use App\Models\TravelHistory;
 use DateTime;
@@ -31,6 +31,9 @@ use App\Jobs\SendPermitApplicationEmailJob;
 use App\Mail\SendTestEmailConfig;
 use App\Http\Controllers\EmailController;
 use App\Models\ExamSites;
+use App\Notifications\SignOff;
+use Illuminate\Support\Facades\Notification;
+
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -379,6 +382,7 @@ class PermitApplicationController extends Controller
     public function store(PermitApplicationRequest $request)
     {
 
+        $user = User::lazy()->where('role_id',1)->get();
         $permit_application = $request->validated();
 
         if ($request->establishment_clinic_id) {
@@ -467,10 +471,12 @@ class PermitApplicationController extends Controller
                 if ($sendEmailInfo->email) {
                     dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
                 }
+
+               
             }
 
-            // dd($appointment);
-            // dd($sendEmailInfo);
+            Notification::send($user, new SignOff($new_permit_application));
+
 
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
 
