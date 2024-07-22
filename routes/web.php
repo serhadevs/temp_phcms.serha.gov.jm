@@ -29,6 +29,7 @@ use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\printerAuthAttempt;
+use App\Http\Controllers\Messaging;
 use App\Models\Downloads;
 use App\Models\HealthInterview;
 use App\Models\SwimmingPoolsApplications;
@@ -361,6 +362,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::post('/admin/role', [SettingsController::class, 'storeRole'])->name('admin.store.role');
     Route::get('/admin/send-test-email', [SettingsController::class, 'TestEmail'])->name('admin.test-email');
   });
+
+  //Messging 
+
+  Route::get('/messaging/resend/{firstname}/{id}',[Messaging::class, 'index'])->name('messages.resend');
+  Route::post('/messaging/send/{id}',[Messaging::class, 'sendMessage'])->name('messages.send');
 
 
   //Logout Routes

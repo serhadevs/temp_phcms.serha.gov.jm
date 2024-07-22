@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ForgetPasswordMail;
+use Illuminate\Support\Facades\Log;
 use App\Mail\SendPermitApplicationMail;
 use App\Models\User;
 use App\Http\Requests\PermitApplicationRequest;
@@ -33,6 +34,7 @@ use App\Http\Controllers\EmailController;
 use App\Models\ExamSites;
 use App\Notifications\SignOff;
 use Illuminate\Support\Facades\Notification;
+use App\Models\Messages;
 
 
 // use Faker\Provider\ar_EG\Payment;
@@ -382,7 +384,7 @@ class PermitApplicationController extends Controller
     public function store(PermitApplicationRequest $request)
     {
 
-        $user = User::lazy()->where('role_id',1)->get();
+        $user = User::where('role_id', 1)->get();
         $permit_application = $request->validated();
 
         if ($request->establishment_clinic_id) {
@@ -468,11 +470,40 @@ class PermitApplicationController extends Controller
                     ->orderBy('appointments.created_at', 'desc')
                     ->first();
 
-                if ($sendEmailInfo->email) {
-                    dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
+                try {
+                    if ($sendEmailInfo->email) {
+                        dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
+                        Messages::create([
+                            'permit_application_id' => $sendEmailInfo->id,
+                            'email_type_id' => 1,
+                            'to' => $sendEmailInfo->email,
+                            'status' => 'sent',
+                            'error_message' => 'none',
+                            'user_id' => auth()->user()->id,
+                            'sent_at' => \Carbon\Carbon::now()
+                        ]);
+                    } else {
+                        Messages::create([
+                            'permit_application_id' => $sendEmailInfo->id,
+                            'email_type_id' => 1,
+                            'to' => $sendEmailInfo->email,
+                            'status' => 'failed',
+                            'error_message' => 'Unknown error',
+                            'user_id' => auth()->user()->id,
+                            'sent_at' => \Carbon\Carbon::now()
+                        ]);
+                    }
+                } catch (Exception $e) {
+                    
+                    Log::error('Error dispatching email job: ' . $e->getMessage());
                 }
 
-               
+
+                //Store email into messages table
+
+
+
+
             }
 
             Notification::send($user, new SignOff($new_permit_application));
