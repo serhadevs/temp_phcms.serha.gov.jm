@@ -93,6 +93,9 @@
                     </form>
                     @include('partials.tables.tourist_establishments_table')
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                </div>
             </div>
         </div>
         <script>

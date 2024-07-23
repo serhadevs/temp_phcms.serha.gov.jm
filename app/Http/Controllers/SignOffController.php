@@ -33,6 +33,7 @@ class SignOffController extends Controller
     {
         $excludedIds = [4, 7];
         $application_type = ApplicationType::whereNotIn('id', $excludedIds)->get();
+        
 
         return view('signoffs.index', compact('application_type'));
     }

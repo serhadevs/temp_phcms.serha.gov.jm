@@ -31,7 +31,7 @@
                                     End Date
                                 </label>
                                 <input type="date" class="form-control" name="ending_date" id="ending_date"
-                                    onchange="calcInterval()" onkeyup="calcInterval()" value="{{ old('ending_date') }}">
+                                    onchange="calcInterval()" onkeyup="calcInterval()" value="{{ old('ending_date') }}" max="{{ date('Y-m-d') }}">
                                 @error('ending_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -123,6 +123,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
+                        <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
                         <button class="btn btn-success" type="submit">
                             Generate Report
                         </button>

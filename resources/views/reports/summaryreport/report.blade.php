@@ -14,6 +14,9 @@
                 <div class="card-body">
                     @include('partials.tables.summary_report_table')
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('reports.summary.index') }}" class="btn btn-danger">Back</a>
+                </div>
             </div>
         </div>
     </div>

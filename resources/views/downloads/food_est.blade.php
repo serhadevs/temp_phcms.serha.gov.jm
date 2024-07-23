@@ -8,21 +8,8 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
-                    @include('partials.messages.table_loading')
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <p class="text-success"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    @if ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="row justify-content-between mb-3">
+                <div class="card-header">
+                    <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
                                 Food Establishments Downloads
@@ -57,6 +44,22 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                    @include('partials.messages.table_loading')
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <p class="text-success"><strong>{{ $message }}</strong></p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                    @if ($message = Session::get('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <p class="text-danger font-weight-bold"><strong>{{ $message }}</strong></p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     <form action="{{ route('downloads.food_est.custom') }}" method="POST">
                         @csrf
                         @method('POST')
@@ -88,7 +91,11 @@
                             </div>
                         </div>
                     </form>
+
                     @include('partials.tables.downloads')
+                    <div class="card-footer">
+                        <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    </div>
                 </div>
             </div>
         </div>

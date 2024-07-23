@@ -96,6 +96,9 @@
                     </form>
                     @include('partials.tables.swimming_pools')
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                </div>
             </div>
         </div>
         <script>

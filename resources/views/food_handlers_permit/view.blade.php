@@ -16,7 +16,7 @@
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
                     @else
-                        <a href="#" onclick="window.history.back()" class="btn btn-primary btn-sm">
+                        <a href="{{ url('/permit/filter/0') }}"  class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
                     @endif
@@ -241,7 +241,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- <div class="card mt-2">
+                                    <div class="card mt-2">
                                         <h5 class="card-header text-muted">
                                             Messages
                                         </h5>
@@ -257,41 +257,50 @@
                                             </div>
                                         @else
                                             <div class="card-body">
-                                                <ul>
-                                                    @foreach ($permit_application->messages as $message)
-                                                        <p class ="card-text">Email Type: {{ $message->emailtypes->name ?? 'N/A' }} </p>
-                                                        <p class = "card-text">Status: {{ $message->status }}</p>
-                                                        <p class = "card-text">Date Sent: {{ \Carbon\Carbon::parse($message->sent_at)->format('d F y') }}</p>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-
-                                            <div class="card-body">
-                                                <table class="table table-bordered table-sm nowrap">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Type</th>
-                                                            <th>Status</th>
-                                                            <th>Date Sent</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                      
-                                                            @foreach ($permit_application->messages as $message)
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-sm nowrap table-responsive"
+                                                        style="max-width: 100%">
+                                                        <thead>
                                                             <tr>
-                                                                <td><span class="badge text-bg-danger">{{ $message->emailtypes->name ?? 'N/A' }}</span></td>
-                                                                <td><span class = "badge text-bg-success">{{ $message->status }}</span></td>
-                                                                <td> {{ \Carbon\Carbon::parse($message->sent_at)->format('d F y') }}
-                                                                </td>
+                                                                <th>Type</th>
+                                                                {{-- <th>Status</th> --}}
+                                                                <th>View</th>
+                                                                <th>Resend</th>
                                                             </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            @foreach ($permit_application->messages as $message)
+                                                                <tr>
+                                                                    <td><span
+                                                                            class="badge text-bg-primary">{{ strtoupper($message->emailtypes->name) ?? 'N/A' }}</span>
+                                                                    </td>
+                                                                    {{-- <td><span
+                                                                            class = "badge text-bg-success">{{ strtoupper($message->status) }}</span>
+                                                                    </td>
+                                                                    <td> <span
+                                                                            class="badge text-bg-primary">{{ \Carbon\Carbon::parse($message->sent_at)->format('d F y') }}</span>
+                                                                    </td> --}}
+                                                                    
+                                                                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="populateResendEmailModal({{ json_encode($message) }}, {{ json_encode($permit_application) }})">
+                                                                        <i class="bi bi-eye"></i>
+                                                                    </button></td>
+                                                                    <td>
+                                                                        <a
+                                                                            href="{{ url('/messaging/resend', ['id' => $message->permit_application_id]) }}" class="btn btn-primary"><i class="bi bi-envelope-arrow-up"></i></a>
+
+                                                                    </td>
+                                                                </tr>
                                                             @endforeach
-                                                       
-                                                    </tbody>
-                                                </table>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                              @include('partials.modals.modal')
                                             </div>
 
                                         @endif
-                                    </div> --}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="col col-md-9">
@@ -534,13 +543,13 @@
                                             </div>
                                         </div>
                                         <div class="row mt-3">
-                                            <div class="col">
+                                            <div class="col-md-3">
                                                 <label for="" class="form-label">Applied Before</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ $permit_application->applied_before == 1 ? 'YES' : 'NO' }}"
                                                     disabled>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-md-3">
                                                 <label for="" class="form-label">Establishment</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ strtoupper(empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
@@ -664,6 +673,8 @@
                             </div>
                         </div>
                     </form>
+
+
                 </div>
             </div>
         </div>
@@ -725,6 +736,8 @@
                 </div>
             </div>
         </div>
+
+
 
         <script src="https://unpkg.com/imask"></script>
         <script>
@@ -809,6 +822,19 @@
                 document.getElementById('payment_change').innerHTML = payment_info['change_amt'];
             }
         </script>
+
+        {{-- Resend Email Javascript --}}
+
+        <script>
+            function populateResendEmailModal(message,permitApplication) {
+                document.getElementById('modalHeader').innerHTML = message.emailtypes.name + ' send to ' + permitApplication['firstname'] + ' ' + permitApplication['lastname']
+                document.getElementById('message_type').innerHTML = message.emailtypes.name ? message.emailtypes.name : 'N/A';
+                document.getElementById('status').innerHTML = message.status.toUpperCase()
+                document.getElementById('sent_at').innerHTML = message.user_id
+                document.getElementById('sent_by').innerHTML = message.sent_at
+            }
+        </script>
+        {{-- Resend Email Javascript --}}
         @include('partials.messages.loading_message')
     </div>
 @endsection

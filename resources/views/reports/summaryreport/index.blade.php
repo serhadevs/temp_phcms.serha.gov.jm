@@ -7,8 +7,11 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            <h2 class="text-muted mb-2">Summary Report</h2>
+           
             <div class="card">
+                <div class="card-header">
+                    <h2 class="text-muted mb-2">Summary Report</h2>
+                </div>
                 <div class="card-body">
                     <form action={{ route('report.summary.show') }} method="POST">
                         @csrf
@@ -24,14 +27,19 @@
                                 <label for="" class="form-label">
                                     End Date
                                 </label>
-                                <input type="date" class="form-control" name="ending_date">
+                                <input type="date" class="form-control" name="ending_date" max="date">
                             </div>
                         </div>
-                        <button class="btn btn-success mt-3" type="submit">
-                            Generate Report
-                        </button>
-                    </form>
+                        
+                    
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    <button class="btn btn-success" type="submit">
+                        Generate Report
+                    </button>
+                </div>
+            </form>
             </div>
         </div>
     </div>

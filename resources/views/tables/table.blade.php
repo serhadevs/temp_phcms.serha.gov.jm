@@ -1,4 +1,4 @@
-<div class="row g-3 mt-2 mb-2">
+<div class="row">
     <table id="pemit_applications_sign_off" class="display table-striped table nowrap table-sm table-bordered"
         style="width:100%;max-width:100%">
         <thead>
@@ -175,6 +175,7 @@
         </tbody>
     </table>
     <div>
+        <a href="{{ route('sign-off') }}" class="btn btn-danger">Back to Sign Offs</a>
         <button class="btn btn-primary" onclick="approveSignOff({{ json_encode($app_type_id) }})"> <i
                 class="bi bi-box-arrow-in-right"></i>
             Approve</button>

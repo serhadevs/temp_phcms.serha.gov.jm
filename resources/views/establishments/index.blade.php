@@ -13,10 +13,6 @@
                     <h2 class="card-header">
                         <div class="row justify-content-between">
                             <div class="col">
-                                <a href = "/dashboard" class="btn btn-danger" style="float:left; margin-right:1%">
-                                    <i class="bi bi-box-arrow-left"></i>
-                                    Back
-                                </a>
                                 <h2 class="text-muted">Food Establishment Applications</h2>
                             </div>
                             <div class="col-auto no-wrap">
@@ -89,6 +85,9 @@
                             </div>
                         </form>
                         @include('partials.tables.processed_food_establishment_table')
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
                     </div>
                 </div>
             </div>
