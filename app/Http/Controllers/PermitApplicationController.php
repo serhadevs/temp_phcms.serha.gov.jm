@@ -470,39 +470,30 @@ class PermitApplicationController extends Controller
                     ->orderBy('appointments.created_at', 'desc')
                     ->first();
 
-                // try {
+            
                     if ($sendEmailInfo->email) {
                         dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
-                        // Messages::create([
-                        //     'permit_application_id' => $sendEmailInfo->id,
-                        //     'email_type_id' => 1,
-                        //     'to' => $sendEmailInfo->email,
-                        //     'status' => 'sent',
-                        //     'error_message' => 'none',
-                        //     'user_id' => auth()->user()->id,
-                        //     'sent_at' => \Carbon\Carbon::now()
-                        // ]);
-                    // } else {
-                        // Messages::create([
-                        //     'permit_application_id' => $sendEmailInfo->id,
-                        //     'email_type_id' => 1,
-                        //     'to' => $sendEmailInfo->email,
-                        //     'status' => 'failed',
-                        //     'error_message' => 'Unknown error',
-                        //     'user_id' => auth()->user()->id,
-                        //     'sent_at' => \Carbon\Carbon::now()
-                        // ]);
+                        Messages::create([
+                            'permit_application_id' => $sendEmailInfo->id,
+                            'email_type_id' => 1,
+                            'to' => $sendEmailInfo->email,
+                            'status' => 'sent',
+                            'error_message' => 'none',
+                            'user_id' => auth()->user()->id,
+                            'sent_at' => \Carbon\Carbon::now()
+                        ]);
                     }
-                // } catch (Exception $e) {
-                    
-                //     Log::error('Error dispatching email job: ' . $e->getMessage());
-                // }
-
-
-                //Store email into messages table
-
-
-
+                    //  else {
+                    //     Messages::create([
+                    //         'permit_application_id' => $sendEmailInfo->id,
+                    //         'email_type_id' => 1,
+                    //         'to' => $sendEmailInfo->email,
+                    //         'status' => 'failed',
+                    //         'error_message' => 'Unknown error',
+                    //         'user_id' => auth()->user()->id,
+                    //         'sent_at' => \Carbon\Carbon::now()
+                    //     ]);
+                    // }
 
             }
 
