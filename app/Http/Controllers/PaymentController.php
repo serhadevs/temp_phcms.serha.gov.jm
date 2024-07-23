@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use App\Http\Requests\PaymentRequest;
 use App\Mail\PaymentEmail;
 use App\Models\BarbershopHairSalons;
+use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
 use App\Models\Facility;
@@ -174,13 +175,11 @@ class PaymentController extends Controller
         $health_cert_applications = HealthCertApplications::with('payment', 'user')
             ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 2)->first()->price . '')
             ->doesntHave('payment')
-            ->doesntHave('payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', $filterTimeline);
 
         $clinic_application = EstablishmentClinics::with('payment', 'user')
             ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
-            ->doesntHave('payment')
             ->doesntHave('payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', $filterTimeline);
@@ -201,7 +200,7 @@ class PaymentController extends Controller
             'starting_date' => 'required',
             'ending_date' => 'required',
             'interval' => 'nullable|numeric|max:6'
-            
+
         ]);
 
         $prices = Prices::all();
@@ -229,7 +228,6 @@ class PaymentController extends Controller
 
         $clinic_application = EstablishmentClinics::with('payment', 'user')
             ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
-            ->doesntHave('payment')
             ->doesntHave('payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
@@ -364,10 +362,30 @@ class PaymentController extends Controller
             return redirect()->back()->with(['error' => 'This application number does not exist in the system.']);
         }
 
-        if (!$app_paid->isEmpty()) {
-            return redirect()->back()->with(['error' => 'This application has already been paid for.']);
-        }
+        if ($app_type == 4) {
+            $application = EstablishmentClinics::with('editTransactions.changedColumns')->withCount('payment')->find($app_id);
+            $due_payments = $application->due_payments == NULL ? 1 : $application->due_payments;
+            if ($due_payments == $application->payment_count) {
+                return redirect()->back()->with(['error' => 'This application has already been paid for.']);
+            }
 
+            if ($transaction = EditTransactions::with('changedColumns')
+                ->where('table_id', $application->id)
+                ->where('application_type_id', 4)
+                ->where('system_operation_type_id', 1)
+                ->where('approved', 1)
+                ->orderBy('created_at', 'desc')
+                ->first()
+            ) {
+                $application->update([
+                    'no_of_employees' => $transaction->changedColumns->first()->new_value
+                ]);
+            }
+        } else {
+            if (!$app_paid->isEmpty()) {
+                return redirect()->back()->with(['error' => 'This application has already been paid for.']);
+            }
+        }
         $new_payment['application_type_id'] = $app_type;
         $new_payment['facility_id'] = Auth()->user()->facility_id;
         $new_payment['cashier_user_id'] = Auth()->user()->id;
@@ -1064,13 +1082,25 @@ class PaymentController extends Controller
 
     public function paymentStatus(int $app_id, $app_type_id)
     {
-        $payment = DB::table('payments')
-            ->where('application_id', '=', $app_id)
-            ->where('application_type_id', $app_type_id)
-            ->where('deleted_at', '=', null)
-            ->get();
-        $payment->isEmpty() ? $alert_type = "success" : $alert_type = "danger";
-        $payment->isEmpty() ? $alert_text = "Payment Outstanding" : $alert_text = "Already Paid";
+        if ($app_type_id == 4) {
+            $application = EstablishmentClinics::withCount('payment')->find($app_id);
+            $due_payments = $application->due_payments == NULL ? 1 : $application->due_payments;
+            if ($due_payments != $application->payment_count) {
+                $alert_type = "success";
+                $alert_text = "Payment Outstanding";
+            } else {
+                $alert_type = "danger";
+                $alert_text = "Already Paid";
+            }
+        } else {
+            $payment = DB::table('payments')
+                ->where('application_id', '=', $app_id)
+                ->where('application_type_id', $app_type_id)
+                ->where('deleted_at', '=', null)
+                ->get();
+            $payment->isEmpty() ? $alert_type = "success" : $alert_type = "danger";
+            $payment->isEmpty() ? $alert_text = "Payment Outstanding" : $alert_text = "Already Paid";
+        }
         return '<div class="alert alert-' . $alert_type . '"><b>Payment Status: ' . $alert_text . '</b></div>';
     }
 

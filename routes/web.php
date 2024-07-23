@@ -64,8 +64,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Appointments
 
-  Route::get('/appointments',[AppointmentController::class, 'index'])->name('appointments.index');
-  Route::post('/appointments/show',[AppointmentController::class, 'show'])->name('appointments.show');
+  Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+  Route::post('/appointments/show', [AppointmentController::class, 'show'])->name('appointments.show');
   //Permit Application Route
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
   Route::post("/permit/application", [PermitApplicationController::class, 'store'])->name('food_handlers_permit.store');
@@ -134,6 +134,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinic.renewal');
   Route::post('/food-handlers-clinics/renew', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinic.renew');
   Route::delete('/food-handlers-clinics/delete/{id}', [FoodHandlersClinicController::class, 'destroy'])->name('food-handlers-clinic.delete');
+  Route::put('/food-handlers-clinics/request/employees/approve/{id}', [FoodHandlersClinicController::class, 'approveRequest'])->name('food-handlers-clinic.request.employees.approve');
+  Route::post('/food-handlers-clinics/request/employees/{id}', [FoodHandlersClinicController::class, 'requestEmployeeEdit'])->name('food-handlers-clinic.request.employees');
+  Route::get('/food-handlers-clinics/request/employees', [FoodHandlersClinicController::class, 'requestsIndex'])->name('food-handlers-clinic.request.index');
+
 
   //Swimming Pools Application
   Route::get('/swimming-pools/create', [SwimmingPoolsApplicationController::class, 'create'])->name('swimming-pools.create');

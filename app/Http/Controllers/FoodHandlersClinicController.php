@@ -11,6 +11,7 @@ use App\Models\PermitApplication;
 use App\Models\Renewals;
 use App\Models\SignOff;
 use App\Models\TestResult;
+use App\Models\User;
 use Illuminate\Http\Request;
 use DateTime;
 use Exception;
@@ -317,6 +318,103 @@ class FoodHandlersClinicController extends Controller
             ]
         )) {
             return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Application ID: ' . $request->id . ' has been updated successfully.');
+        }
+    }
+
+    public function requestEmployeeEdit(Request $request, $id)
+    {
+        try {
+            if ($clinic = EstablishmentClinics::withCount('payment')
+                ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
+                ->find($id)
+            ) {
+                if ($clinic->payment_count != 0) {
+                    if (!EditTransactions::with('changedColumns')
+                        ->where('application_type_id', 4)
+                        ->where('system_operation_type_id', 1)
+                        ->where('table_id', $id)
+                        ->where('approved', 0)
+                        ->whereRelation('changedColumns', 'column_name', 'no_of_employees')
+                        ->first()) {
+                        DB::beginTransaction();
+                        if ($edit_transaction = EditTransactions::create([
+                            'application_type_id' => 4,
+                            'table_id' => $id,
+                            'system_operation_type_id' => 1,
+                            'edit_type_id' => 1,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['edit_reason'],
+                            'approved' => 0
+                        ])) {
+                            if (EditTransactionsChangedColumns::create([
+                                'edit_transaction_id' => $edit_transaction->id,
+                                'column_name' => 'no_of_employees',
+                                'old_value' => $clinic->no_of_employees,
+                                'new_value' => $clinic->no_of_employees + $request->data['request_amt']
+                            ])) {
+                                DB::commit();
+                                return "success";
+                            } else {
+                                throw new Exception("Error requesting additional employees. Unable to record changed columns");
+                            }
+                        } else {
+                            throw new Exception("Error requesting additional employees. Unable to initiate transaction");
+                        }
+                    } else {
+                        throw new Exception("A request has already been sent to approval. Please follow up with supervisor.");
+                    }
+                } else {
+                    throw new Exception("No payment has been registered for this application. Application can be edited without a request.");
+                }
+            } else {
+                throw new Exception("Establishment Clinic either does not exist or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function requestsIndex()
+    {
+        $requests = EditTransactions::with('changedColumns', 'establishmentClinic', 'user')
+            ->where('system_operation_type_id', 1)
+            ->where('application_type_id', 4)
+            ->where('approved', 0)
+            ->whereRelation('changedColumns', 'column_name', 'no_of_employees')
+            ->where('facility_id', auth()->user()->facility_id)
+            ->get();
+
+        return view('food_handlers_clinic.employee_requests', compact('requests'));
+    }
+
+    public function approveRequest($id)
+    {
+        try {
+            if ($edit_transaction = EditTransactions::with('changedColumns')
+                ->where('facility_id', auth()->user()->facility_id)
+                ->find($id)
+            ) {
+                if ($application = EstablishmentClinics::withCount('payment')->find($edit_transaction->table_id)) {
+                    if ($application->update([
+                        'due_payments' => $application->payment_count + 1
+                    ])) {
+                        $edit_transaction->update(['approved' => 1]);
+                        return [
+                            'success',
+                            'Edit of Number of Employees for Food Handlers Clinic ' . $application->name . ' has been approved successfully.'
+                        ];
+                    } else {
+                        throw new Exception("Error approving payments. Unable to update record");
+                    }
+                } else {
+                    throw new Exception("Food Handlers Clinic no longer exists");
+                }
+            } else {
+                throw new Exception("This Edit Transaction either does not exist or does not belong to your facility.");
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
     }
 

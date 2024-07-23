@@ -87,6 +87,12 @@
                 <span>Approved Food Est List 2024</span>
             </a>
         </li>
+        <li class="sidebar-item">
+            <a href="/food-handlers-clinics/request/employees" class="sidebar-link">
+                <i class="bi bi-check2-circle"></i>
+                <span>Approve Onsite No. Edits</span>
+            </a>
+        </li>
 
 
 
@@ -264,12 +270,12 @@
                 <li class="sidebar-item">
                     <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
                 </li>
-                @if (in_array(auth()->user()->role_id, [1,4,9]))
+                @if (in_array(auth()->user()->role_id, [1, 4, 9]))
                     <li class="sidebar-item">
                         <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                     </li>
                 @endif
-                @if (in_array(auth()->user()->role_id, [1,5,10]))
+                @if (in_array(auth()->user()->role_id, [1, 5, 10]))
                     <li class="sidebar-item">
                         <a href="/reports/app-by-category/create" class="sidebar-link">Applications By Category</a>
                     </li>
@@ -277,14 +283,14 @@
                         <a href="/reports/onsite-app/create" class="sidebar-link">Onsite Applications Report</a>
                     </li>
                 @endif
-                @if (in_array(auth()->user()->role_id, [1,5,10]))
-                <li class="sidebar-item">
-                    <a href="/reports/sign-off/create" class="sidebar-link">Sign Off Report</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/reports/backlog-report" class="sidebar-link">Back Log Report</a>
-                </li>
-                 @endif
+                @if (in_array(auth()->user()->role_id, [1, 5, 10]))
+                    <li class="sidebar-item">
+                        <a href="/reports/sign-off/create" class="sidebar-link">Sign Off Report</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/reports/backlog-report" class="sidebar-link">Back Log Report</a>
+                    </li>
+                @endif
             </ul>
 
         </li>

@@ -65,13 +65,25 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="mt-3">
-                            <label for="" class="form-label">No of Employees</label>
-                            <input type="text" name="no_of_employees" class="form-control" id="no_of_employees" readonly
-                                value="{{ old('no_of_employees') ? old('no_of_employees') : $application->no_of_employees }}">
-                            @error('no_of_employees')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="" class="form-label">No of Employees</label>
+                                <input type="text" name="no_of_employees" class="form-control" id="no_of_employees"
+                                    readonly
+                                    value="{{ old('no_of_employees') ? old('no_of_employees') : $application->no_of_employees }}">
+                                @error('no_of_employees')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            @if (!empty($application->payment->first()))
+                                <div class="col col-md-2" style="display:flex">
+                                    <button class="btn btn-success w-100" style="align-self:flex-end" type="button"
+                                        onclick="updateEmployeeNumber({{ json_encode($application->id) }})">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Request Change
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -143,6 +155,9 @@
                 document.getElementById('proposed_time').removeAttribute('disabled');
                 document.getElementById('edit_reason_div').style.display = '';
                 document.getElementById('enable-editting').style.display = 'none';
+                if ({{ json_encode(empty($application->payment->first())) }}) {
+                    document.querySelector('input[name=no_of_employees]').removeAttribute('readonly');
+                }
             }
             window.onload = () => {
                 if (document.getElementById('edit_mode_status').value == '1') {
@@ -161,6 +176,74 @@
 
             const mask1 = IMask(telephone, maskOptions2);
             const mask2 = IMask(fax_no, maskOptions2);
+        </script>
+        <script>
+            function updateEmployeeNumber(clinic_id) {
+                swal.fire({
+                    title: "Add Employee for Food Handlers Onsite Application",
+                    text: "How many employees do you want to add.",
+                    icon: 'question',
+                    input: 'number',
+                    inputAttributes: {
+                        required: true,
+                        min: 1
+                    },
+                    showCancelButton: true,
+                    showConfirmButton: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        swal.fire({
+                            title: "What is your reason for requesting this edit?",
+                            text: 'This reason will be recorded',
+                            icon: 'question',
+                            input: 'textarea',
+                            inputAttributes: {
+                                required: true
+                            },
+                            showCancelButton: true,
+                            showConfirmButton: true
+                        }).then((result2) => {
+                            if (result2.isConfirmed) {
+                                swal.fire({
+                                    title: 'Are you sure you want to request this edit?',
+                                    icon: 'warning',
+                                    showConfirmButton: true,
+                                    showCancelButton: true
+                                }).then((result3) => {
+                                    if (result3.isConfirmed) {
+                                        $.post({!! json_encode(url('/food-handlers-clinics/request/employees')) !!} + "/" + clinic_id, {
+                                            _method: "POST",
+                                            data: {
+                                                request_amt: result.value,
+                                                edit_reason: result2.value
+                                            },
+                                            _token: "{{ csrf_token() }}"
+                                        }).then((data) => {
+                                            if (data == 'success') {
+                                                swal.fire({
+                                                    title: "Done",
+                                                    icon: 'success',
+                                                    text: "Request for additional employees for this establishment clinic has been sent",
+                                                }).then((esc) => {
+                                                    if (esc) {
+                                                        location.reload();
+                                                    }
+                                                })
+                                            } else {
+                                                swal.fire({
+                                                    icon: 'error',
+                                                    title: 'error',
+                                                    text: data
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
         </script>
         @include('partials.messages.loading_message')
     </div>

@@ -29,10 +29,10 @@
                     {{ $application->telephone }}
                 </td>
                 <td class="text-center">
-                    @if (empty($application->payment))
+                    @if (empty($application->payment->first()))
                         <span class="badge text-bg-danger">Not Paid</span>
                     @endif
-                    @if (!empty($application->payment))
+                    @if (!empty($application->payment->first()))
                         <span class="badge text-bg-success">Paid</span>
                     @endif
                 </td>
@@ -48,7 +48,7 @@
                 <td class="text-nowrap">
                     <a href="/food-handlers-clinics/edit/{{ $application->id }}" class="btn btn-warning btn-sm">Edit</a>
                     <a href="/food-handlers-clinics/view/{{ $application->id }}" class="btn btn-primary btn-sm">View</a>
-                    @if (!empty($application->payment))
+                    @if (!empty($application->payment->first()))
                         <a href="/food-handlers-clinics/permit/application/{{ $application->id }}"
                             class="btn btn-info btn-sm">Add Employees</a>
                     @endif

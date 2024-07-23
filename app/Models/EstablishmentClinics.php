@@ -32,13 +32,14 @@ class EstablishmentClinics extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'due_payments'
     ];
 
     public $timestamps = true;
 
-    public function payment(): HasOne
+    public function payment(): HasMany
     {
-        return $this->hasOne(Payments::class, 'application_id', 'id')->where('application_type_id', 4);
+        return $this->hasMany(Payments::class, 'application_id', 'id')->where('application_type_id', 4);
     }
 
     public function user(): HasOne

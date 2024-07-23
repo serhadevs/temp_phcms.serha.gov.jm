@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,24 +27,34 @@ class EditTransactions extends Model
         'reason',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'approved'
     ];
 
     public $timestamps = true;
 
-    public function changedColumns():HasMany{
-        return $this->hasMany(EditTransactionsChangedColumns::class, 'edit_transaction_id', 'id')->select('column_name', 'old_value', 'new_value');
+    public function changedColumns(): HasMany
+    {
+        return $this->hasMany(EditTransactionsChangedColumns::class, 'edit_transaction_id', 'id');
     }
 
-    public function systemOperationType():HasOne{
+    public function systemOperationType(): HasOne
+    {
         return $this->hasOne(SystemOperationTypes::class, 'id', 'system_operation_type_id');
     }
 
-    public function user():HasOne{
+    public function user(): HasOne
+    {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function editType():HasOne{
+    public function editType(): HasOne
+    {
         return $this->hasOne(EditTypes::class, 'id', 'edit_type_id');
+    }
+
+    public function establishmentClinic(): BelongsTo
+    {
+        return $this->belongsTo(EstablishmentClinics::class, 'table_id', 'id');
     }
 }
