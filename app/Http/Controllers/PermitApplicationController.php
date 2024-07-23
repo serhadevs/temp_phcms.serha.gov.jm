@@ -470,7 +470,7 @@ class PermitApplicationController extends Controller
                     ->orderBy('appointments.created_at', 'desc')
                     ->first();
 
-                try {
+                // try {
                     if ($sendEmailInfo->email) {
                         dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
                         Messages::create([
@@ -493,10 +493,10 @@ class PermitApplicationController extends Controller
                             'sent_at' => \Carbon\Carbon::now()
                         ]);
                     }
-                } catch (Exception $e) {
+                // } catch (Exception $e) {
                     
-                    Log::error('Error dispatching email job: ' . $e->getMessage());
-                }
+                //     Log::error('Error dispatching email job: ' . $e->getMessage());
+                // }
 
 
                 //Store email into messages table
