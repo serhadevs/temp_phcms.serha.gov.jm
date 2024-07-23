@@ -473,25 +473,25 @@ class PermitApplicationController extends Controller
                 // try {
                     if ($sendEmailInfo->email) {
                         dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
-                        Messages::create([
-                            'permit_application_id' => $sendEmailInfo->id,
-                            'email_type_id' => 1,
-                            'to' => $sendEmailInfo->email,
-                            'status' => 'sent',
-                            'error_message' => 'none',
-                            'user_id' => auth()->user()->id,
-                            'sent_at' => \Carbon\Carbon::now()
-                        ]);
-                    } else {
-                        Messages::create([
-                            'permit_application_id' => $sendEmailInfo->id,
-                            'email_type_id' => 1,
-                            'to' => $sendEmailInfo->email,
-                            'status' => 'failed',
-                            'error_message' => 'Unknown error',
-                            'user_id' => auth()->user()->id,
-                            'sent_at' => \Carbon\Carbon::now()
-                        ]);
+                        // Messages::create([
+                        //     'permit_application_id' => $sendEmailInfo->id,
+                        //     'email_type_id' => 1,
+                        //     'to' => $sendEmailInfo->email,
+                        //     'status' => 'sent',
+                        //     'error_message' => 'none',
+                        //     'user_id' => auth()->user()->id,
+                        //     'sent_at' => \Carbon\Carbon::now()
+                        // ]);
+                    // } else {
+                        // Messages::create([
+                        //     'permit_application_id' => $sendEmailInfo->id,
+                        //     'email_type_id' => 1,
+                        //     'to' => $sendEmailInfo->email,
+                        //     'status' => 'failed',
+                        //     'error_message' => 'Unknown error',
+                        //     'user_id' => auth()->user()->id,
+                        //     'sent_at' => \Carbon\Carbon::now()
+                        // ]);
                     }
                 // } catch (Exception $e) {
                     
@@ -506,7 +506,7 @@ class PermitApplicationController extends Controller
 
             }
 
-            Notification::send($user, new SignOff($new_permit_application));
+            //Notification::send($user, new SignOff($new_permit_application));
 
 
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
@@ -707,6 +707,7 @@ class PermitApplicationController extends Controller
                                 }
                             }
                         }
+                        //Add delete for messages
                         if ($permit->update(['deleted_at' => new DateTime()])) {
                             DB::commit();
                             return [
