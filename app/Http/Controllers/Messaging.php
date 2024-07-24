@@ -13,19 +13,9 @@ use Illuminate\Support\Facades\Log;
 
 class Messaging extends Controller
 {
-    //Send Resend to applicant
-
+   
     public function index(){
-        //Find the message in the message table
-
         return view('food_handlers_permit.message');
-
-        // $message = Messages::findorFail($request->id);
-        // if(!$message){
-        //     return back()->with('error','Unable to find a message for that user');
-        // }
-
-        // return back()->with('success', 'Message resent to the applicant');
         
     }
 

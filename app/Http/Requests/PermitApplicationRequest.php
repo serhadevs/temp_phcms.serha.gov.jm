@@ -55,8 +55,8 @@ class PermitApplicationRequest extends FormRequest
             'photo_upload' => 'nullable',
             'exam_date' => 'required',
             'exam_session' => 'required',
-            // 'application_date' => 'required',
-            'application_date' => ['required', 'date', new ApplicationDateAfterExamDate($this->exam_date)],
+            'application_date' => 'required',
+            // 'application_date' => ['required', 'date', new ApplicationDateAfterExamDate($this->exam_date)],
         ];
     }
 }
