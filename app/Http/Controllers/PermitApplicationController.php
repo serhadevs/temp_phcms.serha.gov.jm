@@ -277,8 +277,8 @@ class PermitApplicationController extends Controller
                                     if (!EditTransactionsChangedColumns::create([
                                         'edit_transaction_id' => $edit_transaction->id,
                                         'column_name' => "exam_date_id",
-                                        'old_value' => ExamDates::find($appointment->exam_date_id)->exam_day . ' ' . ExamDates::find($appointment->exam_date_id)->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($appointment->exam_date_id)->exam_site_id)->name,
-                                        'new_value' => ExamDates::find($request->data['exam_date_id'])->exam_day . ' ' . ExamDates::find($request->data['exam_date_id'])->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($request->data['exam_date_id'])->exam_site_id)->name
+                                        'old_value' => ExamDates::find($appointment->exam_date_id)?->exam_day . ' ' . ExamDates::find($appointment->exam_date_id)?->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($appointment->exam_date_id)->exam_site_id)?->name,
+                                        'new_value' => ExamDates::find($request->data['exam_date_id'])?->exam_day . ' ' . ExamDates::find($request->data['exam_date_id'])?->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($request->data['exam_date_id'])->exam_site_id)?->name
                                     ])) {
                                         throw new Exception("Error updating appointment. Unable to record field changed.");
                                     }
