@@ -126,6 +126,8 @@ class FoodEstablishmentController extends Controller
         $food_est_application["permit_no"] = $this->generateEstPermitNo();
         $food_est_application["user_id"] = auth()->user()->id;
 
+        
+
         if (EstablishmentApplications::create($food_est_application)) {
             $est_application_id = EstablishmentApplications::select('id')->where("permit_no", $food_est_application["permit_no"])->first()->id;
             for ($i = 0; $i < count($request->establishment_operator); $i++) {

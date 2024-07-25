@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PaymentRequest;
+use App\Jobs\SendPaymentReceiptEmail;
+use App\Mail\PaymentEmail;
+use App\Mail\TestingMail;
 use App\Models\ApplicationType;
 use App\Models\Appointment;
-use App\Http\Requests\PaymentRequest;
-use App\Mail\PaymentEmail;
+use App\Models\Messages;
 use App\Models\BarbershopHairSalons;
 use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
@@ -20,13 +24,13 @@ use App\Models\Renewals;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
+use DateTime;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use DateTime;
-use Illuminate\Support\Facades\Validator;
-use Exception;
 // use Faker\Provider\ar_EG\Payment;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
 {
@@ -390,20 +394,28 @@ class PaymentController extends Controller
         $new_payment['facility_id'] = Auth()->user()->facility_id;
         $new_payment['cashier_user_id'] = Auth()->user()->id;
         $new_payment['receipt_no'] = rand(1000000, 9999999);
+        $receipt_number = $new_payment['receipt_no'];
         $register_new_payment = Payments::create($new_payment);
 
+        $applicant = PermitApplication::where('id', $app_id)->first();
+        $cashier = User::find($register_new_payment->cashier_user_id);
+        $cashier_name = $cashier->firstname[0] . ". " . $cashier->lastname;
+        $email = $applicant->email;
 
-        //dd($register_new_payment);
+        if ($email) {
+            dispatch(new SendPaymentReceiptEmail($email, $applicant, $register_new_payment, $cashier_name, $receipt_number));
+            Messages::create([
+                'permit_application_id' => $applicant->id,
+                'email_type_id' => 2,
+                'to' => $email,
+                'status' => 'sent',
+                'error_message' => 'none',
+                'user_id' => auth()->user()->id,
+                'sent_at' => \Carbon\Carbon::now()
+            ]);
+        }
 
 
-
-        // $applicant = PermitApplication::where('id',$app_id)->first();
-        // //dd($applicant);
-        // // if($sendMail){
-        //     Mail::to($applicant->email)->send(new PaymentEmail($applicant,$new_payment));
-        // // }
-
-        //Get the same information from the printReciept
 
         if ($app_type == 4) {
             if (Renewals::where('new_application_id', $new_payment['application_id'])

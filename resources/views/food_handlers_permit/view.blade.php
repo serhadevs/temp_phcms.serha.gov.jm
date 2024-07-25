@@ -16,7 +16,7 @@
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
                     @else
-                        <a href="{{ url('/permit/filter/0') }}"  class="btn btn-primary btn-sm">
+                        <a href="{{ url('/permit/filter/0') }}" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
                     @endif
@@ -281,13 +281,22 @@
                                                                     <td> <span
                                                                             class="badge text-bg-primary">{{ \Carbon\Carbon::parse($message->sent_at)->format('d F y') }}</span>
                                                                     </td> --}}
-                                                                    
-                                                                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="populateResendEmailModal({{ json_encode($message) }}, {{ json_encode($permit_application) }})">
-                                                                        <i class="bi bi-eye"></i>
-                                                                    </button></td>
+
+                                                                    <td><button type="button" class="btn btn-primary"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#exampleModal"
+                                                                            onclick="populateResendEmailModal({{ json_encode($message) }}, {{ json_encode($permit_application) }})">
+                                                                            <i class="bi bi-eye"></i>
+                                                                        </button></td>
                                                                     <td>
-                                                                        <a
-                                                                            href="{{ url('/messaging/resend', ['id' => $message->permit_application_id]) }}" class="btn btn-primary"><i class="bi bi-envelope-arrow-up"></i></a>
+                                                                        @if ($message->emailtypes->name === 'Payment')
+                                                                            <a href="#"></a>
+                                                                        @else
+                                                                            <a href="{{ url('/messaging/resend', ['id' => $message->permit_application_id]) }}"
+                                                                                class="btn btn-primary"><i
+                                                                                    class="bi bi-envelope-arrow-up"></i></a>
+                                                                        @endif
+
 
                                                                     </td>
                                                                 </tr>
@@ -296,7 +305,7 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                              @include('partials.modals.modal')
+                                                @include('partials.modals.modal')
                                             </div>
 
                                         @endif
@@ -826,8 +835,9 @@
         {{-- Resend Email Javascript --}}
 
         <script>
-            function populateResendEmailModal(message,permitApplication) {
-                document.getElementById('modalHeader').innerHTML = message.emailtypes.name + ' send to ' + permitApplication['firstname'] + ' ' + permitApplication['lastname']
+            function populateResendEmailModal(message, permitApplication) {
+                document.getElementById('modalHeader').innerHTML = message.emailtypes.name + ' send to ' + permitApplication[
+                    'firstname'] + ' ' + permitApplication['lastname']
                 document.getElementById('message_type').innerHTML = message.emailtypes.name ? message.emailtypes.name : 'N/A';
                 document.getElementById('status').innerHTML = message.status.toUpperCase()
                 document.getElementById('sent_at').innerHTML = message.user_id

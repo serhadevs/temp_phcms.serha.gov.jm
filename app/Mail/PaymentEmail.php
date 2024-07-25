@@ -14,12 +14,16 @@ class PaymentEmail extends Mailable
     use Queueable, SerializesModels;
 
    
-    public $new_payment;
+    public $register_new_payment;
     public $applicant;
-    public function __construct($new_payment,$applicant)
+    public $cashier_name;
+    public $receipt_number;
+    public function __construct($register_new_payment,$applicant,$cashier_name,$receipt_number)
     {
-        $this->new_payment = $new_payment;
+        $this->register_new_payment = $register_new_payment;
         $this->applicant = $applicant;
+        $this->cashier_name = $cashier_name;
+        $this->receipt_number = $receipt_number;
     }
 
     /**
@@ -44,8 +48,10 @@ class PaymentEmail extends Mailable
         return new Content(
             markdown: 'emails.paymentemail',
             with:[
-                'new_payment' => $this->new_payment,
-                'applicant' => $this->applicant
+                'new_payment' => $this->register_new_payment,
+                'applicant' => $this->applicant,
+                'cashier_name' => $this->cashier_name,
+                'receipt_number' => $this->receipt_number,
             ]
         );
     }
