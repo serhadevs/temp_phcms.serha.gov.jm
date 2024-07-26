@@ -15,21 +15,25 @@ class PermitApplicationApi extends Controller
                 "firstname" => "required | string",
                 "lastname" => "required | string",
                 // "trn" => "required|string",
+                "dateofbirth" => "required|date"
         ]);  
         
         
         try {
-            $applications = PermitApplication::with('permitCategory', 'payment','testResults')
-                // ->where('trn', $incomingFields['trn'])
+            $applicant = PermitApplication::with('permitCategory', 'payment','establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions','messages')
                 ->where('firstname', 'LIKE', '%' . $incomingFields['firstname'] . '%')
                 ->where('lastname', 'LIKE', '%' . $incomingFields['lastname'] . '%')
-                ->latest()->get();
+                ->where('date_of_birth',$incomingFields['dateofbirth'])
+                // ->where('trn',$incomingFields['trn'])
+                ->first();
 
-            if ($applications->isEmpty()) {
-                return response()->json(['message' => 'No applications found after the specified date.'], 404);
+            if (!$applicant) {
+                return response()->json(
+                    ['message' => 'No applications found.']
+                    , 404);
             }
 
-            return response()->json($applications);
+            return response()->json($applicant);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while fetching applications.', 'error' => $e->getMessage()], 500);
         }
