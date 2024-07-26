@@ -12,6 +12,7 @@
             <th>Sign Off Status</th>
             <th>Opertators</th>
             <th class="text-nowrap">Added By</th>
+            <th>Inspection Date</th>
             <th class="text-nowrap">Expiry Date</th>
             <th class="text-nowrap">App Type</th>
             <th>Options</th>
@@ -42,11 +43,13 @@
                         <span class="">{{ $operator?->name_of_operator . "\n" }}</span>
                     @endforeach
                 </td>
+               
                 <td>
                     {{ strtoupper($est?->user?->firstname[0] . '.' . $est?->user?->lastname) }}
                 </td>
+                <td>{{ !empty($est?->testResults?->test_date) ? \Carbon\Carbon::parse($est?->testResults?->test_date)->format('F d, Y') :  'N/A'  }}</td>
                 <td>
-                    {{ !empty($est->signOff) ? $est?->signOff?->expiry_date : 'N/A' }}
+                    {{ !empty($est->signOff) ? \Carbon\Carbon::parse($est?->signOff?->expiry_date)->format('F d, Y') : 'N/A' }}
                 </td>
                 <td>
                     {{ !empty($est->renewal) ? 'RENEWAL' : 'NEW' }}

@@ -38,6 +38,9 @@ class PermitJob implements ShouldQueue
      */
     public function handle()
     {
+
+        //$user = User::where('role_id', 108)->get();
+        
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs')
             ->where('photo_upload', '<>', NULL)
             ->has('signOffs')
@@ -404,5 +407,9 @@ class PermitJob implements ShouldQueue
                 }
             }
         }
+
+        //Send the notification 
+
+
     }
 }

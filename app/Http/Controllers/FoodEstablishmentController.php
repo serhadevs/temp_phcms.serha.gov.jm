@@ -52,6 +52,8 @@ class FoodEstablishmentController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', $filterTimeline)
             ->get();
+
+          
         return view('establishments.index', compact('food_establishments'));
     }
 
@@ -66,10 +68,12 @@ class FoodEstablishmentController extends Controller
 
         $timeline["ending_date"] = $timeline["ending_date"] . " 23:59:59";
 
-        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'signOff', 'renewal')
+        $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'signOff', 'renewal','testResults')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline["starting_date"], $timeline["ending_date"]])
-            ->get();
+            ->paginate(15);
+
+            //dd($food_establishments);
 
         return view('establishments.index', compact('food_establishments'));
     }
