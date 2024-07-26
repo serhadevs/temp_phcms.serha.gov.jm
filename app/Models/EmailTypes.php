@@ -14,4 +14,6 @@ class EmailTypes extends Model
     public $table = 'email_types';
 
    protected $guarded = [];
+
+   
 }

@@ -14,10 +14,16 @@ class Messages extends Model
 
     public $table = 'email_messages';
 
-   protected $guarded = [];
+    protected $guarded = [];
 
-   public function emailtypes(): HasOne{
-    return $this->hasOne(EmailTypes::class,'id','email_type_id');
-   }
 
+    public function emailtypes(): HasOne
+    {
+        return $this->hasOne(EmailTypes::class, 'id', 'email_type_id');
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
+    }
 }

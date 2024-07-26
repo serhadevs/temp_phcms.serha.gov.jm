@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\MessagesDataTable;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendPermitApplicationEmailJob;
 use App\Models\Messages;
@@ -18,6 +19,10 @@ class Messaging extends Controller
         return view('food_handlers_permit.message');
         
     }
+
+    // public function view(MessagesDataTable $dataTable){
+    //     return $dataTable->render('messages.index');
+    // }
 
     public function sendMessage(Request $request){
 

@@ -840,8 +840,13 @@
                     'firstname'] + ' ' + permitApplication['lastname']
                 document.getElementById('message_type').innerHTML = message.emailtypes.name ? message.emailtypes.name : 'N/A';
                 document.getElementById('status').innerHTML = message.status.toUpperCase()
-                document.getElementById('sent_at').innerHTML = message.user_id
-                document.getElementById('sent_by').innerHTML = message.sent_at
+                document.getElementById('sent_at').innerHTML = permitApplication.user.firstname + " " + permitApplication.user
+                    .lastname
+                document.getElementById('sent_by').innerHTML = new Date(message.sent_at).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
             }
         </script>
         {{-- Resend Email Javascript --}}

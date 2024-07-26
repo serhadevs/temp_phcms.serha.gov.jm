@@ -371,6 +371,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get('/messaging/resend/{id}',[Messaging::class, 'index'])->name('messages.resend');
   Route::post('/messaging/send/{id}',[Messaging::class, 'sendMessage'])->name('messages.send');
+  Route::get('/messaging/index',[Messaging::class, 'view'])->name('messages.view');
 
 
   //Logout Routes
