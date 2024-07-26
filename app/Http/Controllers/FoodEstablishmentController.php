@@ -71,7 +71,7 @@ class FoodEstablishmentController extends Controller
         $food_establishments = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'signOff', 'renewal','testResults')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline["starting_date"], $timeline["ending_date"]])
-            ->paginate(15);
+            ->get();
 
             //dd($food_establishments);
 
