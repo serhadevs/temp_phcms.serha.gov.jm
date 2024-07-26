@@ -836,7 +836,7 @@
 
         <script>
             function populateResendEmailModal(message, permitApplication) {
-                document.getElementById('modalHeader').innerHTML = message.emailtypes.name + ' send to ' + permitApplication[
+                document.getElementById('modalHeader').innerHTML = message.emailtypes.name + ' sent to ' + permitApplication[
                     'firstname'] + ' ' + permitApplication['lastname']
                 document.getElementById('message_type').innerHTML = message.emailtypes.name ? message.emailtypes.name : 'N/A';
                 document.getElementById('status').innerHTML = message.status.toUpperCase()
