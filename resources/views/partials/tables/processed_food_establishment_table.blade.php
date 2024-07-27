@@ -49,7 +49,7 @@
                     {{ strtoupper($est?->user?->firstname[0] . '.' . $est?->user?->lastname) }}
                 </td>
                 <td>{{ !empty($est?->testResults?->test_date) ? \Carbon\Carbon::parse($est?->testResults?->test_date)->format('F d, Y') :  'N/A'  }}</td>
-                <td>{{ $est->application_date }}</td>
+                <td>{{ \Carbon\Carbon::parse($est->application_date)->format('F d, y') }}</td>
                 <td>
                     {{ !empty($est->signOff) ? \Carbon\Carbon::parse($est?->signOff?->expiry_date)->format('F d, Y') : 'N/A' }}
                 </td>
