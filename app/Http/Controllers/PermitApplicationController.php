@@ -99,7 +99,7 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions','messages','messages.user')
+        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages', 'messages.user')
             ->find($application_id);
         //dd($permit_application);
 
@@ -264,6 +264,7 @@ class PermitApplicationController extends Controller
                 ) {
                     if ($application->sign_off_status != '1') {
                         if ($appointment->exam_date_id != $request->data['exam_date_id'] || $appointment->appointment_date != $request->data['appointment_date']) {
+                            DB::beginTransaction();
                             if ($edit_transaction = EditTransactions::create([
                                 'application_type_id' => 1,
                                 'table_id' => $id,
@@ -277,7 +278,7 @@ class PermitApplicationController extends Controller
                                     if (!EditTransactionsChangedColumns::create([
                                         'edit_transaction_id' => $edit_transaction->id,
                                         'column_name' => "exam_date_id",
-                                        'old_value' => ExamDates::find($appointment->exam_date_id)?->exam_day . ' ' . ExamDates::find($appointment->exam_date_id)?->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($appointment->exam_date_id)->exam_site_id)?->name,
+                                        'old_value' => ExamDates::withTrashed()->find($appointment->exam_date_id)?->exam_day . ' ' . ExamDates::withTrashed()->find($appointment->exam_date_id)?->exam_start_time . ' - ' . ExamSites::withTrashed()->find(ExamDates::withTrashed()->find($appointment->exam_date_id)->exam_site_id)?->name,
                                         'new_value' => ExamDates::find($request->data['exam_date_id'])?->exam_day . ' ' . ExamDates::find($request->data['exam_date_id'])?->exam_start_time . ' - ' . ExamSites::find(ExamDates::find($request->data['exam_date_id'])->exam_site_id)?->name
                                     ])) {
                                         throw new Exception("Error updating appointment. Unable to record field changed.");
@@ -470,20 +471,19 @@ class PermitApplicationController extends Controller
                     ->orderBy('appointments.created_at', 'desc')
                     ->first();
 
-            
-                    if ($sendEmailInfo->email) {
-                        dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
-                        Messages::create([
-                            'permit_application_id' => $sendEmailInfo->id,
-                            'email_type_id' => 1,
-                            'to' => $sendEmailInfo->email,
-                            'status' => 'sent',
-                            'error_message' => 'none',
-                            'user_id' => auth()->user()->id,
-                            'sent_at' => \Carbon\Carbon::now()
-                        ]);
-                    }
-                  
+
+                if ($sendEmailInfo->email) {
+                    dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
+                    Messages::create([
+                        'permit_application_id' => $sendEmailInfo->id,
+                        'email_type_id' => 1,
+                        'to' => $sendEmailInfo->email,
+                        'status' => 'sent',
+                        'error_message' => 'none',
+                        'user_id' => auth()->user()->id,
+                        'sent_at' => \Carbon\Carbon::now()
+                    ]);
+                }
             }
 
             //Notification::send($user, new SignOff($new_permit_application));
@@ -522,6 +522,11 @@ class PermitApplicationController extends Controller
             }
             $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
             $permit_application['photo_upload'] = $path;
+
+            if ($permit_application['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
+                $file = $request->file('photo_upload');
+                $permit_application['photo_upload'] = 'photo_upload/' . $permit_application['permit_no'] . '.' . $file->extension();
+            }
         } else {
             $permit_application['photo_upload'] = $old_permit->photo_upload;
         }
