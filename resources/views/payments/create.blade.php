@@ -146,7 +146,7 @@
                                 var element = document.getElementById('prices');
                                 var tot_cost = element.options[element.selectedIndex].getAttribute("data-price");
                                 var app_type_id = element.options[element.selectedIndex].value;
-                                if (app_type_id == "3" || app_type_id == "4") {
+                                if (app_type_id == "3" || app_type_id == "4" || app_type_id == "6") {
                                     document.getElementById('total_cost').removeAttribute('readonly');
                                 } else {
                                     document.getElementById('total_cost').setAttribute('readonly', true);
