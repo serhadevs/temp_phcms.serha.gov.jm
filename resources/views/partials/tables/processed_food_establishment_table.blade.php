@@ -12,6 +12,7 @@
             <th>Sign Off Status</th>
             <th>Operators</th>
             <th class="text-nowrap">Added By</th>
+            <th>Zone</th>
             {{-- <th>Inspection Date</th> --}}
             <th>Application Date</th>
             <th class="text-nowrap">Expiry Date</th>
@@ -47,6 +48,9 @@
                
                 <td>
                     {{ strtoupper($est?->user?->firstname[0] . '.' . $est?->user?->lastname) }}
+                </td>
+                <td>
+                    {{ $est->zone }}
                 </td>
                 {{-- <td>{{ !empty($est?->testResults?->test_date) ? \Carbon\Carbon::parse($est?->testResults?->test_date)->format('F d, Y') :  'N/A'  }}</td> --}}
                 <td>{{ \Carbon\Carbon::parse($est->application_date)->format('F d, Y') }}</td>
