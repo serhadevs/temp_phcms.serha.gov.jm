@@ -248,7 +248,7 @@ class PaymentController extends Controller
     public function create()
     {
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
-            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher", application_types.name))) as app_type_name, prices.application_type_id, prices.price, prices.id')
+            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
         return view('payments.create', compact('prices'));
@@ -274,7 +274,7 @@ class PaymentController extends Controller
         }
 
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
-            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher", application_types.name))) as app_type_name, prices.application_type_id, prices.price, prices.id')
+            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
         return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id'));
