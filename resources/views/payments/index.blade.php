@@ -49,7 +49,7 @@
                                 @error('starting_date')
                                     <p class="errors" style="color:red; font-weight:bold">{{ $message }}</p>
                                 @enderror
-                                <input type="text" class="form-control" id="interval" name="interval" style="display:none" hidden/>
+                                <input type="text" class="form-control" id="interval" name="interval" style="display:none" hidden value="{{ old('interval') }}"/>
                                 @error('interval')
                                     <p class="errors" style="color:red ;font-weight:bold">Interval must be 6 months or less</p>
                                 @enderror

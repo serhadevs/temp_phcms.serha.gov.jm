@@ -290,6 +290,9 @@
                     <li class="sidebar-item">
                         <a href="/reports/backlog-report" class="sidebar-link">Back Log Report</a>
                     </li>
+                    <li class="sidebar-item">
+                        <a href="/report/transactions" class="sidebar-link">Edit Transactions Report</a>
+                    </li>
                 @endif
             </ul>
 

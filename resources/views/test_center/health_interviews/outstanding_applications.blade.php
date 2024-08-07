@@ -58,7 +58,7 @@
                                 <input type="date" class="form-control" placeholder="Starting Date" name="starting_date"
                                     id="starting_date" value="{{ old('starting_date') }}">
                                 <input type="text" class="form-control" id="interval" name="interval"
-                                    style="display:none" hidden>
+                                    style="display:none" hidden value="{{ old('interval') }}">
                                 <input type="text" value="{{ $app_type_id }}" name="app_type_id" hidden>
                                 @error('starting_date')
                                     <p class="fw-bold text-danger errors">{{ $message }}</p>

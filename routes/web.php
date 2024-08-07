@@ -244,6 +244,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/report/summary-report', [SummaryReportController::class, 'create'])->name('reports.summary.index');
   Route::post('/report/summary-report/show', [SummaryReportController::class, 'show'])->name('report.summary.show');
 
+  //Transaction Report
+  Route::get('/report/transactions', [ReportController::class, 'transactionReportIndex'])->name('report.transactions.index');
+  Route::post('/report/transactions/show', [ReportController::class, 'generateTransactionReport'])->name('report.transaction.show');
+
   //Renewals
   Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class, 'renewal'])->name('food_handlers_permit.renewal');
   Route::post('/permit/application/renewal', [PermitApplicationController::class, 'storeRenewal'])->name('food_handlers_permit.renew');
@@ -369,9 +373,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Messging 
 
-  Route::get('/messaging/resend/{id}',[Messaging::class, 'index'])->name('messages.resend');
-  Route::post('/messaging/send/{id}',[Messaging::class, 'sendMessage'])->name('messages.send');
-  Route::get('/messaging/index',[Messaging::class, 'view'])->name('messages.view');
+  Route::get('/messaging/resend/{id}', [Messaging::class, 'index'])->name('messages.resend');
+  Route::post('/messaging/send/{id}', [Messaging::class, 'sendMessage'])->name('messages.send');
+  Route::get('/messaging/index', [Messaging::class, 'view'])->name('messages.view');
 
 
   //Logout Routes

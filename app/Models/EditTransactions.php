@@ -57,4 +57,9 @@ class EditTransactions extends Model
     {
         return $this->belongsTo(EstablishmentClinics::class, 'table_id', 'id');
     }
+
+    public function applicationType(): HasOne
+    {
+        return $this->hasOne(ApplicationType::class, 'id', 'application_type_id');
+    }
 }
