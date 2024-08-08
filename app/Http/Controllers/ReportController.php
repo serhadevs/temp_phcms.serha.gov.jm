@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NumberApplicationsByCategory;
 use App\Models\ApplicationType;
+use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentCategories;
 use App\Models\EstablishmentClinics;
@@ -242,8 +243,8 @@ class ReportController extends Controller
         $end_date = $incomingFields['ending_date'];
 
         try {
-                $query = SignOff::whereBetween('sign_off_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('application_type')->get();
-                
+            $query = SignOff::whereBetween('sign_off_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('application_type')->get();
+
 
             if (!$query) {
                 return redirect()->with('error', 'There is no data for the signoff');
@@ -254,7 +255,6 @@ class ReportController extends Controller
                 $category_name = ApplicationType::where('id', $categoryId)->first();
                 $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
             }
-
         } catch (Exception $e) {
             return redirect()->with('error', 'Unable to fullfil request' . $e);
         } catch (QueryException $e) {
@@ -264,23 +264,56 @@ class ReportController extends Controller
         return view('reports.signoffs.view', ['counts' => $counts, 'start_date' => $start_date, 'end_date' => $end_date]);
     }
 
-    public function backLogReport(){
-        
+    public function backLogReport()
+    {
+
         $counts = [];
         $applicationTypesArray = ApplicationType::pluck('id')->toArray();
         $backlog = Payments::with('applicationType')->whereNotNull('manual_receipt_date')->get();
         foreach ($applicationTypesArray as $categoryId) {
-            $count = $backlog->where('application_type_id', $categoryId)->where('facility_id',auth()->user()->facility_id)->count();
+            $count = $backlog->where('application_type_id', $categoryId)->where('facility_id', auth()->user()->facility_id)->count();
             $category_name = ApplicationType::where('id', $categoryId)->first();
             $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
         }
-        return view('reports.backlog.index',['counts' => $counts]);
+        return view('reports.backlog.index', ['counts' => $counts]);
     }
 
-    public function newTouristEstablishmentReport(NumberApplicationsByCategory $request){
+    public function newTouristEstablishmentReport(NumberApplicationsByCategory $request)
+    {
+    }
 
-    
-        
+    //Transaction Report
+    public function transactionReportIndex()
+    {
+        $application_types = ApplicationType::all();
+
+        return view('reports.transactions.index', compact('application_types'));
+    }
+
+    public function generateTransactionReport(Request $request)
+    {
+        $criteria = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'application_type_id' => 'required',
+            'interval' => 'nullable|numeric|max:6'
+        ]);
+
+        $application_type_id = $criteria['application_type_id'] == 'All' ? '' : $criteria['application_type_id'];
+
+        $transactions = EditTransactions::with('applicationType', 'editType', 'user', 'systemOperationType', 'changedColumns')
+            ->when(
+                $application_type_id,
+                function ($query, $application_type_id) {
+                    $query->where('application_type_id', $application_type_id);
+                }
+            )
+            ->where('created_at', '>', $criteria['start_date'])
+            ->where('created_at', '<', $criteria['end_date'] . ' 23:59:59')
+            ->where('facility_id', auth()->user()->facility_id)
+            ->get();
+
+        return view('reports.transactions.report', compact('transactions'));
     }
 
     // public function productivityReportCreate(){
@@ -293,14 +326,14 @@ class ReportController extends Controller
     //         'starting_date' => 'required|date',
     //         'ending_date' => 'required|date'
     //     ]);
-    
+
     //     // Ensure the dates are formatted correctly
     //     $start_date = $incomingFields['starting_date'] . ' 17:00:00';
     //     $end_date = $incomingFields['ending_date'] . ' 21:00:00';
-    
+
     //     // Get the facility user IDs once
     //     $facilityUserIds = User::facilityUsers()->pluck('id')->flatten();
-    
+
     //     // Retrieve the permit applications and group by user
     //     $permits = PermitApplication::with('user')
     //         ->whereBetween('created_at', [$start_date, $end_date])
@@ -309,35 +342,35 @@ class ReportController extends Controller
     //         ->groupBy('user_id');
 
     //         dd($permits);
-    
+
     //     // Retrieve the establishment applications and group by user
     //     $establishments = EstablishmentApplications::with('user')
     //         ->whereBetween('created_at', [$start_date, $end_date])
     //         ->whereIn('user_id', $facilityUserIds)
     //         ->get()
     //         ->groupBy('user_id');
-    
+
     //     // Retrieve the test results and group by user
     //     $tests = TestResult::with('user')
     //         ->whereBetween('created_at', [$start_date, $end_date])
     //         ->whereIn('user_id', $facilityUserIds)
     //         ->get()
     //         ->groupBy('user_id');
-    
+
     //     // Count the number of applications for each user
     //     $permitCounts = $permits->map(function ($items, $userId) {
     //         return ['user' => $items->first()->user, 'count' => $items->count()];
     //     });
-    
+
     //     $establishmentCounts = $establishments->map(function ($items, $userId) {
     //         return ['user' => $items->first()->user, 'count' => $items->count()];
     //     });
-    
+
     //     $testCounts = $tests->map(function ($items, $userId) {
     //         return ['user' => $items->first()->user, 'count' => $items->count()];
     //     });
-    
+
     //     return view('reports.productivity.view', compact('permitCounts', 'establishmentCounts', 'testCounts', 'start_date', 'end_date'));
     // }
-    
+
 }
