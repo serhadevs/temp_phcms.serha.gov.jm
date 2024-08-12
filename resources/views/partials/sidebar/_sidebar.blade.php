@@ -294,6 +294,12 @@
                         <a href="/report/transactions" class="sidebar-link">Edit Transactions Report</a>
                     </li>
                 @endif
+                <li class="sidebar-item">
+                    <a href="/reports/printed-cards" class="sidebar-link">Printed Cards Report</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/reports/inspections" class="sidebar-link">Inspections Report</a>
+                </li>
             </ul>
 
         </li>

@@ -377,6 +377,35 @@ class ReportController extends Controller
         return view('reports.printed_cards.report', compact('printed_cards', 'app_type_id'));
     }
 
+    public function createInspectionsReport()
+    {
+        $application_types = ApplicationType::all();
+
+        return view('reports.inspections.create', compact('application_types'));
+    }
+
+    public function generateInspectionsReport(Request $request)
+    {
+        $criteria = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'interval' => 'nullable|numeric|max:6',
+            'application_type_id' => 'nullable'
+        ]);
+
+        $app_type = $criteria['application_type_id'] == 'All' ? '' : $criteria['application_type_id'];
+
+        $inspections = TestResult::select('staff_contact', DB::raw('count(*) as total'))
+            ->groupBy('staff_contact')
+            ->whereBetween('test_date', [$criteria['start_date'], $criteria['end_date'] . ' 23:59:59'])
+            ->when($app_type, function ($query, $app_type) {
+                $query->where('application_type_id', $app_type);
+            })
+            ->pluck('staff_contact', 'total');
+
+        return view('reports.inspections.report', compact('inspections'));
+    }
+
     // public function productivityReportCreate(){
     //     return view('reports.productivity.index');
     // }

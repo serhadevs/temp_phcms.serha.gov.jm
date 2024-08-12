@@ -352,6 +352,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/productivity/create', [ReportController::class, 'productivityReportCreate'])->name('reports.productivity.create');
   Route::post('/reports/productivity', [ReportController::class, 'productivityReport'])->name('reports.productivity');
 
+  //Inspections Report
+  Route::get('/reports/inspections', [ReportController::class, 'createInspectionsReport'])->name('reports.inspections');
+  Route::post('/reports/inspections/show', [ReportController::class, 'generateInspectionsReport'])->name('reports.inspections.show');
+
 
   //Training Manual Page
   Route::get('/training-manuals', [TrainingManualsController::class, 'index'])->name("training.manuals");
