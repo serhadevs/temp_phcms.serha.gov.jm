@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('zip_files:pull')->everyFiveMinutes();
+        $schedule->command('apm:clear')->daily();
     }
 
     /**

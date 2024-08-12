@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "99ce88807033d7b3d159b31561de3ecc",
+    "content-hash": "cf411702193cba1c15682bd58302ccb1",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2106,6 +2106,49 @@
                 }
             ],
             "time": "2024-01-28T23:22:08+00:00"
+        },
+        {
+            "name": "mantas-done/laravel-apm",
+            "version": "v1.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mantas-done/laravel-apm.git",
+                "reference": "843b1652ae23fc42c6bd353e8c695e23f8f239ce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mantas-done/laravel-apm/zipball/843b1652ae23fc42c6bd353e8c695e23f8f239ce",
+                "reference": "843b1652ae23fc42c6bd353e8c695e23f8f239ce",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": ">=5.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Done\\LaravelAPM\\ApmServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Done\\LaravelAPM\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Mantas Donelavičius"
+                }
+            ],
+            "description": "Application monitoring for Laravel",
+            "support": {
+                "issues": "https://github.com/mantas-done/laravel-apm/issues",
+                "source": "https://github.com/mantas-done/laravel-apm/tree/v1.0.10"
+            },
+            "time": "2024-02-07T14:41:11+00:00"
         },
         {
             "name": "monolog/monolog",

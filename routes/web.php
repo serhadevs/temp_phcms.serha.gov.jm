@@ -384,4 +384,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Logout Routes
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+  Route::get('/apm', '\Done\LaravelAPM\ApmController@index')->name('apm');
 });

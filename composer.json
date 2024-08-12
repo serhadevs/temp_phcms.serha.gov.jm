@@ -11,6 +11,7 @@
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.7",
+        "mantas-done/laravel-apm": "^1.0",
         "yajra/laravel-datatables": "9.0",
         "yungts97/laravel-user-activity-log": "^1.4"
     },
