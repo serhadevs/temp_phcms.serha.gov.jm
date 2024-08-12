@@ -45,6 +45,11 @@ class EstablishmentApplications extends Model
 
     public $timestamps = true;
 
+    public function zippedApplication(): HasOne
+    {
+        return $this->hasOne(ZippedApplications::class, 'application_id', 'id')->where('application_type_id', 3);
+    }
+
     public function payment(): HasOne
     {
         return $this->hasOne(Payments::class, 'application_id', 'id')->where('application_type_id', 3);

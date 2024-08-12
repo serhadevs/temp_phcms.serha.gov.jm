@@ -248,6 +248,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/report/transactions', [ReportController::class, 'transactionReportIndex'])->name('report.transactions.index');
   Route::post('/report/transactions/show', [ReportController::class, 'generateTransactionReport'])->name('report.transaction.show');
 
+  //Printed Cards Report
+  Route::get('/reports/printed-cards', [ReportController::class, 'printedCardsIndex'])->name('reports.printed-cards.index');
+  Route::post('/reports/printed-cards/show', [ReportController::class, 'generatePrintedCards'])->name('reports.printed-cards.show');
+
   //Renewals
   Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class, 'renewal'])->name('food_handlers_permit.renewal');
   Route::post('/permit/application/renewal', [PermitApplicationController::class, 'storeRenewal'])->name('food_handlers_permit.renew');

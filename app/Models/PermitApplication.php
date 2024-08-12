@@ -106,6 +106,11 @@ class PermitApplication extends Model
     //     return $this->hasOne(User::class, 'id', 'user_id');
     // }
 
+    public function zippedApplication(): HasOne
+    {
+        return $this->hasOne(ZippedApplications::class, 'application_id', 'id')->where('application_type_id', 1);
+    }
+    
     public function editTransactions(): HasMany
     {
         return $this->hasMany(EditTransactions::class, 'table_id', 'id')
@@ -113,15 +118,13 @@ class PermitApplication extends Model
             ->where('application_type_id', 1);
     }
 
-    public function messages(): HasMany{
-        return $this->hasMany(Messages::class,'permit_application_id','id');
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Messages::class, 'permit_application_id', 'id');
     }
 
-    public function appointments(): HasOne{
-        return $this->hasOne(Appointments::class,'permit_application_id','id');
+    public function appointments(): HasOne
+    {
+        return $this->hasOne(Appointments::class, 'permit_application_id', 'id');
     }
-
-    
-
-    
 }

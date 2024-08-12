@@ -33,7 +33,7 @@ class SignOffController extends Controller
     {
         $excludedIds = [4, 7];
         $application_type = ApplicationType::whereNotIn('id', $excludedIds)->get();
-        
+
 
         return view('signoffs.index', compact('application_type'));
     }
@@ -62,37 +62,41 @@ class SignOffController extends Controller
 
         if ($app_type_id == 1) {
             if ($clinic_mode == "onsite") {
-                $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms')
+                $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.payment')
                     ->where('facility_id', auth()->user()->facility_id)
                     ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
                     ->has('permitApplication.testResults')
+                    ->has('permitApplication.payment')
                     ->with(['permitApplication' => function ($query) {
                         $query->orderBy('lastname');
                     }])
                     ->get();
             } else if ($clinic_mode == "regular") {
-                $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites')
+                $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'permitApplication.payment')
                     ->where('facility_id', auth()->user()->facility_id)
                     ->whereRelation('permitApplication.appointment', 'appointment_date', $exam_date)
                     ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', $exam_site)
                     ->doesntHave('permitApplication.establishmentClinics')
                     ->has('permitApplication.testResults')
+                    ->has('permitApplication.payment')
                     ->with(['permitApplication' => function ($query) {
                         $query->orderBy('lastname');
                     }])
                     ->get();
             }
         } elseif ($app_type_id == 2) {
-            $applications = HealthInterview::with('healthCertApplication.appointment.examDate.examSites', 'healthCertApplication.testResults', 'healthInterviewSymptom.symptoms', 'healthCertApplication.travelHistory')
+            $applications = HealthInterview::with('healthCertApplication.appointment.examDate.examSites', 'healthCertApplication.testResults', 'healthInterviewSymptom.symptoms', 'healthCertApplication.travelHistory', 'healthCertApplication.payment')
                 ->whereRelation('healthCertApplication.appointment', 'appointment_date', $exam_date)
                 ->whereRelation('healthCertApplication.appointment.examDate.examSites', 'id', $exam_site)
                 ->has('healthCertApplication.testResults')
+                ->has('healthCertApplication.payment')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->orderBy('sign_off_status')
                 ->get();
         } elseif ($app_type_id == 3) {
-            $applications = EstablishmentApplications::with('operators', 'establishmentCategory', 'testResults')
+            $applications = EstablishmentApplications::with('operators', 'establishmentCategory', 'testResults', 'payment')
                 ->has('testResults')
+                ->has('payment')
                 ->whereRelation('testResults', 'test_date', $date_of_inspection)
                 ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->get();
@@ -108,11 +112,13 @@ class SignOffController extends Controller
             //     ->select('test_results.test_date', 'test_results.test_location', 'test_results.comments', 'test_results.staff_contact', 'test_results.overall_score', 'test_results.critical_score', 'swimming_pools_applications.id as pool_id', 'swimming_pools_applications.*')
             //     ->get();
             $applications = SwimmingPoolsApplications::with('testResults', 'payment')
+                ->has('payment')
                 ->whereRelation('testResults', 'test_date', $date_of_inspection)
                 ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->get();
         } elseif ($app_type_id == 6) {
-            $applications = TouristEstablishments::with('testResults', 'services')
+            $applications = TouristEstablishments::with('testResults', 'services', 'payments')
+                ->has('payments')
                 ->has('testResults')
                 ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->whereRelation('testResults', 'test_date', $date_of_inspection)
@@ -205,6 +211,4 @@ class SignOffController extends Controller
             return redirect()->with('error', 'Unable to fetch data from the database!', $e->getMessage());
         }
     }
-
-    
 }

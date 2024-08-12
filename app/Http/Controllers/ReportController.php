@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NumberApplicationsByCategory;
 use App\Models\ApplicationType;
+use App\Models\Downloads;
 use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentCategories;
@@ -18,12 +19,14 @@ use App\Models\SwimmingPoolsApplications;
 use App\Models\TestResult;
 use App\Models\TouristEstablishments;
 use App\Models\User;
+use App\Models\ZippedApplications;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 
 class ReportController extends Controller
 {
@@ -278,9 +281,7 @@ class ReportController extends Controller
         return view('reports.backlog.index', ['counts' => $counts]);
     }
 
-    public function newTouristEstablishmentReport(NumberApplicationsByCategory $request)
-    {
-    }
+    public function newTouristEstablishmentReport(NumberApplicationsByCategory $request) {}
 
     //Transaction Report
     public function transactionReportIndex()
@@ -314,6 +315,66 @@ class ReportController extends Controller
             ->get();
 
         return view('reports.transactions.report', compact('transactions'));
+    }
+
+    public function printedCardsIndex()
+    {
+        $est_clinics = EstablishmentClinics::with('user')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->get();
+
+        $food_ests = EstablishmentApplications::with('user')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->get();
+        return view('reports.printed_cards.index', compact('est_clinics', 'food_ests'));
+    }
+
+    public function generatePrintedCards(Request $request)
+    {
+        $criteria = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'interval' => 'nullable|numeric|max:6',
+            'application_type_id' => 'required',
+            'establishment_clinic_name' => 'nullable',
+            'food_establishment_name' => 'nullable',
+            'test_date' => 'nullable|date'
+        ]);
+
+        $est_clinic = $criteria['establishment_clinic_name'];
+        $food_est = $criteria['food_establishment_name'];
+        $app_type_id = $criteria['application_type_id'];
+        $test_date = $criteria['test_date'];
+
+        if ($criteria['application_type_id'] == 1) {
+            $printed_cards = PermitApplication::with('testResults', 'permitCategory', 'establishmentClinics', 'zippedApplication.download')
+                ->has('zippedApplication.download')
+                ->whereRelation('zippedApplication.download', 'download_date', '>', $criteria['start_date'])
+                ->whereRelation('zippedApplication.download', 'download_date', '<', $criteria['end_date'] . ' 23:59:59')
+                ->when($est_clinic, function ($query, $est_clinic) {
+                    $query->whereRelation('establishmentClinics', 'name', 'like', "%" . $est_clinic . "%");
+                })
+                ->when($test_date, function ($query, $test_date) {
+                    $query->whereRelation('testResults', 'test_date', $test_date);
+                })
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->get();
+        } else {
+            $printed_cards = EstablishmentApplications::with('testResults', 'establishmentCategory', 'zippedApplication.download', 'user')
+                ->has('zippedApplication.download')
+                ->whereRelation('zippedApplication.download', 'download_date', '>', $criteria['start_date'])
+                ->whereRelation('zippedApplication.download', 'download_date', '<', $criteria['end_date'] . ' 23:59:59')
+                ->when($food_est, function ($query, $food_est) {
+                    $query->where('establishment_name', 'like', "%" . $food_est . "%");
+                })
+                ->when($test_date, function ($query, $test_date) {
+                    $query->whereRelation('testResults', 'test_date', $test_date);
+                })
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->get();
+        }
+
+        return view('reports.printed_cards.report', compact('printed_cards', 'app_type_id'));
     }
 
     // public function productivityReportCreate(){
