@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Jobs\TouristEstJob;
 use App\Models\Downloads;
 use App\Models\PrintableApplications;
 use App\Models\TouristEstablishments;
-use Illuminate\Http\Request;
 use DateTime;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DownloadsController extends Controller
@@ -151,10 +152,11 @@ class DownloadsController extends Controller
      */
     public function downloadZip(Request $request)
     {
+        $now = \Carbon\Carbon::now()->toDateTimeString();
         $download = Downloads::find($request->download_id);
         if ($download) {
             $download->update([
-                'download_date' => new DateTime()
+                'download_date' => $now
             ]);
         }
         return response()->download(storage_path("app/public/") . $download->download_url);
@@ -239,8 +241,10 @@ class DownloadsController extends Controller
      */
     public function destroyPrintable(Request $request)
     {
+     $now = \Carbon\Carbon::now()->toDateTimeString();
         try {
             if ($request->route('app_type')) {
+              
                 PrintableApplications::where('id', $request->route('id'))
                     ->where('application_type_id', $request->route('app_type'))
                     ->update(
@@ -248,7 +252,7 @@ class DownloadsController extends Controller
                     );
             } else {
                 Downloads::find($request->route('id'))->update([
-                    'deleted_at', new DateTime()
+                    'deleted_at', $now
                 ]);
             }
             return "success";

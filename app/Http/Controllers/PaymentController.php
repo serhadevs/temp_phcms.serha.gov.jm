@@ -400,20 +400,42 @@ class PaymentController extends Controller
         $applicant = PermitApplication::where('id', $app_id)->first();
         $cashier = User::find($register_new_payment->cashier_user_id);
         $cashier_name = $cashier->firstname[0] . ". " . $cashier->lastname;
-        $email = $applicant->email;
+        // $email = $applicant->email;
 
-        if ($email) {
-            dispatch(new SendPaymentReceiptEmail($email, $applicant, $register_new_payment, $cashier_name, $receipt_number));
-            Messages::create([
-                'permit_application_id' => $applicant->id,
-                'email_type_id' => 2,
-                'to' => $email,
-                'status' => 'sent',
-                'error_message' => 'none',
-                'user_id' => auth()->user()->id,
-                'sent_at' => \Carbon\Carbon::now()
-            ]);
+        if ($applicant !== null) {
+            $email = $applicant->email;
+
+            try {
+                if ($email) {
+                    dispatch(new SendPaymentReceiptEmail($email, $applicant, $register_new_payment, $cashier_name, $receipt_number));
+                    Messages::create([
+                        'permit_application_id' => $applicant->id,
+                        'email_type_id' => 2,
+                        'to' => $email,
+                        'status' => 'sent',
+                        'error_message' => 'none',
+                        'user_id' => auth()->user()->id,
+                        'sent_at' => \Carbon\Carbon::now()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Messages::create([
+                    'permit_application_id' => $applicant->id,
+                    'email_type_id' => 2,
+                    'to' => $email,
+                    'status' => 'error',
+                    'error_message' => 'none',
+                    'user_id' => auth()->user()->id,
+                    'sent_at' => \Carbon\Carbon::now()
+                ]);
+            }
+        
+
+        } else {
+            // Handle the case where $applicant is null
+            $email = null; // or provide a default value or error message
         }
+
 
 
 
