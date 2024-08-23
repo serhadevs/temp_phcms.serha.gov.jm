@@ -1,9 +1,7 @@
-<div class="container">
+
     <div class="row justify-content-center">
         <div class="col-md-4">
-
             <div class="card">
-
                 <div class="row justify-content-center mb-4 mt-4">
                     <img src="images/serha_logo.png" alt="Serha Logo" class="w-25" />
                     <div class="col-12 text-center">
@@ -67,4 +65,4 @@
             </div>
         </div>
     </div>
-</div>
+
