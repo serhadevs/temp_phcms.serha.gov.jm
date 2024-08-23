@@ -11,6 +11,8 @@
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" type="text/css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
 
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
