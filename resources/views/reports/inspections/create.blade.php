@@ -19,7 +19,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <label for="" class="form-label">Printed Start Date</label>
+                                <label for="" class="form-label">Inspections Start Date</label>
                                 <input type="date" class="form-control" id="starting_date" name="start_date"
                                     value="{{ old('start_date') }}">
                                 <input type="text" id="interval" class="form-control" name="interval" hidden
@@ -32,7 +32,7 @@
                                 @enderror
                             </div>
                             <div class="col">
-                                <label for="" class="form-label">Printed End Date</label>
+                                <label for="" class="form-label">Inspections End Date</label>
                                 <input type="date" class="form-control" name="end_date" id="ending_date"
                                     value="{{ old('end_date') }}">
                                 @error('end_date')
