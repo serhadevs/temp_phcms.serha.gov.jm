@@ -61,7 +61,7 @@
                 <td>{{ $application->testResults?->critical_score }}</td>
                 <td>{{ $application->testResults?->overall_score }}</td>
                 <td><span
-                        class="badge text-bg-{{ $application->sign_off_stauts == '1' ? 'success' : 'danger' }}">{{ $application->sign_off_stauts == '1' ? 'COMPLETE' : 'INCOMPLETE' }}</span>
+                        class="badge text-bg-{{ $application->sign_off_status == '1' ? 'success' : 'danger' }}">{{ $application->sign_off_status == '1' ? 'COMPLETE' : 'INCOMPLETE' }}</span>
                 </td>
                 @if ($app_type_id == '3')
                     <td>
