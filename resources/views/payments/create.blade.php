@@ -18,7 +18,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    
+
                     <div class="row">
                         <div class="col">
                             <form action="{{ route('payments.create.store') }}" method="POST">
@@ -106,7 +106,8 @@
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <button class="btn btn-success" type="button" onclick="showLoading(this)">Submit Payment</button>
+                                    <button class="btn btn-success" type="button" onclick="showLoading(this)">Submit
+                                        Payment</button>
                                     <a class="btn btn-danger" onclick="history.back()">Cancel</a>
                                 </div>
                             </form>
@@ -146,7 +147,7 @@
                                 var element = document.getElementById('prices');
                                 var tot_cost = element.options[element.selectedIndex].getAttribute("data-price");
                                 var app_type_id = element.options[element.selectedIndex].value;
-                                if (app_type_id == "3" || app_type_id == "4" || app_type_id == "6") {
+                                if (app_type_id == "3" || app_type_id == "4" || app_type_id == "6" || app_type_id == "5") {
                                     document.getElementById('total_cost').removeAttribute('readonly');
                                 } else {
                                     document.getElementById('total_cost').setAttribute('readonly', true);
