@@ -280,6 +280,37 @@ class PaymentController extends Controller
         return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id'));
     }
 
+    public function fixStanMarkSTT()
+    {
+        $applications = PermitApplication::with('payment')
+            ->where('establishment_clinic_id', 2431)
+            ->doesntHave('payment')
+            ->get();
+
+        $establishment_payment = Payments::where('application_type_id', 4)
+            ->where('application_id', 2431)
+            ->first();
+
+        $ids = [];
+        $i = 0;
+
+        foreach ($applications as $app) {
+            $ids[$i] = $app->id;
+            Payments::create([
+                'application_type_id' => 1,
+                'application_id' => $app->id,
+                'receipt_no' => $establishment_payment->receipt_no,
+                'facility_id' => $establishment_payment->facility_id,
+                'cashier_user_id' => $establishment_payment->cashier_user_id,
+                'amount_paid' => 0,
+                'total_cost' => 0,
+                'change_amt' => 0
+            ]);
+            $i++;
+        }
+        dd($ids);
+    }
+
     public function printReceipt(Request $request)
     {
         $payment_id = $request->route('id');
@@ -429,8 +460,6 @@ class PaymentController extends Controller
                     'sent_at' => \Carbon\Carbon::now()
                 ]);
             }
-        
-
         } else {
             // Handle the case where $applicant is null
             $email = null; // or provide a default value or error message

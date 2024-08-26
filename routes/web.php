@@ -319,6 +319,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/test/downloads', [TestDownloads::class, 'index']);
     Route::get('/manual-run/food-est-job', [TestDownloads::class, 'writeAllFoodEstablishments']);
     Route::get('/test/tourist-establishments', [TestDownloads::class, 'testTourist']);
+    Route::get('/fix/stanmark', [PaymentController::class, 'fixStanMarkSTT']);
     // Route::get('/fix/downloads/payment', [PaymentController::class, 'fixDownloadsBasedOnPayment']);
   });
 
