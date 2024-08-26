@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Mail\ForgetPasswordMail;
 use Illuminate\Support\Facades\Log;
@@ -538,16 +539,17 @@ class PermitApplicationController extends Controller
         // }
 
         if (PermitApplication::create($permit_application)) {
+            $now = Carbon::now()->toDateTimeString();
             HealthInterview::where('permit_application_id', $request->old_application_id)->update([
-                'deleted_at' => new DateTime()
+                'deleted_at' => $now
             ]);
 
             TestResult::where('application_id', $request->old_application_id)->where('application_type_id', 1)->update([
-                'deleted_at' => new DateTime()
+                'deleted_at' => $now
             ]);
 
             Appointments::where('permit_application_id', $request->old_application_id)->update([
-                'deleted_at' => new DateTime()
+                'deleted_at' => $now
             ]);
 
             $new_application = PermitApplication::where('permit_no', $old_permit->permit_no)->orderBy('created_at', 'DESC')->first();
@@ -567,7 +569,7 @@ class PermitApplicationController extends Controller
                 ]);
 
                 $old_permit->update([
-                    'deleted_at' => new DateTime()
+                    'deleted_at' => $now
                 ]);
             }
         }

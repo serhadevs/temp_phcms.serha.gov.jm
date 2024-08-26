@@ -398,6 +398,7 @@ class ReportController extends Controller
         $inspections = TestResult::select('staff_contact', DB::raw('count(*) as total'))
             ->groupBy('staff_contact')
             ->whereBetween('test_date', [$criteria['start_date'], $criteria['end_date'] . ' 23:59:59'])
+            ->where('facility_id', auth()->user()->facility_id)
             ->when($app_type, function ($query, $app_type) {
                 $query->where('application_type_id', $app_type);
             })

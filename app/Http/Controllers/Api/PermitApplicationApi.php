@@ -15,10 +15,10 @@ class PermitApplicationApi extends Controller
             $applicant = PermitApplication::with('permitCategory', 'payment','establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions','messages')
                ->where('permit_no',$permit_no)->first();
 
-               $filePath = 'public/' . $applicant['permit_no'];
+            //    $filePath = 'public/' . $applicant['permit_no'];
 
-               $fileContent = Storage::get($filePath);
-               $mimeType = Storage::mimeType($filePath);
+            //    $fileContent = Storage::get($filePath);
+            //    $mimeType = Storage::mimeType($filePath);
 
             if (!$applicant) {
                 return response()->json(
