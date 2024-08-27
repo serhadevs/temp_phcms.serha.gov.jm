@@ -389,7 +389,7 @@ class ReportController extends Controller
         $criteria = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'interval' => 'nullable|numeric|max:6',
+            // 'interval' => 'nullable|numeric|max:6',
             'application_type_id' => 'nullable'
         ]);
 
