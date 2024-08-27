@@ -148,11 +148,26 @@ class PaymentController extends Controller
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereBetween('created_at', [$filterTimeline, $today]);
 
+            $swim_pool_applications = SwimmingPoolsApplications::with('payment', 'user')
+                ->selectRaw('"5" as application_type_id, "' . $application_type->where('id', 5)->first()->name . '" as app_type, swimming_pools_applications.id as app_number, concat(swimming_pools_applications.firstname, " ", swimming_pools_applications.lastname) as name, swimming_pools_applications.permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 5)->first()->price . '')
+                ->doesntHave('payment')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->whereBetween('created_at', [$filterTimeline, $today]);
+
+            $tourist_est_applications = TouristEstablishments::with('payments', 'user')
+                ->selectRaw('"6" as application_type_id, "' . $application_type->where('id', 6)->first()->name . '" as app_type, tourist_establishments.id as app_number, tourist_establishments.establishment_name as name, tourist_establishments.permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 6)->first()->price . '')
+                ->doesntHave('payments')
+                ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+                ->whereBetween('created_at', [$filterTimeline, $today]);
+
             $applications = $permit_applications
                 ->union($est_applications)
                 ->union($clinic_application)
-                // ->union($health_cert_applications)
+                ->union($health_cert_applications)
+                ->union($swim_pool_applications)
+                ->union($tourist_est_applications)
                 ->get();
+
             return view('payments.applications', compact('applications'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
@@ -188,10 +203,24 @@ class PaymentController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', $filterTimeline);
 
+        $swim_pool_applications = SwimmingPoolsApplications::with('payment', 'user')
+            ->selectRaw('"5" as application_type_id, "' . $application_type->where('id', 5)->first()->name . '" as app_type, swimming_pools_applications.id as app_number, concat(swimming_pools_applications.firstname, " ", swimming_pools_applications.lastname) as name, swimming_pools_applications.permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 5)->first()->price . '')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->where('created_at', '>', $filterTimeline);
+
+        $tourist_est_applications = TouristEstablishments::with('payments', 'user')
+            ->selectRaw('"6" as application_type_id, "' . $application_type->where('id', 6)->first()->name . '" as app_type, tourist_establishments.id as app_number, tourist_establishments.establishment_name as name, tourist_establishments.permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 6)->first()->price . '')
+            ->doesntHave('payments')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->where('created_at', '>', $filterTimeline);
+
         $applications = $permit_applications
             ->union($est_applications)
             ->union($clinic_application)
-            // ->union($health_cert_applications)
+            ->union($health_cert_applications)
+            ->union($swim_pool_applications)
+            ->union($tourist_est_applications)
             ->get();
 
         return view('payments.applications', compact('applications'));
@@ -236,10 +265,24 @@ class PaymentController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
 
+        $swim_pool_applications = SwimmingPoolsApplications::with('payment', 'user')
+            ->selectRaw('"5" as application_type_id, "' . $application_type->where('id', 5)->first()->name . '" as app_type, swimming_pools_applications.id as app_number, concat(swimming_pools_applications.firstname, " ", swimming_pools_applications.lastname) as name, swimming_pools_applications.permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 5)->first()->price . '')
+            ->doesntHave('payment')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
+
+        $tourist_est_applications = TouristEstablishments::with('payments', 'user')
+            ->selectRaw('"6" as application_type_id, "' . $application_type->where('id', 6)->first()->name . '" as app_type, tourist_establishments.id as app_number, tourist_establishments.establishment_name as name, tourist_establishments.permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 6)->first()->price . '')
+            ->doesntHave('payments')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
+
         $applications = $permit_applications
             ->union($est_applications)
             ->union($clinic_application)
-            // ->union($health_cert_applications)
+            ->union($health_cert_applications)
+            ->union($swim_pool_applications)
+            ->union($tourist_est_applications)
             ->get();
 
         return view('payments.applications', compact('applications'));
