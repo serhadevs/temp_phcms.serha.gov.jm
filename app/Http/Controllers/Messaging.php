@@ -20,10 +20,8 @@ class Messaging extends Controller
         
     }
 
-    // public function view(MessagesDataTable $dataTable){
-    //     return $dataTable->render('messages.index');
-    // }
 
+    //Resending Email to applicants
     public function sendMessage(Request $request){
 
         $permit_application_id = $request->id;
