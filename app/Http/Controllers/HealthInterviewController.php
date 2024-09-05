@@ -37,12 +37,14 @@ class HealthInterviewController extends Controller
         $today = date_format(new Datetime(), "Y-m-d");
         $filterTimeline = "";
 
+        $test_date_1 = "2023-01-01";
+
         if ($id == "0") {
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify($now, "-1 days"), "Y-m-d");
             $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
-                ->whereBetween('created_at', [$filterTimeline, $today])
+                ->whereBetween('created_at', [$test_date_1, $today])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->get();
             return view('test_center.health_interviews.index', compact('health_interviews'));
