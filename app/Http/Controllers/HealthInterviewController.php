@@ -45,7 +45,7 @@ class HealthInterviewController extends Controller
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->get();
-                dd($health_interviews);
+                //dd($health_interviews);
             return view('test_center.health_interviews.index', compact('health_interviews'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
@@ -62,7 +62,7 @@ class HealthInterviewController extends Controller
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
 
-            dd($health_interviews);
+            //dd($health_interviews);
             
         if(!$health_interviews){
             return view('dashboard.dashboard')->with('error', 'Error with interviews');
