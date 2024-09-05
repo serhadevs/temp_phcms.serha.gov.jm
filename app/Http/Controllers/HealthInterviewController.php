@@ -60,6 +60,10 @@ class HealthInterviewController extends Controller
             ->where('created_at', '>', $filterTimeline)
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
+            
+        if(!$health_interviews){
+            return view('dashboard.dashboard')->with('error', 'Error with interviews');
+        }
         return view('test_center.health_interviews.index', compact('health_interviews'));
     }
 
