@@ -47,7 +47,7 @@ class HealthInterviewController extends Controller
                 ->get();
             return view('test_center.health_interviews.index', compact('health_interviews'));
         } else if ($id == "7") {
-            $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
+            $filterTimeline = date_format(date_modify($now, "-7 days"), "Y-m-d");
         } else if ($id == "30") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-30 days"), "Y-m-d");
         } else if ($id == "90") {
