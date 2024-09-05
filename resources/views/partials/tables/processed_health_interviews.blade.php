@@ -76,13 +76,30 @@
                 <td>{{ strtoupper($interview->teeth_condition) }}</td>
                 <td>{{ strtoupper($interview?->user?->firstname[0] . '.' . $interview?->user?->lastname) }}
                 </td>
-                <td>
+                {{-- <td>
                     {{ $interview->permit_application_id == ''
                         ? $interview->healthCertApplication?->appointment[0]?->appointment_date
                         : ($interview->permitApplication?->establishment_clinic_id == ''
                             ? $interview->permitApplication?->appointment[0]?->appointment_date
                             : $interview->permitApplication?->establishmentClinics?->proposed_date) }}
+                </td> --}}
+
+                <td>
+                    {{ 
+                    if ($interview->permit_application_id == '') {
+                        $appointmentDate = $interview->healthCertApplication?->appointment[0]->appointment_date ?? null;
+                    } else {
+                        if ($interview->permitApplication?->establishment_clinic_id == '') {
+                            $appointmentDate = $interview->permitApplication?->appointment[0]->appointment_date ?? null;
+                        } else {
+                            $appointmentDate = $interview->permitApplication?->establishmentClinics?->proposed_date ?? null;
+                        }
+                    }
+                
+                    $appointmentDate ?? 'N/A'
+                }}
                 </td>
+                
                 <td>
                     {{ $interview->permit_application_id == ''
                         ? strtoupper($interview->healthCertApplication?->appointment[0]?->examDate?->exam_day) .
