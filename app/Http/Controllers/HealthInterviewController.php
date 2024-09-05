@@ -61,7 +61,7 @@ class HealthInterviewController extends Controller
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
 
-            dd($health_interviews);
+            //dd($health_interviews);
             
         if(!$health_interviews){
             return view('dashboard.dashboard')->with('error', 'Error with interviews');
