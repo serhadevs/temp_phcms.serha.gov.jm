@@ -60,6 +60,8 @@ class HealthInterviewController extends Controller
             ->where('created_at', '>', $filterTimeline)
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
+
+            dd($health_interviews);
             
         if(!$health_interviews){
             return view('dashboard.dashboard')->with('error', 'Error with interviews');
