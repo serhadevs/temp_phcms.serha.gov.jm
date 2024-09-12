@@ -78,12 +78,16 @@
                 </td>
                 <td>
                     {{ $interview->permit_application_id == ''
-                        ? (count($interview->healthCertApplication?->appointment) > 0
-                            ? $interview->healthCertApplication?->appointment[0]?->appointment_date
+                        ? ($interview->healthCertApplication?->appointment
+                            ? (count($interview->healthCertApplication?->appointment) > 0
+                                ? $interview->healthCertApplication?->appointment[0]?->appointment_date
+                                : 'N/A')
                             : 'N/A')
                         : ($interview->permitApplication?->establishment_clinic_id == ''
-                            ? (count($interview->permitApplication?->appointment) > 0
-                                ? $interview->permitApplication?->appointment[0]?->appointment_date
+                            ? ($interview->permitApplication?->appointment
+                                ? (count($interview->permitApplication?->appointment) > 0
+                                    ? $interview->permitApplication?->appointment[0]?->appointment_date
+                                    : 'N/A')
                                 : 'N/A')
                             : $interview->permitApplication?->establishmentClinics?->proposed_date) }}
                 </td>
@@ -106,27 +110,35 @@
 
                 <td>
                     {{ $interview->permit_application_id == ''
-                        ? (count($interview->healthCertApplication?->appointment) > 0
-                            ? strtoupper($interview->healthCertApplication?->appointment[0]?->examDate?->exam_day) .
-                                '-' .
-                                $interview->healthCertApplication?->appointment[0]?->examDate?->exam_start_time
+                        ? ($interview->healthCertApplication?->appointment
+                            ? (count($interview->healthCertApplication?->appointment) > 0
+                                ? strtoupper($interview->healthCertApplication?->appointment[0]?->examDate?->exam_day) .
+                                    '-' .
+                                    $interview->healthCertApplication?->appointment[0]?->examDate?->exam_start_time
+                                : 'N/A')
                             : 'N/A')
                         : ($interview->permitApplication?->establishment_clinic_id == ''
-                            ? (count($interview->permitApplication?->appointment) > 0
-                                ? strtoupper($interview->permitApplication?->appointment[0]?->examDate?->exam_day) .
-                                    '-' .
-                                    $interview->permitApplication?->appointment[0]?->examDate?->exam_start_time
+                            ? ($interview->permitApplication?->appointment
+                                ? (count($interview->permitApplication?->appointment) > 0
+                                    ? strtoupper($interview->permitApplication?->appointment[0]?->examDate?->exam_day) .
+                                        '-' .
+                                        $interview->permitApplication?->appointment[0]?->examDate?->exam_start_time
+                                    : 'N/A')
                                 : 'N/A')
                             : $interview->permitApplication?->establishmentClinics?->proposed_time) }}
                 </td>
                 <td>
                     {{ $interview->permit_application_id == ''
-                        ? (count($interview->healthCertApplication?->appointment) > 0
-                            ? strtoupper($interview->healthCertApplication?->appointment[0]?->examDate?->examSites?->name)
+                        ? ($interview->healthCertApplication?->appointment
+                            ? (count($interview->healthCertApplication?->appointment) > 0
+                                ? strtoupper($interview->healthCertApplication?->appointment[0]?->examDate?->examSites?->name)
+                                : 'N/A')
                             : 'N/A')
                         : ($interview->permitApplication?->establishment_clinic_id == ''
-                            ? (count($interview->permitApplication?->appointment) > 0
-                                ? strtoupper($interview->permitApplication?->appointment[0]?->examDate?->examSites?->name)
+                            ? ($interview->permitApplication?->appointment
+                                ? (count($interview->permitApplication?->appointment) > 0
+                                    ? strtoupper($interview->permitApplication?->appointment[0]?->examDate?->examSites?->name)
+                                    : 'N/A')
                                 : 'N/A')
                             : $interview->permitApplication?->establishmentClinics?->address) }}
                 </td>

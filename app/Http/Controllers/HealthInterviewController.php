@@ -85,6 +85,7 @@ class HealthInterviewController extends Controller
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
+            // dd($health_interviews);
         return view('test_center.health_interviews.index', compact('health_interviews'));
     }
 

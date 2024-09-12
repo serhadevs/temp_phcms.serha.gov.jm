@@ -25,7 +25,8 @@
                         <a href="/health-interview/create/{{ $app_type_id }}/{{ $application->id }}"
                             class="btn btn-sm btn-primary mx-1">Add</a>
                     @endif
-                    <a href="" class="btn-warning btn btn-sm">Edit</a>
+                    <a href="/health-interview/edit/{{ $application?->healthInterviews?->id }}"
+                        class="btn-warning btn btn-sm">Edit</a>
                 </td>
                 <td>{{ $application->id }}</td>
                 <td>{{ $application->firstname }}</td>
