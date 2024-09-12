@@ -85,7 +85,8 @@
                                 <span class="text-danger">*</span>
                                 Permit Category
                             </label>
-                            <select id="" class="form-select" name="permit_category_id">
+                            <select id="" class="form-select" name="permit_category_id"
+                                onchange="populateSchedule(this.value)">
                                 <option readonly disabled selected>Please select a category</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}"
@@ -280,28 +281,29 @@
                                     max)</label>
                                 <textarea name="reason" id="" class="form-control" oninput="this.value = this.value.toUpperCase()">{{ old('reason') }}</textarea>
                             </div>
-                            
+
                         </div>
                         <div class="row mt-3">
                             <div class="col">
                                 <span class="text-danger">*</span>
                                 <label for="" class="form-label">Schedule Appointment</label>
-                                <select id="" class="form-select" name="exam_session">
+                                <select id="exam_session" class="form-select" name="exam_session">
                                     @if (isset($clinic_permit))
                                         <option value="{{ $clinic_permit->id }}">
                                             {{ $clinic_permit->address }} - {{ $clinic_permit->proposed_time }}
                                         </option>
                                     @else
-                                        <option disabled selected>Please select an exam session</option>
-                                        @foreach ($appointments_available as $appointment_avaiable)
+                                        {{-- <option disabled selected>Please select an exam session</option> --}}
+                                        {{-- @foreach ($appointments_available as $appointment_avaiable)
                                             <option value="{{ $appointment_avaiable->id }}"
                                                 {{ old('exam_session') == $appointment_avaiable->id ? 'selected' : '' }}>
+
                                                 {{ $appointment_avaiable->permitCategory?->name }}
                                                 - {{ strtoupper($appointment_avaiable->exam_day) }}
                                                 {{ $appointment_avaiable->exam_start_time }}
                                                 -{{ $appointment_avaiable?->availableSites?->name }}
                                             </option>
-                                        @endforeach
+                                        @endforeach --}}
                                     @endif
                                 </select>
                                 @error('exam_session')
@@ -328,7 +330,7 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                       
+
                         <div class="mt-4">
                             <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">
                                 Cancel Application
@@ -393,7 +395,41 @@
                 if ($("input[name='permit_type']:checked").val() == "student") {
                     document.getElementById("no_of_years").style.display = "";
                 }
+
+
+                if ({!! json_encode(old('permit_category_id')) !!}) {
+                    populateSchedule({!! json_encode(old('permit_category_id')) !!});
+                }
             }
+        </script>
+        <script>
+            function populateSchedule(permit_category_id) {
+                let options = [];
+                let i = 0;
+                schedule_select = document.getElementById('exam_session');
+                schedule_select.innerHTML = "";
+                var disabled_option = document.createElement('option');
+                disabled_option.setAttribute('disabled', true);
+                disabled_option.setAttribute('selected', true);
+                disabled_option.innerHTML = "Please select an exam session";
+                schedule_select.appendChild(disabled_option);
+                {!! json_encode($appointments_available) !!}.forEach((element) => {
+                    if (element['permit_category_id'] == permit_category_id) {
+                        options[i] = document.createElement('option');
+                        options[i].value = element["id"];
+                        options[i].innerHTML = element["category_name"] + ' - ' + element['exam_day'].toUpperCase() +
+                            ' - ' + element['exam_start_time'] + ' - ' + element["site_name"];
+                        schedule_select.appendChild(options[i]);
+                        if ({!! json_encode(old('exam_session')) !!} != "") {
+                            if ({!! json_encode(old('exam_session')) !!} == element["id"]) {
+                                options[i].setAttribute('selected', true);
+                            }
+                        }
+                    }
+                })
+                // console.log(appointments[0]['available_sites']);
+            }
+            // alert();
         </script>
         @include('partials.messages.loading_message')
     </div>

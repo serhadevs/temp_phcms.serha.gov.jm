@@ -118,10 +118,12 @@ class PermitApplicationController extends Controller
         $app_type_id = 1;
         $system_operation_type_id = 6;
 
-        foreach (ExamDates::with('examSites', 'permitCategory')
-            ->where('facility_id', auth()->user()->facility_id)
-            ->where('application_type_id', 1)
-            ->get() as $appointment) {
+        foreach (
+            ExamDates::with('examSites', 'permitCategory')
+                ->where('facility_id', auth()->user()->facility_id)
+                ->where('application_type_id', 1)
+                ->get() as $appointment
+        ) {
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
@@ -146,10 +148,12 @@ class PermitApplicationController extends Controller
 
         $appointment_available = [];
 
-        foreach (ExamDates::with('examSites', 'permitCategory')
-            ->where('facility_id', auth()->user()->facility_id)
-            ->where('application_type_id', 1)
-            ->get() as $appointment) {
+        foreach (
+            ExamDates::with('examSites', 'permitCategory')
+                ->where('facility_id', auth()->user()->facility_id)
+                ->where('application_type_id', 1)
+                ->get() as $appointment
+        ) {
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
@@ -348,11 +352,15 @@ class PermitApplicationController extends Controller
     public function newApplication()
     {
         $categories = PermitCategory::all();
-        $appointments_available = ExamDates::where('facility_id', auth()->user()->facility_id)
+        $appointments_available = ExamDates::join('exam_sites', 'exam_dates.exam_site_id', '=', 'exam_sites.id')
+        ->join('permit_categories', 'permit_categories.id', '=', 'exam_dates.permit_category_id')
+            ->where('exam_dates.facility_id', auth()->user()->facility_id)
+            ->select('exam_dates.id', 'permit_category_id', 'exam_day', 'exam_start_time', 'exam_sites.name as site_name', 'permit_categories.name as category_name')
+            // ->orderByRaw('DAY(exam_dates.exam_day)')
             ->where('application_type_id', 1)
             ->get();
 
-        //dd($appointments_available);
+        // dd($appointments_available[0]);
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
     }
 
