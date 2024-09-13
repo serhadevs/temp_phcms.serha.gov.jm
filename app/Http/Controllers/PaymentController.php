@@ -396,6 +396,9 @@ class PaymentController extends Controller
             $health_certif = HealthCertApplications::find($payment->application_id);
             $receipt_info['applicant_name'] = $health_certif->firstname . " " . $health_certif->lastname;
             $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
+        }else if($payment->application_type_id == 6){
+            $receipt_info['applicant_name'] = TouristEstablishments::find($payment->application_id)->establishment_name;
+            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
         }
 
         $receipt_info['application_no'] = $payment->application_id;
