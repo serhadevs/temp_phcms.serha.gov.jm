@@ -46,7 +46,7 @@
                             <input type="text" class="form-control" name="exam_date"
                                 value="{{ $clinic_permit->proposed_date }}" hidden>
                         @endif
-                        <div class="mt-3">
+                        <div class="">
                             <label for="" class="form-label">
                                 <span class="text-danger">*</span>
                                 Permit Type
@@ -404,29 +404,32 @@
         </script>
         <script>
             function populateSchedule(permit_category_id) {
-                let options = [];
-                let i = 0;
-                schedule_select = document.getElementById('exam_session');
-                schedule_select.innerHTML = "";
-                var disabled_option = document.createElement('option');
-                disabled_option.setAttribute('disabled', true);
-                disabled_option.setAttribute('selected', true);
-                disabled_option.innerHTML = "Please select an exam session";
-                schedule_select.appendChild(disabled_option);
-                {!! json_encode($appointments_available) !!}.forEach((element) => {
-                    if (element['permit_category_id'] == permit_category_id) {
-                        options[i] = document.createElement('option');
-                        options[i].value = element["id"];
-                        options[i].innerHTML = element["category_name"] + ' - ' + element['exam_day'].toUpperCase() +
-                            ' - ' + element['exam_start_time'] + ' - ' + element["site_name"];
-                        schedule_select.appendChild(options[i]);
-                        if ({!! json_encode(old('exam_session')) !!} != "") {
-                            if ({!! json_encode(old('exam_session')) !!} == element["id"]) {
-                                options[i].setAttribute('selected', true);
+                if ({!! !isset($clinic_permit) !!}) {
+                    let options = [];
+                    let i = 0;
+                    schedule_select = document.getElementById('exam_session');
+                    schedule_select.innerHTML = "";
+                    var disabled_option = document.createElement('option');
+                    disabled_option.setAttribute('disabled', true);
+                    disabled_option.setAttribute('selected', true);
+                    disabled_option.innerHTML = "Please select an exam session";
+                    schedule_select.appendChild(disabled_option);
+                    {!! json_encode($appointments_available) !!}.forEach((element) => {
+                        if (element['permit_category_id'] == permit_category_id) {
+                            options[i] = document.createElement('option');
+                            options[i].value = element["id"];
+                            options[i].innerHTML = element["category_name"] + ' - ' + element['exam_day']
+                            .toUpperCase() +
+                                ' - ' + element['exam_start_time'] + ' - ' + element["site_name"];
+                            schedule_select.appendChild(options[i]);
+                            if ({!! json_encode(old('exam_session')) !!} != "") {
+                                if ({!! json_encode(old('exam_session')) !!} == element["id"]) {
+                                    options[i].setAttribute('selected', true);
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
                 // console.log(appointments[0]['available_sites']);
             }
             // alert();
