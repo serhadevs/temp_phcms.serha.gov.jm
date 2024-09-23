@@ -79,7 +79,7 @@ class HealthInterviewController extends Controller
             'interval' => 'nullable|numeric|max:6'
         ]);
 
-        $end_date = new DateTime($timeline["ending_date"] . " 23:59:59");
+        $end_date = $timeline["ending_date"] . " 23:59:59";
 
         $health_interviews = HealthInterview::with('healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'healthCertApplication.appointment.examDate.examSites', 'permitApplication.establishmentClinics', 'user')
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
