@@ -194,7 +194,7 @@ class HealthInterviewController extends Controller
         ]);
 
         $app_type_id = $timeline["app_type_id"];
-        $end_date = new DateTime($timeline["ending_date"] . " 23:59:59");
+        $end_date = $timeline["ending_date"] . " 23:59:59";
 
         if ($timeline["app_type_id"] == "1") {
             $applications = PermitApplication::with('permitCategory', 'appointment.examDate.examSites', 'establishmentClinics', 'payment', 'user', 'healthInterviews')

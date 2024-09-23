@@ -70,7 +70,7 @@ class DownloadsController extends Controller
             'interval' => 'nullable|numeric|max:6'
         ]);
 
-        $end_date = new DateTime($timeline["ending_date"] . " 23:59:59");
+        $end_date = $timeline["ending_date"] . " 23:59:59";
 
         $downloads = Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 1)
@@ -132,7 +132,7 @@ class DownloadsController extends Controller
             'interval' => 'nullable|numeric|max:6'
         ]);
 
-        $end_date = new DateTime($timeline["ending_date"] . " 23:59:59");
+        $end_date = $timeline["ending_date"] . " 23:59:59";
 
         $downloads = Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 3)
@@ -220,7 +220,7 @@ class DownloadsController extends Controller
             'interval' => 'nullable|numeric|max:6'
         ]);
 
-        $end_date = new DateTime($timeline["ending_date"] . " 23:59:59");
+        $end_date = $timeline["ending_date"] . " 23:59:59";
 
         $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication')
             ->has('signOffs')
