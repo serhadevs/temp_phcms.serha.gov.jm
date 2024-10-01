@@ -300,6 +300,9 @@
                 <li class="sidebar-item">
                     <a href="/reports/inspections" class="sidebar-link">Inspections Report</a>
                 </li>
+                <li class="sidebar-item">
+                    <a href="{{ route('reports.category.zone') }}" class="sidebar-link">Est. Categories By Zone</a>
+                </li>
             </ul>
 
         </li>

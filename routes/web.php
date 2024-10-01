@@ -352,6 +352,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/backlog-report', [ReportController::class, 'backLogReport'])->name('reports.backlog');
   Route::get('/reports/productivity/create', [ReportController::class, 'productivityReportCreate'])->name('reports.productivity.create');
   Route::post('/reports/productivity', [ReportController::class, 'productivityReport'])->name('reports.productivity');
+  Route::get('/reports/category-by-zone',[ReportController::class, 'countCategoriesByZone'])->name('reports.category.zone');
+  Route::post('/reports/category-by-zone/show',[ReportController::class, 'viewCountCategoriesByZone'])->name('reports.category.show');
 
   //Inspections Report
   Route::get('/reports/inspections', [ReportController::class, 'createInspectionsReport'])->name('reports.inspections');

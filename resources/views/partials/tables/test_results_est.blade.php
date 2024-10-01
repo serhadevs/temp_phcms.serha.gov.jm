@@ -74,7 +74,7 @@
                 @endif
                 <td>{{ $application->testResults?->comments }}</td>
                 <td>{{ \Carbon\Carbon::parse($application->application_date)->format('d F Y') }}</td>
-                <td>{{ $application->telephone  }}</td>
+                <td>{{ $application->telephone }}</td>
                 <td class="text-nowrap">
                     @if (isset($module))
                         @if (empty($application->testResults))

@@ -413,6 +413,36 @@ class ReportController extends Controller
         return view('reports.inspections.report', compact('inspections'));
     }
 
+    public function countCategoriesByZone(){
+        return view('reports.categorybyzonecount.index');
+    }
+
+    public function viewCountCategoriesByZone(Request $request){
+
+        $incomingFields = $request->validate([
+            'starting_date' => 'required|date',
+            'ending_date' => 'required|date',
+            'zone' => 'required'
+        ]);
+
+        $counts = [];
+        $categoriesArray = EstablishmentCategories::pluck('id')->toArray();
+        $start_date = $incomingFields['starting_date'];
+        $end_date = $incomingFields['ending_date'];
+        $zone = $incomingFields['zone'];
+     
+        $query = EstablishmentApplications::whereBetween('created_at', [$start_date, $end_date])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('establishmentCategory')->where('zone',$zone)->get();
+
+        //dd($query);
+        foreach ($categoriesArray as $categoryId) {
+            $count = $query->where('establishment_category_id', $categoryId)->count();
+            $category_name = EstablishmentCategories::where('id', $categoryId)->first();
+            $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
+        }
+
+        return view('reports.categorybyzonecount.view',compact('start_date','end_date','counts','zone'));
+    }
+
     // public function productivityReportCreate(){
     //     return view('reports.productivity.index');
     // }
