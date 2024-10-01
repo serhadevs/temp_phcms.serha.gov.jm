@@ -25,7 +25,6 @@
             <th>Comments</th>
             <th>Application Date</th>
             <th>Phone Number</th>
-            <th>Zone</th>
             <th>Options</th>
         </tr>
     </thead>
@@ -76,7 +75,6 @@
                 <td>{{ $application->testResults?->comments }}</td>
                 <td>{{ \Carbon\Carbon::parse($application->application_date)->format('d F Y') }}</td>
                 <td>{{ $application->telephone  }}</td>
-                <td>{{ $application->zone }}</td>
                 <td class="text-nowrap">
                     @if (isset($module))
                         @if (empty($application->testResults))
