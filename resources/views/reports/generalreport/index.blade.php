@@ -108,6 +108,7 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
+                           
                             <div class="col mt-3">
                                 <select class="form-select" aria-label="Default select example" name="visit_purpose">
                                     <option selected disabled>Select Visit Purpose</option>
@@ -117,6 +118,21 @@
                                     <option value="complaint">Complaint</option>
                                 </select>
                                 @error('visit_purpose')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="col mt-3">
+                                <select class="form-select" aria-label="Default select example" name="zone">
+                                    <option selected disabled>Select Zone</option>
+                                    {{-- <option value="all">All Zones</option> --}}
+                                    <option value="1">Zone 1</option>
+                                    <option value="2">Zone 2</option>
+                                    <option value="3">Zone 3</option>
+                                    <option value="4">Zone 4</option>
+                                    <option value="5">Zone 5</option>
+                                    <option value="6">Zone 6</option>
+                                </select>
+                                @error('zone')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>

@@ -89,8 +89,10 @@ class ReportController extends Controller
                     $establishment_category_id = $request->est_category;
                     $critical_score = $request->critical_score;
                     $visit_purpose = $request->visit_purpose;
-                    // dd($visit_purpose);
-                    $applications = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'testResults')
+                    $zone = $request->zone;
+                  
+                 
+                    $applications= EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'testResults')
                         ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->when(
@@ -118,6 +120,10 @@ class ReportController extends Controller
                             function ($query, string $visit_purpose) {
                                 $query->whereRelation('testResults', 'visit_purpose', '=', $visit_purpose);
                             }
+                        )->when($zone, function($query, string $zone){
+                            $query->where('zone',$zone);
+                        }
+
                         )->get();
                     break;
                 case 4:
