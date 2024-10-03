@@ -393,6 +393,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/examsites',[ExamSitesController::class,'index'])->name('examsites.index');
   Route::get('/examsite/create',[ExamSitesController::class,'create'])->name('examsites.create');
   Route::get('/examsite/edit/{id}',[ExamSitesController::class, 'edit'])->name('examsites.edit');
+  Route::get('/examsite/{id}',[ExamSitesController::class, 'filter'])->name('examsite.filter');
   Route::get('/examsite/delete/{id}',[ExamSitesController::class, 'delete'])->name('examsites.delete');
 
 

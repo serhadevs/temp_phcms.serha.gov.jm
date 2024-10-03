@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>Name of Exam Site</th>
+            <th>Facility</th>
             <th>Date Created</th>
             <th>Actions</th>
          
@@ -11,6 +12,7 @@
         @foreach ($exam_sites as $exam_site)
             <tr>
                 <td>{{ $exam_site->name}}</td>
+                <td>{{ $exam_site?->facility?->name }}</td>
                 <td>{{ \Carbon\Carbon::parse($exam_site->created_at)->format('d F Y')}}</td>
                 <td>
                     <a href="{{ route('examsites.edit',['id'=>$exam_site->id]) }}" class="btn btn-primary">Edit</a>

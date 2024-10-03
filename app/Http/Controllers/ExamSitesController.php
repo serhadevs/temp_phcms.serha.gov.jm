@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\Auth;
 class ExamSitesController extends Controller
 {
     public function index(){
-        $exam_sites = ExamSites::where('facility_id', Auth::user()->facility_id)->get();
+        if(in_array(Auth::user()->role_id,[1])){
+            $exam_sites = ExamSites::with('facility')->get();
+        }else{
+            $exam_sites = ExamSites::with('facility')->where('facility_id', Auth::user()->facility_id)->get();
+        }
+        
         //dd($exam_sites);
         return view('examsites.index',compact('exam_sites'));
     }
@@ -20,7 +25,13 @@ class ExamSitesController extends Controller
     }
 
     public function edit(){
-        
+
+    }
+
+    public function filter($id){
+        //Find Facility in Database
+        $exam_sites = ExamSites::with('facility')->where('facility_id',$id)->get();
+        return view('examsites.index',compact('exam_sites'));
     }
 
 

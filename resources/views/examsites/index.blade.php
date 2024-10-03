@@ -18,13 +18,26 @@
                             </h2>
                         </div>
                         <div class="col-auto no-wrap">
-                            <div class="row">
-                                <div class="col">
-                                    <a href="{{ route('examsites.create') }}" class="btn btn-success">
-                                        Add Exam Site
-                                    </a>
+                            
+                            <div class="col-auto">
+                                <div class="dropdown">
+                                    <a href={{ route('examsites.create') }} class="btn btn-success">Create Exam Site</a>
+                                    @if(in_array(auth()->user()->role_id,[1]))
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        Filter Examsites
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{{ route('examsites.index') }}" class="dropdown-item">All</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('examsite.filter',['id'=>1]) }}">St Catherine</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('examsite.filter',['id'=>2]) }}">St Thomas</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('examsite.filter',['id'=>3]) }}">Kingston and St Andrew</a></li>
+                                        </li>
+                                        
+                                    </ul>
+                                    @endif
                                 </div>
-                               
+    
                             </div>
                         </div>
                     </div>
