@@ -234,6 +234,14 @@
             </ul>
         </li>
 
+        @if (in_array(auth()->user()->role_id, [1, 5, 10]))
+        <li class="sidebar-item">
+            <a href="{{ route('examsites.index') }}" class="sidebar-link">
+                <i class="bi bi-slash-circle"></i>
+                <span>Exam Sites</span></a>
+        </li>
+    @endif
+
         @if (in_array(auth()->user()->role_id, [1, 6]))
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -294,6 +302,8 @@
                         <a href="/report/transactions" class="sidebar-link">Edit Transactions Report</a>
                     </li>
                 @endif
+               
+
                 <li class="sidebar-item">
                     <a href="/reports/printed-cards" class="sidebar-link">Printed Cards Report</a>
                 </li>

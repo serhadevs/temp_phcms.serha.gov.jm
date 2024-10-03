@@ -28,6 +28,7 @@ use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ExamSitesController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Http\Controllers\Messaging;
 use App\Models\Downloads;
@@ -387,6 +388,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/messaging/resend/{id}', [Messaging::class, 'index'])->name('messages.resend');
   Route::post('/messaging/send/{id}', [Messaging::class, 'sendMessage'])->name('messages.send');
   Route::get('/messaging/index', [Messaging::class, 'view'])->name('messages.view');
+
+  //Exam Sites
+  Route::get('/examsites',[ExamSitesController::class,'index'])->name('examsites.index');
+  Route::get('/examsite/create',[ExamSitesController::class,'create'])->name('examsites.create');
+  Route::get('/examsite/edit/{id}',[ExamSitesController::class, 'edit'])->name('examsites.edit');
+  Route::get('/examsite/delete/{id}',[ExamSitesController::class, 'delete'])->name('examsites.delete');
 
 
   //Logout Routes
