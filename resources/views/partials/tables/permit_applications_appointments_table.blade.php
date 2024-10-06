@@ -19,21 +19,31 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($appointments as $appointment)
-            <tr>
-                <td>{{ $appointment->id }}</td>
-                <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d F Y') }}</td>
-                <td>{{ $appointment->examDate?->examSites?->name }}</td>
-                <td>{{ $appointment->examDate?->exam_start_time }}</td>
-                <td>
-                    <button href="" class="btn btn-warning btn-sm"
-                        onclick="editAppointment({{ json_encode($appointment_available) }}, {{ json_encode($appointment->examDate?->id) }}, {{ json_encode($appointment->appointment_date) }}, {{ json_encode($appointment->id) }})"
-                        type="button">
-                        Edit
-                    </button>
-                </td>
-            </tr>
-        @endforeach
+        @if (empty($permit_application->establishmentClinics))
+            @foreach ($appointments as $appointment)
+                <tr>
+                    <td>{{ $appointment->id }}</td>
+                    <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d F Y') }}</td>
+                    <td>{{ $appointment->examDate?->examSites?->name }}</td>
+                    <td>{{ $appointment->examDate?->exam_start_time }}</td>
+                    <td>
+                        <button href="" class="btn btn-warning btn-sm"
+                            onclick="editAppointment({{ json_encode($appointment_available) }}, {{ json_encode($appointment->examDate?->id) }}, {{ json_encode($appointment->appointment_date) }}, {{ json_encode($appointment->id) }})"
+                            type="button">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            @endforeach
+        @else
+        <tr>
+            <td>N/A</td>
+            <td>{{ $permit_application->establishmentClinics?->proposed_date }}</td>
+            <td>{{ $permit_application->establishmentClinics?->address }}</td>
+            <td>{{ $permit_application->establishmentClinics?->proposed_time }}</td>
+            <td></td>
+        </tr>
+        @endif
 
 </table>
 
