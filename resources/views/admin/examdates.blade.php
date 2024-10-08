@@ -18,7 +18,7 @@
                             <div class="col-auto no-wrap">
                                 <div class="row">
                                     <div class="col">
-                                        <a class="btn btn-success text-nowrap" href="/food-establishments/create">
+                                        <a class="btn btn-success text-nowrap" href="{{ route('examdate.create') }}">
                                             Add New Date
                                         </a>
                                     </div>

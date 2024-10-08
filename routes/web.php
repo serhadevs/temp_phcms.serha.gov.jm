@@ -399,6 +399,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Exam Dates
   Route::get('/examdates',[ExamDateController::class,'index'])->name('examdates');
+  Route::get('/examdate/create',[ExamDateController::class,'create'])->name('examdate.create');
+  Route::post('/examdate/store',[ExamDateController::class,'store'])->name('examdate.store');
+
 
 
 

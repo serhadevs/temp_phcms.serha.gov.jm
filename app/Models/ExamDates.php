@@ -16,18 +16,7 @@ class ExamDates extends Model
     // use Loggable;
 
     protected $table = "exam_dates";
-    protected $fillable = [
-        'id',
-        'facility_id',
-        'permit_category_id',
-        'application_type_id',
-        'exam_day',
-        'exam_start_time',
-        'exam_site_id',
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $guarded = [];
 
     public function examSites(): HasOne
     {
