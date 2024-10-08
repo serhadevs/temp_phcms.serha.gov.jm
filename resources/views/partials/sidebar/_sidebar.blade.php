@@ -326,6 +326,12 @@
                 </a>
             </li>
             <li class="sidebar-item">
+                <a href="{{ route('examdates') }}" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>Exam Dates</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
                 <a href="/admin/settings" class="sidebar-link">
                     <i class="lni lni-cog"></i>
                     <span>Adminsitrative Settings</span>

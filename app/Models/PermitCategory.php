@@ -22,5 +22,7 @@ class PermitCategory extends Model
         return $this->belongsTo(PermitApplication::class, 'id', 'permit_category_id');
     }
 
+    
+
     public $timestamps = true;
 }

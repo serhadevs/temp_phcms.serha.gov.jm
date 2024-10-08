@@ -28,6 +28,7 @@ use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ExamDateController;
 use App\Http\Controllers\ExamSitesController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Http\Controllers\Messaging;
@@ -395,6 +396,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/examsite/edit/{id}',[ExamSitesController::class, 'edit'])->name('examsites.edit');
   Route::get('/examsite/{id}',[ExamSitesController::class, 'filter'])->name('examsite.filter');
   Route::get('/examsite/delete/{id}',[ExamSitesController::class, 'delete'])->name('examsites.delete');
+
+  //Exam Dates
+  Route::get('/examdates',[ExamDateController::class,'index'])->name('examdates');
+
 
 
   //Logout Routes
