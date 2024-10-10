@@ -54,6 +54,7 @@ class FoodEstTestResultController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
             ->get();
+            //dd($applications);
         return view('test_center.food_est.index', compact('applications', 'app_type_id'));
     }
 
@@ -109,8 +110,12 @@ class FoodEstTestResultController extends Controller
             'critical_score' => 'required|numeric|min:0|max:100',
             'comments' => 'nullable',
             'application_id' => 'required',
-            'test_location' => 'required'
+            'test_location' => 'required',
+            'number_employees' => 'required|integer',
+            'number_emp_permits' => 'required|integer'
         ]);
+
+        //dd($food_est);
 
         $food_est["application_type_id"] = 3;
         $food_est["user_id"] = auth()->user()->id;
@@ -247,7 +252,9 @@ class FoodEstTestResultController extends Controller
             'critical_score' => 'required|numeric|min:0|max:100',
             'comments' => 'nullable',
             'test_location' => 'required',
-            'edit_reason' => 'required'
+            'edit_reason' => 'required',
+            'number_employees' => 'required|integer',
+            'number_emp_permits' => 'required|integer'
         ]);
 
         try {

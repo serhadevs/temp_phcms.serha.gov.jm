@@ -40,7 +40,7 @@ class EstablishmentApplications extends Model
         'created_at',
         'updated_at',
         'deleted_at',
-        'new_est'
+        'new_est',
     ];
 
     public $timestamps = true;

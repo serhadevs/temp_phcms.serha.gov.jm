@@ -35,6 +35,8 @@ class TestResult extends Model
         'updated_at',
         'deleted_at',
         'visit_purpose',
+        'number_employees',
+        'number_emp_permits',
     ];
 
     public $timestamps = true;

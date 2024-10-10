@@ -81,7 +81,7 @@
     <label for="" class="form-label">Date of Inspection</label>
     <input type="date" class="form-control editable-fields" name="test_date"
         value="{{ old('test_date') ? old('test_date') : (isset($result) ? $result->test_date : '') }}"
-        {{ isset($is_view) ? 'disabled' : '' }}>
+        {{ isset($is_view) ? 'disabled' : '' }} max="{{ date('Y-m-d') }}">
     @error('test_date')
         <p class="text-danger">{{ $message }}</p>
     @enderror
@@ -102,6 +102,27 @@
             value="{{ old('overall_score') ? old('overall_score') : (isset($result) ? $result->overall_score : '') }}"
             {{ isset($is_view) ? 'disabled' : '' }}>
         @error('overall_score')
+            <p class="text-danger">{{ $message }}</p>
+        @enderror
+    </div>
+
+  
+    <div class="col">
+        <label for="" class="form-label">Number of Employees</label>
+        <input type="number" class="form-control editable-fields" name="number_employees"
+            value="{{ old('number_employees') ? old('number_employees') : (isset($result) ? $result->number_employees : '') }}"
+            {{ isset($is_view) ? 'disabled' : '' }} min="0" max = "1000">
+        @error('number_employees')
+            <p class="text-danger">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="col">
+        <label for="" class="form-label">Number for Permits</label>
+        <input type="number" class="form-control editable-fields" name="number_emp_permits"
+            value="{{ old('number_emp_permits') ? old('number_emp_permits') : (isset($result) ? $result->number_emp_permits : '') }}"
+            {{ isset($is_view) ? 'disabled' : '' }} min="0" max="1000">
+        @error('number_emp_permits')
             <p class="text-danger">{{ $message }}</p>
         @enderror
     </div>

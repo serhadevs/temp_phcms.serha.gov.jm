@@ -10,6 +10,8 @@
             @if ($app_type_id == '3')
                 <th>Visit Purpose</th>
                 <th>Zone</th>
+                <th># of Employees</th>
+                <th># of Employees With Permits</th>
             @endif
             @if ($app_type_id == '6')
                 <th>Bed Capacity</th>
@@ -54,6 +56,9 @@
                 @if ($app_type_id == '3')
                     <td>{{ strtoupper($application->testResults?->visit_purpose) }}</td>
                     <td>{{ strtoupper($application->zone) }}</td>
+                    <td>{{ $application->testResults?->number_employees }}</td>
+                    <td>{{ $application->testResults?->number_emp_permits }}</td>
+
                 @endif
                 @if ($app_type_id == '6')
                     <td>{{ $application->bed_capacity }}</td>
