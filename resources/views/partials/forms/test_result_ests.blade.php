@@ -118,7 +118,7 @@
     </div>
 
     <div class="col">
-        <label for="" class="form-label">Number for Permits</label>
+        <label for="" class="form-label">Number of Employees with Permits</label>
         <input type="number" class="form-control editable-fields" name="number_emp_permits"
             value="{{ old('number_emp_permits') ? old('number_emp_permits') : (isset($result) ? $result->number_emp_permits : '') }}"
             {{ isset($is_view) ? 'disabled' : '' }} min="0" max="1000">
