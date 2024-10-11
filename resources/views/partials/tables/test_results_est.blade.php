@@ -56,8 +56,8 @@
                 @if ($app_type_id == '3')
                     <td>{{ strtoupper($application->testResults?->visit_purpose) }}</td>
                     <td>{{ strtoupper($application->zone) }}</td>
-                    <td>{{ $application->testResults?->number_employees }}</td>
-                    <td>{{ $application->testResults?->number_emp_permits }}</td>
+                    <td>{{ $application->testResults?->number_employees ? $application->testResults?->number_employees : 'None'  }}</td>
+                    <td>{{ $application->testResults?->number_emp_permits ? $application->testResults?->number_emp_permits : 'None'}}</td>
 
                 @endif
                 @if ($app_type_id == '6')
