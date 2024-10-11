@@ -21,7 +21,7 @@
                                     Start Date
                                 </label>
                                 <input type="date" class="form-control" name="starting_date" id="starting_date"
-                                    value="{{ old('starting_date') }}" onchange="calcInterval()" onkeyup="calcInterval()">
+                                    value="{{ old('starting_date') }}">
                                 @error('starting_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -31,7 +31,7 @@
                                     End Date
                                 </label>
                                 <input type="date" class="form-control" name="ending_date" id="ending_date"
-                                    onchange="calcInterval()" onkeyup="calcInterval()" value="{{ old('ending_date') }}" max="{{ date('Y-m-d') }}">
+                                 value="{{ old('ending_date') }}" max="{{ date('Y-m-d') }}">
                                 @error('ending_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror

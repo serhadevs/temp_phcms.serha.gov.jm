@@ -57,7 +57,7 @@ class ReportController extends Controller
             "starting_date" => "required|date",
             "ending_date" => "required|date",
             "type" => "required",
-            "interval" => 'required|numeric|min:0|max:6'
+            // "interval" => 'required|numeric|min:0|max:6'
         ]);
 
         $criteria['ending_date'] = $criteria['ending_date'] . ' 23:59:59';
