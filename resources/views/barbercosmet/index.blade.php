@@ -6,26 +6,15 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
+        @include('partials.messages.messages')
         <div class="container-fluid">
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <p class="text-success"><strong>{{ $message }}</strong></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if ($message = Session::get('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <p class="text-danger font-weight-bold">{{ $message }}</p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
             <div class="card">
                 @include('partials.messages.table_loading')
                 <div class="card-header">
                     <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
-                                All Barber/Cosmet.etc Applications
+                                All Barbers/Cosmetology Applications
                             </h2>
                         </div>
                         <div class="col-auto no-wrap">

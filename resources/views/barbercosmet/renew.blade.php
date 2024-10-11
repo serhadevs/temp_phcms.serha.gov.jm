@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-muted">
-                        Renew Barber/Cosmet Application {{ $application->firstname }} {{ $application->lastname }}
+                        Renew Barber/Cosmetology Application for {{ $application->firstname }} {{ $application->lastname }}
                     </h2>
                     <hr>
                     <form method="POST" action="{{ route('barber-cosmet.application.renew', ['id' => $application->id]) }}">
@@ -67,10 +67,10 @@
                             <div class="col">
                                 <label for="" class="form-label">
                                     <span class="text-danger fw-bold">*</span>
-                                    Birth Date
+                                    Date of Birth
                                 </label>
                                 <input type="date" class="form-control" name="date_of_birth"
-                                    value="{{ old('date_of_birth') ? old('date_of_birth') : $application->date_of_birth }}">
+                                    value="{{ old('date_of_birth') ? old('date_of_birth') : $application->date_of_birth }}" max="{{ date('Y-m-d') }}">
                                 @error('date_of_birth')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -108,7 +108,7 @@
                                 @enderror
                             </div>
                             <div class="col">
-                                <label for="" class="form-label">Email</label>
+                                <label for="" class="form-label">Email Address</label>
                                 <input type="email" class="form-control" name="email"
                                     value="{{ old('email') ? old('email') : $application->email }}"
                                     oninput="this.value=this.value.toUpperCase()">
@@ -161,7 +161,7 @@
                             <div class="col">
                                 <label for="" class="form-label">
                                     <span class="text-danger fw-bold">*</span>
-                                    Have you ever applied for HealthCertification?
+                                    Have you ever applied for Health Certification?
                                 </label>
                                 <div class="form-check">
                                     <input type="radio" class="form-check-input" value="1" name="applied_before"
@@ -198,7 +198,7 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label for="" class="form-label">If Reused, state reason(20 chars min, 100
+                            <label for="" class="form-label">If Refused, state reason(20 chars min, 100
                                 max)</label>
                             <textarea name="reason" class="form-control" oninput="this.value=this.value.toUpperCase()">{{ old('reason') ? old('reason') : $application->reason }}</textarea>
                             @error('reason')
@@ -243,7 +243,7 @@
                                 Application Date
                             </label>
                             <input type="date" class="form-control" name="application_date"
-                                value="{{ old('application_date') }}">
+                                value="{{ old('application_date') }}" max="{{ date('Y-m-d') }}">
                             @error('application_date')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror

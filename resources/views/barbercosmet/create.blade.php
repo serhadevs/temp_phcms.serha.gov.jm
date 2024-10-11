@@ -63,10 +63,10 @@
                             <div class="col">
                                 <label for="" class="form-label">
                                     <span class="text-danger fw-bold">*</span>
-                                    Birth Date
+                                    Date of Birth
                                 </label>
                                 <input type="date" class="form-control" name="date_of_birth"
-                                    value="{{ old('date_of_birth') }}">
+                                    value="{{ old('date_of_birth') }}" max="{{ date('Y-m-d') }}">
                                 @error('date_of_birth')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -152,7 +152,7 @@
                             <div class="col">
                                 <label for="" class="form-label">
                                     <span class="text-danger fw-bold">*</span>
-                                    Have you ever applied for HealthCertification?
+                                    Have you ever applied for Health Certification?
                                 </label>
                                 <div class="form-check">
                                     <input type="radio" class="form-check-input" value="1" name="applied_before"
@@ -189,7 +189,7 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label for="" class="form-label">If Reused, state reason(20 chars min, 100
+                            <label for="" class="form-label">If Refused, state reason(20 chars min, 100
                                 max)</label>
                             <textarea name="reason" class="form-control" oninput="this.value=this.value.toUpperCase()">{{ old('reason') }}</textarea>
                             @error('reason')

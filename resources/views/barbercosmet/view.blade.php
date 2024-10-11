@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="col">
                             <h2 class="text-muted">
-                                Barber/Cosmet. Application {{ $application->firstname . ' ' . $application->lastname }}
+                                Barber/Cosmetology Application for {{ $application->firstname . ' ' . $application->lastname }}
                             </h2>
                         </div>
                         <div class="col-auto">
@@ -256,7 +256,7 @@
                                 <div class="col">
                                     <label for="" class="form-label">
                                         <span class="text-danger fw-bold">*</span>
-                                        Have you ever applied for HealthCertification?
+                                        Have you ever applied for Health Certification?
                                     </label>
                                     <select name="applied_before" id="" class="form-select employ_inputs"
                                         disabled>
@@ -291,7 +291,7 @@
                                 </div>
                             </div>
                             <div class="mt-3">
-                                <label for="" class="form-label">If Reused, state reason(20 chars min, 100
+                                <label for="" class="form-label">If Refused, state reason(20 chars min, 100
                                     max)</label>
                                 <textarea name="reason" class="form-control employ_inputs" oninput="this.value=this.value.toUpperCase()" disabled>{{ old('reason') ? old('reason') : $application?->reason }}</textarea>
                                 @error('reason')
