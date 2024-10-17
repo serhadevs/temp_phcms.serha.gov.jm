@@ -312,72 +312,100 @@
                                     </div>
                                     <div class="card mt-2">
                                         <h5 class="card-header text-muted">
-                                           Permit Processing Tracker
+                                            Printed Card Information
                                         </h5>
-                                        
+
+                                        @if ($permit_application->printedcard && $permit_application->printedcard?->created_at)
+                                            <div class="card-body">
+                                                The Card was printed on
+                                                {{ \Carbon\Carbon::parse($permit_application->printedcard->created_at)->format('d F Y') }}
+                                            </div>
+                                        @elseif($permit_application->signOffs && $permit_application->signOffs?->created_at)
+                                            <div class="card-body">
+                                                The Card was signed off but not yet printed.
+                                            </div>
+                                        @else
+                                            <div class="card-body">
+                                                No Card Information is available
+                                            </div>
+                                        @endif
+
+
+                                    </div>
+                                    <div class="card mt-2">
+                                        <h5 class="card-header text-muted">
+                                            Permit Processing Tracker
+                                        </h5>
+
                                         <div class="card-body">
                                             <ul class="list-group">
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                  Days between Application and Appointment Date
-                                                  <span class="badge bg-primary rounded-pill">{{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)) }} </span>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Days between Application and Appointment Date
+                                                    <span
+                                                        class="badge bg-primary rounded-pill">{{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)) }}
+                                                    </span>
                                                 </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                 Days between Test Completed and Test Score Uploaded
-                                                 <span class="badge bg-primary rounded-pill">
-                                                    @if($permit_application->testResults && $permit_application->testResults->created_at)
-                                                        {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
-                                                    @else
-                                                        0
-                                                    @endif
-                                                </span>
-                                                
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Days between Test Completed and Test Score Uploaded
+                                                    <span class="badge bg-primary rounded-pill">
+                                                        @if ($permit_application->testResults && $permit_application->testResults->created_at)
+                                                            {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
+                                                        @else
+                                                            0
+                                                        @endif
+                                                    </span>
+
                                                 </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                  Days between Test Completed and Medical Interview
-                                                  <span class="badge bg-primary rounded-pill">
-                                                    @if($permit_application->healthInterviews && $permit_application->healthInterviews?->created_at)
-                                                    {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->healthInterviews?->created_at)) }}
-                                                    @else
-                                                    0
-                                                    @endif
-                                                </span>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Days between Test Completed and Medical Interview
+                                                    <span class="badge bg-primary rounded-pill">
+                                                        @if ($permit_application->healthInterviews && $permit_application->healthInterviews?->created_at)
+                                                            {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->healthInterviews?->created_at)) }}
+                                                        @else
+                                                            0
+                                                        @endif
+                                                    </span>
                                                 </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Test Completed and Sign Off Completed
                                                     <span class="badge bg-primary rounded-pill">
-                                                        @if($permit_application->signOffs && $permit_application->signOffs?->created_at )
-                                                        {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->signOffs?->created_at)) }}
+                                                        @if ($permit_application->signOffs && $permit_application->signOffs?->created_at)
+                                                            {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->signOffs?->created_at)) }}
                                                         @else
-                                                        0
+                                                            0
                                                         @endif
                                                     </span>
-                                                  </li>
-                                                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                </li>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days Between Test Completion and Card Printing
                                                     <span class="badge bg-primary rounded-pill">
-                                                        @if($permit_application->printedcard && $permit_application->printedcard?->created_at)
-
-                                                        {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at)) }}
-
+                                                        @if ($permit_application->printedcard && $permit_application->printedcard?->created_at)
+                                                            {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at)) }}
                                                         @else
                                                             0
                                                         @endif
                                                     </span>
-                                                  </li>
+                                                </li>
 
-                                                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                   Total Days from Application to Printing of Card
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Total Days from Application to Printing of Card
                                                     <span class="badge bg-primary rounded-pill">
-                                                        @if($permit_application->printedcard && $permit_application->printedcard?->created_at)
-                                                        {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at)) }}
+                                                        @if ($permit_application->printedcard && $permit_application->printedcard?->created_at)
+                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at)) }}
                                                         @else
                                                             0
                                                         @endif
                                                     </span>
-                                                  </li>
-                                              </ul>
+                                                </li>
+                                            </ul>
                                         </div>
-                                       
+
                                     </div>
                                 </div>
                             </div>
@@ -909,7 +937,7 @@
                     'firstname'] + ' ' + permitApplication['lastname']
                 document.getElementById('message_type').innerHTML = message.emailtypes.name ? message.emailtypes.name : 'N/A';
                 document.getElementById('status').innerHTML = message.status.toUpperCase()
-                document.getElementById('sent_at').innerHTML = message.user.firstname + " " + message.user.lastname 
+                document.getElementById('sent_at').innerHTML = message.user.firstname + " " + message.user.lastname
                 document.getElementById('sent_by').innerHTML = new Date(message.sent_at).toLocaleDateString('en-GB', {
                     day: 'numeric',
                     month: 'long',
