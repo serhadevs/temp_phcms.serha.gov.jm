@@ -302,6 +302,13 @@
                         <a href="/report/transactions" class="sidebar-link">Edit Transactions Report</a>
                     </li>
                 @endif
+
+                @if(in_array(auth()->user()->role_id,[1]))
+                <li class="sidebar-item">
+                    <a href="{{ route('report.generate.ai') }}" class="sidebar-link">AI Generated Report</a>
+                </li>
+                @endif
+
                
 
                 <li class="sidebar-item">

@@ -127,4 +127,8 @@ class PermitApplication extends Model
     {
         return $this->hasOne(Appointments::class, 'permit_application_id', 'id');
     }
+
+    public function printedcard(): HasOne{
+        return $this->hasOne(PrintedPermitCards::class,'application_id','id');
+    }
 }

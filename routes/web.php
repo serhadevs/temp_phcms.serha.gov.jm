@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdvanceSearchController;
+use App\Http\Controllers\AIReportGeneratorController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberCosmetApplicationsController;
@@ -401,6 +402,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/examdates',[ExamDateController::class,'index'])->name('examdates');
   Route::get('/examdate/create',[ExamDateController::class,'create'])->name('examdate.create');
   Route::post('/examdate/store',[ExamDateController::class,'store'])->name('examdate.store');
+
+  //Ai Generated Reports
+  Route::controller(AIReportGeneratorController::class)->group(function(){
+    Route::get('/reports/create-generate-ai-report','index')->name('report.generate.ai');
+    Route::post('/reports/ai-report','generateReport')->name('reports.generate.report');
+  });
 
 
 

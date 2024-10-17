@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.7",
         "mantas-done/laravel-apm": "^1.0",
+        "openai-php/laravel": "^0.10.1",
         "yajra/laravel-datatables": "9.0",
         "yungts97/laravel-user-activity-log": "^1.4"
     },
@@ -59,7 +60,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

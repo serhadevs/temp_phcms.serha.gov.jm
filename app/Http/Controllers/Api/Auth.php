@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequestApi;
+use App\Http\Requests\UserLoginRequest;
 use App\Models\OnlineUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -63,5 +65,39 @@ class Auth extends Controller
         'status' => 'failed',
         'message' => 'No authenticated user found'
     ], 401);
+    }
+
+    public function loginuser(UserLoginRequest $request){
+
+
+        //Validate the user information
+       $credentials = $request->validated();
+
+       $user = User::where('email',$credentials['email'])->first();
+
+       //dd($user);
+       if(!$user || !Hash::check($credentials['password'],$user->password)){
+           return response([
+               'status' => 'failed',
+               'message' => 'Invalid Username or Password',
+
+           ],422);
+       }
+
+       //Create Token 
+
+       $token = $user->createToken('PHCMS')->plainTextToken;
+
+       
+       
+       // Return the response
+       return response()->json([
+           'status' => 'success',
+           'message' => 'Login successful',
+           //'user' => $user,
+           'access_token' => $token,
+           'token_type'    => 'Bearer'
+           
+       ], 201);
     }
 }
