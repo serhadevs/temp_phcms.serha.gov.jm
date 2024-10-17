@@ -323,7 +323,14 @@
                                                 </li>
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                                  Days between Test Completed and Test Score Uploaded
-                                                  <span class="badge bg-primary rounded-pill">{{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults?->created_at)) }}</span>
+                                                 <span class="badge bg-primary rounded-pill">
+                                                    @if($permit_application->testResults && $permit_application->testResults->created_at)
+                                                        {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
+                                                    @else
+                                                        0
+                                                    @endif
+                                                </span>
+                                                
                                                 </li>
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                                   Days between Test Completed and Medical Interview
