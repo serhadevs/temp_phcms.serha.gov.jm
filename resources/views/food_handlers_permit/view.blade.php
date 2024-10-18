@@ -345,7 +345,7 @@
                                                     <span
                                                         class="badge bg-primary rounded-pill">
                                                         @if($permit_application->appointment)
-                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)) }}
+                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment->appointment_date)) }}
                                                        @else
 
                                                        0 
