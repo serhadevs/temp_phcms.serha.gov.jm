@@ -343,7 +343,16 @@
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Application and Appointment Date
                                                     <span
-                                                        class="badge bg-primary rounded-pill">{{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)) }}
+                                                        class="badge bg-primary rounded-pill">
+                                                        @if($permit_application->appointment && $permit_application->appointment[0]->appointment_date )
+                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)) }}
+                                                       @else
+
+                                                       0 
+
+                                                       @endif
+                                                        
+
                                                     </span>
                                                 </li>
                                                 <li

@@ -175,7 +175,7 @@
                                 @enderror
                             </div>
                             <div class="col">
-                                <label for="" class="form-label">Was current etablishment closed?</label>
+                                <label for="" class="form-label">Was current establishment closed?</label>
                                 <input type="text" class="form-control" id="current_est_closed"
                                     value="{{ $est_application->current_est_closed == '1' ? 'YES' : 'NO' }}" disabled>
                                 <div class="form-check" style="display:none">
@@ -272,9 +272,35 @@
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
 
+                   <div class="card mt-3">
+                    <div class="card-header">
+                        <h5 class="text-muted">Certificate Processing Tracker</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                              Days between Application Date and Inspection
+                              <span class="badge bg-primary rounded-pill"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                              A second list item
+                              <span class="badge bg-primary rounded-pill">2</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                              A third list item
+                              <span class="badge bg-primary rounded-pill">1</span>
+                            </li>
+                          </ul>
+                    </div>
+                   </div>
+
+                    
+
                 </div>
+               
                 <div class="card-footer">
                     <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous Page</a>
                 </div>
