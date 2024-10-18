@@ -342,7 +342,7 @@
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Application and Appointment Date
-                                                    <span
+                                                    {{-- <span
                                                         class="badge bg-primary rounded-pill">
                                                         @if($permit_application->appointment)
                                                             {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment->appointment_date)) }}
@@ -353,7 +353,7 @@
                                                        @endif
                                                         
 
-                                                    </span>
+                                                    </span> --}}
                                                 </li>
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
