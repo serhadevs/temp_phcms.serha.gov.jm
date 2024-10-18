@@ -342,52 +342,69 @@
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Application and Appointment Date
-                                                    {{-- <span
-                                                        class="badge bg-primary rounded-pill">
-                                                        @if($permit_application->appointment)
-                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment->appointment_date)) }}
-                                                       @else
+                                                    <span class="badge bg-primary rounded-pill">
 
-                                                       0 
+                                                        @if ($permit_application->establishmentClinics)
+                                                            {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->created_at)) }}
+                                                        @elseif($permit_application->appointment->isNotEmpty())
+                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)) }}
+                                                        @else
+                                                            0
+                                                        @endif
 
-                                                       @endif
-                                                        
 
-                                                    </span> --}}
+                                                    </span>
                                                 </li>
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Test Completed and Test Score Uploaded
-                                                    {{-- <span class="badge bg-primary rounded-pill">
-                                                        @if ($permit_application->testResults && $permit_application->testResults->created_at)
-                                                            {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
+                                                    <span class="badge bg-primary rounded-pill">
+                                                       
+                                                        @if ($permit_application->establishmentClinics)
+                                                            {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
+                                                        @elseif(
+                                                            $permit_application->testResults &&
+                                                                $permit_application->testResults->created_at &&
+                                                                $permit_application->appointment->isNotEmpty())
+                                                            {{ \Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
                                                         @else
                                                             0
                                                         @endif
-                                                    </span> --}}
+
+                                                    </span>
 
                                                 </li>
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Test Completed and Medical Interview
-                                                    {{-- <span class="badge bg-primary rounded-pill">
-                                                        @if ($permit_application->healthInterviews && $permit_application->healthInterviews?->created_at)
-                                                            {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->healthInterviews?->created_at)) }}
+                                                    <span class="badge bg-primary rounded-pill">
+
+                                                        @if (
+                                                            $permit_application->healthInterviews &&
+                                                                $permit_application->healthInterviews?->created_at &&
+                                                                $permit_application->appointment->isNotEmpty())
+                                                            {{ \Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->healthInterviews?->created_at)) }}
                                                         @else
                                                             0
                                                         @endif
-                                                    </span> --}}
+                                                    </span>
                                                 </li>
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Test Completed and Sign Off Completed
-                                                    {{-- <span class="badge bg-primary rounded-pill">
-                                                        @if ($permit_application->signOffs && $permit_application->signOffs?->created_at)
+                                                    <span class="badge bg-primary rounded-pill">
+
+                                                        @if ($permit_application->establishmentClinics)
+                                                            {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->signOffs?->created_at)) }}
+                                                        @elseif (
+                                                            $permit_application->signOffs &&
+                                                                $permit_application->signOffs?->created_at &&
+                                                                $permit_application->appointment->isNotEmpty())
                                                             {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->signOffs?->created_at)) }}
                                                         @else
                                                             0
                                                         @endif
-                                                    </span> --}}
+                                                    </span>
                                                 </li>
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
