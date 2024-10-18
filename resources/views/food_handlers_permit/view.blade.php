@@ -344,7 +344,7 @@
                                                     Days between Application and Appointment Date
                                                     <span
                                                         class="badge bg-primary rounded-pill">
-                                                        @if($permit_application->appointment && $permit_application->appointment[0]->appointment_date )
+                                                        @if($permit_application->appointment)
                                                             {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)) }}
                                                        @else
 
