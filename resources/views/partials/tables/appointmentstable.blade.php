@@ -17,7 +17,7 @@
                 <td>{{ $appointment->id }}</td>
                 <td>{{ $appointment?->applications?->firstname }}</td>
                 <td>{{ $appointment?->applications?->lastname }}</td>
-                <td>{{ $appointment?->examDate?->permitCategory->name }}</td>
+                <td>{{ $appointment?->examDate?->permitCategory->name ?? 'N/A'}}</td>
                 <td>{{ $appointment?->examDate?->exam_start_time }}</td>
                 <td>{{ $appointment?->examSites?->name ?? 'N/A' }}</td>
                 <td></td>
