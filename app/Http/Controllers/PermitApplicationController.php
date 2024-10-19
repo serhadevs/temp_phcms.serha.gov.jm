@@ -104,7 +104,7 @@ class PermitApplicationController extends Controller
             ->find($application_id);
         //dd($permit_application);
 
-        dd($permit_application);
+        //dd($permit_application);
 
         $categories = PermitCategory::all();
 

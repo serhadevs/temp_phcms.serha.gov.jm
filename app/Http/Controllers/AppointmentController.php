@@ -40,7 +40,6 @@ class AppointmentController extends Controller
            // dd($weekDays[$day]);
             $exam_dates = ExamDates::with('permitCategory','examSites')->where('permit_category_id',$id)
             ->where('facility_id',auth()->user()->facility_id)
-           
             ->where('exam_day',$weekDays[$day])
             ->get();
 
