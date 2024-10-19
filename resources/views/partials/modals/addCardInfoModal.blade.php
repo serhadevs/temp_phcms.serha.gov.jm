@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="cardpickup" >
+                <form id="cardpickup">
                     @csrf
                  
                     <div class="form-group mt-2" style="display: flex; align-items: center;">
@@ -52,8 +52,7 @@
                 _token: form.find('input[name="_token"]').val()
             }
 
-            console.log(formData)
-
+            
             $.ajax({
                 url: "/collected-card/store",
                 method: "POST",

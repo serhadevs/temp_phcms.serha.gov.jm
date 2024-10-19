@@ -56,50 +56,26 @@
                                             Test Results
                                         </h5>
                                         <div class="card-body">
+
                                             @if (!empty($permit_application->testResults))
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold text-nowrap">
-                                                            Exam Site
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
-                                                        {{ $permit_application->testResults?->test_location }}
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold text-nowrap">
-                                                            Trainer(s)
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
-                                                        {{ $permit_application->testResults?->staff_contact }}
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold text-nowrap">
-                                                            Test Score
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
-                                                        {{ $permit_application->testResults?->overall_score }}
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold text-nowrap">
-                                                            Comments
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
-                                                        {{ $permit_application->testResults?->comments }}
-                                                    </div>
-                                                </div>
+                                            <ul class="list-group">
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Exam Site
+                                                  <span class="badge text-bg-primary rounded-pill"> {{ $permit_application->testResults?->test_location }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Trainer(s)
+                                                  <span class="badge text-bg-primary rounded-pill"> {{ $permit_application->testResults?->staff_contact }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Test Score
+                                                  <span class="badge text-bg-primary rounded-pill"> {{ $permit_application->testResults?->overall_score }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Comments
+                                                  <span class="badge text-bg-primary rounded-pill">  {{ $permit_application->testResults?->comments }}</span>
+                                                </li>
+                                              </ul>
                                             @else
                                                 No Test Results Available
                                             @endif
@@ -111,137 +87,93 @@
                                         </h5>
                                         <div class="card-body">
                                             @if (!empty($permit_application->healthInterviews))
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Literacy
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                <ul class="list-group">
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Literacy
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->literate == '1' ? 'success' : 'danger' }}">
                                                             {{ $permit_application->healthInterviews?->literate == '1' ? 'YES' : 'NO' }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Typhiod
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Typhiod
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->typhoid == '1' ? 'success' : 'danger' }}">
                                                             {{ $permit_application->healthInterviews?->typhoid == '1' ? 'YES' : 'NO' }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Whitlow
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Whitlow
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->whitlow == 'absent' ? 'success' : 'danger' }}">
                                                             {{ strtoupper($permit_application->healthInterviews?->whitlow) }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Hands
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Hands
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->hands_condition == 'satisfactory' ? 'success' : 'danger' }}">
                                                             {{ strtoupper($permit_application->healthInterviews?->hands_condition) }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Fingernails
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Fingernails
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->fingernails_condition == 'satisfactory' ? 'success' : 'danger' }}">
                                                             {{ strtoupper($permit_application->healthInterviews?->fingernails_condition) }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Teeth
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Teeth
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->teeth_condition == 'satisfactory' ? 'success' : 'danger' }}">
                                                             {{ strtoupper($permit_application->healthInterviews?->teeth_condition) }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Lived Abroad
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Lived Abroad
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->lived_abroad == '1' ? 'success' : 'danger' }}">
                                                             {{ $permit_application->healthInterviews?->lived_abroad == '1' ? 'YES' : 'NO' }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Travlled Abroad
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Travelled Abroad
                                                         <span
                                                             class="badge text-bg-{{ $permit_application->healthInterviews?->travel_abroad == '1' ? 'success' : 'danger' }}">
                                                             {{ $permit_application->healthInterviews?->travel_abroad == '1' ? 'YES' : 'NO' }}
                                                         </span>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col col-md-4 text-start">
-                                                        <span class="fw-bold">
-                                                            Symptoms
-                                                        </span>
-                                                    </div>
-                                                    <div class="col text-start">
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Symptoms
                                                         @foreach ($permit_application->healthInterviews->healthInterviewSymptom as $symp)
                                                             {{ $symp->symptoms?->name }}<br />
                                                         @endforeach
-                                                    </div>
-                                                </div>
+                                                    </li>
+
+                                                </ul>
                                             @else
-                                                No Health Interview Information Available
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    No Health Interview Information Available
+                                                </li>
+
                                             @endif
                                         </div>
                                     </div>
 
-                                    
+
                                     <div class="card mt-2">
                                         <h5 class="card-header text-muted">
                                             Messages
@@ -311,7 +243,7 @@
 
                                         @endif
                                     </div>
-                                    
+
                                     <div class="card mt-2">
                                         <h5 class="card-header text-muted">
                                             Printed Card Information
@@ -332,36 +264,8 @@
                                             </div>
                                         @endif
                                     </div>
-                                     {{-- Card Collected --}}
-                                     <div class="card mt-3">
-                                        <h5 class="card-header text-muted">
-                                            Card Pickup Details
-                                        </h5>
-
-                                        @if ($permit_application->collected_cards)
-                                            <div class="card-body">
-                                                Card was collected by
-                                                {{ $permit_application->collected_cards?->collected_by }} on
-                                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
-                                            </div>
-                                        @elseif($permit_application->printedcard)
-                                            <div class="card-body">
-                                                Card is ready for pickup
-                                            </div>
-
-                                            <div class="card-footer">
-                                                <button type="button" class="btn btn-success mt-1"
-                                                    data-bs-toggle="modal"onclick="populateCardPickUpModal({{ json_encode($permit_application->id) }}, {{ json_encode($permit_application->payment) }})"
-                                                    data-bs-target="#cardModal">Enter Pickup Details</button>
-                                            </div>
-                                            @include('partials.modals.addCardInfoModal')
-                                        @else
-                                            <div class="card-body">
-                                                Card is not ready for pick up
-                                            </div>
-                                        @endif
-                                    </div>
                                     {{-- Card Collected --}}
+
 
 
 
@@ -467,7 +371,7 @@
 
                                     </div>
 
-                                   
+
 
 
 
@@ -792,46 +696,7 @@
                                         </div>
                                     </div>
                                 @endif
-                                {{-- <div class="card mt-3">
-                                    <h4 class="card-header text-muted">
-                                        Approving Officer
-                                    </h4>
-                                    <div class="card-body">
-                                        <div>
-                                            @if ($permi)
-                                            <div class="alert alert-light" role="alert">
-                                                Awaiting Sign Off
-                                              </div>
-                                            @else
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>First Name</th>
-                                                            <th>Last Name</th>
-                                                            <th>Approval Date</th>
-                                                        </tr>
-                                                    </thead>
 
-                                                    <tbody>
-
-                                                        @foreach ($sign_off_user as $user)
-                                                            <tr> <!-- Move the <tr> inside the loop -->
-                                                                <td>{{ $user->user->firstname }}</td>
-                                                                <td>{{ $user->user->lastname }}</td>
-                                                                <td>{{ \Carbon\Carbon::parse($user->sign_off_date)->format('d F Y') }}
-                                                                </td>
-
-                                                            </tr>
-                                                        @endforeach
-                                            @endif
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                </div> --}}
-
-                                {{-- <p>{{ $permit_application->signOffs?->user_id }}</p> --}}
                                 <div class="class mt-4">
                                     <a class="btn btn-warning" id="btnEdit">
                                         Edit Application
@@ -840,188 +705,218 @@
                                         Cancel
                                     </a>
                                 </div>
-                            </div>
-                        </div>
+
+
                     </form>
+                    {{-- Card Collected --}}
+                    <div class="card mt-3">
+                        <h5 class="card-header text-muted">
+                            Card Pickup Details
+                        </h5>
 
+                        @if ($permit_application->collected_cards)
+                            <div class="card-body">
+                                Card was collected by
+                                {{ $permit_application->collected_cards?->collected_by }} on
+                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
+                            </div>
+                        @elseif($permit_application->printedcard)
+                            <div class="card-body">
+                                Card is ready for pickup
+                            </div>
 
-
-
+                            <div class="card-footer">
+                                <button type="button" class="btn btn-success mt-1"
+                                    data-bs-toggle="modal"onclick="populateCardPickUpModal({{ json_encode($permit_application->id) }}, {{ json_encode($permit_application->payment) }})"
+                                    data-bs-target="#cardModal">Enter Pickup Details</button>
+                            </div>
+                            @include('partials.modals.addCardInfoModal')
+                        @else
+                            <div class="card-body">
+                                Card is not ready for pick up
+                            </div>
+                        @endif
+                    </div>
+                    {{-- Card Collected --}}
                 </div>
             </div>
         </div>
 
-        {{-- Payment Modal --}}
-        <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5 payment-header" id="staticBackdropLabel"></h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+    </div>
+    </div>
+
+    {{-- Payment Modal --}}
+    <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 payment-header" id="staticBackdropLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <label for="" class="form-label">Application ID</label>
+                        <label for="" class="form-control" style="background:#e9ecef"
+                            id="payment_ap_id"></label>
                     </div>
-                    <div class="modal-body">
-                        <div class="">
-                            <label for="" class="form-label">Application ID</label>
+                    <div class="mt-3">
+                        <label for="" class="form-label">Receipt Number</label>
+                        <label for="" class="form-control" style="background:#e9ecef"
+                            id="payment_receipt_no"></label>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col">
+                            <label for="" class="form-label">Payment Date</label>
                             <label for="" class="form-control" style="background:#e9ecef"
-                                id="payment_ap_id"></label>
+                                id="payment_payment_date"></label>
                         </div>
-                        <div class="mt-3">
-                            <label for="" class="form-label">Receipt Number</label>
+                        <div class="col">
+                            <label for="" class="form-label">Appointment Date</label>
                             <label for="" class="form-control" style="background:#e9ecef"
-                                id="payment_receipt_no"></label>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label for="" class="form-label">Payment Date</label>
-                                <label for="" class="form-control" style="background:#e9ecef"
-                                    id="payment_payment_date"></label>
-                            </div>
-                            <div class="col">
-                                <label for="" class="form-label">Appointment Date</label>
-                                <label for="" class="form-control" style="background:#e9ecef"
-                                    id="payment_appointment_date"></label>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label for="" class="form-label">Total Cost</label>
-                                <label for="" class="form-control" style="background:#e9ecef"
-                                    id="payment_tot_cost"></label>
-                            </div>
-                            <div class="col">
-                                <label for="" class="form-label">Amt. Paid</label>
-                                <label for="" class="form-control" style="background:#e9ecef"
-                                    id="payment_amt_paid"></label>
-                            </div>
-                            <div class="col">
-                                <label for="" class="form-label">Change</label>
-                                <label for="" class="form-control" style="background:#e9ecef"
-                                    id="payment_change"></label>
-                            </div>
+                                id="payment_appointment_date"></label>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Close Payment
-                            Info</button>
+                    <div class="row mt-3">
+                        <div class="col">
+                            <label for="" class="form-label">Total Cost</label>
+                            <label for="" class="form-control" style="background:#e9ecef"
+                                id="payment_tot_cost"></label>
+                        </div>
+                        <div class="col">
+                            <label for="" class="form-label">Amt. Paid</label>
+                            <label for="" class="form-control" style="background:#e9ecef"
+                                id="payment_amt_paid"></label>
+                        </div>
+                        <div class="col">
+                            <label for="" class="form-label">Change</label>
+                            <label for="" class="form-control" style="background:#e9ecef"
+                                id="payment_change"></label>
+                        </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Close Payment
+                        Info</button>
                 </div>
             </div>
         </div>
-        {{-- Payment Modal End --}}
+    </div>
+    {{-- Payment Modal End --}}
 
 
 
-        <script src="https://unpkg.com/imask"></script>
-        <script>
-            trn = document.getElementById('trn');
-            const cell_phone = document.getElementById('cell_phone');
-            const home_phone = document.getElementById('home_phone');
-            const work_phone = document.getElementById('work_phone');
+    <script src="https://unpkg.com/imask"></script>
+    <script>
+        trn = document.getElementById('trn');
+        const cell_phone = document.getElementById('cell_phone');
+        const home_phone = document.getElementById('home_phone');
+        const work_phone = document.getElementById('work_phone');
 
-            const maskOptions = {
-                mask: '000-000-000'
-            }
+        const maskOptions = {
+            mask: '000-000-000'
+        }
 
-            const maskOptions2 = {
-                mask: '1(000)000-0000'
-            }
+        const maskOptions2 = {
+            mask: '1(000)000-0000'
+        }
 
-            const mask = IMask(trn, maskOptions);
-            const mask2 = IMask(cell_phone, maskOptions2);
-            const mask3 = IMask(home_phone, maskOptions2);
-            const mask4 = IMask(work_phone, maskOptions2);
+        const mask = IMask(trn, maskOptions);
+        const mask2 = IMask(cell_phone, maskOptions2);
+        const mask3 = IMask(home_phone, maskOptions2);
+        const mask4 = IMask(work_phone, maskOptions2);
 
-            const hamBurger = document.querySelector(".toggle-btn");
+        // const hamBurger = document.querySelector(".toggle-btn");
 
-            hamBurger.addEventListener("click", function() {
-                document.querySelector("#sidebar").classList.toggle("expand");
-            });
+        // hamBurger.addEventListener("click", function() {
+        //     document.querySelector("#sidebar").classList.toggle("expand");
+        // });
 
-            $(document).ready(
-                function() {
-                    $("#btnEdit").click(() => {
-                        allowEdit();
-                    });
-                    if (document.getElementById('edit_mode').value == "1") {
-                        allowEdit();
-                    }
-                }
-            )
-
-            window.onload = () => {
-                var err = document.querySelectorAll("strong.errors");
-                if (err[0]) {
+        $(document).ready(
+            function() {
+                $("#btnEdit").click(() => {
+                    allowEdit();
+                });
+                if (document.getElementById('edit_mode').value == "1") {
                     allowEdit();
                 }
             }
+        )
 
-            function allowEdit() {
-                $("#firstname").removeAttr("disabled");
-                $("#lastname").removeAttr("disabled");
-                $("#middlename").removeAttr("disabled");
-                $("#date_of_birth").removeAttr("disabled");
-                $("#address").removeAttr("disabled");
-                $("#cell_phone").removeAttr("disabled");
-                $("#home_phone").removeAttr("disabled");
-                $("#work_phone").removeAttr("disabled");
-                $("#trn").removeAttr("disabled");
-                $("#gender").removeAttr("disabled");
-                $("#email").removeAttr("disabled");
-                $('#permit_cat_id').removeAttr("disabled");
-                $('#permit_type').removeAttr("disabled");
-                document.getElementById("updBtn").style.display = "";
-                document.getElementById('reason_for_edit').style.display = "";
-                // if ($("#applicant_img").attr('src') == undefined) {
-                document.getElementById("photo_upload").style.display = "";
-                // }
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+        window.onload = () => {
+            var err = document.querySelectorAll("strong.errors");
+            if (err[0]) {
+                allowEdit();
             }
-        </script>
-        <script>
-            function populatePaymentModal(payment_info, appointment_date, est_appointment_date) {
-                document.querySelector('h1.payment-header').innerHTML = "Payment ID - " + payment_info['id'];
-                document.getElementById('payment_ap_id').innerHTML = payment_info['application_id'];
-                document.getElementById('payment_receipt_no').innerHTML = payment_info['receipt_no'];
-                document.getElementById('payment_payment_date').innerHTML = new Date(payment_info['created_at'])
-                    .toLocaleString();
-                document.getElementById('payment_appointment_date').innerHTML = est_appointment_date == "" ? appointment_date :
-                    est_appointment_date;
-                document.getElementById('payment_tot_cost').innerHTML = payment_info['total_cost'];
-                document.getElementById('payment_amt_paid').innerHTML = payment_info['amount_paid'];
-                document.getElementById('payment_change').innerHTML = payment_info['change_amt'];
-            }
-        </script>
+        }
 
-        {{-- Resend Email Javascript --}}
+        function allowEdit() {
+            $("#firstname").removeAttr("disabled");
+            $("#lastname").removeAttr("disabled");
+            $("#middlename").removeAttr("disabled");
+            $("#date_of_birth").removeAttr("disabled");
+            $("#address").removeAttr("disabled");
+            $("#cell_phone").removeAttr("disabled");
+            $("#home_phone").removeAttr("disabled");
+            $("#work_phone").removeAttr("disabled");
+            $("#trn").removeAttr("disabled");
+            $("#gender").removeAttr("disabled");
+            $("#email").removeAttr("disabled");
+            $('#permit_cat_id').removeAttr("disabled");
+            $('#permit_type').removeAttr("disabled");
+            document.getElementById("updBtn").style.display = "";
+            document.getElementById('reason_for_edit').style.display = "";
+            // if ($("#applicant_img").attr('src') == undefined) {
+            document.getElementById("photo_upload").style.display = "";
+            // }
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+    <script>
+        function populatePaymentModal(payment_info, appointment_date, est_appointment_date) {
+            document.querySelector('h1.payment-header').innerHTML = "Payment ID - " + payment_info['id'];
+            document.getElementById('payment_ap_id').innerHTML = payment_info['application_id'];
+            document.getElementById('payment_receipt_no').innerHTML = payment_info['receipt_no'];
+            document.getElementById('payment_payment_date').innerHTML = new Date(payment_info['created_at'])
+                .toLocaleString();
+            document.getElementById('payment_appointment_date').innerHTML = est_appointment_date == "" ? appointment_date :
+                est_appointment_date;
+            document.getElementById('payment_tot_cost').innerHTML = payment_info['total_cost'];
+            document.getElementById('payment_amt_paid').innerHTML = payment_info['amount_paid'];
+            document.getElementById('payment_change').innerHTML = payment_info['change_amt'];
+        }
+    </script>
 
-        <script>
-            function populateResendEmailModal(message, permitApplication) {
-                document.getElementById('modalHeader').innerHTML = message.emailtypes.name + ' sent to ' + permitApplication[
-                    'firstname'] + ' ' + permitApplication['lastname']
-                document.getElementById('message_type').innerHTML = message.emailtypes.name ? message.emailtypes.name : 'N/A';
-                document.getElementById('status').innerHTML = message.status.toUpperCase()
-                document.getElementById('sent_at').innerHTML = message.user.firstname + " " + message.user.lastname
-                document.getElementById('sent_by').innerHTML = new Date(message.sent_at).toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-            }
-        </script>
+    {{-- Resend Email Javascript --}}
 
-        <script>
-            function populateCardPickUpModal(appid, payment) {
-                document.getElementById('card_app_id').value = appid
-                document.getElementById('application_type_id').value = payment.application_type_id
-            }
-        </script>
+    <script>
+        function populateResendEmailModal(message, permitApplication) {
+            document.getElementById('modalHeader').innerHTML = message.emailtypes.name + ' sent to ' + permitApplication[
+                'firstname'] + ' ' + permitApplication['lastname']
+            document.getElementById('message_type').innerHTML = message.emailtypes.name ? message.emailtypes.name : 'N/A';
+            document.getElementById('status').innerHTML = message.status.toUpperCase()
+            document.getElementById('sent_at').innerHTML = message.user.firstname + " " + message.user.lastname
+            document.getElementById('sent_by').innerHTML = new Date(message.sent_at).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+    </script>
+
+    <script>
+        function populateCardPickUpModal(appid, payment) {
+            document.getElementById('card_app_id').value = appid
+            document.getElementById('application_type_id').value = payment.application_type_id
+        }
+    </script>
 
 
-        {{-- Resend Email Javascript --}}
-        @include('partials.messages.loading_message')
+    {{-- Resend Email Javascript --}}
+    @include('partials.messages.loading_message')
     </div>
 @endsection

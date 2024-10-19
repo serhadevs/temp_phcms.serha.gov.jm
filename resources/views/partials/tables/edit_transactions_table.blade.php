@@ -1,4 +1,4 @@
-<table id="edit_transactions_table" class="table table-striped table-sm nowrap" style="width:100%;max-width:100%">
+<table id="edit_transactions_table" class="table table-striped table-bordered table-sm nowrap" style="width:100%;max-width:100%">
     <thead>
         {{-- Add Servicesssss --}}
         <tr>
