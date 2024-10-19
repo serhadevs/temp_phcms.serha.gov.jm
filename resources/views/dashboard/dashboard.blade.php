@@ -17,7 +17,6 @@
 
                         <h4 class="fs-4 py-3 px-3">Welcome {{ auth()->user()->firstname }} {{ auth()->user()->lastname }}
                         </h4>
-
                         <div class="card-body py-3">
 
                             @if (in_array(auth()->user()->role_id, [1,3,10]))
@@ -132,6 +131,7 @@
                                 </div>
                             </div>
                            @endif
+
                         </div>
                     </div>
                 </div>

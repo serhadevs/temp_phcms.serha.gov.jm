@@ -241,6 +241,7 @@
                                         </div>
                                     </div>
 
+                                    
                                     <div class="card mt-2">
                                         <h5 class="card-header text-muted">
                                             Messages
@@ -310,6 +311,7 @@
 
                                         @endif
                                     </div>
+                                    
                                     <div class="card mt-2">
                                         <h5 class="card-header text-muted">
                                             Printed Card Information
@@ -329,9 +331,40 @@
                                                 No Card Information is available
                                             </div>
                                         @endif
-
-
                                     </div>
+                                     {{-- Card Collected --}}
+                                     <div class="card mt-3">
+                                        <h5 class="card-header text-muted">
+                                            Card Pickup Details
+                                        </h5>
+
+                                        @if ($permit_application->collected_cards)
+                                            <div class="card-body">
+                                                Card was collected by
+                                                {{ $permit_application->collected_cards?->collected_by }} on
+                                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
+                                            </div>
+                                        @elseif($permit_application->printedcard)
+                                            <div class="card-body">
+                                                Card is ready for pickup
+                                            </div>
+
+                                            <div class="card-footer">
+                                                <button type="button" class="btn btn-success mt-1"
+                                                    data-bs-toggle="modal"onclick="populateCardPickUpModal({{ json_encode($permit_application->id) }}, {{ json_encode($permit_application->payment) }})"
+                                                    data-bs-target="#cardModal">Enter Pickup Details</button>
+                                            </div>
+                                            @include('partials.modals.addCardInfoModal')
+                                        @else
+                                            <div class="card-body">
+                                                Card is not ready for pick up
+                                            </div>
+                                        @endif
+                                    </div>
+                                    {{-- Card Collected --}}
+
+
+
                                     <div class="card mt-2">
                                         <h5 class="card-header text-muted">
                                             Permit Processing Tracker
@@ -359,7 +392,7 @@
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Test Completed and Test Score Uploaded
                                                     <span class="badge bg-primary rounded-pill">
-                                                       
+
                                                         @if ($permit_application->establishmentClinics)
                                                             {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
                                                         @elseif(
@@ -433,6 +466,11 @@
                                         </div>
 
                                     </div>
+
+                                   
+
+
+
                                 </div>
                             </div>
                             <div class="col col-md-9">
@@ -807,6 +845,8 @@
                     </form>
 
 
+
+
                 </div>
             </div>
         </div>
@@ -868,6 +908,7 @@
                 </div>
             </div>
         </div>
+        {{-- Payment Modal End --}}
 
 
 
@@ -971,6 +1012,15 @@
                 });
             }
         </script>
+
+        <script>
+            function populateCardPickUpModal(appid, payment) {
+                document.getElementById('card_app_id').value = appid
+                document.getElementById('application_type_id').value = payment.application_type_id
+            }
+        </script>
+
+
         {{-- Resend Email Javascript --}}
         @include('partials.messages.loading_message')
     </div>

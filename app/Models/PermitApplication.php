@@ -131,4 +131,8 @@ class PermitApplication extends Model
     public function printedcard(): HasOne{
         return $this->hasOne(PrintedPermitCards::class,'application_id','id');
     }
+
+    public function collected_cards(): HasOne{
+        return $this->hasOne(CollectedCards::class,'app_id','id');
+    }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\BarberCosmetApplicationsController;
 use App\Http\Controllers\BarberCosmetTestResultController;
 use App\Http\Controllers\ClinicPermitApplicationController;
 use App\Http\Controllers\Dashboard;
+use App\Http\Controllers\CollectCardController;
 use App\Http\Controllers\DownloadsController;
 use App\Http\Controllers\FoodEstablishmentController;
 use App\Http\Controllers\FoodEstTestResultController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\ExamDateController;
 use App\Http\Controllers\ExamSitesController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Http\Controllers\Messaging;
+use App\Models\CollectedCards;
 use App\Models\Downloads;
 use App\Models\HealthInterview;
 use App\Models\SwimmingPoolsApplications;
@@ -407,6 +409,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::controller(AIReportGeneratorController::class)->group(function(){
     Route::get('/reports/create-generate-ai-report','index')->name('report.generate.ai');
     Route::post('/reports/ai-report','generateReport')->name('reports.generate.report');
+  });
+
+  //Collected Cards 
+  Route::controller(CollectCardController::class)->group(function(){
+    Route::get('/collected-card/create','create')->name('collectedcards.create');
+    Route::post('/collected-card/store','store')->name('collectedcards.store');
   });
 
 
