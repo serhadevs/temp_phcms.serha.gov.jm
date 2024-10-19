@@ -6,6 +6,9 @@
             <th>Lastname</th>
             <th>Permit Category</th>
             <th>Exam Time</th>
+            <th>Exam Site</th>
+            <th>Present</th>
+            <th>Signature</th>
         </tr>
     </thead>
     <tbody>
@@ -16,6 +19,9 @@
                 <td>{{ $appointment?->applications?->lastname }}</td>
                 <td>{{ $appointment?->examDate?->permitCategory->name }}</td>
                 <td>{{ $appointment?->examDate?->exam_start_time }}</td>
+                <td>{{ $appointment?->examSites?->name }}</td>
+                <td></td>
+                <td></td>
                 {{-- <td>{{ $appointment?->applications-> }}</td> --}}
             </tr>
         @endforeach

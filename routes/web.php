@@ -72,6 +72,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
   Route::post('/appointments/show', [AppointmentController::class, 'show'])->name('appointments.show');
+  ROute::get('/examdates/{id}',[AppointmentController::class,'filterExamDates'])->name('filter.examdates');
+
   //Permit Application Route
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
   Route::post("/permit/application", [PermitApplicationController::class, 'store'])->name('food_handlers_permit.store');
@@ -90,20 +92,14 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/barber-cosmet/filter', [BarberCosmetApplicationsController::class, 'customIndex'])->name('baber-cosmet.custom.filter');
   Route::get('/barber-cosmet/view/{id}', [BarberCosmetApplicationsController::class, 'show'])->name('barber-cosmet.view');
 
-  // <<<<<<< HEAD
+ 
   //Edit Health Cert Applications
   Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
   Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
   Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
   Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
   Route::delete('/barber-cosmet/delete/{id}', [BarberCosmetApplicationsController::class, 'destroy'])->name('barber-cosmet.delete');
-  // =======
-  //   //Edit Health Cert Applications
-  //   Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
-  //   Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
-  //   Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
-  //   Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
-  // >>>>>>> 0067a7bfae91e1d23711d5649e782a9137fa4649
+  
 
   //Tourist Establishment Route
   Route::get('/tourist-establishments/create', [TouristEstApplicationsController::class, 'create'])->name('tourist-establishments.create');

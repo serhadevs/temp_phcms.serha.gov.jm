@@ -23,23 +23,26 @@
                                 @enderror
                             </div>
                         </div>
-                     
+
                         <div class="col mt-2">
-                            <label for="exam_date" class="form-label fw-bold">Exam Site</label>
-                            <select name="exam_date" id="exam_site" class="form-control">
-                                <option disabled selected>Please select an exam session</option>
-                            @foreach ($exam_dates as $appointment_avaiable)
-                                <option value="{{ $appointment_avaiable->id }}">
-                                    {{ $appointment_avaiable->permitCategory?->name }}
-                                    - {{ strtoupper($appointment_avaiable->exam_day) }}
-                                    {{ $appointment_avaiable->exam_start_time }}
-                                    -{{ $appointment_avaiable?->availableSites?->name }}
+                            <label for="exam_date" class="form-label fw-bold">Permit Category</label>
+                            <select name="permit_category" id="permit_category" class="form-control">
+                                <option disabled selected>Please select Permit Category</option>
+                            @foreach ($permit_categories as $item)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->name }}
                                 </option>
                             @endforeach
                             </select>
                         </div>
-                        
-
+                     
+                        <div class="col mt-2">
+                            <label for="exam_date" class="form-label fw-bold">Exam Site</label>
+                            <select name="exam_date" id="exam_dates" class="form-control">
+                                <option disabled selected>Please select an exam session</option>
+                                <option value=""></option>
+                            </select>
+                        </div>
                     </div>
 
                    
@@ -55,5 +58,45 @@
         </div>
     </div>
 @endsection
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#permit_category').on('change', function() {
+            var category_id = $(this).val();
+            console.log(category_id);
+
+            if (category_id) {
+                    $.ajax({
+                        url: "/examdates/" + category_id,
+                        type: "GET",
+                        dataType: 'json',
+
+                        success: function(data) {
+                            $('#exam_dates')
+                                .empty(); // Clear the dropdown before appending new options
+                            console.log(data.data)
+                            // Iterate over the data and append options to the sub_category dropdown
+                            $.each(data.data, function(key, value) {
+                                $('#exam_dates').append('<option value="' + value.id +
+                                    '">' + value.permit_category.name + ' - ' + value.exam_day.toUpperCase() + ' - '  + value.exam_start_time + ' - ' + value.exam_sites.name + '</option>');
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            // Log the detailed error information
+                            console.error("Status: " + status);
+                            console.error("Error: " + error.error);
+                            console.error("Response Text: " + xhr.responseText);
+                        }
+                    });
+                } else {
+                    $('#exam_dates').empty(); // Clear the dropdown if no category is selected
+                }
+            });
+            
+        
+    });
+</script>
+
+
 
 
