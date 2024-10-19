@@ -56,12 +56,15 @@
                                             Test Results
                                         </h5>
                                         <div class="card-body">
+                                         
 
                                             @if (!empty($permit_application->testResults))
                                             <ul class="list-group">
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                                     Exam Site
-                                                  <span class="badge text-bg-primary rounded-pill"> {{ $permit_application->testResults?->test_location }}</span>
+                                                    <span class="badge text-bg-primary rounded-pill text-wrap" style="white-space: normal;"> 
+                                                        {{ $permit_application->testResults?->test_location }}
+                                                    </span>
                                                 </li>
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                                     Trainer(s)
