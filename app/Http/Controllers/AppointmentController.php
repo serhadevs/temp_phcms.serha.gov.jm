@@ -67,7 +67,7 @@ class AppointmentController extends Controller
             $appointments = Appointments::with('applications.permitCategory', 'examDate','examSites')
                 ->where('appointment_date', $incomingFields['app_date'])
                 ->where('facility_id',auth()->user()->facility_id)
-                //->whereRelation('examDate','id',$incomingFields['exam_date'])
+                ->whereRelation('examDate','id',$incomingFields['exam_date'])
                 ->get();
 
                 //dd($appointments);
