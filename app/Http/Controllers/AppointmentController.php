@@ -33,10 +33,16 @@ class AppointmentController extends Controller
         return view('appointments.index', compact('exam_dates','permit_categories'));
     }
 
-    public function filterExamDates($id){
+    public function filterExamDates($id,$day){
 
+            $newDay = '';
+            $weekDays = ['sun','mon','tue','wed','thur','fri','sat'];
+           // dd($weekDays[$day]);
             $exam_dates = ExamDates::with('permitCategory','examSites')->where('permit_category_id',$id)
-            ->where('facility_id',auth()->user()->facility_id)->get();
+            ->where('facility_id',auth()->user()->facility_id)
+           
+            ->where('exam_day',$weekDays[$day])
+            ->get();
 
             return response()->json([
                 'success' => true,
@@ -56,12 +62,12 @@ class AppointmentController extends Controller
 
         $yesterday = Carbon::now()->subDay()->toDateString();
 
-        //dd($yesterday);
+        //dd($incomingFields);
 
         try {
             $appointments = Appointments::with('applications.permitCategory', 'examDate','examSites')
                 ->where('appointment_date', $incomingFields['app_date'])
-                ->whereRelation('examDate','id',$incomingFields['exam_date'])
+                //->whereRelation('examDate','id',$incomingFields['exam_date'])
                 ->get();
 
                 //dd($appointments);
