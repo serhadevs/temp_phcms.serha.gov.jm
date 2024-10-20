@@ -28,26 +28,32 @@ class AppointmentController extends Controller
 
             $permit_categories = PermitCategory::all();
 
-            //dd($permit_categories);
 
         return view('appointments.index', compact('exam_dates','permit_categories'));
     }
 
     public function filterExamDates($id,$day){
 
-            $newDay = '';
+        try {
             $weekDays = ['sun','mon','tue','wed','thur','fri','sat'];
-           // dd($weekDays[$day]);
-            $exam_dates = ExamDates::with('permitCategory','examSites')->where('permit_category_id',$id)
-            ->where('facility_id',auth()->user()->facility_id)
-            ->where('exam_day',$weekDays[$day])
-            ->get();
-
+            $exam_dates = ExamDates::with('permitCategory', 'examSites')
+                ->where('permit_category_id', $id)
+                ->where('facility_id', auth()->user()->facility_id)
+                ->where('exam_day', $weekDays[$day])
+                ->get();
+        
             return response()->json([
                 'success' => true,
-                'message' => 'Exam Dates Got',
+                'message' => 'Exam Dates Fetched Successfully',
                 'data' => $exam_dates
-            ], 200);  // 200 OK
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching exam dates: ' . $e->getMessage()
+            ], 500);
+        }
+        
 
     }
 
@@ -59,11 +65,7 @@ class AppointmentController extends Controller
             
         ]);
 
-        $yesterday = Carbon::now()->subDay()->toDateString();
-
-        //dd($incomingFields);
-
-        try {
+           try {
             $appointments = Appointments::with('applications.permitCategory', 'examDate','examSites')
                 ->where('appointment_date', $incomingFields['app_date'])
                 ->where('facility_id',auth()->user()->facility_id)

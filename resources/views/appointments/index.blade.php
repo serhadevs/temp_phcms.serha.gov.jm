@@ -62,56 +62,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
     integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
 <script type="text/javascript">
     $(document).ready(function() {
+
+        // Function to get the day of the week from a date string (YYYY-MM-DD)
+        function getDayOfWeek(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            const dateObj = new Date(year, month - 1, day);
+            return dateObj.getDay(); // Returns the day index (0 for Sunday, 6 for Saturday)
+        }
+
+        // Function to update the exam dates dropdown
+        function updateExamDates(category_id, day_of_week) {
+            if (!category_id) {
+                $('#exam_dates').empty();
+                return;
+            }
+
+            $.ajax({
+                url: `/examdates/${category_id}/${day_of_week}`,
+                type: "GET",
+                dataType: 'json',
+                success: function(response) {
+                    const examDatesDropdown = $('#exam_dates');
+                    examDatesDropdown.empty(); 
+
+                    $.each(response.data, function(key, value) {
+                        const optionText = `${value.permit_category.name} - ${value.exam_day.toUpperCase()} - ${value.exam_start_time} - ${value.exam_sites.name}`;
+                        examDatesDropdown.append(`<option value="${value.id}">${optionText}</option>`);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching exam dates:");
+                    console.error("Status:", status);
+                    console.error("Error:", error);
+                    console.error("Response:", xhr.responseText);
+                }
+            });
+        }
+
+       
         $('#permit_category').on('change', function() {
-            var category_id = $(this).val();
-            var date = $('#app_date').val();
+            const category_id = $(this).val();
+            const date = $('#app_date').val();
             
-            const [year, month, day] = date.split('-');
-
-            const datenew = new Date(year, month - 1, day);
-            const dayIndex = datenew.getDay();
-            
-
-            var day_of_week = dayIndex;
-            console.log(day_of_week);
-            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
-                'Saturday'
-            ];
-
-            
-            if (category_id) {
-                $.ajax({
-                    url: "/examdates/" + category_id + "/" + day_of_week,
-                    type: "GET",
-                    dataType: 'json',
-                    
-
-                    success: function(data) {
-                        $('#exam_dates')
-                            .empty(); 
-                        console.log(data.data)
-                        $.each(data.data, function(key, value) {
-                            $('#exam_dates').append('<option value="' + value.id +
-                                '">' + value.permit_category.name + ' - ' +
-                                value.exam_day.toUpperCase() + ' - ' + value
-                                .exam_start_time + ' - ' + value.exam_sites
-                                .name + '</option>');
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        // Log the detailed error information
-                        console.error("Status: " + status);
-                        console.error("Error: " + error.error);
-                        console.error("Response Text: " + xhr.responseText);
-                    }
-                });
+            if (date) {
+                const day_of_week = getDayOfWeek(date);
+                updateExamDates(category_id, day_of_week);
             } else {
-                $('#exam_dates').empty(); // Clear the dropdown if no category is selected
+                $('#exam_dates').empty(); 
             }
         });
 
-
     });
 </script>
+
