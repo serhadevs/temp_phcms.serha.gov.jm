@@ -38,7 +38,7 @@ class AuthController extends Controller
 
             // Attempt to log in the user
             if (!Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-                return redirect('/')->with('error', 'Invalid credentials');
+                return redirect('/')->with('error', 'Invalid credentials')->withInput();
             }
 
             //Check to see if the password is password123 and redirect them to changing the password

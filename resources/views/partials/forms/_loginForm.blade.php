@@ -1,85 +1,161 @@
-<div class="col-sm-8 col-md-6 col-lg-4 bg-white rounded p-4 shadow">
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>{{ $message }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
 
-    @if ($message = Session::get('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>{{ $message }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
+            <div class="card border border-light-subtle rounded-4">
+                <div class="card-body p-3 p-md-4 p-xl-5">
+                    @php
+                        $alerts = [
+                            'success' => ['class' => 'alert-success', 'message' => Session::get('success')],
+                            'error' => ['class' => 'alert-danger', 'message' => Session::get('error')],
+                        ];
+                    @endphp
+
+                    @foreach ($alerts as $type => $alert)
+                        @if ($alert['message'])
+                            <div class="alert {{ $alert['class'] }} alert-dismissible fade show" role="alert">
+                                <strong>{{ $alert['message'] }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+                    @endforeach
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-5">
+                                <div class="text-center mb-4">
+                                    <a href="{{ route('login') }}">
+                                        <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA LOGO" width="60rem">
+                                    </a>
+                                    <h5 class="text-center">Public Health Certificate Management System(PHCMS)</h5>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <form action={{ route('login.post') }} method="POST">
+                        @csrf
+                        @method('post')
+                        <div class="row gy-3 overflow-hidden">
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+                                    <input type="email"
+                                        class="form-control @error('email')
+                          is-invalid
+                      @enderror"
+                                        name="email" id="email" placeholder="ricks@serha.gov"  value="{{ old('email') }}">
+                                    <label for="email" class="form-label">Email</label>
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+                                    <input type="password"
+                                        class="form-control @error('password')
+                                        is-invalid
+                                    @enderror"
+                                        name="password" id="password" value="" placeholder="Password" value="{{ old('password') }}">
+                                    <label for="password" class="form-label">Password</label>
+                                    @error('password')
+                                        <span class="invalid-feedback" role="alert">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" name="remember_token"
+                                        id="remember_me">
+                                    <label class="form-check-label text-primary" for="remember_me">
+                                        Remember Me
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-grid">
+                                    <button class="btn bsb-btn-xl btn-primary" type="submit">Log in now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mt-2 d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+
+                                <a href="{{ route('forget-password') }}"
+                                    class="link-primary text-decoration-none">Forgot password?</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="hidden" name="userAgent" id="userAgent" value="">
+                        <input type="hidden" name="userPlatform" id="userPlatform" value="">
+                    </div>
+                    
+
+                </div>
+               
+            </div>
+          
         </div>
-    @endif
-    <div class="row justify-content-center mb-4">
-        <img src="images/serha_logo.png" alt="Serha Logo" class="w-25" />
-        <div class="col-12 text-center">
-            <h6>Public Health Certificate Management System (PHCMS)</h6>
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex gap-2 gap-md-4 flex-row flex-md-row justify-content-center">
+                    <div class="text-light">Developed Internally By SERHA - v1.0.6</div>
+                </div>
+               
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex gap-2 gap-md-4 flex-row flex-md-row justify-content-center">
+                    <div class="text-light">Copyright &copy; {{ date("Y") }} PHCMS. All Rights Reserved</div>
+                </div>
+               
+            </div>
         </div>
     </div>
-    <form method="post" action="/login" >
-        @csrf
-        <div class="mb-4">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" id="email" placeholder="Email"
-                value="{{ old('email') }}" autocomplete="email">
-            @error('email')
-                <p class="text-danger">{{ $message }}</p>
-            @enderror
-
-        </div>
-        <div class="mb-4">
-            <label for="password" class="form-label">Password</label>
-            <div class="input-group">
-                <input type="password" class="form-control" name="password" id="password" placeholder="Password" autocomplete="password">
-                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                    <i class="bi bi-eye"></i>
-                </button>
-            </div>
-            @error('password')
-                <p class="text-danger">{{ $message }}</p>
-            @enderror
-        </div>
-        <div class="mb-4 form-check">
-            <input type="checkbox" class="form-check-input" name="remember_token" id="remember">
-            <label for="rememeber">Remember Me</label>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-
-        <div class="text-center mt-3">
-            <a href="{{ route('forget-password') }}" style="text-decoration: none;">Forgot your password?</a>
-        </div>
-
-        <div>
-            <input type="hidden" name="userAgent" id="userAgent" value="">
-            <input type="hidden" name="userPlatform" id="userPlatform" value="">
-        </div>
-    </form>
 </div>
 
 
 
+
 <script>
-    function togglePasswordFieldVisibility(field) {
-        if (field.type === 'password') {
-            field.type = 'text';
-        } else {
-            field.type = 'password';
-        }
+    // function togglePasswordFieldVisibility(field) {
+    //     if (field.type === 'password') {
+    //         field.type = 'text';
+    //     } else {
+    //         field.type = 'password';
+    //     }
+    // }
+
+
+    // let togglePasswordBtn = document.getElementById('togglePassword');
+    // let passwordField = document.getElementById('password');
+
+    // togglePasswordBtn.addEventListener("click", () => {
+    //     togglePasswordFieldVisibility(passwordField);
+    // });
+
+    //Get the User Agent 
+document.addEventListener('DOMContentLoaded',()=>{
+
+    const userAgentElement = document.getElementById("userAgent");
+    const userPlatformElement = document.getElementById("userPlatform");
+
+    if (userAgentElement && userPlatformElement) {
+        userAgentElement.value = navigator.userAgent;
+        userPlatformElement.value = navigator.platform;
+    } else {
+        console.error("Elements with IDs 'userAgent' or 'userPlatform' not found.");
     }
-
-
-    let togglePasswordBtn = document.getElementById('togglePassword');
-     let passwordField = document.getElementById('password');
-
-     togglePasswordBtn.addEventListener("click", () => {
-        togglePasswordFieldVisibility(passwordField);
-    });
-
-   //Get the User Agent 
-
-   document.getElementById("userAgent").value = navigator.userAgent;
-document.getElementById("userPlatform").value = navigator.platform;
+    
+})
+    
 </script>
