@@ -41,4 +41,5 @@ class ExamDates extends Model
     {
         return $this->hasOne(ExamSites::class, 'id', 'exam_site_id');
     }
+
 }

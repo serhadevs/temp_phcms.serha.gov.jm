@@ -88,6 +88,7 @@
                 success: function(response) {
                     const examDatesDropdown = $('#exam_dates');
                     examDatesDropdown.empty(); 
+                    // console.log(response)
 
                     $.each(response.data, function(key, value) {
                         const optionText = `${value.permit_category.name} - ${value.exam_day.toUpperCase()} - ${value.exam_start_time} - ${value.exam_sites.name}`;
