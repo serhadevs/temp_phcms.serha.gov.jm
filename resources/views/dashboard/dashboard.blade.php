@@ -14,145 +14,98 @@
                         <div class="card-header">
                             <h3 class="fw-bold fs-4">Dashboard</h3>
                         </div>
-
-                        <h4 class="fs-4 py-3 px-3">Welcome {{ auth()->user()->firstname }} {{ auth()->user()->lastname }}
-                        </h4>
+            
+                        <h4 class="fs-4 py-3 px-3">Welcome {{ auth()->user()->firstname }} {{ auth()->user()->lastname }}</h4>
+            
                         <div class="card-body py-3">
-
                             @if (in_array(auth()->user()->role_id, [1,3,10]))
-                                <div class="row">
-                                    <div class="col-12 col-md-4">
-                                        <div class="card text-bg-light">
-                                            <div class="card-header mb-2 fw-bold">
-                                                Food Permit Applications
-                                            </div>
-                                            <div class="card-body py-4">
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $permitApplicationCount }}
-                                                    </span>
-                                                    <span class=" fw-bold">
-                                                        Since {{ $month }} {{ $year }}
-                                                    </span>
-                                                </div>
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $permitApplicationCountYTD }}
-                                                    </span>
-                                                    <span class=" fw-bold">
-                                                        Year to Date from January to {{ $month }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <div class="card text-bg-light">
-                                            <div class="card-header mb-2 fw-bold">
-                                                Food Establishment Applications
-                                            </div>
-                                            <div class="card-body py-4">
-                                               
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $foodestApplicationCount }}
-                                                    </span>
-                                                    <span class="fw-bold">
-                                                        Since {{ $month }} {{ $year }}
-                                                    </span>
-                                                </div>
-
-                                                {{-- <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $foodestApplicationCount }}
-                                                    </span>
-                                                    <span class="fw-bold">
-                                                        Since {{ $month }} {{ $year }}
-                                                    </span>
-                                                </div> --}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-4 ">
-                                        <div class="card text-bg-light">
-                                            <div class="card-header mb-2 fw-bold">
-                                                Barber/Cosmetology
-                                            </div>
-                                            <div class="card-body py-4">
-                                                
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $barbercosmApplicationCount }}
-                                                    </span>
-                                                    <span class="fw-bold">
-                                                        Since {{ $month }} {{ $year }}
-                                                    </span>
-                                                </div>
-                                                {{-- <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $barbercosmApplicationCount }}
-                                                    </span>
-                                                    <span class="fw-bold">
-                                                        Since {{ $month }} {{ $year }}
-                                                    </span>
-                                                </div> --}}
-
-                                            </div>
-
-                                        </div>
-
-
-
-                                    </div>
-
-                                </div>
-                            @endif
-
-                            @if (in_array(auth()->user()->role_id, [4]))
                             <div class="row">
-                                <div class="col-12 col-md-4">
-                                    <div class="card">
+                                <!-- Food Permit Applications -->
+                                <div class="col-12 col-md-4 mb-3">
+                                    <div class="card text-bg-light h-100">
+                                        <div class="card-header mb-2 fw-bold">
+                                            Food Permit Applications
+                                        </div>
                                         <div class="card-body py-4">
-                                            <h5 class="mb-2 fw-bold">
-                                               Payments
-                                            </h5>
-                                            <p class="mb-2 fw-bold">
-                                            </p>
                                             <div class="mb-0">
                                                 <span class="badge text-success me-2">
-                                                    {{ $paymentCount }}
+                                                    {{ $permitApplicationCount }}
                                                 </span>
-                                                <span class=" fw-bold">
-                                                    Since {{ $month }} {{ $year }}
+                                                <span class="fw-bold">Since {{ $month }} {{ $year }}</span>
+                                            </div>
+                                            <div class="mb-0">
+                                                <span class="badge text-success me-2">
+                                                    {{ $permitApplicationCountYTD }}
                                                 </span>
+                                                <span class="fw-bold">Year to Date from January to {{ $month }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <!-- Food Establishment Applications -->
+                                <div class="col-12 col-md-4 mb-3">
+                                    <div class="card text-bg-light h-100">
+                                        <div class="card-header mb-2 fw-bold">
+                                            Food Establishment Applications
+                                        </div>
+                                        <div class="card-body py-4">
+                                            <div class="mb-0">
+                                                <span class="badge text-success me-2">
+                                                    {{ $foodestApplicationCount }}
+                                                </span>
+                                                <span class="fw-bold">Since {{ $month }} {{ $year }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <!-- Barber/Cosmetology Applications -->
+                                <div class="col-12 col-md-4 mb-3">
+                                    <div class="card text-bg-light h-100">
+                                        <div class="card-header mb-2 fw-bold">
+                                            Barber/Cosmetology
+                                        </div>
+                                        <div class="card-body py-4">
+                                            <div class="mb-0">
+                                                <span class="badge text-success me-2">
+                                                    {{ $barbercosmApplicationCount }}
+                                                </span>
+                                                <span class="fw-bold">Since {{ $month }} {{ $year }}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                           @endif
-
+                            @endif
+            
+                            @if (in_array(auth()->user()->role_id, [4]))
+                            <div class="row">
+                                <div class="col-12 col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body py-4">
+                                            <h5 class="mb-2 fw-bold">Payments</h5>
+                                            <div class="mb-0">
+                                                <span class="badge text-success me-2">
+                                                    {{ $paymentCount }}
+                                                </span>
+                                                <span class="fw-bold">Since {{ $month }} {{ $year }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-
-
+            
     </div>
 
     </main>
 
     </div>
-
-    <script>
-        const hamBurger = document.querySelector(".toggle-btn");
-
-        hamBurger.addEventListener("click", function() {
-            document.querySelector("#sidebar").classList.toggle("expand");
-        });
-    </script>
-
-    <script src="sweetalert2.all.min.js"></script>
 
     <script>
         @if ($message = Session::get('success'))

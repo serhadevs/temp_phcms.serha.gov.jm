@@ -275,6 +275,12 @@
                         
                     </div>
 
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="text-muted">Inspection Results</h5>
+                        </div>
+                       
+                       </div>
                    <div class="card mt-3">
                     <div class="card-header">
                         <h5 class="text-muted">Certificate Processing Tracker</h5>
@@ -282,7 +288,7 @@
                     <div class="card-body">
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                              Days between Application Date and Inspection
+                              Days between Application Date and Inspection Date
                               <span class="badge bg-primary rounded-pill"></span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">

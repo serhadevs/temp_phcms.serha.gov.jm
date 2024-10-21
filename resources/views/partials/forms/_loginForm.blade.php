@@ -1,5 +1,5 @@
 
-<div class="container">
+
     <div class="row justify-content-center">
         <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
             <div class="card border border-light-subtle rounded-4">
@@ -96,12 +96,8 @@
                         <input type="hidden" name="userAgent" id="userAgent" value="">
                         <input type="hidden" name="userPlatform" id="userPlatform" value="">
                     </div>
-                    
-
                 </div>
-               
             </div>
-          
         </div>
         <div class="row">
             <div class="col-12">
@@ -115,47 +111,13 @@
         <div class="row">
             <div class="col-12">
                 <div class="d-flex gap-2 gap-md-4 flex-row flex-md-row justify-content-center">
-                    <div class="text-light">Copyright &copy; {{ date("Y") }} PHCMS. All Rights Reserved</div>
+                    <div class="text-center text-light">Copyright &copy; {{ date("Y") }} PHCMS. All Rights Reserved</div>
                 </div>
                
             </div>
         </div>
     </div>
-</div>
 
 
 
 
-<script>
-    // function togglePasswordFieldVisibility(field) {
-    //     if (field.type === 'password') {
-    //         field.type = 'text';
-    //     } else {
-    //         field.type = 'password';
-    //     }
-    // }
-
-
-    // let togglePasswordBtn = document.getElementById('togglePassword');
-    // let passwordField = document.getElementById('password');
-
-    // togglePasswordBtn.addEventListener("click", () => {
-    //     togglePasswordFieldVisibility(passwordField);
-    // });
-
-    //Get the User Agent 
-document.addEventListener('DOMContentLoaded',()=>{
-
-    const userAgentElement = document.getElementById("userAgent");
-    const userPlatformElement = document.getElementById("userPlatform");
-
-    if (userAgentElement && userPlatformElement) {
-        userAgentElement.value = navigator.userAgent;
-        userPlatformElement.value = navigator.platform;
-    } else {
-        console.error("Elements with IDs 'userAgent' or 'userPlatform' not found.");
-    }
-    
-})
-    
-</script>
