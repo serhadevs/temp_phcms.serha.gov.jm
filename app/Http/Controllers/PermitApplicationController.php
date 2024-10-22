@@ -549,17 +549,13 @@ class PermitApplicationController extends Controller
             $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
             $permit_application['photo_upload'] = $path;
 
-            if ($request->file('photo_upload')) {
-                $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
-                $permit_application['photo_upload'] = $path;
-    
-                if ($permit_application['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
-                    $file = $request->file('photo_upload');
-                    $permit_application['photo_upload'] = 'photo_upload/' . $permit_application['permit_no'] . '.' . $file->extension();
-                }
-            } else {
-                $permit_application['photo_upload'] = "";
+            if ($permit_application['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
+                $file = $request->file('photo_upload');
+                $permit_application['photo_upload'] = 'photo_upload/' . $permit_application['permit_no'] . '.' . $file->extension();
             }
+        } else {
+            $permit_application['photo_upload'] = $old_permit->photo_upload;
+        }
         // if ($request->file('photo_upload')) {
         //     $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
         //     $permit_application['photo_upload'] = $path;
