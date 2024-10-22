@@ -433,6 +433,23 @@ class PermitApplicationController extends Controller
             $permit_application['photo_upload'] = "";
         }
 
+        //Checks if there is an application that exists already to prevent duplicates
+        $exists = PermitApplication::where([
+            ['firstname', '=', $permit_application['firstname']],
+            ['lastname', '=', $permit_application['lastname']],
+            ['date_of_birth', '=', $permit_application['date_of_birth']],
+            ['cell_phone', '=', $permit_application['cell_phone']],
+        ])
+        ->where('created_at', '>', date_format(new DateTime(), 'Y-m-d'))
+        ->exists();
+        
+        //dd($exists);
+
+        if ($exists) {
+            // If an exact match is found, return with an error message
+                return redirect()->route('dashboard.dashboard')->with('error', 'An applicant exists with the same details.');
+        }
+
         $new_permit_application = PermitApplication::create($permit_application);
 
         if ($new_permit_application) {
