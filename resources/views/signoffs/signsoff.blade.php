@@ -35,8 +35,8 @@
                                             <td>{{ $applicant->permit_no }}</td>
                                             <td>{{ $applicant->application_id }}</td>
                                             <td>{{ $applicant->establishment_name }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($applicant->sign_off_date)->format('d F Y') }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($applicant->expiry_date)->format('d F Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($applicant->sign_off_date)->format('F d Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($applicant->expiry_date)->format('F d Y') }}</td>
                                             <td>{{ $applicant->is_grant = 1 ? 'Approved' : 'Awaiting Approval'}}</td>
                                             <td>{{ $applicant->zone }}</td>
                                             <td>{{ $applicant->firstname. " " .$applicant->lastname}}</td>
@@ -90,7 +90,7 @@ hamBurger.addEventListener("click", function () {
     $(document).ready(function() {
         $('#sign_offs').DataTable({
             scrollX: true,
-            // responsive: true
+            "order": [[3, "asc"]]
         });
     });
 </script>

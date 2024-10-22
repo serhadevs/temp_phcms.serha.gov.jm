@@ -17,7 +17,18 @@ class Messaging extends Controller
    
     public function index(){
         return view('food_handlers_permit.message');
+    }
+
+    public function showMessages(){
+        if(in_array(auth()->user()->role_id,[1])){
+            $messages = Messages::with('user','permit_applications','emailtypes')->orderBy('created_at', 'desc')->get();
+        }else{
+            $messages = Messages::with('user','permit_applications','emailtypes')->where('facility_id',auth()->user()->facility_id)->latest()->get();
+        }
         
+
+        //dd($messages);
+        return view('messages.index',compact('messages'));
     }
 
 
@@ -49,6 +60,7 @@ class Messaging extends Controller
                         'status' => 'sent',
                         'error_message' => 'none',
                         'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
                         'sent_at' => \Carbon\Carbon::now()
                     ]);
                     
@@ -60,6 +72,7 @@ class Messaging extends Controller
                         'status' => 'failed',
                         'error_message' => 'Unknown error',
                         'user_id' => auth()->user()->id,
+                        'facility_id' => auth()->user()->facility_id,
                         'sent_at' => \Carbon\Carbon::now()
                     ]);
                      return redirect()->route('permit.application.view', ['id' => $permit_application_id])->with('error', 'Unable to find a message for that user');

@@ -8,16 +8,17 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                {{ $dataTable->table() }}
+               <h5 class="card-header text-muted">Messages</h5>
+               <div class="card-body">
+                @include('partials.tables.messages')
+               </div>
+               <div class="card-footer">
+                <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
             </div>
-        </div>
-      {{ $dataTable->scripts(attributes:['type' => 'module']) }}
-        <script>
-            const hamBurger = document.querySelector(".toggle-btn");
+            </div>
 
-            hamBurger.addEventListener("click", function() {
-                document.querySelector("#sidebar").classList.toggle("expand");
-            });
-        </script>
+            
+        </div>
+      
     </div>
 @endsection

@@ -214,7 +214,7 @@
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Email</label>
-                                <input type="text" class="form-control" name="email" value="{{ old('email') }}"
+                                <input type="email" class="form-control" name="email" value="{{ old('email') }}"
                                     oninput="this.value = this.value.toUpperCase()">
                                 @error('email')
                                     <p class="text-danger">{{ $message }}</p>

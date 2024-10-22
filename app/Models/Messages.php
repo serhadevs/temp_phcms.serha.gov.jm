@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -22,8 +24,13 @@ class Messages extends Model
         return $this->hasOne(EmailTypes::class, 'id', 'email_type_id');
     }
 
+
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
+    }
+
+    public function permit_applications(): BelongsTo{
+        return $this->belongsTo(PermitApplication::class,'permit_application_id','id');
     }
 }
