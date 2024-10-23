@@ -209,7 +209,7 @@ class FoodEstablishmentController extends Controller
     public function view(Request $request)
     {
         $est_application = EstablishmentApplications::with('operators.editTransactions', 'editTransactions')->find($request->route('id'));
-        $establishment_categories = EstablishmentCategories::all();
+        $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $enableEditFeature = "0";
         $app_type_id = 3;
         $system_operation_type_id = 1;
@@ -365,7 +365,7 @@ class FoodEstablishmentController extends Controller
     public function getEdit(Request $request)
     {
         $est_application = EstablishmentApplications::with('operators', 'editTransactions')->find($request->route('id'));
-        $establishment_categories = EstablishmentCategories::all();
+        $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $app_type_id = 3;
         $system_operation_type_id = 1;
         $enableEditFeature = "1";
