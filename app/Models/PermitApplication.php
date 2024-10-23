@@ -110,7 +110,7 @@ class PermitApplication extends Model
     {
         return $this->hasOne(ZippedApplications::class, 'application_id', 'id')->where('application_type_id', 1);
     }
-    
+
     public function editTransactions(): HasMany
     {
         return $this->hasMany(EditTransactions::class, 'table_id', 'id')
@@ -128,11 +128,13 @@ class PermitApplication extends Model
         return $this->hasOne(Appointments::class, 'permit_application_id', 'id');
     }
 
-    public function printedcard(): HasOne{
-        return $this->hasOne(PrintedPermitCards::class,'application_id','id');
+    public function printedcard(): HasOne
+    {
+        return $this->hasOne(PrintedPermitCards::class, 'application_id', 'id');
     }
 
-    public function collected_cards(): HasOne{
-        return $this->hasOne(CollectedCards::class,'app_id','id');
+    public function collected_cards(): HasOne
+    {
+        return $this->hasOne(CollectedCards::class, 'app_id', 'id');
     }
 }

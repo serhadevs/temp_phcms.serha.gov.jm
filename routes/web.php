@@ -34,6 +34,8 @@ use App\Http\Controllers\ExamDateController;
 use App\Http\Controllers\ExamSitesController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Http\Controllers\Messaging;
+use App\Models\Payments;
+use App\Models\PermitApplication;
 use Illuminate\Support\Facades\Route;
 
 
@@ -67,7 +69,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
   Route::post('/appointments/show', [AppointmentController::class, 'show'])->name('appointments.show');
-  ROute::get('/examdates/{id}/{day}',[AppointmentController::class,'filterExamDates'])->name('filter.examdates');
+  ROute::get('/examdates/{id}/{day}', [AppointmentController::class, 'filterExamDates'])->name('filter.examdates');
 
   //Permit Application Route
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
@@ -87,14 +89,14 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/barber-cosmet/filter', [BarberCosmetApplicationsController::class, 'customIndex'])->name('baber-cosmet.custom.filter');
   Route::get('/barber-cosmet/view/{id}', [BarberCosmetApplicationsController::class, 'show'])->name('barber-cosmet.view');
 
- 
+
   //Edit Health Cert Applications
   Route::put('/barber-cosmet/update/applicant/{id}', [BarberCosmetApplicationsController::class, 'updateApplicant'])->name('barber-cosmet.update.applicant');
   Route::put('/barber-cosmet/update/employment/{id}', [BarberCosmetApplicationsController::class, 'updateEmp'])->name('barber-cosmet.update.employment');
   Route::put('/barber-cosmet/update/appointment/{id}', [BarberCosmetApplicationsController::class, 'updateAppointment'])->name('barber-cosmet.update.appointments');
   Route::get('/barber-cosmet/edit/{id}', [BarberCosmetApplicationsController::class, 'edit'])->name('barber-cosmet.edit');
   Route::delete('/barber-cosmet/delete/{id}', [BarberCosmetApplicationsController::class, 'destroy'])->name('barber-cosmet.delete');
-  
+
 
   //Tourist Establishment Route
   Route::get('/tourist-establishments/create', [TouristEstApplicationsController::class, 'create'])->name('tourist-establishments.create');
@@ -348,8 +350,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/backlog-report', [ReportController::class, 'backLogReport'])->name('reports.backlog');
   Route::get('/reports/productivity/create', [ReportController::class, 'productivityReportCreate'])->name('reports.productivity.create');
   Route::post('/reports/productivity', [ReportController::class, 'productivityReport'])->name('reports.productivity');
-  Route::get('/reports/category-by-zone',[ReportController::class, 'countCategoriesByZone'])->name('reports.category.zone');
-  Route::post('/reports/category-by-zone/show',[ReportController::class, 'viewCountCategoriesByZone'])->name('reports.category.show');
+  Route::get('/reports/category-by-zone', [ReportController::class, 'countCategoriesByZone'])->name('reports.category.zone');
+  Route::post('/reports/category-by-zone/show', [ReportController::class, 'viewCountCategoriesByZone'])->name('reports.category.show');
 
   //Inspections Report
   Route::get('/reports/inspections', [ReportController::class, 'createInspectionsReport'])->name('reports.inspections');
@@ -376,6 +378,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/admin/create/role', [SettingsController::class, 'createRole'])->name('admin.create.role');
     Route::post('/admin/role', [SettingsController::class, 'storeRole'])->name('admin.store.role');
     Route::get('/admin/send-test-email', [SettingsController::class, 'TestEmail'])->name('admin.test-email');
+    Route::get('/admin/establishment-categories', [FoodEstablishmentController::class, 'foodEstablishmentCategories']);
+    Route::post('/admin/establishment-categories/create', [FoodEstablishmentController::class, 'addEstCategory']);
+    Route::put('/admin/establishment-categories/update', [FoodEstablishmentController::class, 'updateEstCategory']);
+    Route::delete('/admin/establishment-categories/delete', [FoodEstablishmentController::class, 'deleteEstCategory']);
   });
 
   //Messging 
@@ -385,27 +391,27 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/messaging/index', [Messaging::class, 'showMessages'])->name('messages.view');
 
   //Exam Sites
-  Route::get('/examsites',[ExamSitesController::class,'index'])->name('examsites.index');
-  Route::get('/examsite/create',[ExamSitesController::class,'create'])->name('examsites.create');
-  Route::get('/examsite/edit/{id}',[ExamSitesController::class, 'edit'])->name('examsites.edit');
-  Route::get('/examsite/{id}',[ExamSitesController::class, 'filter'])->name('examsite.filter');
-  Route::get('/examsite/delete/{id}',[ExamSitesController::class, 'delete'])->name('examsites.delete');
+  Route::get('/examsites', [ExamSitesController::class, 'index'])->name('examsites.index');
+  Route::get('/examsite/create', [ExamSitesController::class, 'create'])->name('examsites.create');
+  Route::get('/examsite/edit/{id}', [ExamSitesController::class, 'edit'])->name('examsites.edit');
+  Route::get('/examsite/{id}', [ExamSitesController::class, 'filter'])->name('examsite.filter');
+  Route::get('/examsite/delete/{id}', [ExamSitesController::class, 'delete'])->name('examsites.delete');
 
   //Exam Dates
-  Route::get('/examdates',[ExamDateController::class,'index'])->name('examdates');
-  Route::get('/examdate/create',[ExamDateController::class,'create'])->name('examdate.create');
-  Route::post('/examdate/store',[ExamDateController::class,'store'])->name('examdate.store');
+  Route::get('/examdates', [ExamDateController::class, 'index'])->name('examdates');
+  Route::get('/examdate/create', [ExamDateController::class, 'create'])->name('examdate.create');
+  Route::post('/examdate/store', [ExamDateController::class, 'store'])->name('examdate.store');
 
   //Ai Generated Reports
-  Route::controller(AIReportGeneratorController::class)->group(function(){
-    Route::get('/reports/create-generate-ai-report','index')->name('report.generate.ai');
-    Route::post('/reports/ai-report','generateReport')->name('reports.generate.report');
+  Route::controller(AIReportGeneratorController::class)->group(function () {
+    Route::get('/reports/create-generate-ai-report', 'index')->name('report.generate.ai');
+    Route::post('/reports/ai-report', 'generateReport')->name('reports.generate.report');
   });
 
   //Collected Cards 
-  Route::controller(CollectCardController::class)->group(function(){
-    Route::get('/collected-card/create','create')->name('collectedcards.create');
-    Route::post('/collected-card/store','store')->name('collectedcards.store');
+  Route::controller(CollectCardController::class)->group(function () {
+    Route::get('/collected-card/create', 'create')->name('collectedcards.create');
+    Route::post('/collected-card/store', 'store')->name('collectedcards.store');
   });
 
 
