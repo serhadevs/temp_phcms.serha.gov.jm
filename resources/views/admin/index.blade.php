@@ -48,48 +48,63 @@
                                     {{-- <span><a href="{{ route('admin.test-email') }}"
                                         class="btn btn-success btn-sm">Test Email</a>
                                 </span> --}}
-                                <span>
-                                    {{-- <form  method="post" action="{{ route('admin.test-email') }}">
+                                    <span>
+                                        {{-- <form  method="post" action="{{ route('admin.test-email') }}">
                                         @csrf
                                         <input type="hidden" name="email" value="{{ $stmp->from_address }}">
                                         <button type="submit">Test Email</button>
                                     </form> --}}
-                                </span>
+                                    </span>
                                     <span><a href="{{ route('admin.create.stmp') }}"
                                             class="btn btn-success btn-sm">Change</a>
                                     </span>
                                 </div>
+                            </div>
+                            <div class="card my-2">
+                                <a href="/admin/establishment-categories">
+                                    <div class="card-header">
+                                        <h5 class="fw-bold">
+                                            Establishment Category Settings
+                                        </h5>
+                                    </div>
+                                </a>
+
                             </div>
                         </div>
                         <div class="col-12 col-md">
                             <div class="card shadow">
                                 <div class="card-header">
                                     <h5 class="fw-bold">
-                                       Roles
+                                        Roles
                                     </h5>
                                 </div>
                                 <div class="card-body py-4">
                                     <div class="mb-0">
                                         <span>
                                             <ol class="list-group">
-                                                @foreach ($roles as $role )
-                                                <li class="list-group-item d-flex justify-content-between align-items-start">
-                                                    <div class="ms-2 me-auto">
-                                                      <div class="fw-bold">{{ $role->name }}</div>
-                                                      {{ $role->description }}
-                                                    </div>
-                                                    <span class="badge text-bg-primary rounded-pill mx-1"><a class ="text-white" style="text-decoration: none" href="admin/role/edit/{{$role->id}}">Edit</a></span>
-                                                    <span class="badge text-bg-danger rounded-pill"><a class ="text-white" style="text-decoration: none" href="admin/role/delete/{{$role->id}}">Delete</a></span>
-                                                  </li>
+                                                @foreach ($roles as $role)
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-start">
+                                                        <div class="ms-2 me-auto">
+                                                            <div class="fw-bold">{{ $role->name }}</div>
+                                                            {{ $role->description }}
+                                                        </div>
+                                                        <span class="badge text-bg-primary rounded-pill mx-1"><a
+                                                                class ="text-white" style="text-decoration: none"
+                                                                href="admin/role/edit/{{ $role->id }}">Edit</a></span>
+                                                        <span class="badge text-bg-danger rounded-pill"><a
+                                                                class ="text-white" style="text-decoration: none"
+                                                                href="admin/role/delete/{{ $role->id }}">Delete</a></span>
+                                                    </li>
                                                 @endforeach
-                                                
-                                              </ol>
+
+                                            </ol>
                                         </span>
                                     </div>
 
                                     <div class="card-footer">
-                                        <span><a href="{{ route('admin.create.role') }}"
-                                                class="btn btn-success btn-sm">Add New Role</a>
+                                        <span><a href="{{ route('admin.create.role') }}" class="btn btn-success btn-sm">Add
+                                                New Role</a>
                                         </span>
                                     </div>
                                 </div>
