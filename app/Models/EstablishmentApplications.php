@@ -57,7 +57,7 @@ class EstablishmentApplications extends Model
 
     public function establishmentCategory(): HasOne
     {
-        return $this->hasOne(EstablishmentCategories::class, 'id', 'establishment_category_id');
+        return $this->hasOne(EstablishmentCategories::class, 'id', 'establishment_category_id')->withTrashed();
     }
 
     public function operators(): HasMany

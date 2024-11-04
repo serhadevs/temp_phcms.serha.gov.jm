@@ -36,7 +36,7 @@ class ReportController extends Controller
         //Get all applications types 
 
         $application_type = ApplicationType::all();
-        $establishmentCategories = EstablishmentCategories::all();
+        $establishmentCategories = EstablishmentCategories::withTrashed()->get();
         $foodHandlersCategories = PermitCategory::all();
         $examDate = ExamDates::all();
         //dd($foodHandlersCategories);
@@ -90,9 +90,9 @@ class ReportController extends Controller
                     $critical_score = $request->critical_score;
                     $visit_purpose = $request->visit_purpose;
                     $zone = $request->zone;
-                  
-                 
-                    $applications= EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'testResults')
+
+
+                    $applications = EstablishmentApplications::with('establishmentCategory', 'user', 'payment', 'operators', 'testResults')
                         ->whereBetween('application_date', [$criteria['starting_date'], $criteria['ending_date']])
                         ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                         ->when(
@@ -120,9 +120,11 @@ class ReportController extends Controller
                             function ($query, string $visit_purpose) {
                                 $query->whereRelation('testResults', 'visit_purpose', '=', $visit_purpose);
                             }
-                        )->when($zone, function($query, string $zone){
-                            $query->where('zone',$zone);
-                        }
+                        )->when(
+                            $zone,
+                            function ($query, string $zone) {
+                                $query->where('zone', $zone);
+                            }
 
                         )->get();
                     break;
@@ -162,7 +164,7 @@ class ReportController extends Controller
         $incomingFields = $request->validated();
         $counts = [];
         $permitcategorysArray = PermitCategory::pluck('id')->toArray();
-        $establishmentcategorysArray = EstablishmentCategories::pluck('id')->toArray();
+        $establishmentcategorysArray = EstablishmentCategories::withTrashed()->pluck('id')->toArray();
 
 
         try {
@@ -185,7 +187,7 @@ class ReportController extends Controller
 
                 foreach ($establishmentcategorysArray as $categoryId) {
                     $count = $query->where('establishment_category_id', $categoryId)->count();
-                    $category_name = EstablishmentCategories::where('id', $categoryId)->first();
+                    $category_name = EstablishmentCategories::withTrashed()->where('id', $categoryId)->first();
                     $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
                 }
             }
@@ -413,11 +415,13 @@ class ReportController extends Controller
         return view('reports.inspections.report', compact('inspections'));
     }
 
-    public function countCategoriesByZone(){
+    public function countCategoriesByZone()
+    {
         return view('reports.categorybyzonecount.index');
     }
 
-    public function viewCountCategoriesByZone(Request $request){
+    public function viewCountCategoriesByZone(Request $request)
+    {
 
         $incomingFields = $request->validate([
             'starting_date' => 'required|date',
@@ -426,21 +430,21 @@ class ReportController extends Controller
         ]);
 
         $counts = [];
-        $categoriesArray = EstablishmentCategories::pluck('id')->toArray();
+        $categoriesArray = EstablishmentCategories::withTrashed()->pluck('id')->toArray();
         $start_date = $incomingFields['starting_date'];
         $end_date = $incomingFields['ending_date'];
         $zone = $incomingFields['zone'];
-     
-        $query = EstablishmentApplications::whereBetween('created_at', [$start_date, $end_date])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('establishmentCategory')->where('zone',$zone)->get();
+
+        $query = EstablishmentApplications::whereBetween('created_at', [$start_date, $end_date])->whereIn('user_id', User::facilityUsers()->pluck('id'))->with('establishmentCategory')->where('zone', $zone)->get();
 
         //dd($query);
         foreach ($categoriesArray as $categoryId) {
             $count = $query->where('establishment_category_id', $categoryId)->count();
-            $category_name = EstablishmentCategories::where('id', $categoryId)->first();
+            $category_name = EstablishmentCategories::withTrashed()->where('id', $categoryId)->first();
             $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
         }
 
-        return view('reports.categorybyzonecount.view',compact('start_date','end_date','counts','zone'));
+        return view('reports.categorybyzonecount.view', compact('start_date', 'end_date', 'counts', 'zone'));
     }
 
     // public function productivityReportCreate(){

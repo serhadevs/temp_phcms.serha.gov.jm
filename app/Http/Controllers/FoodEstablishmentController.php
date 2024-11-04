@@ -53,7 +53,7 @@ class FoodEstablishmentController extends Controller
             ->where('created_at', '>', $filterTimeline)
             ->get();
 
-          
+
         return view('establishments.index', compact('food_establishments'));
     }
 
@@ -73,7 +73,7 @@ class FoodEstablishmentController extends Controller
             ->whereBetween('created_at', [$timeline["starting_date"], $timeline["ending_date"]])
             ->get();
 
-            //dd($food_establishments);
+        //dd($food_establishments);
 
         return view('establishments.index', compact('food_establishments'));
     }
@@ -130,7 +130,7 @@ class FoodEstablishmentController extends Controller
         $food_est_application["permit_no"] = $this->generateEstPermitNo();
         $food_est_application["user_id"] = auth()->user()->id;
 
-        
+
 
         if (EstablishmentApplications::create($food_est_application)) {
             $est_application_id = EstablishmentApplications::select('id')->where("permit_no", $food_est_application["permit_no"])->first()->id;
@@ -209,7 +209,7 @@ class FoodEstablishmentController extends Controller
     public function view(Request $request)
     {
         $est_application = EstablishmentApplications::with('operators.editTransactions', 'editTransactions')->find($request->route('id'));
-        $establishment_categories = EstablishmentCategories::all();
+        $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $enableEditFeature = "0";
         $app_type_id = 3;
         $system_operation_type_id = 1;
@@ -365,7 +365,7 @@ class FoodEstablishmentController extends Controller
     public function getEdit(Request $request)
     {
         $est_application = EstablishmentApplications::with('operators', 'editTransactions')->find($request->route('id'));
-        $establishment_categories = EstablishmentCategories::all();
+        $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $app_type_id = 3;
         $system_operation_type_id = 1;
         $enableEditFeature = "1";
@@ -523,5 +523,122 @@ class FoodEstablishmentController extends Controller
             ->get();
 
         return view('establishments.inspections', compact('inspections'));
+    }
+
+    public function foodEstablishmentCategories()
+    {
+        $categories = EstablishmentCategories::all();
+
+        return view('establishments.categories.index', compact('categories'));
+    }
+
+    public function addEstCategory(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            if ($est_cat = EstablishmentCategories::create(['name' => $request->data['est_cat_name']])) {
+                if (EditTransactions::create([
+                    'application_type_id' => 3,
+                    'table_id' => $est_cat->id,
+                    'system_operation_type_id' => 12,
+                    'edit_type_id' => 3,
+                    'user_id' => auth()->user()->id,
+                    'facility_id' => auth()->user()->facility_id,
+                    'reason' => $request->data['reason']
+                ])) {
+                    DB::commit();
+                    return [
+                        'success',
+                        'New Establishment Category: ' . $request->data['est_cat_name'] . ' has been created successfully.'
+                    ];
+                } else {
+                    throw new Exception("Error creating establishment category. Unable to store transaction");
+                }
+            } else {
+                throw new Exception("Error creating establishment category. Unable to store record.");
+            }
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return $ex->getMessage();
+        }
+    }
+
+    public function updateEstCategory(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            if ($estCategory = EstablishmentCategories::find($request->data['est_cat_id'])) {
+                if ($edit_transaction = EditTransactions::create([
+                    'application_type_id' => 3,
+                    'table_id' => $request->data['est_cat_id'],
+                    'system_operation_type_id' => 12,
+                    'edit_type_id' => 1,
+                    'user_id' => auth()->user()->id,
+                    'facility_id' => auth()->user()->facility_id,
+                    'reason' => $request->data['reason']
+                ])) {
+                    if (EditTransactionsChangedColumns::create([
+                        'edit_transaction_id' => $edit_transaction->id,
+                        'column_name' => 'name',
+                        'old_value' => $estCategory->name,
+                        'new_value' => $request->data['est_cat_updated']
+                    ])) {
+                        if ($estCategory->update(['name' => $request->data['est_cat_updated']])) {
+                            DB::commit();
+                            return [
+                                'success',
+                                'New Establishment Category: ' . $request->data['est_cat_updated'] . ' has been updated successfully'
+                            ];
+                        } else {
+                            throw new Exception("Error updating establishment category. Unable to update record.");
+                        }
+                    } else {
+                        throw new Exception("Error update establishment category. Unable to record changed field");
+                    }
+                } else {
+                    throw new Exception("Error updating establishment category. Unable to store transaction");
+                }
+            } else {
+                throw new Exception("Unable to update establishment category. This category does not exist.");
+            }
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return $ex->getMessage();
+        }
+    }
+
+    public function deleteEstCategory(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            if ($estCategory = EstablishmentCategories::find($request->data['est_cat_id'])) {
+                if (EditTransactions::create([
+                    'application_type_id' => 3,
+                    'table_id' => $request->data['est_cat_id'],
+                    'system_operation_type_id' => 12,
+                    'edit_type_id' => 2,
+                    'user_id' => auth()->user()->id,
+                    'facility_id' => auth()->user()->facility_id,
+                    'reason' => $request->data['reason']
+                ])) {
+                    if ($estCategory->update(['deleted_at' => new DateTime()])) {
+                        DB::commit();
+                        return [
+                            'success',
+                            'New Establishment Category: ' . $estCategory->name . ' has been deleted successfully'
+                        ];
+                    } else {
+                        throw new Exception("Error deleting establishment category. Unable to delete record.");
+                    }
+                } else {
+                    throw new Exception("Error deleting establishment category. Unable to store transaction");
+                }
+            } else {
+                throw new Exception("Unable to delete establishment category. This category does not exist.");
+            }
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return $ex->getMessage();
+        }
     }
 }
