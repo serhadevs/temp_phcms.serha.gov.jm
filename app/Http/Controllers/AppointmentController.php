@@ -38,7 +38,7 @@ class AppointmentController extends Controller
             $weekDays = ['sun','mon','tue','wed','thur','fri','sat'];
             $exam_dates = ExamDates::with('permitCategory', 'examSites')
                 ->where('permit_category_id', $id)
-                ->where('facility_id', auth()->user()->facility_id)
+                // ->where('facility_id',1)
                 ->where('exam_day', $weekDays[$day])
                 ->get();
         
@@ -61,18 +61,20 @@ class AppointmentController extends Controller
     {
         $incomingFields = $request->validate([
             "app_date" => "required|date",
-            "exam_date" => "required|exists:exam_dates,id",
+            // "exam_date" => "required|exists:exam_dates,id",
             
         ]);
 
            try {
-            $appointments = Appointments::with('applications.permitCategory', 'examDate','examSites')
-                ->where('appointment_date', $incomingFields['app_date'])
-                ->where('facility_id',auth()->user()->facility_id)
-                ->whereRelation('examDate','id',$incomingFields['exam_date'])
-                ->get();
+            // $appointments = Appointments::with('applications.permitCategory', 'examDate','availableSites')
+            //     ->where('appointment_date', $incomingFields['app_date'])
+            //     ->where('facility_id',auth()->user()->facility_id)
+            //     ->whereRelation('examDate','id',$incomingFields['exam_date'])
+            //     ->get();
 
-                //dd($appointments);
+            $appointments = Appointments::join('exam_dates','exam_dates.id','=','appointments.exam_date_id')->where('appointment_date',$incomingFields['app_date']);
+
+            dd($appointments);
             } catch (QueryException $e) {
                 return redirect()->back()->with('error', 'There is an issue with the query: ' . $e->getMessage());
             } catch (Exception $e) {
