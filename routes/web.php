@@ -36,6 +36,7 @@ use App\Http\Middleware\printerAuthAttempt;
 use App\Http\Controllers\Messaging;
 use App\Models\Payments;
 use App\Models\PermitApplication;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
@@ -319,6 +320,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/test/tourist-establishments', [TestDownloads::class, 'testTourist']);
     Route::get('/fix/stanmark', [PaymentController::class, 'fixStanMarkSTT']);
     // Route::get('/fix/downloads/payment', [PaymentController::class, 'fixDownloadsBasedOnPayment']);
+    Route::get('/fix/establishment-clinics/{clinic_id}', [PaymentController::class, 'applyClinicPermitPayment']);
   });
 
 
@@ -382,6 +384,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::post('/admin/establishment-categories/create', [FoodEstablishmentController::class, 'addEstCategory']);
     Route::put('/admin/establishment-categories/update', [FoodEstablishmentController::class, 'updateEstCategory']);
     Route::delete('/admin/establishment-categories/delete', [FoodEstablishmentController::class, 'deleteEstCategory']);
+    Route::get('/admin/custom-print', [SettingsController::class, 'customPrint']);
   });
 
   //Messging 
