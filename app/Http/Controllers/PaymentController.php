@@ -323,6 +323,41 @@ class PaymentController extends Controller
         return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id'));
     }
 
+    public function applyClinicPermitPayment($clinic_id)
+    {
+        $est_payment = Payments::where('application_id', $clinic_id)
+            ->where('application_type_id', 4)
+            ->first();
+        try {
+            DB::beginTransaction();
+            $permit_ids = [];
+            $i = 0;
+            foreach (
+                PermitApplication::with('payment')
+                    ->doesntHave('payment')
+                    ->where('establishment_clinic_id', $clinic_id)
+                    ->get() as $permit
+            ) {
+                Payments::create([
+                    'application_type_id' => 1,
+                    'application_id' => $permit->id,
+                    'receipt_no' => $est_payment->receipt_no,
+                    'facility_id' => $est_payment->facility_id,
+                    'cashier_user_id' => $est_payment->cashier_user_id,
+                    'amount_paid' => 0,
+                    'total_cost' => 0,
+                    'change_amt' => 0
+                ]);
+                $permit_ids[$i] = $permit->id;
+                $i++;
+            }
+            DB::commit();
+            return json_encode($permit_ids);
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+    }
+
     public function fixStanMarkSTT()
     {
         $applications = PermitApplication::with('payment')
@@ -396,7 +431,7 @@ class PaymentController extends Controller
             $health_certif = HealthCertApplications::find($payment->application_id);
             $receipt_info['applicant_name'] = $health_certif->firstname . " " . $health_certif->lastname;
             $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
-        }else if($payment->application_type_id == 6){
+        } else if ($payment->application_type_id == 6) {
             $receipt_info['applicant_name'] = TouristEstablishments::find($payment->application_id)->establishment_name;
             $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
         }
