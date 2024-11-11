@@ -325,7 +325,7 @@
                                     </li>
                                 @else
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Days Awaiting Inspection Completion
+                                    Days awaiting inspection to be done
                                     <span class="badge bg-primary rounded-pill">
                                     {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(now()) }}
                                     </span>
@@ -359,7 +359,7 @@
                 </div>
 
                 <div class="card-footer">
-                    <a href="{{ }}" onclick="history.back();" class="btn btn-danger"> Back to Previous
+                    <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous
                         Page</a>
                 </div>
             </div>
