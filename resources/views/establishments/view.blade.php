@@ -325,7 +325,7 @@
                                     </li>
                                 @else
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Days awaiting inspection to be done
+                                    Days Awaiting Inspection Completion
                                     <span class="badge bg-primary rounded-pill">
                                     {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(now()) }}
                                     </span>

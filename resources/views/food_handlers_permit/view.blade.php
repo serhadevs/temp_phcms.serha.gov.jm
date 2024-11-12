@@ -295,7 +295,7 @@
 
                                                     </span>
                                                 </li>
-                                                <li
+                                                {{-- <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Test Completed and Test Score Uploaded
                                                     <span class="badge bg-primary rounded-pill">
@@ -313,6 +313,23 @@
 
                                                     </span>
 
+                                                </li> --}}
+
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Days between Test Completed and Test Score Uploaded
+                                                    <span class="badge bg-primary rounded-pill">
+                                                        @if ($permit_application->testResults && $permit_application->testResults->created_at)
+                                                            @if ($permit_application->establishmentClinics && $permit_application->establishmentClinics->proposed_date)
+                                                                {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
+                                                            @elseif ($permit_application->appointment && $permit_application->appointment->isNotEmpty() && $permit_application->appointment->first()->appointment_date)
+                                                                {{ \Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
+                                                            @else
+                                                                0
+                                                            @endif
+                                                        @else
+                                                            0
+                                                        @endif
+                                                    </span>
                                                 </li>
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
