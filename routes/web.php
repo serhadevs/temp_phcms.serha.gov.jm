@@ -391,7 +391,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get('/messaging/resend/{id}', [Messaging::class, 'index'])->name('messages.resend');
   Route::post('/messaging/send/{id}', [Messaging::class, 'sendMessage'])->name('messages.send');
-  Route::get('/messaging/index', [Messaging::class, 'showMessages'])->name('messages.view');
+  Route::get('/messaging', [Messaging::class, 'showMessages'])->name('messages.view');
 
   //Exam Sites
   Route::get('/examsites', [ExamSitesController::class, 'index'])->name('examsites.index');

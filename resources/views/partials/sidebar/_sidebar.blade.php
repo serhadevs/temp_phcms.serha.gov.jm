@@ -72,12 +72,17 @@
         </li>
 
 
-
-
         <li class="sidebar-item">
             <a href="/food-establishments/filter/0" class="sidebar-link">
                 <i class="bi bi-hospital"></i>
                 <span>Food Establishments</span>
+            </a>
+        </li>
+
+        <li class="sidebar-item">
+            <a href="{{ route('messages.view') }}" class="sidebar-link">
+                <i class="bi bi-envelope"></i>
+                <span>Messages</span>
             </a>
         </li>
 
