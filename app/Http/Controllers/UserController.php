@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendCredentialEmail;
 use App\Jobs\SendResetPasswordEmail;
+use App\Mail\SendCredentials;
+use App\Models\Facility;
+use App\Models\LoginActivity;
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use App\Mail\ForgetPasswordMail;
-use App\Models\Facility;
-use App\Models\LoginActivity;
-use App\Models\Role;
-use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -47,11 +47,6 @@ class UserController extends Controller
             ->whereNotNull('last_seen')
             ->orderBy('last_seen', 'DESC')
             ->get();
-
-
-
-        //dd($currentUsers);
-
 
         return view('users.index', compact('users', 'facilities', 'currentUsers'));
     }
@@ -233,7 +228,7 @@ class UserController extends Controller
             $user->save();
 
             return redirect()->route("dashboard.dashboard")->with("success", "Your password was reset successfully");
-            // return view('dashboard.dashboard')->with('success', 'Your password was reset successfully');
+           
 
         } else {
             return redirect()->back()->with('error', "Unable to find user");
@@ -279,7 +274,9 @@ class UserController extends Controller
         $incomingFields['last_seen'] = date('Y-m-d H:i:s');
         $user = User::create($incomingFields);
 
-        //dd($user);
+      //Send Email to user
+
+      dispatch(new SendCredentialEmail($user));
 
         if (!$user) {
             return redirect()->route('user.index')->with('error', 'Unable to add the user');
