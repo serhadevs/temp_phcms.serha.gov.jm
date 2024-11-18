@@ -44,7 +44,7 @@ class ExamDateController extends Controller
 
         $exam_date = $request->validate([
             'application_type_id' => 'required',
-            'permit_category_id' => 'required',
+            'permit_category_id' => 'null',
             'exam_site_id' => 'required',
             'exam_day' => 'required',
             'exam_start_time' => 'required'

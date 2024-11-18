@@ -90,6 +90,7 @@ class BarberCosmetApplicationsController extends Controller
             ->where('application_type_id', 2)
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
+            //dd($exam_sessions);
         return view('barbercosmet.create', compact('exam_sessions'));
     }
 

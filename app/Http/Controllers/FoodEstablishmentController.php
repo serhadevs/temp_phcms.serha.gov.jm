@@ -208,11 +208,12 @@ class FoodEstablishmentController extends Controller
 
     public function view(Request $request)
     {
-        $est_application = EstablishmentApplications::with('operators.editTransactions', 'editTransactions')->find($request->route('id'));
+        $est_application = EstablishmentApplications::with('operators.editTransactions', 'editTransactions','testResults','signOff')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $enableEditFeature = "0";
         $app_type_id = 3;
         $system_operation_type_id = 1;
+        //dd($est_application);
         return view('establishments.view', compact('est_application', 'establishment_categories', 'enableEditFeature', 'app_type_id', 'system_operation_type_id'));
     }
 

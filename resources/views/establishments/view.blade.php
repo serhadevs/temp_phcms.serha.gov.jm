@@ -272,43 +272,95 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="text-muted">Inspection Results</h5>
                         </div>
-                       
-                       </div>
-                   <div class="card mt-3">
-                    <div class="card-header">
-                        <h5 class="text-muted">Certificate Processing Tracker</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                              Days between Application Date and Inspection Date
-                              <span class="badge bg-primary rounded-pill"></span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                              A second list item
-                              <span class="badge bg-primary rounded-pill">2</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                              A third list item
-                              <span class="badge bg-primary rounded-pill">1</span>
-                            </li>
-                          </ul>
-                    </div>
-                   </div>
+                        <div class="card-body">
+                            @if (!$est_application->testResults)
+                                No Inspection Results available
+                            @else
+                                <table class="table table-sm table-bordered">
+                                    <tr>
+                                        <th>Overall Score</th>
+                                        <th>Critical Score</th>
+                                        <th>Inspection Type</th>
+                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                {{ $est_application->testResults?->overall_score ?? 'No Overall Score' }}
+                                            </td>
+                                            <td>{{ $est_application->testResults?->critical_score ?? 'No Critical Score' }}
+                                            </td>
+                                            <td>{{ strtoupper($est_application->testResults?->visit_purpose) ?? 'N/A' }}
+                                            </td>
 
-                    
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+
+
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="text-muted">Certificate Processing Tracker</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                @if ($est_application && $est_application->testResults)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Days between Application Date and Inspection Date
+                                        <span class="badge bg-primary rounded-pill">
+
+                                            {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(\Carbon\Carbon::parse($est_application->testResults->created_at)) }}
+
+                                        </span>
+                                    </li>
+                                @else
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Days Awaiting Inspection Completion
+                                    <span class="badge bg-primary rounded-pill">
+                                    {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(now()) }}
+                                    </span>
+                                @endif
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Days between Inspection Date and Sign-off
+                                    <span class="badge bg-primary rounded-pill">
+                                        @if ($est_application->testResults && $est_application->signOff)
+                                            {{ \Carbon\Carbon::parse($est_application->testResults->created_at)->diffInDays(\Carbon\Carbon::parse($est_application->signOff->created_at)) }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(now()) }}
+                                        @endif
+                                    </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Days between Application Date and Sign-off
+                                    <span class="badge bg-primary rounded-pill">
+                                        @if ($est_application && $est_application->signOff)
+                                            {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(\Carbon\Carbon::parse($est_application?->signOff?->created_at)) }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(now()) }}
+                                        @endif
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
 
                 </div>
-               
+
                 <div class="card-footer">
-                    <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous Page</a>
+                    <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous
+                        Page</a>
                 </div>
             </div>
         </div>
