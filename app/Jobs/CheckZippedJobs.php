@@ -36,7 +36,7 @@ class CheckZippedJobs implements ShouldQueue
     public function handle()
     {
         //Check if Permit Applications said to have been zipped were actually written to the files
-        $downloads = Downloads::where('created_at', '>', '2024-10-01')
+        $downloads = Downloads::where('created_at', '>', '2024-02-01')
             ->where('application_type_id', 1)
             ->get();
 
@@ -79,7 +79,7 @@ class CheckZippedJobs implements ShouldQueue
         }
 
         //Check if Food Establishments said to have been zipped were actually written to the files
-        $downloads = Downloads::where('created_at', '>', '2024-10-01')
+        $downloads = Downloads::where('created_at', '>', '2024-02-01')
             ->where('application_type_id', 3)
             ->get();
 
