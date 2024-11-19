@@ -418,9 +418,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::post('/collected-card/store', 'store')->name('collectedcards.store');
   });
 
-
-
-
   //Logout Routes
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

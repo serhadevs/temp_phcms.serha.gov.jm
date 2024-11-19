@@ -363,9 +363,9 @@
                                                         @endif
                                                     </span>
                                                 </li>
-                                                <li
+                                                {{-- <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Days Between Test Completion and Card Printing
+                                                    Days Between Test Completion and Card Printing --}}
                                                     {{-- <span class="badge bg-primary rounded-pill">
                                                         @if ($permit_application->printedcard && $permit_application->printedcard?->created_at)
                                                             {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at)) }}
@@ -373,7 +373,7 @@
                                                             0
                                                         @endif
                                                     </span> --}}
-                                                </li>
+                                                {{-- </li> --}}
 
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
@@ -729,6 +729,7 @@
 
                     </form>
                     {{-- Card Collected --}}
+                    
                     <div class="card mt-3">
                         <h5 class="card-header text-muted">
                             Card Pickup Details
@@ -740,7 +741,7 @@
                                 {{ $permit_application->collected_cards?->collected_by }} on
                                 {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
                             </div>
-                        @elseif($permit_application->printedcard)
+                        @elseif($permit_application->printedcard && $permit_application->signOffs->expiry_date > \Carbon\Carbon::now())
                             <div class="card-body">
                                 Card is ready for pickup
                             </div>
@@ -753,7 +754,7 @@
                             @include('partials.modals.addCardInfoModal')
                         @else
                             <div class="card-body">
-                                Card is not ready for pick up
+                                Expired Card
                             </div>
                         @endif
                     </div>

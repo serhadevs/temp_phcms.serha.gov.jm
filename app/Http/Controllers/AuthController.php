@@ -32,8 +32,6 @@ class AuthController extends Controller
         $userAgent = $request->input('userAgent');
         $userPlatform = $request->input('userPlatform');
 
-
-
         try {
 
             // Attempt to log in the user
