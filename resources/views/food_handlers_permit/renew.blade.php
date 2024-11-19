@@ -117,7 +117,7 @@
                         </div>
                         <div class="mt-3">
                             <img src="{{ asset('storage/' . $application->photo_upload) }}" alt=""
-                                style="width:20%;aspect-ratio: 1 / 1;">
+                                style="width:10%;aspect-ratio: 1 / 1;">
                         </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Upload Photo</label>
