@@ -117,7 +117,7 @@
                         </div>
                         <div class="mt-3">
                             <img src="{{ asset('storage/' . $application->photo_upload) }}" alt=""
-                                style="height:30vh;width:40%">
+                                style="width:40%;aspect-ratio: 1 / 1;">
                         </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Upload Photo</label>
@@ -195,7 +195,7 @@
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Email</label>
-                                <input type="text" class="form-control" name="email"
+                                <input type="email" class="form-control" name="email"
                                     value="{{ old('email') ? old('email') : $application->email }}"
                                     oninput="this.value = this.value.toUpperCase()">
                                 @error('email')

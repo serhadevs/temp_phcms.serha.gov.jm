@@ -735,13 +735,7 @@
                             Card Pickup Details
                         </h5>
 
-                        @if ($permit_application->collected_cards)
-                            <div class="card-body">
-                                Card was collected by
-                                {{ $permit_application->collected_cards?->collected_by }} on
-                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
-                            </div>
-                        @elseif($permit_application->printedcard && $permit_application->signOffs->expiry_date > \Carbon\Carbon::now())
+                        @if($permit_application->printedcard && $permit_application->signOffs->expiry_date > \Carbon\Carbon::now())
                             <div class="card-body">
                                 Card is ready for pickup
                             </div>
@@ -752,11 +746,14 @@
                                     data-bs-target="#cardModal">Enter Pickup Details</button>
                             </div>
                             @include('partials.modals.addCardInfoModal')
-                        @else
-                            <div class="card-body">
-                                Expired Card
-                            </div>
+                        @elseif($permit_application->collected_cards)
+                        <div class="card-body">
+                            Card was collected by
+                            {{ $permit_application->collected_cards?->collected_by }} on
+                            {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
+                        </div>
                         @endif
+
                     </div>
                     {{-- Card Collected --}}
                 </div>
