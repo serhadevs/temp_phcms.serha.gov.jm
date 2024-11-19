@@ -24,7 +24,7 @@ class LoginRequestApi extends FormRequest
     public function rules(): array
     {
         return [
-            'permit_no' => 'required|string',
+            'email' => 'required|string',
             'password' => 'required'
         ];
     }
