@@ -777,6 +777,11 @@
                             <div class = "card-body">
                                 Card is Expired.
                             </div>
+
+                        @else
+                        <div class = "card-body">
+                            Card is not ready for pickup.
+                        </div>
                         @endif
 
                     </div>
