@@ -14,7 +14,7 @@
                     <div class="row justify-content-between">
                         <div class="col">
                             <h2 class="text-muted">
-                                All Food Handler's Clinics
+                                All Food Handler Clinics
                             </h2>
                         </div>
                         <div class="col-auto no-wrap">

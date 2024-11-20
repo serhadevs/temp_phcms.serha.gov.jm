@@ -1,4 +1,4 @@
-<table id="barber_cosmet_table" class="table table-striped table-bordered" style="width:100%;max-width:100%">
+<table id="barber_cosmet_table" class="table table-striped nowrap table-sm table-bordered" style="width:100%;max-width:100%">
     <thead>
         <tr>
             @if (isset($is_result))
