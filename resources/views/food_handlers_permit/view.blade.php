@@ -628,21 +628,30 @@
                                                         disabled>
                                                 </div> --}}
                                         {{-- </div> --}}
-                                        {{-- @if(\Carbon\Carbon::parse(optional($permit_application->signOffs)->expiry_date)->isPast())
-                                                <div class="mt-3">
-                                                    <div class="alert alert-danger" role="alert">
-                                                        Card has Expired on {{\Carbon\Carbon::parse(optional($permit_application->signOffs)->expiry_date)->format('d F Y') }}
-                                                      </div>
+                                        @if (optional($permit_application->signOffs)->expiry_date &&
+                                                \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->isPast())
+                                            <div class="mt-3">
+                                                <div class="alert alert-danger" role="alert">
+                                                    Card has expired on
+                                                    {{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}
                                                 </div>
-                                        @else --}}
-                                        <div class="mt-3">
-                                            <label for="" class="form-label">Expiry Date</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ !empty($permit_application->signOffs) ? $permit_application->signOffs?->expiry_date : '' }}"
-                                                disabled>
-                                        </div>
-                                        {{-- @endif --}}
-                                       
+                                            </div>
+                                        @elseif(optional($permit_application->signOffs)->expiry_date)
+                                            <div class="mt-3">
+                                                <label for="expiry-date" class="form-label">Expiry Date</label>
+                                                <input type="text" id="expiry-date" class="form-control"
+                                                    value="{{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}"
+                                                    disabled>
+                                            </div>
+                                        @else
+                                            <div class="mt-3">
+                                                <div class="alert alert-warning" role="alert">
+                                                    No expiry date available.
+                                                </div>
+                                            </div>
+                                        @endif
+
+
                                         <div class="row mt-3">
                                             <div class="col">
                                                 <label for="" class="form-label">Granted</label>
@@ -784,7 +793,7 @@
                             </div>
                         @elseif(!$permit_application->collected_card)
                             <div class="card-body">
-                                Card was not picked up. 
+                              
                             </div>
                         @endif
 
