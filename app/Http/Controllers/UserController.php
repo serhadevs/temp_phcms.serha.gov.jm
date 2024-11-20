@@ -276,7 +276,7 @@ class UserController extends Controller
 
       //Send Email to user
 
-      dispatch(new SendCredentialEmail($user));
+      //dispatch(new SendCredentialEmail($user));
 
         if (!$user) {
             return redirect()->route('user.index')->with('error', 'Unable to add the user');
