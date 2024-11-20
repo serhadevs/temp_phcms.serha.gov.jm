@@ -59,32 +59,29 @@ class AppointmentController extends Controller
 
     public function show(Request $request)
     {
+        // Validate incoming request fields
         $incomingFields = $request->validate([
             "app_date" => "required|date",
-            // "exam_date" => "required|exists:exam_dates,id",
-            
         ]);
-
-           try {
-            // $appointments = Appointments::with('applications.permitCategory', 'examDate','availableSites')
-            //     ->where('appointment_date', $incomingFields['app_date'])
-            //     ->where('facility_id',auth()->user()->facility_id)
-            //     ->whereRelation('examDate','id',$incomingFields['exam_date'])
-            //     ->get();
-
-            $appointments = Appointments::join('exam_dates','exam_dates.id','=','appointments.exam_date_id')->where('appointment_date',$incomingFields['app_date']);
-
-            //dd($appointments);
-            } catch (QueryException $e) {
-                return redirect()->back()->with('error', 'There is an issue with the query: ' . $e->getMessage());
-            } catch (Exception $e) {
-                return redirect()->back()->with('error', 'Unknown error occurred: ' . $e->getMessage());
-            }
-
+    
+        try {
+            // Fetch appointments for the provided date
+            $appointments = Appointments::join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
+                ->where('appointment_date', $incomingFields['app_date'])
+                ->select('appointments.*', 'exam_dates.*') // Explicitly select required fields
+                ->get();
+    
+            // Check if the results are empty
             if ($appointments->isEmpty()) {
-                return redirect()->back()->with('error', 'Unable to find appointments for that date');
+                return redirect()->back()->with('error', 'No appointments found for the selected date.');
             }
-
-        return view('appointments.view', compact('appointments'));
+        } catch (QueryException $e) {
+            return redirect()->back()->with('error', 'There was an issue with the query: ' . $e->getMessage());
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'An unexpected error occurred: ' . $e->getMessage());
+        }
+    
+        // Return the view with the appointments data
+        return view('appointments.view', ['appointments' => $appointments]);
     }
 }
