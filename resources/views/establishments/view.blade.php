@@ -275,6 +275,7 @@
 
                     </div>
 
+
                     <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="text-muted">Inspection Results</h5>
@@ -308,6 +309,57 @@
 
                     </div>
 
+                    @if ($est_application && $est_application->signOff)
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="text-muted">Sign off Status</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (\Carbon\Carbon::parse(optional($est_application->signOff)->expiry_date)->isPast())
+                                <div class="alert alert-danger" role="alert">
+                                    License is expired
+                                </div>
+                            @else
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <th>Sign Off Date</th>
+                                            <th>Expiry Date</th>
+                                            <th>MO(H)</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse(optional($est_application->signOff)->created_at)->format('d F Y') }}
+                                                </td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse(optional($est_application->signOff)->expiry_date)->format('d F Y') }}
+                                                </td>
+                                                <td>
+                                                    {{ optional($est_application->signOff->user)->firstname ?? 'N/A' }}
+                                                    {{ optional($est_application->signOff->user)->lastname ?? '' }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @else
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="text-muted">Sign off Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning" role="alert">
+                                Sign off has not yet been completed
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                
+
                     <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="text-muted">Certificate Processing Tracker</h5>
@@ -324,11 +376,11 @@
                                         </span>
                                     </li>
                                 @else
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Days Awaiting Inspection Completion
-                                    <span class="badge bg-primary rounded-pill">
-                                    {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(now()) }}
-                                    </span>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Days Awaiting Inspection Completion
+                                        <span class="badge bg-primary rounded-pill">
+                                            {{ \Carbon\Carbon::parse($est_application->created_at)->diffInDays(now()) }}
+                                        </span>
                                 @endif
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     Days between Inspection Date and Sign-off
