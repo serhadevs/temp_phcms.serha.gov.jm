@@ -319,7 +319,7 @@
                                 <div class="alert alert-danger" role="alert">
                                     License is expired
                                 </div>
-                            @else
+                          
                                 <div class="table-responsive">
                                     <table class="table table-sm table-bordered">
                                         <thead>
@@ -343,7 +343,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            @endif
+                           
                         </div>
                     </div>
                 @else
