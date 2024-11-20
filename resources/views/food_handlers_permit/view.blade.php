@@ -56,29 +56,37 @@
                                             Test Results
                                         </h5>
                                         <div class="card-body">
-                                         
+
 
                                             @if (!empty($permit_application->testResults))
-                                            <ul class="list-group">
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Exam Site
-                                                    <span class="badge text-bg-primary rounded-pill text-wrap" style="white-space: normal;"> 
-                                                        {{ $permit_application->testResults?->test_location }}
-                                                    </span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Trainer(s)
-                                                  <span class="badge text-bg-primary rounded-pill"> {{ $permit_application->testResults?->staff_contact }}</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Test Score
-                                                  <span class="badge text-bg-primary rounded-pill"> {{ $permit_application->testResults?->overall_score }}</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Comments
-                                                  <span class="badge text-bg-primary rounded-pill">  {{ $permit_application->testResults?->comments }}</span>
-                                                </li>
-                                              </ul>
+                                                <ul class="list-group">
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Exam Site
+                                                        <span class="badge text-bg-primary rounded-pill text-wrap"
+                                                            style="white-space: normal;">
+                                                            {{ $permit_application->testResults?->test_location }}
+                                                        </span>
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Trainer(s)
+                                                        <span class="badge text-bg-primary rounded-pill">
+                                                            {{ $permit_application->testResults?->staff_contact }}</span>
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Test Score
+                                                        <span class="badge text-bg-primary rounded-pill">
+                                                            {{ $permit_application->testResults?->overall_score }}</span>
+                                                    </li>
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Comments
+                                                        <span class="badge text-bg-primary rounded-pill">
+                                                            {{ $permit_application->testResults?->comments }}</span>
+                                                    </li>
+                                                </ul>
                                             @else
                                                 No Test Results Available
                                             @endif
@@ -315,13 +323,17 @@
 
                                                 </li> --}}
 
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days between Test Completed and Test Score Uploaded
                                                     <span class="badge bg-primary rounded-pill">
                                                         @if ($permit_application->testResults && $permit_application->testResults->created_at)
                                                             @if ($permit_application->establishmentClinics && $permit_application->establishmentClinics->proposed_date)
                                                                 {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
-                                                            @elseif ($permit_application->appointment && $permit_application->appointment->isNotEmpty() && $permit_application->appointment->first()->appointment_date)
+                                                            @elseif (
+                                                                $permit_application->appointment &&
+                                                                    $permit_application->appointment->isNotEmpty() &&
+                                                                    $permit_application->appointment->first()->appointment_date)
                                                                 {{ \Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
                                                             @else
                                                                 0
@@ -366,7 +378,7 @@
                                                 {{-- <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
                                                     Days Between Test Completion and Card Printing --}}
-                                                    {{-- <span class="badge bg-primary rounded-pill">
+                                                {{-- <span class="badge bg-primary rounded-pill">
                                                         @if ($permit_application->printedcard && $permit_application->printedcard?->created_at)
                                                             {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at)) }}
                                                         @else
@@ -635,6 +647,15 @@
                                                     value="{{ strtoupper($permit_application->sign_off_status == 1 ? 'Signed Off' : 'Not Signed Off') }}"
                                                     disabled>
                                             </div>
+                                            @if ($permit_application->sign_off_status == 1)
+                                                <div class="col">
+                                                    <label for="" class="form-label">Signed Off By</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ strtoupper(optional($permit_application->signOffs?->user)->firstname) }} {{ strtoupper(optional($permit_application->signOffs?->user)->lastname) }}"
+                                                        disabled>
+                                                </div>
+                                            @endif
+
                                         </div>
                                         <div class="row mt-3">
                                             <div class="col-md-3">
@@ -729,13 +750,13 @@
 
                     </form>
                     {{-- Card Collected --}}
-                    
+
                     <div class="card mt-3">
                         <h5 class="card-header text-muted">
                             Card Pickup Details
                         </h5>
 
-                        @if($permit_application->printedcard && $permit_application->signOffs->expiry_date > \Carbon\Carbon::now())
+                        @if ($permit_application->printedcard && $permit_application->signOffs->expiry_date > \Carbon\Carbon::now())
                             <div class="card-body">
                                 Card is ready for pickup
                             </div>
@@ -747,11 +768,15 @@
                             </div>
                             @include('partials.modals.addCardInfoModal')
                         @elseif($permit_application->collected_cards)
-                        <div class="card-body">
-                            Card was collected by
-                            {{ $permit_application->collected_cards?->collected_by }} on
-                            {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
-                        </div>
+                            <div class="card-body">
+                                Card was collected by
+                                {{ $permit_application->collected_cards?->collected_by }} on
+                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
+                            </div>
+                        @elseif($permit_application->printedcard && $permit_application->signOffs->expiry_date < \Carbon\Carbon::now())
+                            <div class = "card-body">
+                                Card is Expired.
+                            </div>
                         @endif
 
                     </div>

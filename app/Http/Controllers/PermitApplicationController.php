@@ -100,7 +100,7 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages', 'messages.user','printedcard','collected_cards')
+        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages', 'messages.user','printedcard','collected_cards','signOffs.user:id,firstname,lastname')
             ->find($application_id);
         //dd($permit_application);
 

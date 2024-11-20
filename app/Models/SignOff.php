@@ -38,4 +38,6 @@ class SignOff extends Model
     public function application_type():HasOne{
         return $this->hasOne(ApplicationType::class,'id','application_type_id');
     }
+
+    
 }

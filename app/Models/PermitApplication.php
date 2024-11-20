@@ -137,4 +137,8 @@ class PermitApplication extends Model
     {
         return $this->hasOne(CollectedCards::class, 'app_id', 'id');
     }
+
+    public function signee():HasOne{
+        return $this->hasOne(SignOff::class,'user_id','id');
+    }
 }
