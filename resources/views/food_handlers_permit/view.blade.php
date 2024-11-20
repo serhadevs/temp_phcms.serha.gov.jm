@@ -780,7 +780,7 @@
                             <div class="card-body">
                                 Card was collected by
                                 {{ $permit_application->collected_cards?->collected_by }} on
-                                {{ \Carbon\Carbon::parse(optional$permit_application->collected_cards?->created_at)->format('d F Y') }}
+                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
                             </div>
                         @elseif(!$permit_application->collected_card)
                             <div class="card-body">
