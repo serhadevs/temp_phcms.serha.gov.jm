@@ -74,7 +74,7 @@ class AppointmentController extends Controller
 
             $appointments = Appointments::join('exam_dates','exam_dates.id','=','appointments.exam_date_id')->where('appointment_date',$incomingFields['app_date']);
 
-            dd($appointments);
+            //dd($appointments);
             } catch (QueryException $e) {
                 return redirect()->back()->with('error', 'There is an issue with the query: ' . $e->getMessage());
             } catch (Exception $e) {

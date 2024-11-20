@@ -62,9 +62,9 @@ class TestDownloads extends Controller
             ->get());
     }
 
-    public function testCheckJob(){
-        CheckZippedJobs::dispatch();
-    }
+    // public function testCheckJob(){
+    //     CheckZippedJobs::dispatch();
+    // }
 
     /**
      * Show the form for creating a new resource.
