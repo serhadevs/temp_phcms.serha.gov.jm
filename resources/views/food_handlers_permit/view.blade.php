@@ -651,30 +651,38 @@
                                             </div>
                                         @endif
 
-
                                         <div class="row mt-3">
-                                            <div class="col">
+                                            <div class="col-md-3">
                                                 <label for="" class="form-label">Granted</label>
                                                 <input type="text" class="form-control"
-                                                    value="{{ strtoupper($permit_application->granted == 1 ? 'Granted' : ($permit_application->granted == 0 ? 'Not Granted' : 'N/A')) }}"
+                                                    value="{{ strtoupper($permit_application->granted === 1 ? 'GRANTED' : ($permit_application->granted === 0 ? 'NOT GRANTED' : 'N/A')) }}"
                                                     disabled>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-md-3">
                                                 <label for="" class="form-label">Sign Off Status</label>
                                                 <input type="text" class="form-control"
-                                                    value="{{ strtoupper($permit_application->sign_off_status == 1 ? 'Signed Off' : 'Not Signed Off') }}"
+                                                    value="{{ strtoupper($permit_application->sign_off_status === 1 ? 'SIGNED OFF' : 'NOT SIGNED OFF') }}"
                                                     disabled>
                                             </div>
-                                            @if ($permit_application->sign_off_status == 1)
-                                                <div class="col">
+                                            
+                                            @if ($permit_application && $permit_application->sign_off_status === 1)
+                                                <div class="col-md-3">
+                                                    <label for="" class="form-label">Signed Off Date</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ \Carbon\Carbon::parse(optional($permit_application->signOffs)?->created_at)->format('d F Y') }}"
+                                                        disabled>
+                                                </div>
+                                                <div class="col-md-3">
                                                     <label for="" class="form-label">Signed Off By</label>
                                                     <input type="text" class="form-control"
                                                         value="{{ strtoupper(optional($permit_application->signOffs?->user)->firstname) }} {{ strtoupper(optional($permit_application->signOffs?->user)->lastname) }}"
                                                         disabled>
                                                 </div>
                                             @endif
-
                                         </div>
+                                        
+
+                                        
                                         <div class="row mt-3">
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Applied Before</label>
