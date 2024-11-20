@@ -631,7 +631,7 @@
                                         @if(\Carbon\Carbon::parse(optional($permit_application->signOffs)->expiry_date)->isPast())
                                                 <div class="mt-3">
                                                     <div class="alert alert-danger" role="alert">
-                                                        Card has Expired on {{\Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}
+                                                        Card has Expired on {{\Carbon\Carbon::parse(optional($permit_application->signOffs)->expiry_date)->format('d F Y') }}
                                                       </div>
                                                 </div>
                                         @else
@@ -780,7 +780,7 @@
                             <div class="card-body">
                                 Card was collected by
                                 {{ $permit_application->collected_cards?->collected_by }} on
-                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
+                                {{ \Carbon\Carbon::parse(optional$permit_application->collected_cards?->created_at)->format('d F Y') }}
                             </div>
                         @elseif(!$permit_application->collected_card)
                             <div class="card-body">
