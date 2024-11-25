@@ -1,4 +1,4 @@
-<table class="table table-bordered table-striped nowrap" id="appointments" style="width:100%">
+<table class="table table-bordered table-striped nowrap table-sm" id="appointments" style="width:100%">
     <thead>
         <tr>
             <th>App #</th>
@@ -15,7 +15,7 @@
         @foreach ($appointments as $appointment)
             <tr>
                 <td>
-                    <a href="{{ route('permit.application.view', ['id' => $appointment->permit_application_id]) }}" class="btn btn-success">
+                    <a href="{{ route('permit.application.view', ['id' => $appointment->permit_application_id]) }}" class="btn btn-success btn-sm">
                         View Application
                     </a>
                     </td>
