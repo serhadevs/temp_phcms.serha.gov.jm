@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Route for user login
-Route::post('/login', [Auth::class, 'login']);
+Route::post('/loginapi', [Auth::class, 'login']);
 Route::post('/login/user', [Auth::class, 'loginuser']);
 
 

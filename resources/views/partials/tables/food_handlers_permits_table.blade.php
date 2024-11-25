@@ -29,70 +29,68 @@
     </thead>
     <tbody>
         @foreach ($permit_applications as $permit_application)
-            <tr>
-                @if (!isset($is_general_report))
-                    <td>
-                        @if ($permit_application->photo_upload && $permit_application->photo_upload != 0)
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop"
-                                onclick="populateModal({{ json_encode($permit_application->id) }}, {{ json_encode(strtoupper($permit_application->firstname . ' ' . $permit_application->lastname)) }}, {{ json_encode($permit_application->photo_upload) }})">
-                                Photo
-                            </button>
-                        @endif
-                    </td>
+        <tr onclick="window.location.href='/permit/view/{{ $permit_application->id }}'" style="cursor: pointer;">
+            @if (!isset($is_general_report))
+                <td>
+                    @if ($permit_application->photo_upload && $permit_application->photo_upload != 0)
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                            onclick="event.stopPropagation(); populateModal({{ json_encode($permit_application->id) }}, {{ json_encode(strtoupper($permit_application->firstname . ' ' . $permit_application->lastname)) }}, {{ json_encode($permit_application->photo_upload) }})">
+                            Photo
+                        </button>
+                    @endif
+                </td>
+            @endif
+            <td>{{ $permit_application->id }}</td>
+            <td>{{ strtoupper($permit_application->permit_no) }}</td>
+            <td>{{ strtoupper($permit_application->firstname) }}</td>
+            <td>{{ strtoupper($permit_application->lastname) }}</td>
+            <td>{{ $permit_application->date_of_birth }}</td>
+            <td>{{ $permit_application->address }}</td>
+            <td>{{ $permit_application->cell_phone }}</td>
+            <td>{{ !empty($permit_application->establishmentClinics) ? $permit_application->establishmentClinics?->name : 'N/A' }}
+            </td>
+            <td>{{ strtoupper($permit_application->permit_type) }}</td>
+            <td>{{ strtoupper($permit_application->permitCategory?->name) }}</td>
+            <td>
+                {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_date . ' - ' . $permit_application?->establishmentClinics?->proposed_time : (!empty($permit_application?->appointment[0]) ? $permit_application?->appointment[0]?->appointment_date . ' - ' . $permit_application->appointment[0]?->examDate?->exam_start_time : 'N/A') }}
+            </td>
+            <td>
+                {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->address : (!empty($permit_application->appointment[0]) ? $permit_application->appointment[0]?->examDate?->examSites?->name : '') }}
+            </td>
+            <td class="text-center">
+                <span
+                    class="badge text-bg-{{ empty($permit_application->payment) ? 'danger' : 'success' }}">{{ empty($permit_application->payment) ? 'Not Paid' : 'Paid' }}
+                </span>
+            </td>
+            <td><span
+                    class="badge text-bg-{{ $permit_application->photo_upload == '' ? 'danger' : 'success' }}">{{ $permit_application->photo_upload == '' ? 'No Image' : 'Uploaded' }}</span>
+            </td>
+            <td class="text-center"><span
+                    class="badge text-bg-{{ $permit_application->sign_off_status == '1' ? 'success' : 'danger' }}">{{ $permit_application->sign_off_status == '1' ? 'COMPLETE' : 'INCOMPLETE' }}
+                </span>
+            </td>
+            <td class="text-nowrap">{{ $permit_application->trn }}</td>
+            <td>{{ !empty($permit_application->payment) ? $permit_application?->payment?->created_at : 'N/A' }}
+            </td>
+            <td>
+                {{ !empty($permit_application->signOffs) ? $permit_application->signOffs?->expiry_date : 'N/A' }}
+            </td>
+            <td class="text-nowrap">
+                <a href="/permit/application/edit/{{ $permit_application->id }}"
+                    class="btn btn-warning btn-sm" onclick="event.stopPropagation();">Edit</a>
+                <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary" onclick="event.stopPropagation();">View</a>
+                @if ($permit_application->sign_off_status == '1')
+                    <a class="btn btn-success btn-sm"
+                        href="/permit/application/renewal/{{ $permit_application->id }}" onclick="event.stopPropagation();">Renew</a>
                 @endif
-                {{-- <td></td> --}}
-                <td>{{ $permit_application->id }}</td>
-                <td>{{ strtoupper($permit_application->permit_no) }}</td>
-                <td>{{ strtoupper($permit_application->firstname) }}</td>
-                <td>{{ strtoupper($permit_application->lastname) }}</td>
-                <td>{{ $permit_application->date_of_birth }}</td>
-                <td>{{ $permit_application->address }}</td>
-                <td>{{ $permit_application->cell_phone }}</td>
-                <td>{{ !empty($permit_application->establishmentClinics) ? $permit_application->establishmentClinics?->name : 'N/A' }}
-                </td>
-                <td>{{ strtoupper($permit_application->permit_type) }}</td>
-                <td>{{ strtoupper($permit_application->permitCategory?->name) }}</td>
-                <td>{{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_date . ' - ' . $permit_application?->establishmentClinics?->proposed_time : (!empty($permit_application?->appointment[0]) ? $permit_application?->appointment[0]?->appointment_date . ' - ' . $permit_application->appointment[0]?->examDate?->exam_start_time : 'N/A') }}
-                </td>
-                {{-- <td class="text-nowrap">
-                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->proposed_time : (!empty($permit_application?->appointment[0]) ? strtoupper($permit_application->appointment[0]?->examDate?->exam_day) . ' - ' . $permit_application->appointment[0]?->examDate?->exam_start_time : '') }}
-                </td> --}}
-                <td>
-                    {{ $permit_application->establishment_clinic_id != '' ? $permit_application?->establishmentClinics?->address : (!empty($permit_application->appointment[0]) ? $permit_application->appointment[0]?->examDate?->examSites?->name : '') }}
-                </td>
-                <td class="text-center">
-                    <span
-                        class="badge text-bg-{{ empty($permit_application->payment) ? 'danger' : 'success' }}">{{ empty($permit_application->payment) ? 'Not Paid' : 'Paid' }}
-                    </span>
-                </td class="text-center">
-                <td><span
-                        class="badge text-bg-{{ $permit_application->photo_upload == '' ? 'danger' : 'success' }}">{{ $permit_application->photo_upload == '' ? 'No Image' : 'Uploaded' }}</span>
-                </td>
-                <td class="text-center"><span
-                        class="badge text-bg-{{ $permit_application->sign_off_status == '1' ? 'success' : 'danger' }}">{{ $permit_application->sign_off_status == '1' ? 'COMPLETE' : 'INCOMPLETE' }}
-                    </span>
-                </td>
-                <td class="text-nowrap">{{ $permit_application->trn }}</td>
-                <td>{{ !empty($permit_application->payment) ? $permit_application?->payment?->created_at : 'N/A' }}
-                </td>
-                <td>
-                    {{ !empty($permit_application->signOffs) ? $permit_application->signOffs?->expiry_date : 'N/A' }}
-                </td>
-                <td class="text-nowrap">
-                    <a href="/permit/application/edit/{{ $permit_application->id }}"
-                        class="btn btn-warning btn-sm">Edit</a>
-                    <a href="/permit/view/{{ $permit_application->id }}" class="btn btn-sm btn-primary">View</a>
-                    @if ($permit_application->sign_off_status == '1')
-                        <a class="btn btn-success btn-sm"
-                            href="/permit/application/renewal/{{ $permit_application->id }}">Renew</a>
-                    @endif
-                    @if ($permit_application->sign_off_status != '1')
-                        <button class="btn btn-danger btn-sm"
-                            onclick="removeEntry('/permit/application',{{ json_encode($permit_application->id) }})">Remove</button>
-                    @endif
-                </td>
-            </tr>
+                @if ($permit_application->sign_off_status != '1')
+                    <button class="btn btn-danger btn-sm"
+                        onclick="event.stopPropagation(); removeEntry('/permit/application',{{ json_encode($permit_application->id) }})">Remove</button>
+                @endif
+            </td>
+        </tr>
+        
         @endforeach
     </tbody>
     <tfoot>

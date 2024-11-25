@@ -287,7 +287,7 @@
                             <div class="col">
                                 <span class="text-danger">*</span>
                                 <label for="" class="form-label">Schedule Appointment</label>
-                                <select id="exam_session" class="form-select" name="exam_session">
+                                <select id="exam_session" class="form-select" name="exam_session" id="exam_session">
                                     @if (isset($clinic_permit))
                                         <option value="{{ $clinic_permit->id }}">
                                             {{ $clinic_permit->address }} - {{ $clinic_permit->proposed_time }}
@@ -313,7 +313,7 @@
                             <div class="col">
                                 <span class="text-danger">*</span>
                                 <label for="" class="form-label">Exam Date</label>
-                                <input type="date" class="form-control" name="exam_date"
+                                <input type="date" class="form-control" name="exam_date" id="exam_date"
                                     value="{{ old('exam_date') ? old('exam_date') : (isset($clinic_permit) ? $clinic_permit->proposed_date : '') }}"
                                     {{ isset($clinic_permit) ? 'readonly' : '' }}>
                                 @error('exam_date')
@@ -419,21 +419,67 @@
                             options[i] = document.createElement('option');
                             options[i].value = element["id"];
                             options[i].innerHTML = element["category_name"] + ' - ' + element['exam_day']
-                            .toUpperCase() +
+                                .toUpperCase() +
                                 ' - ' + element['exam_start_time'] + ' - ' + element["site_name"];
                             schedule_select.appendChild(options[i]);
                             if ({!! json_encode(old('exam_session')) !!} != "") {
                                 if ({!! json_encode(old('exam_session')) !!} == element["id"]) {
                                     options[i].setAttribute('selected', true);
+
                                 }
                             }
                         }
                     })
+
+
                 }
                 // console.log(appointments[0]['available_sites']);
             }
             // alert();
         </script>
+
+<script>
+    const examSession = document.getElementById('exam_session');
+    const examDate = document.getElementById('exam_date');
+
+    if (examSession && examDate) {
+        // Function to get the corresponding day number
+        const getDayNumber = (dayOfWeek) => {
+            const daysArray = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            return daysArray.indexOf(dayOfWeek);
+        };
+
+        // Function to format the date as 'YYYY-MM-DD'
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        examSession.addEventListener('change', () => {
+            const selectedOption = examSession.options[examSession.selectedIndex];
+            const selectedText = selectedOption.text;
+            const dayOfWeek = selectedText.split('-')[1].trim();
+
+            const targetDayNumber = getDayNumber(dayOfWeek);
+            const today = new Date();
+            const currentDay = today.getDay();
+
+            let daysToAdd = targetDayNumber - currentDay;
+
+            // If the selected day is in the past (or today), add 7 days
+            if (daysToAdd <= 0) {
+                daysToAdd += 7;
+            }
+
+            today.setDate(today.getDate() + daysToAdd);
+
+            examDate.value = formatDate(today);  // Set the exam date to the next available day
+        });
+    }
+</script>
+
         @include('partials.messages.loading_message')
     </div>
 @endsection

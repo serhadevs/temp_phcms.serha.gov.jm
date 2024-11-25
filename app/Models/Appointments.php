@@ -40,6 +40,11 @@ class Appointments extends Model
         return $this->hasOne(ExamDates::class, 'id', 'exam_date_id')->withTrashed();
     }
 
+    // public function examDate(): HasOne
+    // {
+    //     return $this->hasOne(ExamDates::class, 'id', 'exam_date_id');
+    // }
+
     public function examSites(): HasOne
     {
         return $this->hasOne(ExamSites::class, 'facility_id', 'facility_id')->withTrashed();
@@ -49,9 +54,12 @@ class Appointments extends Model
         return $this->hasOne(ExamSites::class,'id','facility_id');
     }
 
-    // public function permitCategory(): HasOne{
-    //     return $this->hasOne(PermitCategory::class,'id',)
-    // }
+    public function examSitesId():HasOne{
+        return $this->hasOne(ExamSites::class,'id','exam_site_id');
+    }
+    public function permitCategory(): HasOne{
+        return $this->hasOne(PermitCategory::class,'id','permit_category_id');
+    }
 
     public function editTransactions(): HasMany
     {

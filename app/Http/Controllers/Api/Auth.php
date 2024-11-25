@@ -17,7 +17,7 @@ class Auth extends Controller
         //Validate the user information
        $credentials = $request->validated();
 
-        $user = OnlineUser::where('email',$credentials['email'])->first();
+        $user = OnlineUser::where('permit_no',$credentials['permit_no'])->first();
 
         //dd($user);
         if(!$user || !Hash::check($credentials['password'],$user->password)){

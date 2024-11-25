@@ -8,13 +8,14 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid mb-4">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header text-muted">
                     <h2 class="text-muted">Create Tourist Establishments</h2>
-                    <hr>
+                </div>
+                <div class="card-body">
                     <form action="{{ route('tourist-establishments.store') }}" method="POST">
                         @csrf
                         @method('POST')
-                        <div class="mt-3">
+                        <div class="">
                             <label for="" class="form-label">
                                 <span class="text-danger fw-bold">*</span>
                                 Tourist Establishment Name
@@ -316,11 +317,16 @@
                             <i class="bi bi-plus-square-fill"></i>
                             Add another service
                         </button>
-                        <button type="button" class="btn btn-primary mt-4" onclick="showLoading(this)">
-                            Submit Application
-                        </button>
-                    </form>
+                        
+                   
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    <button type="button" class="btn btn-primary" onclick="showLoading(this)">
+                        Submit Application
+                    </button>
+                </div>
+            </form>
             </div>
             <script>
                 function addTeamMember() {

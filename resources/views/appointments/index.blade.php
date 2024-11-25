@@ -17,8 +17,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="app_date" class="form-label fw-bold">Appointment Date</label>
-                                <input type="date" class="form-control " name="app_date" id="app_date"
-                                    >
+                                <input type="date" class="form-control " name="app_date" id="app_date">
                                 @error('app_date')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -87,36 +86,46 @@
                 dataType: 'json',
                 success: function(response) {
                     const examDatesDropdown = $('#exam_dates');
-                    examDatesDropdown.empty(); 
+                    examDatesDropdown.empty();
                     // console.log(response)
 
                     $.each(response.data, function(key, value) {
-                        const optionText = `${value.permit_category.name} - ${value.exam_day.toUpperCase()} - ${value.exam_start_time} - ${value.exam_sites.name}`;
-                        examDatesDropdown.append(`<option value="${value.id}">${optionText}</option>`);
+                        const optionText =
+                            `${value.permit_category.name} - ${value.exam_day.toUpperCase()} - ${value.exam_start_time} - ${value.exam_sites.name}`;
+                        examDatesDropdown.append(
+                            `<option value="${value.id}">${optionText}</option>`);
                     });
                 },
                 error: function(xhr, status, error) {
-                    console.error("Error fetching exam dates:");
-                    console.error("Status:", status);
-                    console.error("Error:", error);
-                    console.error("Response:", xhr.responseText);
+                    Swal.fire({
+                        title: 'Notification', 
+                        text: JSON.parse(xhr.responseText)
+                        .message, 
+                        icon: 'info', 
+                        showCancelButton: false, 
+                        confirmButtonText: 'Okay', 
+                        confirmButtonColor: '#3085d6', 
+                        timer: 5000, 
+                        timerProgressBar: true, 
+                    }).then((result)=>{
+                        location.reload()
+                    })
                 }
             });
         }
 
-       
+
         $('#permit_category').on('change', function() {
             const category_id = $(this).val();
             const date = $('#app_date').val();
-            
+
             if (date) {
                 const day_of_week = getDayOfWeek(date);
                 updateExamDates(category_id, day_of_week);
             } else {
-                $('#exam_dates').empty(); 
+                $('#exam_dates').empty();
             }
         });
 
     });
 </script>
-

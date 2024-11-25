@@ -11,7 +11,7 @@
             @include('partials.messages.messages')
             <div class="card">
                 <div class="card-header text-muted">
-                    <h3>Appointments</h3>
+                    <h3>Appointments for {{ \Carbon\Carbon::parse($app_date)->format('d F Y') }}</h3>
                 </div>
                 <div class="card-body">
                     @include('partials.tables.appointmentstable')

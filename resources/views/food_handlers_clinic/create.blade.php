@@ -8,24 +8,25 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
+                <div class="card-header text-muted">
+                    <h2>Create New Food Handler's Clinic</h2>
+                </div>
                 <div class="card-body">
-                    <h2 class="text-muted">
-                        Create New Food Handler's Clinic
-                    </h2>
-                    <hr>
                     <form action="{{ route('food-handlers-clinic.store') }}" method="POST">
                         @csrf
                         @method('POST')
-                        <div class="mt-3">
+                        <div class="">
                             <label for="" class="form-label">Establishment Name</label>
-                            <input type="text" class="form-control" name="name" value="{{ old('name') }}" oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" class="form-control" name="name" value="{{ old('name') }}"
+                                oninput="this.value = this.value.toUpperCase()">
                             @error('name')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Address</label>
-                            <input type="text" class="form-control" name="address" value="{{ old('address') }}" oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" class="form-control" name="address" value="{{ old('address') }}"
+                                oninput="this.value = this.value.toUpperCase()">
                             @error('address')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -90,11 +91,18 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button class="btn btn-primary mt-4" type="button" onclick="showLoading(this)">
-                            Submit Application
-                        </button>
-                    </form>
+
+
+                        
+                  
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    <button class="btn btn-primary" type="button" onclick="showLoading(this)">
+                        Submit Application
+                    </button>
+                </div>
+            </form>
             </div>
         </div>
         <script src="https://unpkg.com/imask"></script>

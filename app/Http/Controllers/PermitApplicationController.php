@@ -362,7 +362,7 @@ class PermitApplicationController extends Controller
             ->where('application_type_id', 1)
             ->get();
 
-        // dd($appointments_available[0]);
+        //dd($appointments_available[0]);
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
     }
 

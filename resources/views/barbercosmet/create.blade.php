@@ -8,11 +8,12 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid mb-4">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h2 class="text-muted">
                         Hair Dressers, Beauty Therapists, Cosmotologists/Barbers
                     </h2>
-                    <hr>
+                </div>
+                <div class="card-body">
                     <form method="POST" action="{{ route('barber-cosmet.store') }}">
                         @csrf
                         @method('POST')
@@ -49,48 +50,54 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label for="" class="form-label">
-                                <span class="text-danger fw-bold">*</span>
-                                Address
-                            </label>
-                            <input type="text" class="form-control" name="address" value="{{ old('address') }}"
-                                oninput="this.value=this.value.toUpperCase()">
-                            @error('address')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">
                                     <span class="text-danger fw-bold">*</span>
-                                    Date of Birth
+                                    Address
                                 </label>
-                                <input type="date" class="form-control" name="date_of_birth"
-                                    value="{{ old('date_of_birth') }}" max="{{ date('Y-m-d') }}">
+                                <input type="text" class="form-control" name="address" value="{{ old('address') }}"
+                                    oninput="this.value=this.value.toUpperCase()">
+                                @error('address')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                           
+                        </div>
+                        <div class="row align-items-center mt-3">
+                            <!-- Date of Birth -->
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label for="date_of_birth" class="form-label me-2">
+                                    <span class="text-danger fw-bold">*</span> Date of Birth
+                                </label>
+                                <input type="date" id="date_of_birth" class="form-control" name="date_of_birth"
+                                    value="{{ old('date_of_birth') }}" max="{{ date('Y-m-d') }}" style="flex: 1;">
                                 @error('date_of_birth')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="col">
-                                <label for="" class="form-label">
-                                    <span class="text-danger fw-bold">*</span>
-                                    Gender
+                        
+                            <!-- Gender -->
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label for="" class="form-label me-2">
+                                    <span class="text-danger fw-bold">*</span> Gender
                                 </label>
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" value="male" name="sex"
-                                        {{ old('sex') ? (old('sex') == 'male' ? 'checked' : '') : '' }}>
-                                    <label for="" class="form-check-label">Male</label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="gender_male" class="form-check-input" value="male" name="sex"
+                                        {{ old('sex') == 'male' ? 'checked' : '' }}>
+                                    <label for="gender_male" class="form-check-label">Male</label>
                                 </div>
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" value="female" name="sex"
-                                        {{ old('sex') ? (old('sex') == 'female' ? 'checked' : '') : '' }}>
-                                    <label for="" class="form-check-label">Female</label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="gender_female" class="form-check-input" value="female" name="sex"
+                                        {{ old('sex') == 'female' ? 'checked' : '' }}>
+                                    <label for="gender_female" class="form-check-label">Female</label>
                                 </div>
                                 @error('sex')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
+                        
+                        
                         <div class="mt-3 row">
                             <div class="col">
                                 <label for="" class="form-label">
@@ -111,17 +118,18 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div class="col">
+                                <label for="" class="form-label">
+                                    <span class="text-danger fw-bold">*</span>
+                                    Tax Registration Number (TRN)
+                                </label>
+                                <input type="text" class="form-control" name="trn" value="{{ old('trn') }}" id="trn">
+                                @error('trn')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
-                        <div class="mt-3">
-                            <label for="" class="form-label">
-                                <span class="text-danger fw-bold">*</span>
-                                Tax Registration Number (TRN)
-                            </label>
-                            <input type="text" class="form-control" name="trn" value="{{ old('trn') }}" id="trn">
-                            @error('trn')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">Occupation</label>
@@ -189,13 +197,18 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label for="" class="form-label">If Refused, state reason(20 chars min, 100
-                                max)</label>
-                            <textarea name="reason" class="form-control" oninput="this.value=this.value.toUpperCase()">{{ old('reason') }}</textarea>
+                            <label for="reason" class="form-label">If Refused, state reason (20 chars min, 100 max)</label>
+                            <textarea 
+                                name="reason" 
+                                id="reason" 
+                                class="form-control" 
+                                style="resize: none;" 
+                                oninput="this.value=this.value.toUpperCase()">{{ old('reason') }}</textarea>
                             @error('reason')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
+                        
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">
@@ -239,11 +252,16 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button type="button" class="btn btn-primary mt-4" onclick="showLoading(this)">
-                            Submit Application
-                        </button>
-                    </form>
+                        
+                  
                 </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    <button type="button" class="btn btn-primary" onclick="showLoading(this)">
+                        Submit Application
+                    </button>
+                </div>
+            </form>
             </div>
             <script src="https://unpkg.com/imask"></script>
             <script>

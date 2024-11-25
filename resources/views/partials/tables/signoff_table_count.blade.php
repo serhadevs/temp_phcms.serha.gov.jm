@@ -3,6 +3,7 @@
         <tr>
             <th>Category</th>
             <th>Totals</th>
+            <th>Action</th>
          
         </tr>
     </thead>
@@ -11,6 +12,7 @@
             <tr>
                 <td>{{ $data['category_name'] }}</td>
                 <td>{{ $data['count'] }}</td>
+                <td><button>View</button></td>
             </tr>
         @endforeach
     </tbody>

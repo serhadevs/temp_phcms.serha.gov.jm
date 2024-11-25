@@ -14,12 +14,16 @@
     <tbody>
         @foreach ($appointments as $appointment)
             <tr>
-                <td>{{ $appointment->id }}</td>
+                <td>
+                    <a href="{{ route('permit.application.view', ['id' => $appointment->permit_application_id]) }}">
+                        View Application
+                    </a>
+                    </td>
                 <td>{{ $appointment?->applications?->firstname }}</td>
                 <td>{{ $appointment?->applications?->lastname }}</td>
                 <td>{{ $appointment?->examDate?->permitCategory->name ?? 'N/A'}}</td>
                 <td>{{ $appointment?->examDate?->exam_start_time }}</td>
-                <td>{{ $appointment?->examSites?->name ?? 'N/A' }}</td>
+                <td>{{ $appointment?->examSitesId?->name ?? 'N/A' }}</td>
                 <td></td>
                 <td></td>
                 {{-- <td>{{ $appointment?->applications-> }}</td> --}}

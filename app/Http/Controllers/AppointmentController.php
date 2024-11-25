@@ -38,9 +38,16 @@ class AppointmentController extends Controller
             $weekDays = ['sun','mon','tue','wed','thur','fri','sat'];
             $exam_dates = ExamDates::with('permitCategory', 'examSites')
                 ->where('permit_category_id', $id)
-                // ->where('facility_id',1)
+                ->where('facility_id',auth()->user()->facility_id)
                 ->where('exam_day', $weekDays[$day])
                 ->get();
+
+            if($exam_dates->isEmpty()){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'There is no exam date for the category'
+                ], 404);
+            }
         
             return response()->json([
                 'success' => true,
@@ -62,15 +69,30 @@ class AppointmentController extends Controller
         // Validate incoming request fields
         $incomingFields = $request->validate([
             "app_date" => "required|date",
+            "permit_category" => "required",
+            "exam_date" => "required"
         ]);
+
+        //dd($incomingFields);
+
+        $app_date = $incomingFields['app_date'];
+        $permit_category = $incomingFields['permit_category'];
+        $exam_site = $incomingFields['exam_date'];
     
         try {
             // Fetch appointments for the provided date
-            $appointments = Appointments::join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
-                ->where('appointment_date', $incomingFields['app_date'])
-                ->select('appointments.*', 'exam_dates.*') // Explicitly select required fields
+            $appointments = Appointments::with('permitCategory','examSitesId')
+            ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
+                ->where('appointment_date', $app_date)
+                ->where('permit_category_id',$permit_category)
+                ->where('appointments.facility_id',auth()->user()->facility_id)
+                ->select('appointments.*', 'exam_dates.*')
+                ->whereNull('exam_dates.deleted_at')
+                ->where('exam_date_id',$exam_site)
+                
                 ->get();
     
+                //dd($appointments);
             // Check if the results are empty
             if ($appointments->isEmpty()) {
                 return redirect()->back()->with('error', 'No appointments found for the selected date.');
@@ -82,6 +104,6 @@ class AppointmentController extends Controller
         }
     
         // Return the view with the appointments data
-        return view('appointments.view', ['appointments' => $appointments]);
+        return view('appointments.view', ['appointments' => $appointments,'app_date' => $app_date]);
     }
 }

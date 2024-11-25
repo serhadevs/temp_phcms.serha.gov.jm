@@ -15,9 +15,6 @@
                     <div class="row justify-content-between align-items-center">
                         <!-- Back button and Title -->
                         <div class="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
-                            <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger me-2">
-                                <i class="bi bi-box-arrow-left"></i> Back
-                            </a>
                             <h2 class="text-muted mb-0">All Food Handler's Applications</h2>
                         </div>
         
@@ -71,6 +68,11 @@
                     </form>
         
                     @include('partials.tables.food_handlers_permits_table')
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger me-2">
+                        <i class="bi bi-box-arrow-left"></i> Back to Dashboard
+                    </a>
                 </div>
             </div>
         </div>
