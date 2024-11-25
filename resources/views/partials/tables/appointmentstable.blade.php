@@ -1,6 +1,7 @@
 <table class="table table-bordered table-striped nowrap table-sm" id="appointments" style="width:100%">
     <thead>
         <tr>
+            <th>Action</th>
             <th>App #</th>
             <th>Firstname</th>
             <th>Lastname</th>
@@ -14,11 +15,12 @@
     <tbody>
         @foreach ($appointments as $appointment)
             <tr>
+                <td><a href="{{ route('permit.application.view', ['id' => $appointment->permit_application_id]) }}" class="btn btn-success btn-sm">
+                    View
+                </a></td>
                 <td>
-                    <a href="{{ route('permit.application.view', ['id' => $appointment->permit_application_id]) }}" class="btn btn-success btn-sm">
-                        View Application
-                    </a>
-                    </td>
+                    {{ $appointment->permit_application_id }}
+                </td>
                 <td>{{ $appointment?->applications?->firstname }}</td>
                 <td>{{ $appointment?->applications?->lastname }}</td>
                 <td>{{ $appointment?->examDate?->permitCategory->name ?? 'N/A'}}</td>
