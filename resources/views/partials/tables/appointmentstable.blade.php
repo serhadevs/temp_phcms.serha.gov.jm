@@ -15,7 +15,7 @@
         @foreach ($appointments as $appointment)
             <tr>
                 <td>
-                    <a href="{{ route('permit.application.view', ['id' => $appointment->permit_application_id]) }}">
+                    <a href="{{ route('permit.application.view', ['id' => $appointment->permit_application_id]) }}" class="btn btn-success">
                         View Application
                     </a>
                     </td>
