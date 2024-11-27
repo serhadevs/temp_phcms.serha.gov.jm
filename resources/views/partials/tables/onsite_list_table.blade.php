@@ -7,7 +7,7 @@
             <th>Telphone No.</th>
             <th>Payment Staus</th>
             <th>Clinic Date & Time</th>
-            {{-- Enter after logic has been implemented --}}
+            <th>Application Date</th>
             <th>No. of Permits</th>
             <th>No. of Employees</th>
         </tr>
@@ -38,6 +38,7 @@
                 <td>
                     {{ $application->proposed_date }} - {{ $application->proposed_time }}
                 </td>
+                <td>{{ \Carbon\Carbon::parse($application->created_at)->format('d F Y') ?? 'N/A' }}</td>
                 <td>
                     {{ $application->permits_count }}
                 </td>
