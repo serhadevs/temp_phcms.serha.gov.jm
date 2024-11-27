@@ -78,18 +78,9 @@
                                 <input type="text" class="form-control" aria-label="Receipt No" name="receipt_no">
                             </div>
                             <div class="col col-md-6" id="food_est_name_div" style="display:none">
-                                {{-- <label for="">Food Establishment Name</label> --}}
-                                {{-- <select name="food_est_name" id="" class="form-select">
-                                    <option disabled selected class="text-center">-------------Select a food
-                                        establishment name-------------</option>
-                                    @foreach ($food_establishments as $food_est)
-                                        <option value="{{ $food_est->establishment_name }}">
-                                            {{ $food_est->establishment_name }}</option>
-                                    @endforeach
-                                </select> --}}
-
+                            
                                 <label for="exampleDataList" class="form-label">Food Establishment Name</label>
-                                <input class="form-control" list="datalistOptions" id="exampleDataList"
+                                <input class="form-control" list="datalistOptions"
                                     placeholder="Type to search..." name ="food_est_name">
                                 <datalist id="datalistOptions">
                                     @foreach ($food_establishments as $food_est)
