@@ -91,4 +91,6 @@ class EstablishmentApplications extends Model
             ->where('application_type_id', 3)
             ->where('system_operation_type_id', 1);
     }
+
+    
 }

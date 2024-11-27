@@ -169,7 +169,7 @@ class ReportController extends Controller
 
         try {
             if ($incomingFields['module'] == '1') {
-                $query = PermitApplication::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])
+                $query = PermitApplication::whereBetween('application_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])
                     ->whereIn('user_id', User::facilityUsers()->pluck('id'))
                     ->with('permitCategory')
                     ->get();
@@ -180,7 +180,7 @@ class ReportController extends Controller
                     $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
                 }
             } elseif ($incomingFields['module'] == '2') {
-                $query = EstablishmentApplications::whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])
+                $query = EstablishmentApplications::whereBetween('application_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])
                     ->whereIn('user_id', User::facilityUsers()->pluck('id'))
                     ->with('establishmentCategory')
                     ->get();

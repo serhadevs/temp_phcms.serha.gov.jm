@@ -10,6 +10,9 @@
             <th>Exam Site</th>
             <th>Present</th>
             <th>Signature</th>
+            <th>Sign Off Status</th>
+            <th>Signed off By</th>
+            <th>Sign Off Date</th>
         </tr>
     </thead>
     <tbody>
@@ -28,7 +31,12 @@
                 <td>{{ $appointment?->examSitesId?->name ?? 'N/A' }}</td>
                 <td></td>
                 <td></td>
-                {{-- <td>{{ $appointment?->applications-> }}</td> --}}
+                <td>{{ $appointment?->signOff?->is_granted === 1 ? 'Signed Off' : 'Awaiting Sign Off'}}</td>
+                <td>{{ $appointment?->signOff?->user->firstname }} {{ $appointment?->signOff?->user->lastname }}</td>
+                <td>
+                    {{ optional(optional($appointment?->signOff)->created_at)->format('d F Y') ?? '' }}
+                </td>
+                
             </tr>
         @endforeach
     </tbody>

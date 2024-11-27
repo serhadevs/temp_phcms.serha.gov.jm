@@ -74,6 +74,16 @@ class User extends Authenticatable
             ->where('facility_id', Auth::user()->facility_id)
             ->get();
     }
+    public static function facilityUserId()
+    {
+        // Ensure the user is authenticated to avoid potential errors
+        if (auth()->check()) {
+            return User::where('facility_id', auth()->user()->facility_id)->get();
+        }
+    
+        // Return an empty collection or null if no authenticated user is found
+        return collect();
+    }
 
     public function facility(): HasOne
     {

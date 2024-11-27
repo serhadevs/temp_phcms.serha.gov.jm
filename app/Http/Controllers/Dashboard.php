@@ -19,60 +19,91 @@ use Illuminate\Support\Facades\Log;
 
 class Dashboard extends Controller
 {
-    public function index()
-    {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-        $month = Carbon::now()->format('F');
-        $now = Carbon::now();
-        $year = Carbon::now()->year;
-        $startofYear = Carbon::now()->startOfYear();
-        $userId = auth()->user()->id;
-
-        $query = function ($model, $startOfMonth, $endOfMonth, $userId) {
-            try {
-                return $model::where('user_id', $userId)
-                    ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                    ->count();
-            } catch (\Exception $e) {
-                Log::error('Error fetching applications: ' . $e->getMessage());
-                return 0;
-            }
-        };
-
-        $permitApplicationCount = $query(PermitApplication::class, $startOfMonth, $endOfMonth, $userId);
-        $permitApplicationCountYTD = $query(PermitApplication::class, $startofYear, $now, $userId);
-        $foodestApplicationCount = $query(EstablishmentApplications::class, $startOfMonth, $endOfMonth, $userId);
-        $barbercosmApplicationCount = $query(BarbershopHairSalons::class, $startOfMonth, $endOfMonth, $userId);
-        $paymentCount = $query(Payments::class, $startOfMonth, $endOfMonth, $userId);
-
-
-        // $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites')
-        //     ->where('facility_id', auth()->user()->facility_id)
-        //     ->whereRelation('permitApplication.appointment', 'appointment_date', '2024-05-16')
-        //     ->whereRelation('permitApplication.appointment.examDate.examSites', 'id', '6')
-        //     ->doesntHave('permitApplication.establishmentClinics')
-        //     ->has('permitApplication.testResults')
-        //     ->with(['permitApplication' => function ($query) {
-        //         $query->orderBy('lastname');
-        //     }])
-        //     ->get();
-        // dd($applications);
-
-
-
-
-        return view(
-            'dashboard.dashboard',
-            compact(
-                'permitApplicationCount',
-                'foodestApplicationCount',
-                'barbercosmApplicationCount',
-                'permitApplicationCountYTD',
-                'paymentCount',
-                'month',
-                'year'
-            )
-        );
+    public function index(Request $request)
+{
+    $days = $request->route('days'); 
+    $now = Carbon::now(); 
+    switch ($days) {
+        case 0:
+            $expiryDays = $now;
+            break;
+        case 30:
+            $expiryDays = $now->copy()->addDays(30);
+            break;
+        case 60:
+            $expiryDays = $now->copy()->addDays(60);
+            break;
+        case 90:
+            $expiryDays = $now->copy()->addDays(90);
+            break;
+        default:
+            $expiryDays = $now; 
+            break;
     }
+    $userId = auth()->user()->id;
+    $facilityId = auth()->user()->facility_id;
+
+    // Date-related variables
+    $startOfMonth = $now->startOfMonth();
+    $endOfMonth = $now->endOfMonth();
+    $startOfYear = $now->copy()->startOfYear();
+    $year = $now->year;
+    $month = $now->format('F');
+
+    // Query Helper for Applications Count
+    $query = function ($model, $startDate, $endDate, $userId) {
+        try {
+            return $model::where('user_id', $userId)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->count();
+        } catch (\Exception $e) {
+            Log::error('Error fetching applications: ' . $e->getMessage());
+            return 0;
+        }
+    };
+
+    // Fetch Expiry Count
+    try {
+        
+        $expiryestCount = EstablishmentApplications::join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
+        ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
+        ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])
+        ->count();
+    } catch (\Throwable $e) {
+        Log::error('Error fetching expiry count: ' . $e->getMessage());
+        $expiryestCount = 0;
+    }
+
+    // Return JSON response if called via AJAX
+    if ($request->ajax()) {
+        return response()->json([
+            'status' => 'success',
+            'expiry_count' => $expiryestCount,
+        ]);
+    }
+
+    // Fetch additional counts for dashboard display
+    $permitApplicationCount = $query(PermitApplication::class, $startOfMonth, $endOfMonth, $userId);
+    $permitApplicationCountYTD = $query(PermitApplication::class, $startOfYear, $now, $userId);
+    $foodestApplicationCount = $query(EstablishmentApplications::class, $startOfMonth, $endOfMonth, $userId);
+    $foodestApplicationCountYTD = $query(EstablishmentApplications::class, $startOfYear, $now, $userId);
+    $barbercosmApplicationCount = $query(BarbershopHairSalons::class, $startOfMonth, $endOfMonth, $userId);
+    $barbercosmApplicationCountYTD = $query(BarbershopHairSalons::class, $startOfYear, $now, $userId);
+    $paymentCount = $query(Payments::class, $startOfMonth, $endOfMonth, $userId);
+
+    // Return the dashboard view
+    return view('dashboard.dashboard', compact(
+        'permitApplicationCount',
+        'foodestApplicationCount',
+        'barbercosmApplicationCount',
+        'permitApplicationCountYTD',
+        'foodestApplicationCountYTD',
+        'barbercosmApplicationCountYTD',
+        'paymentCount',
+        'expiryestCount',
+        'month',
+        'year'
+    ));
+}
+
 }

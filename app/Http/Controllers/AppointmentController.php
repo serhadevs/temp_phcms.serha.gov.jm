@@ -81,7 +81,7 @@ class AppointmentController extends Controller
     
         try {
             // Fetch appointments for the provided date
-            $appointments = Appointments::with('permitCategory','examSitesId')
+            $appointments = Appointments::with('permitCategory','examSitesId','signOff','signOff.user:id,firstname,lastname')
             ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
                 ->where('appointment_date', $app_date)
                 ->where('permit_category_id',$permit_category)

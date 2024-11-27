@@ -642,4 +642,8 @@ class FoodEstablishmentController extends Controller
             return $ex->getMessage();
         }
     }
+
+    public function expiredEstabtablishments($days){
+        
+    }
 }

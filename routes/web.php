@@ -65,7 +65,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
+  Route::get('/dashboard/expiry/{days}',[Dashboard::class, 'index'])->name('expiry.dashboard');
 
+  //Expired Establishments
+  Route::get('/establishments/expiry/{days}',[FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('est.expiry');
   //Appointments
 
   Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');

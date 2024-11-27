@@ -67,5 +67,11 @@ class Appointments extends Model
             ->where('system_operation_type_id', 6);
     }
 
+    public function signOff(): HasOne{
+        return $this->hasOne(SignOff::class,'application_id','permit_application_id');
+    }
+
+   
+
 
 }
