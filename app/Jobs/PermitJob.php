@@ -45,7 +45,7 @@ class PermitJob implements ShouldQueue
             ->where('photo_upload', '<>', NULL)
             ->has('signOffs')
             ->has('testResults')
-            //->whereRelation('signOffs', 'created_at', '>', '2024-01-01')
+            ->whereRelation('signOffs', 'created_at', '>', '2024-01-01')
             ->get();
 
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
@@ -117,11 +117,9 @@ class PermitJob implements ShouldQueue
                                 [
                                     'application_type_id' => '1',
                                     'application_id' => $index->id,
-                                   
                                     // 'application_amount' => $counter,
                                     // 'category' => 'Food Handlers Permit',
-                                    'download_id' => 0,
-                                    'written' => 1,
+                                    'download_id' => 0
                                 ]
                             );
                         }
@@ -239,8 +237,7 @@ class PermitJob implements ShouldQueue
                                     'application_id' => $index->id,
                                     // 'application_amount' => $counter,
                                     // 'category' => 'Food Handlers Permit',
-                                    'download_id' => 0,
-                                    'written' => 1,
+                                    'download_id' => 0
                                 ]
                             );
                         }
@@ -355,11 +352,9 @@ class PermitJob implements ShouldQueue
                                 [
                                     'application_type_id' => '1',
                                     'application_id' => $index->id,
-                                    
                                     // 'application_amount' => $counter,
                                     // 'category' => 'Food Handlers Permit',
-                                    'download_id' => 0,
-                                    'written' => 1,
+                                    'download_id' => 0
                                 ]
                             );
                         }
