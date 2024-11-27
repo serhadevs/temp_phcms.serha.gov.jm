@@ -218,11 +218,11 @@ class ReportController extends Controller
         $end_date = $incomingFields['ending_date'];
 
         if ($incomingFields['module'] == '1') {
-            $food_clinics = EstablishmentClinics::with('payment', 'signOff')->whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))
+            $food_clinics = EstablishmentClinics::with('payment', 'signOff')->whereBetween('application_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])->whereIn('user_id', User::facilityUsers()->pluck('id'))
                 ->count();
             $module = 1;
         } else {
-            $food_clinics = EstablishmentClinics::with('payment', 'signOff')->whereBetween('created_at', [$incomingFields['starting_date'], $incomingFields['ending_date']])
+            $food_clinics = EstablishmentClinics::with('payment', 'signOff')->whereBetween('application_date', [$incomingFields['starting_date'], $incomingFields['ending_date']])
                 ->whereIn('user_id', User::facilityUsers()->pluck('id'))
                 ->get();
 
