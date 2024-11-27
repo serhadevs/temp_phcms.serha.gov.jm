@@ -38,7 +38,7 @@
                 <td>
                     {{ $application->proposed_date }} - {{ $application->proposed_time }}
                 </td>
-                <td>{{ \Carbon\Carbon::parse($application->created_at)->format('d F Y') ?? 'N/A' }}</td>
+                <td>{{ \Carbon\Carbon::parse($application->application_date)->format('d F Y') ?? 'N/A' }}</td>
                 <td>
                     {{ $application->permits_count }}
                 </td>
