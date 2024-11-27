@@ -117,9 +117,11 @@ class PermitJob implements ShouldQueue
                                 [
                                     'application_type_id' => '1',
                                     'application_id' => $index->id,
+                                   
                                     // 'application_amount' => $counter,
                                     // 'category' => 'Food Handlers Permit',
-                                    'download_id' => 0
+                                    'download_id' => 0,
+                                    'written' => 1,
                                 ]
                             );
                         }
@@ -237,7 +239,8 @@ class PermitJob implements ShouldQueue
                                     'application_id' => $index->id,
                                     // 'application_amount' => $counter,
                                     // 'category' => 'Food Handlers Permit',
-                                    'download_id' => 0
+                                    'download_id' => 0,
+                                    'written' => 1,
                                 ]
                             );
                         }
@@ -352,9 +355,11 @@ class PermitJob implements ShouldQueue
                                 [
                                     'application_type_id' => '1',
                                     'application_id' => $index->id,
+                                    
                                     // 'application_amount' => $counter,
                                     // 'category' => 'Food Handlers Permit',
-                                    'download_id' => 0
+                                    'download_id' => 0,
+                                    'written' => 1,
                                 ]
                             );
                         }
