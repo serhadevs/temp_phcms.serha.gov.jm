@@ -8,6 +8,11 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid mb-4">
             @include('partials.messages.messages')
+            <style>
+                [class*=" bi-"]::before {
+                    vertical-align: text-top !important;
+                }
+            </style>
             <div class="card">
                 <h4 class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
 
@@ -52,12 +57,25 @@
                                             name="photo_upload" style="display:none">
                                     </div>
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
-                                            Test Results
-                                        </h5>
+                                        <div class="card-header">
+                                            <div class="row justify-content-between">
+                                                <div class="col text-start d-flex">
+                                                    <h5 class="text-muted mb-0 align-self-center">
+                                                        Test Results
+                                                    </h5>
+                                                </div>
+                                                @if (empty($permit_application->testResults))
+                                                    <div class="col col-auto">
+                                                        <a
+                                                            href="/test-results/permits/{{ $permit_application->id }}/create">
+                                                            <i
+                                                                class="bi bi-plus-square-fill text-primary fs-3 p-0 mt-0"></i>
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                         <div class="card-body">
-
-
                                             @if (!empty($permit_application->testResults))
                                                 <ul class="list-group">
                                                     <li
@@ -88,14 +106,32 @@
                                                     </li>
                                                 </ul>
                                             @else
-                                                No Test Results Available
+                                                <div class="text-start">
+                                                    No Test Results Available
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
-                                            Health Interview Results
-                                        </h5>
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col d-flex">
+                                                    <h5 class="text-muted text-start align-self-center">
+                                                        Health Interview Results
+                                                    </h5>
+                                                </div>
+                                                @if (empty($permit_application->healthInterviews))
+                                                    <div class="col col-auto">
+                                                        <a href="/health-interview/create/1/{{ $permit_application->id }}">
+                                                            <i
+                                                                class="bi bi-plus-square-fill text-primary fs-3 p-0 mt-0"></i>
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+
                                         <div class="card-body">
                                             @if (!empty($permit_application->healthInterviews))
                                                 <ul class="list-group">
@@ -186,16 +222,16 @@
 
 
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
+                                        <h5 class="card-header text-start text-muted">
                                             Messages
                                         </h5>
                                         @if (!$permit_application->email)
-                                            <div class="card-body">
+                                            <div class="card-body text-start">
                                                 No Email Address for {{ $permit_application->firstname }}
                                                 {{ $permit_application->lastname }}
                                             </div>
                                         @elseif($permit_application->messages->isEmpty())
-                                            <div class="card-body">
+                                            <div class="card-body text-start">
                                                 No Messages Sent to {{ $permit_application->firstname }}
                                                 {{ $permit_application->lastname }}
                                             </div>
@@ -256,7 +292,7 @@
                                     </div>
 
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
+                                        <h5 class="card-header text-muted text-start">
                                             Printed Card Information
                                         </h5>
 
@@ -270,7 +306,7 @@
                                                 The Card was signed off but not yet printed.
                                             </div>
                                         @else
-                                            <div class="card-body">
+                                            <div class="card-body text-start">
                                                 No Card Information is available
                                             </div>
                                         @endif
@@ -281,7 +317,7 @@
 
 
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
+                                        <h5 class="card-header text-muted text-start">
                                             Permit Processing Tracker
                                         </h5>
 
@@ -375,7 +411,7 @@
                                                         @endif
                                                     </span>
                                                 </li>
-                                               
+
 
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
@@ -654,7 +690,7 @@
                                                     value="{{ strtoupper($permit_application->sign_off_status === 1 ? 'SIGNED OFF' : 'NOT SIGNED OFF') }}"
                                                     disabled>
                                             </div>
-                                            
+
                                             @if ($permit_application && $permit_application->sign_off_status === 1)
                                                 <div class="col-md-3">
                                                     <label for="" class="form-label">Signed Off Date</label>
@@ -670,9 +706,9 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        
 
-                                        
+
+
                                         <div class="row mt-3">
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Applied Before</label>
@@ -791,7 +827,7 @@
                             </div>
                         @elseif(!$permit_application->collected_card)
                             <div class="card-body">
-                              
+
                             </div>
                         @endif
 
