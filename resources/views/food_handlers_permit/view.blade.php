@@ -20,6 +20,11 @@
                         <a href="{{ url('/advance-search/create') }}" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
+                    @elseif(str_contains(app('url')->previous(), 'clinic'))
+                        <a href="{{ app('url')->previous() }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-arrow-left"></i>
+                            Back
+                        </a>
                     @else
                         <a href="{{ url('/permit/filter/0') }}" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-left"></i> Back
@@ -28,7 +33,7 @@
 
                     <span>{{ $permit_application->firstname . ' ' . $permit_application->lastname }}</span>
                 </h4>
-
+                {{--  --}}
                 <div class="card-body">
                     <form action="{{ route('permit.application.update', ['id' => $permit_application->id]) }}"
                         method="POST" enctype="multipart/form-data">

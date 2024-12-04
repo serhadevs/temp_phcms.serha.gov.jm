@@ -105,12 +105,14 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="" class="form-label">Number of Employees</label>
-                                <input type="text" class="form-control" disabled value="{{ $application->permits_count }}">
+                                <label for="" class="form-label">Number of Employee Applications added</label>
+                                <input type="text" class="form-control" disabled
+                                    value="{{ $application->permits_count }}">
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Number of Employees Signed Off</label>
-                                <input type="text" class="form-control" disabled value="{{ $applications_signed_off }}">
+                                <input type="text" class="form-control" disabled
+                                    value="{{ $applications_signed_off }}">
                             </div>
                         </div>
                         <div class="mt-3">
@@ -143,14 +145,14 @@
                         </button>
                     </form>
                 </div>
-                <div class="card mt-3">
+                <div class="card mx-3 mb-3">
                     <div class="card-header">
                         <h4 class="text-muted">
                             Employee Applications Added
                         </h4>
                     </div>
                     <div class="card-body">
-                        {{-- @include('partials.tables.food_clinic_employees.blade.php') --}}
+                        @include('partials.tables.food_clinic_employees')
                     </div>
                 </div>
                 <div class="card mx-3">
