@@ -65,10 +65,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
-  Route::get('/dashboard/expiry/{days}',[Dashboard::class, 'index'])->name('expiry.dashboard');
+  Route::get('/dashboard/expiry/{days}', [Dashboard::class, 'index'])->name('expiry.dashboard');
 
   //Expired Establishments
-  Route::get('/establishments/expiry/{days}',[FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('est.expiry');
+  Route::get('/establishments/expiry/{days}', [FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('est.expiry');
   //Appointments
 
   Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
@@ -176,6 +176,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   });
 
   Route::get('/sign-off/food-establishments', [SignOffController::class, 'viewSignOffs'])->name('sign-off-establishments');
+  Route::post('/sign-off/request/reversal', [SignOffController::class, 'requestSignoffReversal'])->name('sign-off.request.reversal');
+  Route::get('/sign-off/reversal/requests/index', [SignOffController::class, 'viewReversalRequests']);
+  Route::get('/sign-off/reversal/approve/{id}', [SignOffController::class, 'approveReversal']);
 
   //Test Results
   //Food Handlers Permit

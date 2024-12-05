@@ -310,55 +310,68 @@
                     </div>
 
                     @if ($est_application && $est_application->signOff)
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            <h5 class="text-muted">Sign off Status</h5>
-                        </div>
-                        <div class="card-body">
-                            @if (\Carbon\Carbon::parse(optional($est_application->signOff)->expiry_date)->isPast())
-                                <div class="alert alert-danger" role="alert">
-                                    License is expired
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="text-muted">Sign off Status</h5>
+                                    </div>
+                                    @if (in_array(auth()->user()->role_id, [1, 5, 10]) && empty($permit_application->zippedApplication))
+                                        <div class="col col-auto">
+                                            <button class="btn btn-danger" type="button"
+                                                onclick="requestSignoffReversal({{ json_encode($est_application->id) }})">
+                                                Request SignOff Reversal
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
-                          
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-bordered">
-                                        <thead>
-                                            <th>Sign Off Date</th>
-                                            <th>Expiry Date</th>
-                                            <th>MO(H)</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    {{ \Carbon\Carbon::parse(optional($est_application->signOff)->created_at)->format('d F Y') }}
-                                                </td>
-                                                <td>
-                                                    {{ \Carbon\Carbon::parse(optional($est_application->signOff)->expiry_date)->format('d F Y') }}
-                                                </td>
-                                                <td>
-                                                    {{ optional($est_application->signOff->user)->firstname ?? 'N/A' }}
-                                                    {{ optional($est_application->signOff->user)->lastname ?? '' }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                           @endif
-                        </div>
-                    </div>
-                @else
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            <h5 class="text-muted">Sign off Status</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="alert alert-warning" role="alert">
-                                Sign off has not yet been completed
+
+                            </div>
+                            <div class="card-body">
+                                @if (\Carbon\Carbon::parse(optional($est_application->signOff)->expiry_date)->isPast())
+                                    <div class="alert alert-danger" role="alert">
+                                        License is expired
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered">
+                                            <thead>
+                                                <th>Sign Off Date</th>
+                                                <th>Expiry Date</th>
+                                                <th>MO(H)</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        {{ \Carbon\Carbon::parse(optional($est_application->signOff)->created_at)->format('d F Y') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \Carbon\Carbon::parse(optional($est_application->signOff)->expiry_date)->format('d F Y') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ optional($est_application->signOff->user)->firstname ?? 'N/A' }}
+                                                        {{ optional($est_application->signOff->user)->lastname ?? '' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    </div>
-                @endif
-                
+                    @else
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5 class="text-muted">Sign off Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-warning" role="alert">
+                                    Sign off has not yet been completed
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
 
                     <div class="card mt-3">
                         <div class="card-header">
@@ -537,6 +550,63 @@
                                 })
                             }
                         })
+                    })
+                }
+            })
+        }
+    </script>
+
+    <script>
+        function requestSignoffReversal(id) {
+            swal.fire({
+                title: "What is your reason for requesting a reverse of this sign off?",
+                text: "Reason will be recorded",
+                icon: 'question',
+                input: 'textarea',
+                inputAttributes: {
+                    required: true
+                },
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Log Reason"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swal.fire({
+                        icon: 'warning',
+                        title: 'Are you sure you want to make this request?',
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: "Request Reversal"
+                    }).then((result2) => {
+                        if (result2.isConfirmed) {
+                            $.post({!! json_encode(url('/sign-off/request/reversal')) !!}, {
+                                _method: "POST",
+                                data: {
+                                    reason: result.value,
+                                    application_id: id,
+                                    app_type: 3
+                                },
+                                _token: "{{ csrf_token() }}"
+                            }).then(function(data) {
+                                if (data[0] == "success") {
+                                    swal.fire(
+                                        "Done!",
+                                        data[1],
+                                        "success").then(
+                                        esc => {
+                                            if (esc) {
+                                                location
+                                                    .reload();
+                                            }
+                                        });
+                                } else {
+                                    swal.fire(
+                                        "Oops! Something went wrong.",
+                                        data,
+                                        "error");
+                                }
+                            })
+                        }
                     })
                 }
             })

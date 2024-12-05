@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class SignOff extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     // use Loggable;
 
     protected $table = "sign_offs";
@@ -31,13 +33,31 @@ class SignOff extends Model
 
     public $timestamps = true;
 
-    public function user():HasOne{
+    public function user(): HasOne
+    {
         return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
     }
 
-    public function application_type():HasOne{
-        return $this->hasOne(ApplicationType::class,'id','application_type_id');
+    public function application_type(): HasOne
+    {
+        return $this->hasOne(ApplicationType::class, 'id', 'application_type_id');
     }
 
-    
+    public function permitApplication(): HasOne
+    {
+        return $this->hasOne(PermitApplication::class, 'id', 'application_id');
+    }
+
+    public function establishmentApplication($value): HasOne
+    {
+        dd($value);
+        return $this->hasOne(EstablishmentApplications::class, 'id', 'application_id');
+    }
+
+    public function application($query)
+    {
+        return $query->when($this->application_type_id == '1', function ($q) {
+            return $q->permitApplication;
+        });
+    }
 }
