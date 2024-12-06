@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ApplicationType;
+use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
 use App\Models\ExamSites;
 use App\Models\HealthCertApplications;
@@ -209,6 +210,100 @@ class SignOffController extends Controller
             return redirect()->with('error', 'Unknown error occured', $e->getMessage());
         } catch (QueryException $e) {
             return redirect()->with('error', 'Unable to fetch data from the database!', $e->getMessage());
+        }
+    }
+
+    public function requestSignoffReversal(Request $request)
+    {
+        try {
+            if ($application = $request->data['app_type'] == 1 ?
+                PermitApplication::with('zippedApplication', 'signOffs')->find($request->data['application_id'])
+                : EstablishmentApplications::with('zippedApplication', 'signOff')->find($request->data['application_id'])
+            ) {
+                if ($application->sign_off_status == 1) {
+                    //Ensure two requests cannot be logged
+                    if (empty($application->zippedApplication)) {
+                        DB::beginTransaction();
+                        if (EditTransactions::create([
+                            'application_type_id' => $request->data['app_type'],
+                            'table_id' => $request->data['app_type'] == 1 ? $application->signOffs->id : $application->signOff->id,
+                            'system_operation_type_id' => 4,
+                            'edit_type_id' => 2,
+                            'user_id' => auth()->user()->id,
+                            'facility_id' => auth()->user()->facility_id,
+                            'reason' => $request->data['reason']
+                        ])) {
+                            DB::commit();
+                            return [
+                                "success",
+                                "Request for reversal of sign off has been submitted successfully"
+                            ];
+                        }
+                    } else {
+                        throw new Exception("This permit has already been prepared for printing");
+                    }
+                } else {
+                    throw new Exception("This permit application has not been signed off");
+                }
+            } else {
+                throw new Exception("This permit application does not exist");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    public function viewReversalRequests()
+    {
+        $requests = EditTransactions::with('signOffs', 'user')
+            ->where('system_operation_type_id', 4)
+            ->where('facility_id', auth()->user()->facility_id)
+            ->where('approved', NULL)
+            ->get();
+
+        return view('signoffs.reverse_signoffs', compact('requests'));
+    }
+
+    public function approveReversal($id)
+    {
+        try {
+            if ($edit = EditTransactions::find($id)) {
+                if ($sign_off = SignOff::find($edit->table_id)) {
+                    if ($application = $sign_off->application_type_id == 1 ?
+                        PermitApplication::find($sign_off->application_id) :
+                        EstablishmentApplications::find($sign_off->application_id)
+                    ) {
+                        DB::beginTransaction();
+                        if ($edit->update(['approved' => 1])) {
+                            if ($application->update(['sign_off_status' => NULL])) {
+                                if ($sign_off->update(['deleted_at' => new DateTime()])) {
+                                    DB::commit();
+                                    return [
+                                        "success",
+                                        "Reversal of Sign Off has been approved and completed"
+                                    ];
+                                } else {
+                                    throw new Exception("Unable to approve. Error updating sign off record");
+                                }
+                            } else {
+                                throw new Exception("Unable to approve. Error updating application");
+                            }
+                        } else {
+                            throw new Exception("Unable to approve. Error updating transaction");
+                        }
+                    } else {
+                        throw new Exception("This application does not exist");
+                    }
+                } else {
+                    throw new Exception("This Sign off does not exist");
+                }
+            } else {
+                throw new Exception("This request for this ID does not exist");
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
         }
     }
 }

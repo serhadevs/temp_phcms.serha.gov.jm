@@ -8,12 +8,22 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid mb-4">
             @include('partials.messages.messages')
+            <style>
+                [class*=" bi-"]::before {
+                    vertical-align: text-top !important;
+                }
+            </style>
             <div class="card">
                 <h4 class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
 
                     @if (app('url')->previous() === url('/advance-search/show'))
                         <a href="{{ url('/advance-search/create') }}" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    @elseif(str_contains(app('url')->previous(), 'clinic'))
+                        <a href="{{ app('url')->previous() }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-arrow-left"></i>
+                            Back
                         </a>
                     @else
                         <a href="{{ url('/permit/filter/0') }}" class="btn btn-primary btn-sm">
@@ -23,7 +33,7 @@
 
                     <span>{{ $permit_application->firstname . ' ' . $permit_application->lastname }}</span>
                 </h4>
-
+                {{--  --}}
                 <div class="card-body">
                     <form action="{{ route('permit.application.update', ['id' => $permit_application->id]) }}"
                         method="POST" enctype="multipart/form-data">
@@ -52,12 +62,25 @@
                                             name="photo_upload" style="display:none">
                                     </div>
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
-                                            Test Results
-                                        </h5>
+                                        <div class="card-header">
+                                            <div class="row justify-content-between">
+                                                <div class="col text-start d-flex">
+                                                    <h5 class="text-muted mb-0 align-self-center">
+                                                        Test Results
+                                                    </h5>
+                                                </div>
+                                                @if (empty($permit_application->testResults))
+                                                    <div class="col col-auto">
+                                                        <a
+                                                            href="/test-results/permits/{{ $permit_application->id }}/create">
+                                                            <i
+                                                                class="bi bi-plus-square-fill text-primary fs-3 p-0 mt-0"></i>
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                         <div class="card-body">
-
-
                                             @if (!empty($permit_application->testResults))
                                                 <ul class="list-group">
                                                     <li
@@ -88,14 +111,32 @@
                                                     </li>
                                                 </ul>
                                             @else
-                                                No Test Results Available
+                                                <div class="text-start">
+                                                    No Test Results Available
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
-                                            Health Interview Results
-                                        </h5>
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col d-flex">
+                                                    <h5 class="text-muted text-start align-self-center">
+                                                        Health Interview Results
+                                                    </h5>
+                                                </div>
+                                                @if (empty($permit_application->healthInterviews))
+                                                    <div class="col col-auto">
+                                                        <a href="/health-interview/create/1/{{ $permit_application->id }}">
+                                                            <i
+                                                                class="bi bi-plus-square-fill text-primary fs-3 p-0 mt-0"></i>
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+
                                         <div class="card-body">
                                             @if (!empty($permit_application->healthInterviews))
                                                 <ul class="list-group">
@@ -186,16 +227,16 @@
 
 
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
+                                        <h5 class="card-header text-start text-muted">
                                             Messages
                                         </h5>
                                         @if (!$permit_application->email)
-                                            <div class="card-body">
+                                            <div class="card-body text-start">
                                                 No Email Address for {{ $permit_application->firstname }}
                                                 {{ $permit_application->lastname }}
                                             </div>
                                         @elseif($permit_application->messages->isEmpty())
-                                            <div class="card-body">
+                                            <div class="card-body text-start">
                                                 No Messages Sent to {{ $permit_application->firstname }}
                                                 {{ $permit_application->lastname }}
                                             </div>
@@ -256,7 +297,7 @@
                                     </div>
 
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
+                                        <h5 class="card-header text-muted text-start">
                                             Printed Card Information
                                         </h5>
 
@@ -270,7 +311,7 @@
                                                 The Card was signed off but not yet printed.
                                             </div>
                                         @else
-                                            <div class="card-body">
+                                            <div class="card-body text-start">
                                                 No Card Information is available
                                             </div>
                                         @endif
@@ -281,7 +322,7 @@
 
 
                                     <div class="card mt-2">
-                                        <h5 class="card-header text-muted">
+                                        <h5 class="card-header text-muted text-start">
                                             Permit Processing Tracker
                                         </h5>
 
@@ -375,7 +416,7 @@
                                                         @endif
                                                     </span>
                                                 </li>
-                                               
+
 
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center">
@@ -604,75 +645,80 @@
                                                     value="{{ $permit_application->permit_no }}" disabled>
                                             </div>
                                         </div>
-                                        {{-- <div class="row mt-3"> --}}
-                                        {{-- <div class="col">
-                                                    <label for="" class="form-label">Permit Type</label>
-                                                    <input type="text" class="form-control"
-                                                        value="{{ strtoupper($permit_application->permit_type) }}"
-                                                        disabled>
-                                                </div>
-                                                <div class="col">
-                                                    <label for="" class="form-label">Permit Category</label>
-                                                    <input type="text" class="form-control"
-                                                        value="{{ strtoupper($permit_application->permitCategory?->name) }}"
-                                                        disabled>
-                                                </div> --}}
-                                        {{-- </div> --}}
-                                        @if (optional($permit_application->signOffs)->expiry_date &&
-                                                \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->isPast())
-                                            <div class="mt-3">
-                                                <div class="alert alert-danger" role="alert">
-                                                    Card has expired on
-                                                    {{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}
-                                                </div>
-                                            </div>
-                                        @elseif(optional($permit_application->signOffs)->expiry_date)
-                                            <div class="mt-3">
-                                                <label for="expiry-date" class="form-label">Expiry Date</label>
-                                                <input type="text" id="expiry-date" class="form-control"
-                                                    value="{{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}"
-                                                    disabled>
-                                            </div>
-                                        @else
-                                            <div class="mt-3">
-                                                <div class="alert alert-warning" role="alert">
-                                                    No expiry date available.
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-3">
+                                        <div class="row">
+                                            <div class="col mt-3">
                                                 <label for="" class="form-label">Granted</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ strtoupper($permit_application->granted === 1 ? 'GRANTED' : ($permit_application->granted === 0 ? 'NOT GRANTED' : 'N/A')) }}"
                                                     disabled>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col mt-3">
+                                                @if (optional($permit_application->signOffs)->expiry_date &&
+                                                        \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->isPast())
+                                                    <div class="mt-3">
+                                                        <div class="alert alert-danger" role="alert">
+                                                            Card has expired on
+                                                            {{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}
+                                                        </div>
+                                                    </div>
+                                                @elseif(optional($permit_application->signOffs)->expiry_date)
+                                                    <div class="mt-3">
+                                                        <label for="expiry-date" class="form-label">Expiry Date</label>
+                                                        <input type="text" id="expiry-date" class="form-control"
+                                                            value="{{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}"
+                                                            disabled>
+                                                    </div>
+                                                @else
+                                                    <div class="mt-3">
+                                                        <div class="alert alert-warning" role="alert">
+                                                            No expiry date available.
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row mt-2">
+                                            <div class="col col-md-3">
                                                 <label for="" class="form-label">Sign Off Status</label>
                                                 <input type="text" class="form-control"
                                                     value="{{ strtoupper($permit_application->sign_off_status === 1 ? 'SIGNED OFF' : 'NOT SIGNED OFF') }}"
                                                     disabled>
                                             </div>
-                                            
+
                                             @if ($permit_application && $permit_application->sign_off_status === 1)
-                                                <div class="col-md-3">
+                                                <div class="col col-md-3">
                                                     <label for="" class="form-label">Signed Off Date</label>
                                                     <input type="text" class="form-control"
                                                         value="{{ \Carbon\Carbon::parse(optional($permit_application->signOffs)?->created_at)->format('d F Y') }}"
                                                         disabled>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <label for="" class="form-label">Signed Off By</label>
-                                                    <input type="text" class="form-control"
-                                                        value="{{ strtoupper(optional($permit_application->signOffs?->user)->firstname) }} {{ strtoupper(optional($permit_application->signOffs?->user)->lastname) }}"
-                                                        disabled>
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <label for="" class="form-label">Signed Off By</label>
+                                                            <input type="text" class="form-control"
+                                                                value="{{ strtoupper(optional($permit_application->signOffs?->user)->firstname) }} {{ strtoupper(optional($permit_application->signOffs?->user)->lastname) }}"
+                                                                disabled>
+                                                        </div>
+                                                        @if (in_array(auth()->user()->role_id, [1, 5, 10]) && empty($permit_application->printedcard))
+                                                            <div class="col col-md-5 mx-auto" style="align-self:end">
+                                                                <button class="btn btn-danger" type="button"
+                                                                    style="align-items:center"
+                                                                    onclick="requestSignoffReversal({{ json_encode($permit_application->id) }})">
+                                                                    <i class="bi bi-skip-backward-circle fs-6"></i>
+                                                                    Request Reverse Sign Off
+                                                                </button>
+                                                            </div>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             @endif
                                         </div>
-                                        
 
-                                        
+
+
                                         <div class="row mt-3">
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Applied Before</label>
@@ -791,7 +837,7 @@
                             </div>
                         @elseif(!$permit_application->collected_card)
                             <div class="card-body">
-                              
+
                             </div>
                         @endif
 
@@ -964,6 +1010,63 @@
                 month: 'long',
                 year: 'numeric'
             });
+        }
+    </script>
+
+    <script>
+        function requestSignoffReversal(permit_id) {
+            swal.fire({
+                title: "What is your reason for requesting a reverse of this sign off?",
+                text: "Reason will be recorded",
+                icon: 'question',
+                input: 'textarea',
+                inputAttributes: {
+                    required: true
+                },
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Log Reason"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swal.fire({
+                        icon: 'warning',
+                        title: 'Are you sure you want to make this request?',
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: "Request Reversal"
+                    }).then((result2) => {
+                        if (result2.isConfirmed) {
+                            $.post({!! json_encode(url('/sign-off/request/reversal')) !!}, {
+                                _method: "POST",
+                                data: {
+                                    reason: result.value,
+                                    application_id: permit_id,
+                                    app_type: 1
+                                },
+                                _token: "{{ csrf_token() }}"
+                            }).then(function(data) {
+                                if (data[0] == "success") {
+                                    swal.fire(
+                                        "Done!",
+                                        data[1],
+                                        "success").then(
+                                        esc => {
+                                            if (esc) {
+                                                location
+                                                    .reload();
+                                            }
+                                        });
+                                } else {
+                                    swal.fire(
+                                        "Oops! Something went wrong.",
+                                        data,
+                                        "error");
+                                }
+                            })
+                        }
+                    })
+                }
+            })
         }
     </script>
 

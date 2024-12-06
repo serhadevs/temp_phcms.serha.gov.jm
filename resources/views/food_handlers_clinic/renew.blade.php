@@ -112,7 +112,7 @@
                                             <span class="text-danger fw-bold">*</span>
                                             Proposed Exercise Time
                                         </label>
-                                        <input type="text" class="form-control" name="proposed_time"
+                                        <input type="time" class="form-control" name="proposed_time"
                                             value="{{ old('proposed_time') }}"
                                             oninput="this.value = this.value.toUpperCase()">
                                         @error('proposed_time')

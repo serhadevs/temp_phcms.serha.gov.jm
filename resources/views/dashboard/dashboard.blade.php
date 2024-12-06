@@ -117,7 +117,7 @@
                                 </div>
                             @endif
                         </div>
-                        {{-- <div class="card-body py-3">
+                        <div class="card-body py-3">
                             @if (in_array(auth()->user()->role_id, [1, 3, 10]))
                                 <div class="row">
                                     <!-- Food Permit Applications -->
@@ -151,9 +151,9 @@
                                         </div>
 
 
-                                    </div> --}}
+                                    </div> 
 
-                                    {{-- <!-- Food Establishment Applications -->
+                                    <!-- Food Establishment Applications -->
                                     <div class="col-12 col-md-4 mb-3">
                                         <div class="card text-bg-light h-100">
                                             <div class="card-header mb-2 fw-bold">
@@ -201,9 +201,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> --}}
-                                {{-- </div>
-                            @endif --}}
+                                    </div>
+                                </div>
+                            @endif
 
                             @if (in_array(auth()->user()->role_id, [4]))
                                 <div class="row">
@@ -253,7 +253,7 @@
     </script>
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    {{-- <script>
+    <script>
         $(document).ready(function() {
 
             function getExpiryCount(days) {
@@ -294,7 +294,7 @@
                 getExpiryCount(selectedValue); // Pass the selected value to fetch data dynamically
             });
         });
-    </script> --}}
+    </script>
 
 
 @endsection

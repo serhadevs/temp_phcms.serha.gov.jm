@@ -214,9 +214,16 @@ class FoodHandlersClinicController extends Controller
      */
     public function show(Request $request)
     {
-        $application = EstablishmentClinics::with('editTransactions')->find($request->route('id'));
+        $application = EstablishmentClinics::with('editTransactions')
+            ->with('permits.payment')
+            ->withCount('permits')
+            ->find($request->route('id'));
 
-        return view('food_handlers_clinic.view', compact('application'));
+        $applications_signed_off = PermitApplication::where('establishment_clinic_id', $request->route('id'))
+            ->where('sign_off_status', 1)
+            ->count();
+
+        return view('food_handlers_clinic.view', compact('application', 'applications_signed_off'));
     }
 
     /**
@@ -319,6 +326,11 @@ class FoodHandlersClinicController extends Controller
         )) {
             return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Application ID: ' . $request->id . ' has been updated successfully.');
         }
+    }
+
+    public function viewEmployees($id)
+    {
+        $permits = PermitApplication::where('establishment_clinic_id', $id)->get();
     }
 
     public function requestEmployeeEdit(Request $request, $id)

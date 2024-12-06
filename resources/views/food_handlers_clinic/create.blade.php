@@ -76,7 +76,7 @@
                             </div>
                             <div class="col">
                                 <label for="" class="form-label">Proposed Exercise Time</label>
-                                <input type="text" class="form-control" name="proposed_time"
+                                <input type="time" class="form-control" name="proposed_time"
                                     value="{{ old('proposed_time') }}" oninput="this.value = this.value.toUpperCase()">
                                 @error('proposed_time')
                                     <p class="text-danger">{{ $message }}</p>

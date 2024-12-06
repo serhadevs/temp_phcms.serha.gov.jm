@@ -62,4 +62,9 @@ class EditTransactions extends Model
     {
         return $this->hasOne(ApplicationType::class, 'id', 'application_type_id');
     }
+
+    public function signOffs(): HasOne
+    {
+        return $this->hasOne(SignOff::class, 'id', 'table_id');
+    }
 }
