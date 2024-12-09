@@ -671,8 +671,10 @@ class FoodEstablishmentController extends Controller
         // Fetch Expired Application
         try {
             
-            $food_establishments = EstablishmentApplications::join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
+            $food_establishments = EstablishmentApplications::with('payment')
+            ->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
             ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
+            //->where('sign_offs.sign_off_status',1)
             ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])
             ->get();
 

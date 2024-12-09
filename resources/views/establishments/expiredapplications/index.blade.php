@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                         </form> --}}
-                        @include('partials.tables.processed_food_establishment_table')
+                        @include('partials.tables.expired_food_establishment_table')
                     </div>
                     <div class="card-footer">
                         <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
