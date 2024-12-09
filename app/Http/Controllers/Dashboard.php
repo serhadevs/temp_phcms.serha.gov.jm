@@ -65,10 +65,12 @@ class Dashboard extends Controller
     // Fetch Expiry Count
     try {
         
-        $expiryestCount = EstablishmentApplications::join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
+        $expiryestCount = EstablishmentApplications::with('payment')->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
         ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
         ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])
-        ->count();
+        ->get();
+
+        //dd($expiryestCount);
     } catch (\Throwable $e) {
         Log::error('Error fetching expiry count: ' . $e->getMessage());
         $expiryestCount = 0;

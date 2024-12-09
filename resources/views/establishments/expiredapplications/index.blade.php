@@ -13,7 +13,7 @@
                     <h2 class="card-header">
                         <div class="row justify-content-between">
                             <div class="col">
-                                <h2 class="text-muted">Food Establishments Expiring within {{ $days }} days from {{ \Carbon\Carbon::parse($now)->format('d F Y') }}</h2>
+                                <h2 class="text-muted">Food Establishments Expiring within {{ $days }} days from {{ \Carbon\Carbon::parse($now)->format('F d Y') }}</h2>
                             </div>
                             {{-- <div class="col-auto no-wrap">
                                 <div class="row">

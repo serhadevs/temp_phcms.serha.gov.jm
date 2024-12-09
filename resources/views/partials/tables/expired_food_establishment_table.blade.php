@@ -5,8 +5,8 @@
             <th>Name</th>
             <th>Address</th>
             <th class="text-nowrap">Type Food</th>
-            <th class="text-nowrap">Payment Status</th>
-            <th class="text-nowrap">Payment Date</th>
+            {{-- <th class="text-nowrap">Payment Status</th> --}}
+            {{-- <th class="text-nowrap">Payment Date</th> --}}
             <th class="text-nowrap">Telphone No.</th>
             <th>Category</th>
             <th>Sign Off Status</th>
@@ -27,14 +27,14 @@
                 <td>{{ $est->establishment_name }}</td>
                 <td>{{ $est->establishment_address }}</td>
                 <td>{{ $est->food_type }}</td>
-                <td class="text-center">
+                {{-- <td class="text-center">
                     <span class="badge text-bg-{{ empty($est->payment) ? 'danger' : 'success' }}">
                         {{ empty($est->payment) ? 'Not Paid' : 'Paid' }}
                     </span>
-                </td>
-                <td class="text-nowrap">
+                </td> --}}
+                {{-- <td class="text-nowrap">
                     {{ !empty($est->payment) ? Carbon\Carbon::parse($est->payment?->created_at)->format('F j, Y, g:i a') : 'N/A' }}
-                </td>
+                </td> --}}
                 <td class="text-nowrap">{{ $est->telephone }}</td>
                 <td>{{ $est->establishmentCategory?->name }}</td>
                 <td><span
@@ -55,7 +55,7 @@
                 {{-- <td>{{ !empty($est?->testResults?->test_date) ? \Carbon\Carbon::parse($est?->testResults?->test_date)->format('F d, Y') :  'N/A'  }}</td> --}}
                 <td>{{ \Carbon\Carbon::parse($est->application_date)->format('F d, Y') }}</td>
                 <td>
-                    {{ !empty($est->signOff) ? \Carbon\Carbon::parse($est?->signOff?->expiry_date)->format('F d, Y') : 'N/A' }}
+                    {{ !empty($est->expiry_date) ? \Carbon\Carbon::parse($est?->expiry_date)->format('d F Y') : 'N/A' }}
                 </td>
                 <td>
                     {{ !empty($est->renewal) ? 'RENEWAL' : 'NEW' }}
