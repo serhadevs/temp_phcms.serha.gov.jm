@@ -117,7 +117,7 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="card-body py-3">
+                        {{-- <div class="card-body py-3">
                             @if (in_array(auth()->user()->role_id, [1, 3, 10]))
                                 <div class="row">
                                     <!-- Food Establishments that are expiring -->
@@ -175,7 +175,7 @@
                                     </div>
                                 </div>
                             @endif
-                        </div>
+                        </div> --}}
                         {{-- <div class="card-body py-3">
                             @if (in_array(auth()->user()->role_id, [1, 3, 10]))
                                 <div class="row">
