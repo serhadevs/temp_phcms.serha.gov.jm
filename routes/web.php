@@ -319,6 +319,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/food-establishments/operators/create', [FoodEstablishmentController::class, 'createOperator'])->name('food-establishments.operators.add');
   Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class, 'getEdit']);
 
+  Route::get('/food-establishments/expiry/{days}',[FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('food-establishments.expiry');
+
   //Test Exports
   Route::middleware(['checkRole:1'])->group(function () {
     Route::get('/test/downloads', [TestDownloads::class, 'index']);
