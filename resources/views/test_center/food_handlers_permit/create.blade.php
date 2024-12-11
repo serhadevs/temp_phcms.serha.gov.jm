@@ -7,7 +7,7 @@
     <div class="main">
         @include('partials.navbar._navbar')
         <div class="container-fluid">
-            <div class="card">
+            <div class="card mb-2">
                 <div class="card-header">
                     Add Test Results
                 </div>
