@@ -8,13 +8,19 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h2 class="text-muted">Add Test Results</h2>
-                    <hr>
+                </div>
+                <div class="card-body">
                     <form method="POST" action="{{ route('test-results.permit.add') }}">
                         @method('POST')
                         @csrf
                         {{-- @foreach ($permit_applications as $permit_application) --}}
+                        <div class="mt-3">
+                            <label for="" class="form-label">Photo</label>
+                            <img src="{{ asset('storage/' . $permit_application->photo_upload) }}" alt="No Image found"
+                                style="display:block; width:15rem; height:auto;border:1px solid blue;">
+                        </div>
                         <div class="mt-3">
                             <label for="" class="form-label">Permit Type</label>
                             <select name="" id="" class="form-select" readonly disabled>
@@ -29,11 +35,7 @@
                             <input type="text" name="application_type_id" value="1" hidden>
                             <input type="text" name="application_id" value="{{ $permit_application->id }}" hidden>
                         </div>
-                        <div class="mt-3">
-                            <label for="" class="form-label">Photo</label>
-                            <img src="{{ asset('storage/' . $permit_application->photo_upload) }}" alt="No Image found"
-                                style="display:block; width:30%; height:30vh">
-                        </div>
+                       
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">First Name</label>
@@ -113,17 +115,19 @@
                             <label for="" class="form-label">Comments</label>
                             <textarea class="form-control" name="comments">{{ old('comments') }}</textarea>
                         </div>
-                        <div class="mt-4">
-                            <button type="button" class="btn btn-primary" onclick="showLoading(this)">
-                                Submit
-                            </button>
-                            <a class="btn btn-danger" onclick="history.back()">
-                                Cancel
-                            </a>
-                        </div>
                         {{-- @endforeach --}}
-                    </form>
                 </div>
+
+                <div class="card-footer">
+                    <button type="button" class="btn btn-primary" onclick="showLoading(this)">
+                        Submit
+                    </button>
+                    <a class="btn btn-danger" onclick="history.back()">
+                        Cancel
+                    </a>
+                </div>
+                {{--  --}}
+            </form>
             </div>
         </div>
         @include('partials.messages.loading_message')
