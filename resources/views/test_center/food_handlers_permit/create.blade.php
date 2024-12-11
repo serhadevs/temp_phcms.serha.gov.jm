@@ -9,9 +9,9 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="text-muted">Add Test Results</h2>
+                    Add Test Results
                 </div>
-                <div class="card-body">
+                <div class="card-body mb-2">
                     <form method="POST" action="{{ route('test-results.permit.add') }}">
                         @method('POST')
                         @csrf
@@ -35,7 +35,7 @@
                             <input type="text" name="application_type_id" value="1" hidden>
                             <input type="text" name="application_id" value="{{ $permit_application->id }}" hidden>
                         </div>
-                       
+
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">First Name</label>
@@ -127,7 +127,7 @@
                     </a>
                 </div>
                 {{--  --}}
-            </form>
+                </form>
             </div>
         </div>
         @include('partials.messages.loading_message')
