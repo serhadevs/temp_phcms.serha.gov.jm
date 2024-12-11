@@ -115,7 +115,7 @@
                         </div>
                 </div>
                 <div class="card-footer">
-                    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
+                    <a  onclick = "history.back()" class="btn btn-danger">Back</a>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>
