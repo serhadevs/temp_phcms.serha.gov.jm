@@ -44,8 +44,8 @@ class Dashboard extends Controller
     $facilityId = auth()->user()->facility_id;
 
     // Date-related variables
-    $startOfMonth = $now->startOfMonth();
-    $endOfMonth = $now->endOfMonth();
+    $startOfMonth = $now->copy()->startOfMonth();
+    $endOfMonth = $now->copy()->endOfMonth();
     $startOfYear = $now->copy()->startOfYear();
     $year = $now->year;
     $month = $now->format('F');
