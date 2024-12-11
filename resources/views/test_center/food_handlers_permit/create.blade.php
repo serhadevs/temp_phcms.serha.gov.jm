@@ -118,7 +118,7 @@
                         {{-- @endforeach --}}
                 </div>
 
-                <div class="card-footer">
+                <div class="card-footer mb-2">
                     <button type="button" class="btn btn-primary" onclick="showLoading(this)">
                         Submit
                     </button>
