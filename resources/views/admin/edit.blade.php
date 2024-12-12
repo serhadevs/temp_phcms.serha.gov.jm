@@ -103,7 +103,7 @@
                                 <select class="form-select" name="permit_category_id">
                                     <option selected disabled>Select a Permit Category</option>
                                     @foreach ($permitcategories as $permitcategory)
-                                        <option value="{{ $permitcategory->id }}" {{ $exam_date->permitCategory->id = $permitcategory->id ? 'selected' : '' }}>{{ $permitcategory->name }}</option>
+                                        <option value="{{ $permitcategory->id }}" {{ $exam_date->permitCategory->id == $permitcategory->id ? 'selected' : '' }}>{{ $permitcategory->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
