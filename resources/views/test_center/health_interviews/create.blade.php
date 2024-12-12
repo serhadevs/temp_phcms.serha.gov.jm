@@ -407,11 +407,17 @@
                                 </div>
                             </div>
                         @endif
-                        <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
-                            Submit Health Interview
-                        </button>
-                    </form>
+                        
+                  
                 </div>
+
+                <div class="card-footer">
+                    <a onclick="history.back()" class="btn btn-danger">Cancel</a>
+                    <button class="btn btn-primary" type="button" onclick="showLoading(this)">
+                        Submit Health Interview
+                    </button>
+                </div>
+            </form>
             </div>
         </div>
         @include('partials.messages.loading_message')
