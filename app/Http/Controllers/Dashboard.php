@@ -9,6 +9,7 @@ use App\Models\HealthInterview;
 use App\Models\Payments;
 
 use App\Models\PermitApplication;
+use App\Models\Renewals;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -62,15 +63,15 @@ class Dashboard extends Controller
         }
     };
 
+
     // Fetch Expiry Count
     try {
         
-        $expiryestCount = EstablishmentApplications::with('payment')->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
+        $expiryestCount = EstablishmentApplications::with('payment')
+        ->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
         ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
-        ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])
-        ->get();
+        ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])->get();
 
-        //dd($expiryestCount);
     } catch (\Throwable $e) {
         Log::error('Error fetching expiry count: ' . $e->getMessage());
         $expiryestCount = 0;

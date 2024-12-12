@@ -19,7 +19,7 @@ class Renewals extends Model
         'updated_at'
     ];
 
-    protected $tale = 'renewals';
+    protected $table = 'renewals';
 
     public $timestamps = true;
 

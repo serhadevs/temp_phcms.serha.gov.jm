@@ -162,7 +162,7 @@
                                         <div class="card text-bg-light h-100">
                                             <div
                                                 class="card-header mb-2 fw-bold d-flex justify-content-between align-items-center">
-                                                <span>Expiring Food Establishments</span>
+                                                <span>Expiring Food Establishments(that have not been renewed)</span>
                                                 {{-- <select name="expiry_date" id="expiry_date" class="form-select w-auto"
                                                     style="cursor: pointer;">
                                                     <option value="0">Expiring Today</option>
