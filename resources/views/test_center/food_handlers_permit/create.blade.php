@@ -18,9 +18,6 @@
                         @method('POST')
                         @csrf
                        
-
-                        
-                       
                                     <div class="mt-3">
                                         <label for="" class="form-label">Photo</label>
             

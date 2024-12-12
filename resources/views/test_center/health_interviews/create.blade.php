@@ -8,12 +8,30 @@
         @include('partials.navbar._navbar')
         <div class="container-fluid mb-3">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h2 class="text-muted">Add New Health Interview</h2>
-                    <hr>
+                </div>
+                <div class="card-body">
+                  
                     <form action="{{ route('health-interview.store') }}" method="POST">
                         @csrf
                         @method('POST')
+                        <div class="mt-3">
+                            <label for="" class="form-label">Photo</label>
+
+                            @if (empty($application?->photo_upload))
+                                @if ($application?->gender === 'Male')
+                                    <img src="{{ asset('/images/male.jpg') }}" alt="Male"
+                                        style="display:block; width:15rem; height:auto;">
+                                @else
+                                    <img src="{{ asset('/images/female.jpg') }}" alt="Female"
+                                        style="display:block; width:15rem; height:auto;">
+                                @endif
+                            @else
+                                <img src="{{ asset('storage/' . $application?->photo_upload) }}" alt="Uploaded Photo"
+                                    style="display:block; width:15rem; height:auto;border:1px solid blue;">
+                            @endif
+                        </div>
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="" class="form-label">First Name</label>
