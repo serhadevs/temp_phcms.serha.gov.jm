@@ -408,10 +408,15 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/examsite/edit/{id}', [ExamSitesController::class, 'edit'])->name('examsites.edit');
   Route::get('/examsite/{id}', [ExamSitesController::class, 'filter'])->name('examsite.filter');
   Route::get('/examsite/delete/{id}', [ExamSitesController::class, 'delete'])->name('examsites.delete');
+  Route::get('/examsite/update/{id}', [ExamSitesController::class, 'update'])->name('examsites.update');
 
   //Exam Dates
   Route::get('/examdates', [ExamDateController::class, 'index'])->name('examdates');
   Route::get('/examdate/create', [ExamDateController::class, 'create'])->name('examdate.create');
+  Route::get('/examdate/edit/{id}', [ExamDateController::class, 'edit'])->name('examdate.edit');
+  Route::post('/examdate/update/{id}', [ExamDateController::class, 'update'])->name('examdate.update');
+  Route::get('/examdate/{id}', [ExamDateController::class, 'filter'])->name('examdate.filter');
+  Route::get('/examdate/delete/{id}', [ExamDateController::class, 'delete'])->name('examdate.delete');
   Route::post('/examdate/store', [ExamDateController::class, 'store'])->name('examdate.store');
 
   //Ai Generated Reports

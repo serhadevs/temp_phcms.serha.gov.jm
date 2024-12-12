@@ -25,8 +25,8 @@
                 <td>{{ $exam_site->exam_start_time }}</td>
                 <td>{{ \Carbon\Carbon::parse($exam_site->created_at)->format('d F Y')}}</td>
                 <td>
-                    <a href="{{ route('examsites.edit',['id'=>$exam_site->id]) }}" class="btn btn-primary btn-sm">Edit</a>
-                    <a href="{{ route('examsites.delete',['id'=>$exam_site->id]) }}" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="{{ route('examdate.edit',['id'=>$exam_site->id]) }}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="{{ route('examdate.delete',['id'=>$exam_site->id]) }}" class="btn btn-danger btn-sm">Delete</a>
                 </td>
                 
             </tr>

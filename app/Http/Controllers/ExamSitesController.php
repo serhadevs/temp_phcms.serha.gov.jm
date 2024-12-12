@@ -21,11 +21,13 @@ class ExamSitesController extends Controller
     }
 
     public function create(){
-        
+        return view('examsites.create');
     }
 
-    public function edit(){
-
+    public function edit($id){
+        $exam_site = ExamSites::with('facility')->where('id',$id)->first();
+        //dd($exam_site);
+        return view('admin.edit',compact('exam_site'));
     }
 
     public function filter($id){
