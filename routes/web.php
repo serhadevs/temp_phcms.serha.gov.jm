@@ -434,7 +434,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   });
 
   Route::resource('outstandingcardtxt', OutstandingCardPrintController::class);
-  Route::get('zipped', [SignOffController::class,'printClinicPermits'])->name('zipped');
+  Route::get('zipped/{clinic_id}', [SignOffController::class,'printClinicPermits'])->name('zipped');
 
   //Logout Routes
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
