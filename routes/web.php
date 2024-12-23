@@ -7,13 +7,17 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberCosmetApplicationsController;
 use App\Http\Controllers\BarberCosmetTestResultController;
 use App\Http\Controllers\ClinicPermitApplicationController;
-use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\CollectCardController;
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DownloadsController;
+use App\Http\Controllers\ExamDateController;
+use App\Http\Controllers\ExamSitesController;
 use App\Http\Controllers\FoodEstablishmentController;
 use App\Http\Controllers\FoodEstTestResultController;
 use App\Http\Controllers\FoodHandlersClinicController;
 use App\Http\Controllers\HealthInterviewController;
+use App\Http\Controllers\Messaging;
+use App\Http\Controllers\OutstandingCardPrintController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
 use App\Http\Controllers\PermitApplicationController;
@@ -30,14 +34,12 @@ use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ExamDateController;
-use App\Http\Controllers\ExamSitesController;
 use App\Http\Middleware\printerAuthAttempt;
-use App\Http\Controllers\Messaging;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+
 
 
 /*
@@ -430,6 +432,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/collected-card/create', 'create')->name('collectedcards.create');
     Route::post('/collected-card/store', 'store')->name('collectedcards.store');
   });
+
+  Route::resource('outstandingcardtxt', OutstandingCardPrintController::class);
 
   //Logout Routes
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

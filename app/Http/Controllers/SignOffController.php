@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Models\ApplicationType;
+use App\Models\Downloads;
 use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
 use App\Models\ExamSites;
@@ -17,10 +16,14 @@ use App\Models\SwimmingPoolsApplications;
 use App\Models\TestResult;
 use App\Models\TouristEstablishments;
 use App\Models\User;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
+use App\Models\ZippedApplications;
 use DateTime;
 use Exception;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use ZipArchive;
 
 class SignOffController extends Controller
 {
@@ -179,6 +182,8 @@ class SignOffController extends Controller
                     }
 
                     SignOff::create($sign_off);
+
+                    
                 }
             }
             DB::commit();
@@ -304,6 +309,62 @@ class SignOffController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return $e->getMessage();
+        }
+    }
+
+    public function printClinicPermits($clinic_id)
+    {
+        try {
+            $counter = 0;
+            $rand_string = explode('.', time() / rand(10000, 99999))[0];
+            $permits = PermitApplication::with('signOffs.user', 'user', 'establishmentClinics')
+                ->has('signOffs')
+                ->where('establishment_clinic_id', $clinic_id)
+                ->get();
+
+            $content = "";
+            $key = $permits->first()?->establishmentClinics?->proposed_date;
+            $zip = new ZipArchive();
+            $download_url = "downloads/archives/" . "KSA-" . $key . "_" . $rand_string . '.zip';
+
+            $create_download = Downloads::create([
+                'application_type_id' => 1,
+                'application_amount' => 0,
+                'category' => 'Food Handlers Permit',
+                'download_url' => $download_url
+            ]);
+
+            if ($zip->open(storage_path('app/public/downloads/archives/' . "KSA-" . $key . "_" . $rand_string . '.zip'), ZipArchive::CREATE)) {
+                foreach ($permits as $index) {
+                    $ext = explode(".", $index->photo_upload)[1];
+                    $file = glob(storage_path('app/public/' . $index->photo_upload));
+                    $zip->addFile($file[0], basename($file[0]));
+
+                    $content = $content . strtoupper(substr($index->permit_no, 0, -2)) . "\t"
+                        . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
+                        . "S1" . "\t"
+                        . "SCHD" . "\t"
+                        . strtoupper($index->permitCategory?->name) . "\t"
+                        . Carbon::parse($key)->format('m/d/Y') . "\t"
+                        . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
+                        . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
+                        . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
+                        . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
+                        . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "KSA-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
+
+                    ZippedApplications::create([
+                        'application_type_id' => '1',
+                        'application_id' => $index->id,
+                        'download_id' => $create_download->id
+                    ]);
+                    $counter++;
+                }
+                $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
+            }
+            $zip->close();
+            $create_download->update(['application_amount' => $counter]);
+        } catch (Exception $e) {
+            echo $e->getMessage();
         }
     }
 }
