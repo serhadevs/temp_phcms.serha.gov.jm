@@ -12,19 +12,27 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class CheckPermitZippedJobs implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $tries = 3;
+
+    protected $start_date;
+
+    protected $end_date;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($start_date, $end_date)
     {
-        //
+        $this->start_date = $start_date;
+        $this->end_date = $end_date;
     }
 
     /**
@@ -34,8 +42,9 @@ class CheckPermitZippedJobs implements ShouldQueue
      */
     public function handle()
     {
-        $downloads = Downloads::where('application_type_id', 1)
-            ->whereBetween('created_at', ['2024-04-08 00:00:00', '2024-04-08 12:00:00'])
+        try{
+            $downloads = Downloads::where('application_type_id', 1)
+            ->whereBetween('created_at', [$this->start_date, $this->end_date])
             // ->whereBetween('created_at', ['2024-04-08 12:00:00', '2024-04-08 23:59:59'])
             ->get();
 
@@ -74,6 +83,10 @@ class CheckPermitZippedJobs implements ShouldQueue
                     ->update(['written' => 1]);
             }
             DB::commit();
+            return "success";
+        }
+        }catch(Exception $e){
+            return $e->getMessage();
         }
     }
 }

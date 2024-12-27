@@ -341,6 +341,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/fix/stanmark', [PaymentController::class, 'fixStanMarkSTT']);
     // Route::get('/fix/downloads/payment', [PaymentController::class, 'fixDownloadsBasedOnPayment']);
     Route::get('/fix/establishment-clinics/{clinic_id}', [PaymentController::class, 'applyClinicPermitPayment']);
+    Route::get('/check/downloads/{date}/{num}', [TestDownloads::class, 'checkDownloads']);
   });
 
 

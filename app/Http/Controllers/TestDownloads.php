@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CheckPermitZippedJobs;
 use App\Jobs\CheckZippedJobs;
 use App\Jobs\FoodEstJob;
 use App\Jobs\PermitJob;
@@ -33,6 +34,20 @@ class TestDownloads extends Controller
         // } catch (Exception $e) {
         //     return $e->getMessage();
         // }
+    }
+
+    public function checkDownloads(Request $request)
+    {
+        $start_date = "";
+        $end_date = "";
+        if ($request->route('num') == 1) {
+            $start_date = $request->route('date') . " 00:00:00";
+            $end_date = $request->route('date') . " 12:00:00";
+        } else {
+            $start_date = $request->route('date') . " 12:00:00";
+            $end_date = $request->route('date') . " 23:59:59";
+        }
+        CheckPermitZippedJobs::dispatch($start_date, $end_date);
     }
 
     public function writeAllFoodEstablishments()
