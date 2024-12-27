@@ -80,7 +80,6 @@ class TestDownloads extends Controller
                     }
                     fclose($file);
                 }
-                dd($array);
                 DB::beginTransaction();
                 foreach ($array as $permit_no) {
                     $permit_id = PermitApplication::where('permit_no', $permit_no)->first()->id;
