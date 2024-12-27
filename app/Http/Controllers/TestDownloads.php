@@ -52,7 +52,7 @@ class TestDownloads extends Controller
             $downloads = Downloads::where('application_type_id', 1)
                 ->whereBetween('created_at', ["2024-04-08 12:00:00", "2024-04-08 23:59:59"])
                 // ->whereBetween('created_at', ['2024-04-08 12:00:00', '2024-04-08 23:59:59'])
-                ->get();
+                ->first();
 
             foreach ($downloads as $download) {
                 $array = [];
