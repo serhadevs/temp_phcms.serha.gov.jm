@@ -49,12 +49,12 @@ class TestDownloads extends Controller
         }
 
         try {
-            $downloads = Downloads::where('application_type_id', 1)
+            $download = Downloads::where('application_type_id', 1)
                 ->whereBetween('created_at', ["2024-04-08 12:00:00", "2024-04-08 23:59:59"])
                 // ->whereBetween('created_at', ['2024-04-08 12:00:00', '2024-04-08 23:59:59'])
                 ->first();
 
-            foreach ($downloads as $download) {
+            // foreach ($downloads as $download) {
                 $array = [];
                 $rand_string = "";
                 $file_name_separated = explode('-', explode('/', $download->download_url)[2]);
@@ -90,7 +90,7 @@ class TestDownloads extends Controller
                         ->update(['written' => 1]);
                 }
                 DB::commit();
-            }
+            // }
             return "success job";
         } catch (Exception $e) {
             DB::rollBack();
