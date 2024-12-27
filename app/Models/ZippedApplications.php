@@ -23,6 +23,7 @@ class ZippedApplications extends Model
         'download_id',
         'created_at',
         'updated_at',
+        'written'
     ];
 
     public $timestamps = true;

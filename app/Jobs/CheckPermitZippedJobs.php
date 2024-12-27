@@ -34,8 +34,9 @@ class CheckPermitZippedJobs implements ShouldQueue
      */
     public function handle()
     {
-        $downloads = Downloads::where('created_at', '>', '2024-02-01')
-            ->where('application_type_id', 1)
+        $downloads = Downloads::where('application_type_id', 1)
+            ->whereBetween('created_at', ['2024-04-08 00:00:00', '2024-04-08 12:00:00'])
+            // ->whereBetween('created_at', ['2024-04-08 12:00:00', '2024-04-08 23:59:59'])
             ->get();
 
         foreach ($downloads as $download) {
