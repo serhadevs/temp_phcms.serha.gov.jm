@@ -34,6 +34,8 @@ use App\Http\Controllers\ExamDateController;
 use App\Http\Controllers\ExamSitesController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Http\Controllers\Messaging;
+use App\Http\Controllers\OnlineApplicationController;
+use App\Http\Controllers\TestNewJobs;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
@@ -60,6 +62,9 @@ Route::get('/forget-password', [UserController::class, 'forgetPasswordPage'])->n
 Route::post('/forget-password', [UserController::class, 'forgetpassword'])->name('forget.password');
 Route::get('/reset/{token}', [UserController::class, 'reset']);
 Route::post('/reset/{token}', [UserController::class, 'post_reset']);
+
+//Temp Online Applications
+Route::get("/online/application", [OnlineApplicationController::class, 'index']);
 
 Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
@@ -321,6 +326,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Test Exports
   Route::middleware(['checkRole:1'])->group(function () {
+    Route::get('/test/clinic/downloads/{clinic_id}', [TestNewJobs::class, 'printClinicPermits']);
     Route::get('/test/downloads', [TestDownloads::class, 'index']);
     Route::get('/manual-run/food-est-job', [TestDownloads::class, 'writeAllFoodEstablishments']);
     Route::get("/test/written", [TestDownloads::class, 'testCheckJob']);
