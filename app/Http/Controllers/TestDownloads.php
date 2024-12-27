@@ -47,8 +47,8 @@ class TestDownloads extends Controller
             $start_date = $request->route('date') . " 12:00:00";
             $end_date = $request->route('date') . " 23:59:59";
         }
-        
-        CheckPermitZippedJobs::dispatch($start_date, $end_date);
+
+        CheckPermitZippedJobs::dispatch();
         return "success";
     }
 
