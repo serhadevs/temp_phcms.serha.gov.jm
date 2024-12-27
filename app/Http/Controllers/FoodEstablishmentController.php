@@ -11,12 +11,14 @@ use App\Models\FoodEstablishmentOperators;
 use App\Models\PermitApplication;
 use App\Models\Renewals;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use DateTime;
 use Dflydev\DotAccessData\Data;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FoodEstablishmentController extends Controller
 {
@@ -645,5 +647,48 @@ class FoodEstablishmentController extends Controller
 
     public function expiredEstabtablishments($days){
         
+        
+        $now = Carbon::now(); 
+        switch ($days) {
+            case 0:
+                $expiryDays = $now;
+                break;
+            case 30:
+                $expiryDays = $now->copy()->addDays(30);
+                break;
+            case 60:
+                $expiryDays = $now->copy()->addDays(60);
+                break;
+            case 90:
+                $expiryDays = $now->copy()->addDays(90);
+                break;
+            default:
+                $expiryDays = $now; 
+                break;
+        }
+        
+    
+        // Fetch Expired Application
+        try {
+            
+            $food_establishments = EstablishmentApplications::with('payment')
+            ->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
+            ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
+            //->where('sign_offs.sign_off_status',1)
+            ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])
+            ->get();
+
+            //dd($food_establishments);
+
+            return view('establishments.expiredapplications.index',compact('food_establishments','days','now'));
+        } catch (\Throwable $e) {
+            Log::error('Error fetching expiry count: ' . $e->getMessage());
+            $food_establishments = 0;
+        }
+
+        
+        
     }
+
+   
 }

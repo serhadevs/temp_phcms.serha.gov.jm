@@ -26,22 +26,15 @@
                                         <div class="dropdown">
                                             <button class="btn btn-primary dropdown-toggle" type="button"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                                Filter Exam Dates
+                                                Filter Exam Sites
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="/food-establishments/filter/0"></a>
+                                                <li><a href="{{ route('examsites.index') }}" class="dropdown-item">All</a></li>
+                                                <li><a class="dropdown-item" href="{{ route('examdate.filter',['id'=>1]) }}">St Catherine</a></li>
+                                                <li><a class="dropdown-item" href="{{ route('examdate.filter',['id'=>2]) }}">St Thomas</a></li>
+                                                <li><a class="dropdown-item" href="{{ route('examdate.filter',['id'=>3]) }}">Kingston and St Andrew</a></li>
                                                 </li>
-                                                <li><a class="dropdown-item"
-                                                        href="/food-establishments/filter/1">Yesterday</a>
-                                                </li>
-                                                <li><a class="dropdown-item" href="/food-establishments/filter/7">Last
-                                                        Week</a></li>
-                                                <li><a class="dropdown-item" href="/food-establishments/filter/30">Last
-                                                        Month</a>
-                                                </li>
-                                                <li><a class="dropdown-item" href="/food-establishments/filter/90">Last 3
-                                                        month</a>
-                                                </li>
+                                                
                                             </ul>
                                         </div>
                                     </div>

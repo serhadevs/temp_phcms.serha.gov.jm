@@ -16,7 +16,7 @@
             <div class="card">
                 <h4 class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
 
-                    @if (app('url')->previous() === url('/advance-search/show'))
+                    {{-- @if (app('url')->previous() === url('/advance-search/show'))
                         <a href="{{ url('/advance-search/create') }}" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
@@ -29,7 +29,12 @@
                         <a href="{{ url('/permit/filter/0') }}" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
-                    @endif
+                    @endif --}}
+
+                    <a class="btn btn-primary" onclick="history.back()">
+                       Back
+                    </a>
+    
 
                     <span>{{ $permit_application->firstname . ' ' . $permit_application->lastname }}</span>
                 </h4>

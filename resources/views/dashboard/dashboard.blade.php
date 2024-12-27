@@ -117,15 +117,15 @@
                                 </div>
                             @endif
                         </div>
-                        {{-- <div class="card-body py-3">
+                        <div class="card-body py-3">
                             @if (in_array(auth()->user()->role_id, [1, 3, 10]))
-                                <div class="row">
-                                    <!-- Food Permit Applications -->
+                                {{-- <div class="row">
+                                    <!-- Food Establishments that are expiring -->
                                     <div class="col mb-3">
                                         <div class="card text-bg-light h-100">
                                             <div
                                                 class="card-header mb-2 fw-bold d-flex justify-content-between align-items-center">
-                                                <span>Expired Establishments</span>
+                                                <span>Expiring Food Establishments</span>
                                                 <select name="expiry_date" id="expiry_date" class="form-select w-auto"
                                                     style="cursor: pointer;">
                                                     <option value="0">Expiring Today</option>
@@ -151,59 +151,69 @@
                                         </div>
 
 
-                                    </div> --}}
+                                    </div> 
 
-                                    {{-- <!-- Food Establishment Applications -->
-                                    <div class="col-12 col-md-4 mb-3">
-                                        <div class="card text-bg-light h-100">
-                                            <div class="card-header mb-2 fw-bold">
-                                                Food Establishment Applications
-                                            </div>
-                                            <div class="card-body py-4">
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $foodestApplicationCount }}
-                                                    </span>
-                                                    <span class="fw-bold">Since {{ $month }}
-                                                        {{ $year }}</span>
-                                                </div>
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $foodestApplicationCountYTD }}
-                                                    </span>
-                                                    <span class="fw-bold">Year to Date from January to
-                                                        {{ $month }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                  
+                                </div> --}}
 
-                                    <!-- Barber/Cosmetology Applications -->
-                                    <div class="col-12 col-md-4 mb-3">
+                                <div class="row">
+                                    <!-- Food Establishments that are expiring -->
+                                    <div class="col mb-3">
                                         <div class="card text-bg-light h-100">
-                                            <div class="card-header mb-2 fw-bold">
-                                                Barber/Cosmetology
+                                            <div
+                                                class="card-header mb-2 fw-bold d-flex justify-content-between align-items-center">
+                                                <span>Expiring Food Establishments(that have not been renewed)</span>
+                                                {{-- <select name="expiry_date" id="expiry_date" class="form-select w-auto"
+                                                    style="cursor: pointer;">
+                                                    <option value="0">Expiring Today</option>
+                                                    <option value="30">Within 30 Days</option>
+                                                    <option value="60">Within 60 Days</option>
+                                                    <option value="90">Within 90 Days</option>
+                                                </select> --}}
                                             </div>
-                                            <div class="card-body py-4">
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $barbercosmApplicationCount }}
-                                                    </span>
-                                                    <span class="fw-bold">Since {{ $month }}
-                                                        {{ $year }}</span>
-                                                </div>
-                                                <div class="mb-0">
-                                                    <span class="badge text-success me-2">
-                                                        {{ $barbercosmApplicationCountYTD }}
-                                                    </span>
-                                                    <span class="fw-bold">Year to Date from January to
-                                                        {{ $month }}</span>
+
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <ol class="list-group w-100" >
+                                                        
+                                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                          <div class="ms-2 me-auto">
+                                                            <div class="fw-bold">Food Establishments expiring within 30 Days </div>
+                                                            
+                                                          </div>
+                                                          <a href="{{ route('food-establishments.expiry', ['days' => 30]) }}" class="btn btn-primary">View</a>
+
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                          <div class="ms-2 me-auto">
+                                                            <div class="fw-bold">Food Establishments expiring within 60 Days </div>
+                                        
+                                                          </div>
+                                                          <a href="{{ route('food-establishments.expiry', ['days' => 60]) }}" class="btn btn-primary">View</a>
+
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                          <div class="ms-2 me-auto">
+                                                            <div class="fw-bold">Food Establishments expiring within 90 Days </div>
+                                                           
+                                                          </div>
+                                                          <a href="{{ route('food-establishments.expiry', ['days' => 90]) }}" class="btn btn-primary">View</a>
+
+                                                        </li>
+                                                      </ol>
                                                 </div>
                                             </div>
+
+
                                         </div>
-                                    </div> --}}
-                                {{-- </div>
-                            @endif --}}
+
+
+                                    </div> 
+
+                                  
+                                </div>
+
+                            @endif
 
                             @if (in_array(auth()->user()->role_id, [4]))
                                 <div class="row">
@@ -224,6 +234,47 @@
                                 </div>
                             @endif
                         </div>
+                        {{-- <div class="card-body py-3">
+                            @if (in_array(auth()->user()->role_id, [1, 3, 10]))
+                                <div class="row">
+                                    <!-- Food Permit Applications -->
+                                    <div class="col mb-3">
+                                        <div class="card text-bg-light h-100">
+                                            <div
+                                                class="card-header mb-2 fw-bold d-flex justify-content-between align-items-center">
+                                                <span>Expiring Tourist Establishments</span>
+                                                <select name="expiry_date" id="expiry_date" class="form-select w-auto"
+                                                    style="cursor: pointer;">
+                                                    <option value="0">Expiring Today</option>
+                                                    <option value="30">Within 30 Days</option>
+                                                    <option value="60">Within 60 Days</option>
+                                                    <option value="90">Within 90 Days</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="badge text-danger">
+                                                        <h6 class="mb-0" id="expiryCount" style="word-wrap: break-word;">
+                                                        </h6>
+                                                    </span>
+                                                    <span>
+                                                        <a href="" class="btn btn-primary " id="expiryBtn">View</a>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </div> 
+
+                                  
+                                </div>
+                            @endif
+
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -265,17 +316,20 @@
                         console.log('Response:', data);
                         // Update the content of the element with ID 'expiryCount'
                         if ($('#expiryCount').length) {
+                            console.log(data.expiry_count)
                             const expiryCount = data.expiry_count || 0;
                             const expiryMessage = expiryCount === 0 ?
                                 'There are no establishments expiring today.' :
                                 `${expiryCount} Establishments expiring in: ${days} days.`;
                             $('#expiryCount').text(expiryMessage);
                             
-                            $('#expiryBtn').attr('href','/establishments/expiry/'+ days)
+                            $('#expiryBtn').attr('href','/food-establishments/expiry/'+ days)
+                           
 
                         } else {
                             console.warn('Element with ID "expiryCount" not found.');
                         }
+                        
                     },
                     error: function(xhr, status, error) {
                         console.error('AJAX Error:', status, error);
