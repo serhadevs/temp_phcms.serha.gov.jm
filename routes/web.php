@@ -17,6 +17,7 @@ use App\Http\Controllers\FoodEstTestResultController;
 use App\Http\Controllers\FoodHandlersClinicController;
 use App\Http\Controllers\HealthInterviewController;
 use App\Http\Controllers\Messaging;
+use App\Http\Controllers\OnlineApplicationController;
 use App\Http\Controllers\OutstandingCardPrintController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
@@ -30,16 +31,19 @@ use App\Http\Controllers\SwimmingPoolsApplicationController;
 use App\Http\Controllers\SwimmingPoolTestResultController;
 use App\Http\Controllers\SwitchFacilityController;
 use App\Http\Controllers\TestDownloads;
+use App\Http\Controllers\TestNewJobs;
 use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
+
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\printerAuthAttempt;
-use App\Http\Controllers\Messaging;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+
+
 
 
 
