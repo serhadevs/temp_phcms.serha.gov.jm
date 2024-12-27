@@ -49,12 +49,12 @@ class TestDownloads extends Controller
         }
 
         try {
-            $download = Downloads::where('application_type_id', 1)
+            $downloads = Downloads::where('application_type_id', 1)
                 ->whereBetween('created_at', ["2024-04-08 12:00:00", "2024-04-08 23:59:59"])
                 // ->whereBetween('created_at', ['2024-04-08 12:00:00', '2024-04-08 23:59:59'])
-                ->first();
+                ->get();
 
-            // foreach ($downloads as $download) {
+            foreach ($downloads as $download) {
                 $array = [];
                 $rand_string = "";
                 $file_name_separated = explode('-', explode('/', $download->download_url)[2]);
@@ -83,13 +83,15 @@ class TestDownloads extends Controller
                 DB::beginTransaction();
                 foreach ($array as $permit_no) {
                     $permit_id = PermitApplication::where('permit_no', $permit_no)->first()->id;
-                    ZippedApplications::where('application_id', $permit_id)
+                    if ($zip = ZippedApplications::where('application_id', $permit_id)
                         ->where('application_type_id', 1)
                         ->first()
-                        ->update(['written' => 1]);
+                    ) {
+                        $zip->update(['written' => 1]);
+                    }
                 }
                 DB::commit();
-            // }
+            }
             return "success job";
         } catch (Exception $e) {
             DB::rollBack();
