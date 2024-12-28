@@ -40,13 +40,16 @@ class TestDownloads extends Controller
     {
         $start_date = "";
         $end_date = "";
-        if ($request->route('num') == 1) {
-            $start_date = $request->route('date') . " 00:00:00";
-            $end_date = $request->route('date') . " 12:00:00";
-        } else {
-            $start_date = $request->route('date') . " 12:00:00";
-            $end_date = $request->route('date') . " 23:59:59";
-        }
+        // if ($request->route('num') == 1) {
+        //     $start_date = $request->route('date') . " 00:00:00";
+        //     $end_date = $request->route('date') . " 12:00:00";
+        // } else {
+        //     $start_date = $request->route('date') . " 12:00:00";
+        //     $end_date = $request->route('date') . " 23:59:59";
+        // }
+
+        $start_date = "2024-04-17 00:00:00";
+        $end_date = "2024-04-24 23:59:59";
 
         try {
             $downloads = Downloads::where('application_type_id', 1)
