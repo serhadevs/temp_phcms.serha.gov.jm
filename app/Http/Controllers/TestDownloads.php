@@ -48,16 +48,23 @@ class TestDownloads extends Controller
         //     $end_date = $request->route('date') . " 23:59:59";
         // }
 
-        $start_date = $request->route('date') . " 09:26:00";
-        $end_date = $request->route('date') . " 09:30:59";
+        $start_date = $request->route('date') . " 00:00:00";
+        $end_date = $request->route('date') . " 23:59:59";
 
 
 
         try {
-            $downloads = Downloads::where('application_type_id', 1)
-                ->whereBetween('created_at', [$start_date, $end_date])
-                // ->whereBetween('created_at', ['2024-04-08 12:00:00', '2024-04-08 23:59:59'])
-                ->get();
+
+            if ($request->route('num') == 0) {
+                $downloads = Downloads::where('application_type_id', 1)
+                    ->whereBetween('created_at', [$start_date, $end_date])
+                    ->get();
+            } else {
+                $downloads = Downloads::where('application_type_id', 1)
+                    ->where('id', $request->route('num'))
+                    ->get();
+            }
+
 
             foreach ($downloads as $download) {
                 $array = [];
