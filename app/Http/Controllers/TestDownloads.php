@@ -62,8 +62,10 @@ class TestDownloads extends Controller
 
                 // dd($downloads);
             } else {
+                $array = explode(',', $request->route('num'));
+                dd($array);
                 $downloads = Downloads::where('application_type_id', 1)
-                    ->where('id', $request->route('num'))
+                    ->whereIn('id',$array)
                     ->get();
             }
 
