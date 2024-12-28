@@ -48,8 +48,8 @@ class TestDownloads extends Controller
         //     $end_date = $request->route('date') . " 23:59:59";
         // }
 
-        $start_date = "2024-04-17 00:00:00";
-        $end_date = "2024-04-20 23:59:59";
+        $start_date = "2024-04-20 00:00:00";
+        $end_date = "2024-04-24 23:59:59";
 
         try {
             $downloads = Downloads::where('application_type_id', 1)
