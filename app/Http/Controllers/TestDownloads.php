@@ -60,7 +60,7 @@ class TestDownloads extends Controller
                     ->whereBetween('created_at', [$start_date, $end_date])
                     ->get();
 
-                dd($downloads);
+                // dd($downloads);
             } else {
                 $downloads = Downloads::where('application_type_id', 1)
                     ->where('id', $request->route('num'))
