@@ -48,8 +48,8 @@ class TestDownloads extends Controller
         //     $end_date = $request->route('date') . " 23:59:59";
         // }
 
-        $start_date = $request->route('date') . " 00:00:00";
-        $end_date = $request->route('date') . " 09:25:59";
+        $start_date = $request->route('date') . " 09:26:00";
+        $end_date = $request->route('date') . " 09:30:59";
 
 
 
