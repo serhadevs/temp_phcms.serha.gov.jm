@@ -49,7 +49,7 @@ class TestDownloads extends Controller
         // }
 
         $start_date = "2024-04-20 00:00:00";
-        $end_date = "2024-04-24 23:59:59";
+        $end_date = "2024-04-22 23:59:59";
 
         try {
             $downloads = Downloads::where('application_type_id', 1)
