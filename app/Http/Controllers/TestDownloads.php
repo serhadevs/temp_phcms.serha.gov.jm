@@ -39,7 +39,7 @@ class TestDownloads extends Controller
     public function checkDownloads(Request $request)
     {
         $start_date = $request->route('date') . " 00:00:00";
-        $end_date = $request->route('date') . " 23:59:59";
+        $end_date = $request->route('date') . " 10:21:59";
 
         try {
             if ($request->route('num') == 0) {
