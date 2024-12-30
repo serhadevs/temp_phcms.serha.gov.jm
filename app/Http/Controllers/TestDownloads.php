@@ -77,9 +77,9 @@ class TestDownloads extends Controller
                     }
                     fclose($file);
                 }
-                dd(array_chunk($array, ceil(count($array) / 2))[0]);
-                // DB::beginTransaction();
-                foreach ($array as $permit_no) {
+                $array2 = array_chunk($array, ceil(count($array) / 2))[0];
+                DB::beginTransaction();
+                foreach ($array2 as $permit_no) {
                     if ($permit = PermitApplication::where('permit_no', $permit_no)->first()) {
                         $permit_id = $permit->id;
                         if ($zip = ZippedApplications::where('application_id', $permit_id)
@@ -91,7 +91,7 @@ class TestDownloads extends Controller
                         }
                     }
                 }
-                // DB::commit();
+                DB::commit();
             }
             return "success job";
         } catch (Exception $e) {
