@@ -38,37 +38,20 @@ class TestDownloads extends Controller
 
     public function checkDownloads(Request $request)
     {
-        $start_date = "";
-        $end_date = "";
-        // if ($request->route('num') == 1) {
-        //     $start_date = $request->route('date') . " 00:00:00";
-        //     $end_date = $request->route('date') . " 12:00:00";
-        // } else {
-        //     $start_date = $request->route('date') . " 12:00:00";
-        //     $end_date = $request->route('date') . " 23:59:59";
-        // }
-
         $start_date = $request->route('date') . " 00:00:00";
         $end_date = $request->route('date') . " 23:59:59";
 
-
-
         try {
-
             if ($request->route('num') == 0) {
                 $downloads = Downloads::where('application_type_id', 1)
                     ->whereBetween('created_at', [$start_date, $end_date])
                     ->get();
-
-                // dd($downloads);
             } else {
                 $array = explode(',', $request->route('num'));
-                // dd($array);
                 $downloads = Downloads::where('application_type_id', 1)
-                    ->whereIn('id',$array)
+                    ->whereIn('id', $array)
                     ->get();
             }
-
 
             foreach ($downloads as $download) {
                 $array = [];
@@ -86,9 +69,7 @@ class TestDownloads extends Controller
                     ($rand_string != "" ? "_" . $rand_string : '')
                     . '/' . $facility_id . '/' . $facility_id . '-' .
                     $file_date . '-Food_Handler_Permits.txt';
-                // $path = 'app/public/downloads/txts/2024-05-29_8787/KSA/KSA-2024-05-29-Food_Handler_Permits.txt';
                 $i = 0;
-                // $file = fopen(storage_path($path), 'r');
                 if (file_exists(storage_path($path)) && ($file = fopen(storage_path($path), 'r')) !== false) {
                     while ($line = fgets($file)) {
                         $array[$i] =  explode('.', explode("\t", $line)[8])[0];
@@ -98,12 +79,13 @@ class TestDownloads extends Controller
                 }
                 DB::beginTransaction();
                 foreach ($array as $permit_no) {
-                    $permit_id = PermitApplication::where('permit_no', $permit_no)->first()->id;
-                    if ($zip = ZippedApplications::where('application_id', $permit_id)
-                        ->where('application_type_id', 1)
-                        ->first()
-                    ) {
-                        $zip->update(['written' => 1]);
+                    if ($permit_id = PermitApplication::where('permit_no', $permit_no)->first()->id) {
+                        if ($zip = ZippedApplications::where('application_id', $permit_id)
+                            ->where('application_type_id', 1)
+                            ->first()
+                        ) {
+                            $zip->update(['written' => 1]);
+                        }
                     }
                 }
                 DB::commit();
@@ -113,8 +95,6 @@ class TestDownloads extends Controller
             DB::rollBack();
             return $e->getMessage();
         }
-        // CheckPermitZippedJobs::dispatch();
-        // return "success";
     }
 
     public function writeAllFoodEstablishments()
