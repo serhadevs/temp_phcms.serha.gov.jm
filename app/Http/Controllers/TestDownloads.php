@@ -83,6 +83,7 @@ class TestDownloads extends Controller
                         $permit_id = $permit->id;
                         if ($zip = ZippedApplications::where('application_id', $permit_id)
                             ->where('application_type_id', 1)
+                            ->where('written', '<>', 1)
                             ->first()
                         ) {
                             $zip->update(['written' => 1]);
