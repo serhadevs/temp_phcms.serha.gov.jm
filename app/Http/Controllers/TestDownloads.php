@@ -79,7 +79,8 @@ class TestDownloads extends Controller
                 }
                 DB::beginTransaction();
                 foreach ($array as $permit_no) {
-                    if ($permit_id = PermitApplication::where('permit_no', $permit_no)->first()->id) {
+                    if ($permit = PermitApplication::where('permit_no', $permit_no)->first()) {
+                        $permit_id = $permit->id;
                         if ($zip = ZippedApplications::where('application_id', $permit_id)
                             ->where('application_type_id', 1)
                             ->first()
