@@ -45,8 +45,9 @@ class TestDownloads extends Controller
             if ($request->route('num') == 0) {
                 $downloads = Downloads::where('application_type_id', 1)
                     ->whereBetween('created_at', [$start_date, $end_date])
-                    ->where('application_amount', '>', 22)
-                    ->where('application_amount', '<', 38)
+                    // ->where('application_amount', '>', 22)
+                    // ->where('application_amount', '<', 38)
+                    ->where('application_amount', '>', 37)
                     ->get();
             } else {
                 $array = explode(',', $request->route('num'));
