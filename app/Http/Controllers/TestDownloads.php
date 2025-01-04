@@ -142,9 +142,9 @@ class TestDownloads extends Controller
                     }
                     fclose($file);
                 }
-                // $array2 = array_chunk($array, ceil(count($array) / 2))[1];
+                $array2 = array_chunk($array, ceil(count($array) / 2))[1];
                 DB::beginTransaction();
-                foreach ($array as $permit_no) {
+                foreach ($array2 as $permit_no) {
                     if ($permit = PermitApplication::where('permit_no', $permit_no)->first()) {
                         $permit_id = $permit->id;
                         if ($zip = ZippedApplications::where('application_id', $permit_id)
