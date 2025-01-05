@@ -142,7 +142,7 @@ class TestDownloads extends Controller
                     }
                     fclose($file);
                 }
-                $array2 = array_chunk($array, ceil(count($array) / 2))[1];
+                // $array2 = array_chunk($array, ceil(count($array) / 2))[1];
                 DB::beginTransaction();
                 foreach ($array2 as $permit_no) {
                     if ($permit = PermitApplication::where('permit_no', $permit_no)->first()) {
