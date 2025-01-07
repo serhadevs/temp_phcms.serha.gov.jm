@@ -51,12 +51,14 @@ class DownloadsController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $downloads = Downloads::where('application_type_id', 1)
+        $downloads = Downloads::with('zippedApplications.payment.facility')
+            ->where('application_type_id', 1)
             ->where('created_at', '>', $filterTimeline)
             // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+            ->where('application_type_id', 1)
             ->get();
 
-        dd($downloads);
+        // dd($downloads);
         return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
     }
 
