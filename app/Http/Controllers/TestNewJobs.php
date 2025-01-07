@@ -92,7 +92,7 @@ class TestNewJobs extends Controller
             ->doesntHave('zippedApplication')
             ->has('payment')
             ->whereRelation('signOffs', 'created_at', '>', '2024-' . $id . '-15')
-            ->whereRelation('signOffs', 'created_at', '<', '2024-' . ($id + 1) . '15')
+            ->whereRelation('signOffs', 'created_at', '<', '2024-' . ($id + 1) . '-15')
             ->has('testResults')
             ->get();
         
