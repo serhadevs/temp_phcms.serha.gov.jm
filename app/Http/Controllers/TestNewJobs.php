@@ -257,7 +257,7 @@ class TestNewJobs extends Controller
                             'category' => 'Food Handlers Permit',
                             'download_url' => $download_url
                         ]);
-                        
+
                         $zip = new ZipArchive();
 
                         if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
@@ -290,8 +290,9 @@ class TestNewJobs extends Controller
                                     }
                                 }
                             }
+                            $create_download->update(['application_amount' => $counter]);
+                            DB::commit();
 
-                            // dd($content);
                             if ($content != "") {
                                 $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
                             }
