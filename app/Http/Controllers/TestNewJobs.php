@@ -308,22 +308,24 @@ class TestNewJobs extends Controller
                 ->where('written', NULL)
                 ->get();
 
-            foreach ($unzipped_permits as $permit) {
-                $permits_affected[$i] = $permit->application_id;
-                $i++;
-            }
+            // foreach ($unzipped_permits as $permit) {
+            //     $permits_affected[$i] = $permit->application_id;
+            //     $i++;
+            // }
 
-            dd($permits_affected);
+            dd("Kian");
 
-            DB::beginTransaction();
+
+            // DB::beginTransaction();
             foreach ($unzipped_permits as $unzipped_permit) {
                 if (!PermitApplication::where('id', $unzipped_permit->application_id)) {
-                    $unzipped_permit->update(['deleted_at' => NULL]);
+                    // $unzipped_permit->update(['deleted_at' => NULL]);
                     $permits_affected[$i] = $unzipped_permit->application_id;
                     $i++;
                 }
             }
-            DB::rollBack();
+            dd($permits_affected);
+            // DB::commit();
             return $permits_affected;
         } catch (Exception $e) {
             DB::rollBack();
