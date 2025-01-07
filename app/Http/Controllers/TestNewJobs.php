@@ -93,7 +93,7 @@ class TestNewJobs extends Controller
             ->whereRelation('signOffs', 'created_at', '>', '2024-01-01')
             // ->whereIn('id', $permitIds)
             ->has('testResults')
-            ->get();
+            ->count();
 
         dd($permit_applications);
 
