@@ -126,7 +126,6 @@ class TestNewJobs extends Controller
                         'download_url' => $download_url
                     ]);
                     if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
-                        DB::beginTransaction();
                         foreach ($sch_permit as $index) {
                             $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
                             $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
@@ -147,7 +146,7 @@ class TestNewJobs extends Controller
                                     ZippedApplications::create([
                                         'application_type_id' => '1',
                                         'application_id' => $index->id,
-                                        'download_id' => 0
+                                        'download_id' => $create_download->id
                                     ]);
                                     $counter++;
                                 }
@@ -160,13 +159,13 @@ class TestNewJobs extends Controller
                     }
                     $zip->close();
 
-                    if ($content == "") {
-                        //Delete zip file 
-                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                            $zippedApp->update(['deleted_at' => new DateTime()]);
-                        }
-                        $create_download->update(["deleted_at" => new DateTime()]);
-                    }
+                    // if ($content == "") {
+                    //     //Delete zip file 
+                    //     foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                    //         $zippedApp->update(['deleted_at' => new DateTime()]);
+                    //     }
+                    //     $create_download->update(["deleted_at" => new DateTime()]);
+                    // }
                 }
             } else if ($key == 2) {
                 $stt_per_date = $facility_permit->groupBy(function ($facility_permit) {
