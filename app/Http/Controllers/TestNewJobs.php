@@ -286,6 +286,8 @@ class TestNewJobs extends Controller
                                     }
                                 }
                             }
+
+                            dd($content);
                             if ($content != "") {
                                 $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
                             }
