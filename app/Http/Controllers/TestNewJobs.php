@@ -89,9 +89,9 @@ class TestNewJobs extends Controller
             ->where('photo_upload', '<>', NULL)
             ->where('photo_upload', '<>', '0')
             ->has('signOffs')
-            // ->doesntHave('zippedApplication')
+            ->doesntHave('zippedApplication')
+            ->has('payment')
             ->whereRelation('signOffs', 'created_at', '>', '2024-01-01')
-            // ->whereIn('id', $permitIds)
             ->has('testResults')
             ->count();
 
