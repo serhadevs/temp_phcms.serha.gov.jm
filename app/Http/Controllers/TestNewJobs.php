@@ -235,70 +235,74 @@ class TestNewJobs extends Controller
                     }
                 }
             } else if ($key == 3) {
-                $ksa_per_date = $facility_permit->groupBy(function ($facility_permit) {
-                    if ($facility_permit->establishment_clinic_id == NULL) {
-                        return $facility_permit->appointment[0]?->appointment_date;
-                    } else {
-                        return $facility_permit->establishmentClinics?->proposed_date;
-                    }
-                });
+                try {
+                    $ksa_per_date = $facility_permit->groupBy(function ($facility_permit) {
+                        if ($facility_permit->establishment_clinic_id == NULL) {
+                            return $facility_permit->appointment[0]?->appointment_date;
+                        } else {
+                            return $facility_permit->establishmentClinics?->proposed_date;
+                        }
+                    });
 
-                dd($ksa_per_date);
+                    foreach ($ksa_per_date as $key => $ksa_permit) {
+                        $content = "";
+                        $counter = 0;
 
-                foreach ($ksa_per_date as $key => $ksa_permit) {
-                    $content = "";
-                    $counter = 0;
+                        $zip = new ZipArchive();
+                        $download_url = "downloads/archives/" . "KSA-" . $key . "_" . $rand_string . '.zip';
 
-                    $zip = new ZipArchive();
-                    $download_url = "downloads/archives/" . "KSA-" . $key . "_" . $rand_string . '.zip';
+                        $create_download = Downloads::create([
+                            'application_type_id' => 1,
+                            'application_amount' => 0,
+                            'category' => 'Food Handlers Permit',
+                            'download_url' => $download_url
+                        ]);
 
-                    $create_download = Downloads::create([
-                        'application_type_id' => 1,
-                        'application_amount' => 0,
-                        'category' => 'Food Handlers Permit',
-                        'download_url' => $download_url
-                    ]);
-                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
-                        DB::beginTransaction();
-                        foreach ($ksa_permit as $index) {
-                            $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
-                            $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
-                            if ($photo_exists) {
-                                $content = $content . strtoupper(substr($index->permit_no, 0, -2)) . "\t"
-                                    . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
-                                    . "S1" . "\t"
-                                    . "KSAHD" . "\t"
-                                    . strtoupper($index->permitCategory?->name) . "\t"
-                                    . Carbon::parse($key)->format('m/d/Y') . "\t"
-                                    . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
-                                    . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
-                                    . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
-                                    . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
-                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "KSA-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
+                        if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                            dd("Zip opened");
+                            DB::beginTransaction();
+                            foreach ($ksa_permit as $index) {
+                                $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
+                                $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
+                                if ($photo_exists) {
+                                    $content = $content . strtoupper(substr($index->permit_no, 0, -2)) . "\t"
+                                        . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
+                                        . "S1" . "\t"
+                                        . "KSAHD" . "\t"
+                                        . strtoupper($index->permitCategory?->name) . "\t"
+                                        . Carbon::parse($key)->format('m/d/Y') . "\t"
+                                        . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
+                                        . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
+                                        . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
+                                        . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
+                                        . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "KSA-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
 
-                                if (str_contains($content, $index->permit_no)) {
-                                    ZippedApplications::create([
-                                        'application_type_id' => '1',
-                                        'application_id' => $index->id,
-                                        'download_id' => 0
-                                    ]);
-                                    $counter++;
+                                    if (str_contains($content, $index->permit_no)) {
+                                        ZippedApplications::create([
+                                            'application_type_id' => '1',
+                                            'application_id' => $index->id,
+                                            'download_id' => 0
+                                        ]);
+                                        $counter++;
+                                    }
                                 }
                             }
+                            if ($content != "") {
+                                $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
+                            }
                         }
-                        if ($content != "") {
-                            $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
-                        }
-                    }
-                    $zip->close();
+                        $zip->close();
 
-                    if ($content == "") {
-                        //Delete zip file 
-                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                            $zippedApp->update(['deleted_at' => new DateTime()]);
+                        if ($content == "") {
+                            //Delete zip file 
+                            foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                                $zippedApp->update(['deleted_at' => new DateTime()]);
+                            }
+                            $create_download->update(["deleted_at" => new DateTime()]);
                         }
-                        $create_download->update(["deleted_at" => new DateTime()]);
                     }
+                } catch (Exception $e) {
+                    return $e->getMessage();
                 }
             }
         }
