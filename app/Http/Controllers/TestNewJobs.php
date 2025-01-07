@@ -306,10 +306,14 @@ class TestNewJobs extends Controller
                 ->where('created_at', '>', '2024-01-15')
                 ->where('created_at', '<', '2024-12-23 23:59:59')
                 ->where('written', NULL)
-                ->get('id');
+                ->get();
 
-            dd($unzipped_permits);
-            // foreach($u)
+            foreach ($unzipped_permits as $permit) {
+                $permits_affected[$i] = $permit->application_id;
+                $i++;
+            }
+
+            dd($permits_affected);
 
             DB::beginTransaction();
             foreach ($unzipped_permits as $unzipped_permit) {
