@@ -244,11 +244,11 @@ class TestNewJobs extends Controller
                         }
                     });
 
+                    dd($ksa_per_date);
                     foreach ($ksa_per_date as $key => $ksa_permit) {
                         $content = "";
                         $counter = 0;
 
-                        $zip = new ZipArchive();
                         $download_url = "downloads/archives/" . "KSA-" . $key . "_" . $rand_string . '.zip';
 
                         $create_download = Downloads::create([
@@ -257,6 +257,8 @@ class TestNewJobs extends Controller
                             'category' => 'Food Handlers Permit',
                             'download_url' => $download_url
                         ]);
+                        
+                        $zip = new ZipArchive();
 
                         if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
                             DB::beginTransaction();
@@ -264,6 +266,8 @@ class TestNewJobs extends Controller
                                 $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
                                 $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
                                 if ($photo_exists) {
+                                    $file = glob(storage_path('app/public/' . $index->photo_upload));
+                                    $zip->addFile($file[0], basename($file[0]));
                                     $content = $content . strtoupper(substr($index->permit_no, 0, -2)) . "\t"
                                         . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
                                         . "S1" . "\t"
