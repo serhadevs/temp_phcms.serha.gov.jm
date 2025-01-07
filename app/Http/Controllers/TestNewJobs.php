@@ -100,7 +100,7 @@ class TestNewJobs extends Controller
 
         $rand_string = explode('.', time() / rand(10000, 99999))[0];
 
-        dd($grouped_by_facility);
+        // dd($grouped_by_facility);
 
         foreach ($grouped_by_facility as $key => $facility_permit) {
             if ($key == 1) {
