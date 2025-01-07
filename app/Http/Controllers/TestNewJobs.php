@@ -82,7 +82,7 @@ class TestNewJobs extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function permitJob()
+    public function permitJob($id)
     {
         //Get all permit applications
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs', 'zippedApplication')
@@ -91,11 +91,10 @@ class TestNewJobs extends Controller
             ->has('signOffs')
             ->doesntHave('zippedApplication')
             ->has('payment')
-            ->whereRelation('signOffs', 'created_at', '>', '2024-01-01')
+            ->whereRelation('signOffs', 'created_at', '>', '2024-' . $id . '-15')
+            ->whereRelation('signOffs', 'created_at', '<', '2024-' . ($id + 1) . '15')
             ->has('testResults')
-            ->count();
-
-        dd($permit_applications);
+            ->get();
 
         //group by facility
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
