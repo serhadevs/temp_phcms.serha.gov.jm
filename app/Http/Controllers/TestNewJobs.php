@@ -153,7 +153,7 @@ class TestNewJobs extends Controller
                                         ZippedApplications::create([
                                             'application_type_id' => '1',
                                             'application_id' => $index->id,
-                                            'download_id' => 0
+                                            'download_id' => $create_download->id
                                         ]);
                                         $counter++;
                                     }
