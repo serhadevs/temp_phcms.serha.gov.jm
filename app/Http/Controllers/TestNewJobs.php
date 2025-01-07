@@ -451,7 +451,7 @@ class TestNewJobs extends Controller
                         'category' => 'Food Handlers Permit',
                         'download_url' => $download_url
                     ]);
-                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                    if ($zip->open(storage_path('app/public/downloads/archives/' . "KSA-" . $key . "_" . $rand_string . '.zip'), ZipArchive::CREATE)) {
                         DB::beginTransaction();
                         foreach ($ksa_permit as $index) {
                             $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
