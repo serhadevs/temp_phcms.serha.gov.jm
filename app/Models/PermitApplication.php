@@ -78,7 +78,7 @@ class PermitApplication extends Model
 
     public function establishmentClinics(): BelongsTo
     {
-        return $this->belongsTo(EstablishmentClinics::class, 'establishment_clinic_id', 'id');
+        return $this->belongsTo(EstablishmentClinics::class, 'establishment_clinic_id', 'id')->withTrashed();
     }
 
     public function healthInterviews(): HasOne
