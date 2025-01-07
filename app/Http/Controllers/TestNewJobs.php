@@ -96,7 +96,7 @@ class TestNewJobs extends Controller
             ->has('testResults')
             ->count();
 
-        dd($permit_applications);
+        // dd($permit_applications);
 
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
 
