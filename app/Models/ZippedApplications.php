@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ZippedApplications extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'zipped_applications';
 
@@ -23,7 +24,8 @@ class ZippedApplications extends Model
         'download_id',
         'created_at',
         'updated_at',
-        'written'
+        'written',
+        'deleted_at'
     ];
 
     public $timestamps = true;

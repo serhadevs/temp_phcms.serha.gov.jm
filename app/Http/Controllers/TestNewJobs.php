@@ -292,16 +292,59 @@ class TestNewJobs extends Controller
                 }
             }
         }
+    }
 
+    //Neded for setting the record clean
+    public function clearAllNonExistentFoodHandlers()
+    {
+        try {
+            $permits_affected = [];
+            $i = 0;
+            $unzipped_permits = ZippedApplications::where('application_type_id', 1)
+                ->where('created_at', '>', '2024-01-15')
+                ->where('created_at', '<', '2024-12-23 23:59:59')
+                ->where('written', NULL)
+                ->get();
 
+            dd($permits_affected);
 
+            DB::beginTransaction();
+            foreach ($unzipped_permits as $unzipped_permit) {
+                if (!PermitApplication::where('id', $unzipped_permit->application_id)) {
+                    $unzipped_permit->update(['deleted_at' => NULL]);
+                    $permits_affected[$i] = $unzipped_permit->application_id;
+                    $i++;
+                }
+            }
+            DB::rollBack();
+            return $permits_affected;
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
 
+    //Check if any of the unzipped records were actually non-existent
 
+    //Delete all unzipped records
+    public function deleteAllUnzippedPermits()
+    {
+        try {
+            $unzipped_permits = ZippedApplications::where('application_type_id', 1)
+                ->where('created_at', '>', '2024-01-15')
+                ->where('created_at', '<', '2024-12-23 23:59:59')
+                ->where('written', NULL)
+                ->get();
 
-
-        //group by date
-
-        //go through each date 
+            DB::beginTransaction();
+            foreach ($unzipped_permits as $unzipped_permit) {
+                $unzipped_permit->update(['deleted_at' => new DateTime()]);
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 
     /**

@@ -267,7 +267,8 @@
             <div class="row mt-3">
                 <div class="col">
                     <label for="" class="form-label">Hands Condition</label>
-                    <label for="" class="form-control">{{ strtoupper($application->hands_condition) }}</label>
+                    <label for=""
+                        class="form-control">{{ strtoupper($application->hands_condition) }}</label>
                 </div>
                 <div class="col">
                     <label for="" class="form-label">Fingernails Condition</label>
@@ -389,11 +390,10 @@
                         },
                         _token: "{{ csrf_token() }}"
                     }).then(function(data) {
-                        console.log(data);
-                        if (data == "success") {
+                        if (data[0] == "success") {
                             swal.fire(
                                 "Done!",
-                                "Application(s) were successfully approved and will shortly be forwarded for printing.",
+                                data[1],
                                 "success").then(esc => {
                                 if (esc) {
                                     location.reload();
@@ -402,7 +402,7 @@
                         } else {
                             swal.fire(
                                 "Oops! Something went wrong.",
-                                "Application(s) were NOT approved",
+                                data,
                                 "error");
                         }
                     })

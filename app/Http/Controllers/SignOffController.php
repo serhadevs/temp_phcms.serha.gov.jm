@@ -23,6 +23,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 class SignOffController extends Controller
@@ -133,63 +134,107 @@ class SignOffController extends Controller
 
     public function approve(Request $request)
     {
-        $app_type_id = $request->data["appTypeId"];
-        DB::beginTransaction();
+        // $app_type_id = 
+        // $request->data["appTypeId"];
+        $counter = 0;
         try {
+            DB::beginTransaction();
             foreach ($request->data["selected_items"] as $item) {
-                if ($app_type_id == "1") {
-                    $application = PermitApplication::with('healthInterviews')->find($item);
-                } elseif ($app_type_id == "2") {
-                    $application = HealthCertApplications::find($item);
-                } elseif ($app_type_id == "3") {
+                if ($request->data["appTypeId"] == "1") {
+                    $application = PermitApplication::with('healthInterviews')
+                        ->has('healthInterviews')
+                        ->find($item);
+                } elseif ($request->data["appTypeId"] == "2") {
+                    $application = HealthCertApplications::with('healthInterviews')
+                        ->has('healthInterviews')
+                        ->find($item);
+                } elseif ($request->data["appTypeId"] == "3") {
                     $application = EstablishmentApplications::find($item);
-                } elseif ($app_type_id == "5") {
+                } elseif ($request->data["appTypeId"] == "5") {
                     $application = SwimmingPoolsApplications::find($item);
-                } else if ($app_type_id == "6") {
+                } else if ($request->data["appTypeId"] == "6") {
                     $application = TouristEstablishments::find($item);
                 }
-                $exam_date = TestResult::where('application_id', '=', $item)->where('application_type_id', '=', $app_type_id)->first();
-                if ($app_type_id == "1" || $app_type_id == "2") {
-                    if ($app_type_id == 1) {
-                        $health_interview = HealthInterview::where("permit_application_id", $item)->first();
-                    } else {
-                        $health_interview = HealthInterview::where("health_cert_application_id", $item)->first();
-                    }
-                    if ($health_interview) {
-                        HealthInterview::find($health_interview->id)->update(['sign_off_status' => TRUE]);
-                    } else {
-                        throw new Exception("No health interview has been entered");
-                    }
-                }
 
-                $application->update(['sign_off_status' => TRUE]);
+                if ($application) {
+                    $exam_date = TestResult::where('application_id', $item)
+                        ->where('application_type_id', $request->data["appTypeId"])
+                        ->first();
 
-                $sign_off_exists = SignOff::where('application_id', $item)->where('application_type_id', $app_type_id)->first();
-
-                if (!$sign_off_exists) {
-                    $sign_off = [];
-                    $sign_off["is_granted"] = TRUE;
-                    $sign_off["permit_no"] = $application->permit_no;
-                    $sign_off["sign_off_date"] = date("Y/m/d");
-                    $sign_off["user_id"] = Auth()->user()->id;
-                    $sign_off["application_type_id"] = $app_type_id;
-                    $sign_off["application_id"] = $item;
-
-                    if ($application->permit_type == "student") {
-                        $sign_off["expiry_date"] = date_format(date_modify(new DateTime($exam_date->test_date), "+{$application->no_of_years} years"), "Y-m-d");
-                    } else {
-                        $sign_off["expiry_date"] = date_format(date_modify(new DateTime($exam_date->test_date), "+1 years"), "Y-m-d");
+                    if ($request->data["appTypeId"] == "1" || $request->data["appTypeId"] == "2") {
+                        $application->healthInterviews->update(['sign_off_status' => TRUE]);
                     }
 
-                    SignOff::create($sign_off);
+                    // if ($app_type_id == "1" || $app_type_id == "2") {
+                    //     if ($app_type_id == 1) {
+                    //         $health_interview = HealthInterview::where("permit_application_id", $item)->first();
+                    //     } else {
+                    //         $health_interview = HealthInterview::where("health_cert_application_id", $item)->first();
+                    //     }
+                    //     if ($health_interview) {
+                    //         HealthInterview::find($health_interview->id)->update(['sign_off_status' => TRUE]);
+                    //     } else {
+                    //         throw new Exception("No health interview has been entered for Application No:" . $item);
+                    //     }
+                    // }
 
-                    
+                    $application->update(['sign_off_status' => TRUE]);
+
+                    // $sign_off_exists = SignOff::where('application_id', $item)->where('application_type_id', $app_type_id)->first();
+
+                    if (!SignOff::where('application_id', $item)->where('application_type_id', $request->data["appTypeId"])->first()) {
+                        $expiry_date = "";
+                        // $sign_off = [];
+                        // $sign_off["is_granted"] = TRUE;
+                        // $sign_off["permit_no"] = $application->permit_no;
+                        // $sign_off["sign_off_date"] = date("Y/m/d");
+                        // $sign_off["user_id"] = Auth()->user()->id;
+                        // $sign_off["application_type_id"] = $app_type_id;
+                        // $sign_off["application_id"] = $item;
+
+                        if ($request->data["appTypeId"] == 1) {
+                            if ($application->permit_type == "student") {
+                                $expiry_date = date_format(date_modify(new DateTime($exam_date->test_date), "+{$application->no_of_years} years"), "Y-m-d");
+                            } else {
+                                $expiry_date = date_format(date_modify(new DateTime($exam_date->test_date), "+1 years"), "Y-m-d");
+                            }
+                        } else {
+                            $expiry_date = date_format(date_modify(new DateTime($exam_date->test_date), "+1 years"), "Y-m-d");
+                        }
+
+                        SignOff::create([
+                            'is_granted' => TRUE,
+                            'permit_no' => $application->permit_no,
+                            'sign_off_date' => date("Y/m/d"),
+                            'user_id' => Auth()->user()->id,
+                            'application_type_id' => $request->data["appTypeId"],
+                            'application_id' => $item,
+                            'expiry_date' => $expiry_date
+                        ]);
+                    }
+                    $counter++;
                 }
             }
             DB::commit();
-            return "success";
+            if ($request->data["appTypeId"] == 1) {
+                if ($this->permitJob($request->data["selected_items"])) {
+                    //Return success and message with the number of signed off applications
+                    return [
+                        "success",
+                        $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
+                    ];
+                } else {
+                    throw new Exception("Error zipping files");
+                }
+            } else {
+                return [
+                    "success",
+                    $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
+                ];
+            }
         } catch (Exception $e) {
             DB::rollBack();
+            //Return error message to view
             return $e->getMessage();
         }
     }
@@ -310,6 +355,226 @@ class SignOffController extends Controller
             DB::rollBack();
             return $e->getMessage();
         }
+    }
+
+    public function permitJob($permitIds)
+    {
+        //Get all permit applications
+        $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs', 'zippedApplication')
+            ->where('photo_upload', '<>', NULL)
+            ->where('photo_upload', '<>', '0')
+            ->has('signOffs')
+            ->doesntHave('zippedApplication')
+            ->whereIn('id', $permitIds)
+            ->has('testResults')
+            ->get();
+
+        //group by facility
+        $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
+
+        $rand_string = explode('.', time() / rand(10000, 99999))[0];
+
+        //go through each group
+        foreach ($grouped_by_facility as $key => $facility_permit) {
+            //Key = facility_id
+            if ($key == 1) {
+                $sch_per_date = $facility_permit->groupBy(function ($facility_permit) {
+                    if ($facility_permit->establishment_clinic_id == NULL) {
+                        return $facility_permit->appointment[0]?->appointment_date;
+                    } else {
+                        return $facility_permit->establishmentClinics?->proposed_date;
+                    }
+                });
+
+                foreach ($sch_per_date as $key => $sch_permit) {
+                    $content = "";
+                    $counter = 0;
+
+                    $zip = new ZipArchive();
+                    $download_url = "downloads/archives/" . "STC-" . $key . "_" . $rand_string . '.zip';
+
+                    $create_download = Downloads::create([
+                        'application_type_id' => 1,
+                        'application_amount' => 0,
+                        'category' => 'Food Handlers Permit',
+                        'download_url' => $download_url
+                    ]);
+                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                        DB::beginTransaction();
+                        foreach ($sch_permit as $index) {
+                            $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
+                            $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
+                            if ($photo_exists) {
+                                $content = $content . strtoupper(substr($index->permit_no, 0, -2)) . "\t"
+                                    . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
+                                    . "S1" . "\t"
+                                    . "SCHD" . "\t"
+                                    . strtoupper($index->permitCategory?->name) . "\t"
+                                    . Carbon::parse($key)->format('m/d/Y') . "\t"
+                                    . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
+                                    . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
+                                    . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
+                                    . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
+                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "STC-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
+
+                                if (str_contains($content, $index->permit_no)) {
+                                    ZippedApplications::create([
+                                        'application_type_id' => '1',
+                                        'application_id' => $index->id,
+                                        'download_id' => 0
+                                    ]);
+                                    $counter++;
+                                }
+                            }
+                        }
+                        if ($content != "") {
+                            $zip->addFromString("STC" . "-" . $key . "-Food_Handler_Permits.txt", $content);
+                        }
+                        DB::commit();
+                    }
+                    $zip->close();
+
+                    if ($content == "") {
+                        //Delete zip file 
+                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                            $zippedApp->update(['deleted_at' => new DateTime()]);
+                        }
+                        $create_download->update(["deleted_at" => new DateTime()]);
+                    }
+                }
+            } else if ($key == 2) {
+                $stt_per_date = $facility_permit->groupBy(function ($facility_permit) {
+                    if ($facility_permit->establishment_clinic_id == NULL) {
+                        return $facility_permit->appointment[0]?->appointment_date;
+                    } else {
+                        return $facility_permit->establishmentClinics?->proposed_date;
+                    }
+                });
+
+                foreach ($stt_per_date as $key => $stt_permit) {
+                    $content = "";
+                    $counter = 0;
+
+                    $zip = new ZipArchive();
+                    $download_url = "downloads/archives/" . "STT-" . $key . "_" . $rand_string . ".zip";
+
+                    $create_download = Downloads::create([
+                        'application_type_id' => 1,
+                        'application_amount' => 0,
+                        'category' => 'Food Handlers Permit',
+                        'download_url' => $download_url
+                    ]);
+
+                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                        DB::beginTransaction();
+                        foreach ($stt_permit as $index) {
+                            $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
+                            $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
+                            if ($photo_exists) {
+                                $content = $content . strtoupper(substr($index->permit_no, 0, -2)) . "\t"
+                                    . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
+                                    . "S1" . "\t"
+                                    . "STHD" . "\t"
+                                    . strtoupper($index->permitCategory?->name) . "\t"
+                                    . Carbon::parse($key)->format('m/d/Y') . "\t"
+                                    . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
+                                    . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
+                                    . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
+                                    . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
+                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "STT-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
+
+                                if (str_contains($content, $index->permit_no)) {
+                                    ZippedApplications::create([
+                                        'application_type_id' => '1',
+                                        'application_id' => $index->id,
+                                        'download_id' => 0
+                                    ]);
+                                    $counter++;
+                                }
+                            }
+                        }
+                        if ($content != "") {
+                            $zip->addFromString("STT" . "-" . $key . "-Food_Handler_Permits.txt", $content);
+                        }
+                        DB::commit();
+                    }
+                    $zip->close();
+
+                    if ($content == "") {
+                        //Delete zip file 
+                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                            $zippedApp->update(['deleted_at' => new DateTime()]);
+                        }
+                        $create_download->update(["deleted_at" => new DateTime()]);
+                    }
+                }
+            } else if ($key == 3) {
+                $ksa_per_date = $facility_permit->groupBy(function ($facility_permit) {
+                    if ($facility_permit->establishment_clinic_id == NULL) {
+                        return $facility_permit->appointment[0]?->appointment_date;
+                    } else {
+                        return $facility_permit->establishmentClinics?->proposed_date;
+                    }
+                });
+
+                foreach ($ksa_per_date as $key => $ksa_permit) {
+                    $content = "";
+                    $counter = 0;
+
+                    $zip = new ZipArchive();
+                    $download_url = "downloads/archives/" . "KSA-" . $key . "_" . $rand_string . '.zip';
+
+                    $create_download = Downloads::create([
+                        'application_type_id' => 1,
+                        'application_amount' => 0,
+                        'category' => 'Food Handlers Permit',
+                        'download_url' => $download_url
+                    ]);
+                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                        DB::beginTransaction();
+                        foreach ($ksa_permit as $index) {
+                            $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
+                            $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
+                            if ($photo_exists) {
+                                $content = $content . strtoupper(substr($index->permit_no, 0, -2)) . "\t"
+                                    . strtoupper($index->lastname . "\t" . strtoupper($index->firstname)) . "\t"
+                                    . "S1" . "\t"
+                                    . "KSAHD" . "\t"
+                                    . strtoupper($index->permitCategory?->name) . "\t"
+                                    . Carbon::parse($key)->format('m/d/Y') . "\t"
+                                    . Carbon::parse($index->signOffs?->expiry_date)->format('m/d/Y')
+                                    . "\t" . strtoupper($index->permit_no) . '.' . $ext . "\t"
+                                    . "DR. " . strtoupper($index->signOffs?->user?->firstname) . " "
+                                    . strtoupper($index->signOffs?->user?->lastname) . ".wmf"
+                                    . ($index->permitCategory?->name == "Tourist Establishments Foodhandlers" ? "\t" . $index->permit_type . "TRUE\t" : "\t" . strtoupper($index->permit_type) . "\t") . "KSA-" . explode('-', $index->signOffs?->sign_off_date)[0] . "-" . "\r\n";
+
+                                if (str_contains($content, $index->permit_no)) {
+                                    ZippedApplications::create([
+                                        'application_type_id' => '1',
+                                        'application_id' => $index->id,
+                                        'download_id' => 0
+                                    ]);
+                                    $counter++;
+                                }
+                            }
+                        }
+                        if ($content != "") {
+                            $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
+                        }
+                    }
+                    $zip->close();
+
+                    if ($content == "") {
+                        //Delete zip file 
+                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                            $zippedApp->update(['deleted_at' => new DateTime()]);
+                        }
+                        $create_download->update(["deleted_at" => new DateTime()]);
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public function printClinicPermits($clinic_id)
