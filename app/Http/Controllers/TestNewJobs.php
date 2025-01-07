@@ -301,14 +301,21 @@ class TestNewJobs extends Controller
             $permits_affected = [];
             $i = 0;
             $unzipped_permits = ZippedApplications::where('application_type_id', 1)
-                ->with('permitApplication')
-                ->has('permitApplication')
+                // ->with('permitApplication')
+                // ->has('permitApplication')
                 // ->doesntHave('permitApplication')
                 ->where('created_at', '>', '2024-01-15')
                 ->where('created_at', '<', '2024-12-23 23:59:59')
                 ->where('written', NULL)
                 ->get();
-            dd($unzipped_permits);
+            // dd($unzipped_permits);
+
+            foreach($unzipped_permit as $permit){
+                $permits_affected[$i] = $permit->application_id;
+                $i++;
+            }
+
+            dd($permits_affected);
 
             foreach ($unzipped_permits as $unzipped_permit) {
                 if (!PermitApplication::where('id', $unzipped_permit->application_id)) {
