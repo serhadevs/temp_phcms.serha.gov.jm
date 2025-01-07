@@ -329,7 +329,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/food-establishments/operators/create', [FoodEstablishmentController::class, 'createOperator'])->name('food-establishments.operators.add');
   Route::get('/food-establishments/edit/{id}', [FoodEstablishmentController::class, 'getEdit']);
 
-  Route::get('/food-establishments/expiry/{days}',[FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('food-establishments.expiry');
+  Route::get('/food-establishments/expiry/{days}', [FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('food-establishments.expiry');
 
   //Test Exports
   Route::middleware(['checkRole:1'])->group(function () {
@@ -343,6 +343,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/fix/establishment-clinics/{clinic_id}', [PaymentController::class, 'applyClinicPermitPayment']);
     Route::get('/check/downloads/{date}/{num}', [TestDownloads::class, 'checkDownloads']);
     Route::get('/check/downloads/{date}/{num_1}/{num_2}', [TestDownloads::class, 'customCheckDownloads']);
+    Route::get('/permits/non-existent', [TestNewJobs::class, 'clearAllNonExistentFoodHandlers']);
+    Route::get('/delete/unzipped/permits', [TestNewJobs::class, 'deleteAllUnzippedPermits']);
   });
 
 
@@ -445,7 +447,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   });
 
   Route::resource('outstandingcardtxt', OutstandingCardPrintController::class);
-  Route::get('zipped/{clinic_id}', [SignOffController::class,'printClinicPermits'])->name('zipped');
+  Route::get('zipped/{clinic_id}', [SignOffController::class, 'printClinicPermits'])->name('zipped');
 
   //Logout Routes
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
