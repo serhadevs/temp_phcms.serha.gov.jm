@@ -301,12 +301,14 @@ class TestNewJobs extends Controller
             $permits_affected = [];
             $i = 0;
             $unzipped_permits = ZippedApplications::where('application_type_id', 1)
+                ->with('permitApplication')
+                ->doesntHave('permitApplication')
                 ->where('created_at', '>', '2024-01-15')
                 ->where('created_at', '<', '2024-12-23 23:59:59')
                 ->where('written', NULL)
                 ->get();
 
-            dd($permits_affected);
+            dd($unzipped_permits);
 
             DB::beginTransaction();
             foreach ($unzipped_permits as $unzipped_permit) {
