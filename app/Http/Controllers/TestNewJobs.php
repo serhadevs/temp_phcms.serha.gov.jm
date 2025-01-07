@@ -82,7 +82,7 @@ class TestNewJobs extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function permitJob($id)
+    public function permitJob($id, $id2)
     {
         //Get all permit applications
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs', 'zippedApplication')
@@ -92,11 +92,11 @@ class TestNewJobs extends Controller
             ->doesntHave('zippedApplication')
             ->has('payment')
             ->whereRelation('signOffs', 'created_at', '>', '2024-' . $id . '-15')
-            ->whereRelation('signOffs', 'created_at', '<', '2024-' . ($id + 1) . '-15')
+            ->whereRelation('signOffs', 'created_at', '<', '2024-' . $id2 . '-15')
             ->has('testResults')
             ->get();
         
-            // dd($permit_applications);
+            dd($permit_applications);
 
         //group by facility
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
@@ -451,7 +451,7 @@ class TestNewJobs extends Controller
                         'category' => 'Food Handlers Permit',
                         'download_url' => $download_url
                     ]);
-                    if ($zip->open(storage_path('app/public/downloads/archives/' . "KSA-" . $key . "_" . $rand_string . '.zip'), ZipArchive::CREATE)) {
+                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
                         DB::beginTransaction();
                         foreach ($ksa_permit as $index) {
                             $ext = pathinfo(storage_path() . $index->photo_upload, PATHINFO_EXTENSION);
@@ -482,9 +482,9 @@ class TestNewJobs extends Controller
                         if ($content != "") {
                             $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
                         }
-                       $zip->close(); 
                     }
-                    
+                    $zip->close();
+
                     if ($content == "") {
                         //Delete zip file 
                         foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
