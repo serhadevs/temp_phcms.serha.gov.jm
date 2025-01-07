@@ -95,6 +95,8 @@ class TestNewJobs extends Controller
             ->whereRelation('signOffs', 'created_at', '<', '2024-' . ($id + 1) . '15')
             ->has('testResults')
             ->get();
+        
+            dd($permit_applications);
 
         //group by facility
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
