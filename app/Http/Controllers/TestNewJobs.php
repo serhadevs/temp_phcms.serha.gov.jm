@@ -244,7 +244,7 @@ class TestNewJobs extends Controller
                         }
                     });
 
-                    dd($ksa_per_date);
+                    // dd($ksa_per_date);
                     foreach ($ksa_per_date as $key => $ksa_permit) {
                         $content = "";
                         $counter = 0;
@@ -291,7 +291,7 @@ class TestNewJobs extends Controller
                                 }
                             }
 
-                            dd($content);
+                            // dd($content);
                             if ($content != "") {
                                 $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
                             }
