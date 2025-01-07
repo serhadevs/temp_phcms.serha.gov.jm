@@ -310,7 +310,7 @@ class TestNewJobs extends Controller
                 ->get();
             // dd($unzipped_permits);
 
-            foreach($unzipped_permit as $permit){
+            foreach($unzipped_permits as $permit){
                 $permits_affected[$i] = $permit->application_id;
                 $i++;
             }
