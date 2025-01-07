@@ -217,15 +217,15 @@ class SignOffController extends Controller
             }
             DB::commit();
             if ($request->data["appTypeId"] == 1) {
-                if ($this->permitJob($request->data["selected_items"])) {
-                    //Return success and message with the number of signed off applications
-                    return [
-                        "success",
-                        $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
-                    ];
-                } else {
-                    throw new Exception("Error zipping files");
-                }
+                // if ($this->permitJob($request->data["selected_items"])) {
+                //Return success and message with the number of signed off applications
+                return [
+                    "success",
+                    $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
+                ];
+                // } else {
+                //     throw new Exception("Error zipping files");
+                // }
             } else {
                 return [
                     "success",
