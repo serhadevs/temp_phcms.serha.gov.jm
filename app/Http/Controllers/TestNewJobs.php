@@ -95,8 +95,8 @@ class TestNewJobs extends Controller
             ->whereRelation('signOffs', 'created_at', '<', '2024-11-31')
             ->has('testResults')
             ->get();
-        
-            // dd($permit_applications);
+
+        // dd($permit_applications);
 
         //group by facility
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
@@ -426,7 +426,7 @@ class TestNewJobs extends Controller
                         foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
                             $zippedApp->update(['deleted_at' => new DateTime()]);
                         }
-                        $create_download->update(["deleted_at" => new DateTime()]);
+                        $create_download->update(["deleted_at" => '2025-01-07 12:00:00']);
                     }
                 }
             } else if ($key == 3) {
