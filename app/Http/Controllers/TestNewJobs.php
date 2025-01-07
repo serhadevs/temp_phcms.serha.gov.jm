@@ -91,18 +91,13 @@ class TestNewJobs extends Controller
             ->has('signOffs')
             ->doesntHave('zippedApplication')
             ->has('payment')
-            ->whereRelation('signOffs', 'created_at', '>', '2024-01-15')
-            ->whereRelation('signOffs', 'created_at', '<', '2024-12-23')
+            ->whereRelation('signOffs', 'created_at', '>', '2024-12-23 00:00:00')
             ->has('testResults')
             ->get();
-
-        // dd($permit_applications);
 
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
 
         $rand_string = explode('.', time() / rand(10000, 99999))[0];
-
-        // dd($grouped_by_facility);
 
         foreach ($grouped_by_facility as $key => $facility_permit) {
             if ($key == 1) {

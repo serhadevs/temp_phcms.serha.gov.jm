@@ -372,8 +372,7 @@ class SignOffController extends Controller
         $grouped_by_facility = $permit_applications->groupBy('user.facility_id');
 
         $rand_string = explode('.', time() / rand(10000, 99999))[0];
-
-
+        
         foreach ($grouped_by_facility as $key => $facility_permit) {
             if ($key == 1) {
                 try {
@@ -423,7 +422,7 @@ class SignOffController extends Controller
                                         ZippedApplications::create([
                                             'application_type_id' => '1',
                                             'application_id' => $index->id,
-                                            'download_id' => 0
+                                            'download_id' => $create_download->id
                                         ]);
                                         $counter++;
                                     }
