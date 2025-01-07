@@ -157,6 +157,7 @@ class TestNewJobs extends Controller
                                     }
                                 }
                             }
+                            $create_download->update(['application_amount' => $counter]);
                             DB::commit();
 
                             if ($content != "") {
@@ -167,9 +168,9 @@ class TestNewJobs extends Controller
 
                         if (empty($content)) {
                             foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                                $zippedApp->update(['deleted_at' => new DateTime()]);
+                                $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                             }
-                            $create_download->update(["deleted_at" => new DateTime()]);
+                            $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                         }
                     }
                 } catch (Exception $e) {
@@ -229,6 +230,7 @@ class TestNewJobs extends Controller
                                     }
                                 }
                             }
+                            $create_download->update(['application_amount' => $counter]);
                             DB::commit();
                             if ($content != "") {
                                 $zip->addFromString("STT" . "-" . $key . "-Food_Handler_Permits.txt", $content);
@@ -238,9 +240,9 @@ class TestNewJobs extends Controller
 
                         if (empty($content)) {
                             foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                                $zippedApp->update(['deleted_at' => new DateTime()]);
+                                $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                             }
-                            $create_download->update(["deleted_at" => new DateTime()]);
+                            $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                         }
                     }
                 } catch (Exception $e) {
@@ -312,9 +314,9 @@ class TestNewJobs extends Controller
 
                         if (empty($content)) {
                             foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                                $zippedApp->update(['deleted_at' => new DateTime()]);
+                                $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                             }
-                            $create_download->update(["deleted_at" => new DateTime()]);
+                            $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                         }
                     }
                 } catch (Exception $e) {
