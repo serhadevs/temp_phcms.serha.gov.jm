@@ -482,9 +482,9 @@ class TestNewJobs extends Controller
                         if ($content != "") {
                             $zip->addFromString("KSA" . "-" . $key . "-Food_Handler_Permits.txt", $content);
                         }
+                       $zip->close(); 
                     }
-                    $zip->close();
-
+                    
                     if ($content == "") {
                         //Delete zip file 
                         foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
