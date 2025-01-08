@@ -47,12 +47,6 @@ class TestDownloads extends Controller
                 ->whereBetween('created_at', [$start_date, $end_date])
                 ->whereBetween('application_amount', [$request->route('num_1'), $request->route('num_2')])
                 ->get();
-            // } else {
-            //     $array = explode(',', $request->route('num'));
-            //     $downloads = Downloads::where('application_type_id', 1)
-            //         ->whereIn('id', $array)
-            //         ->get();
-            // }
 
             foreach ($downloads as $download) {
                 $array = [];
@@ -162,6 +156,49 @@ class TestDownloads extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return $e->getMessage();
+        }
+    }
+
+    public function checkFoodEstDownloads($id, $id2)
+    {
+        $downloads = Downloads::whereBetween('created_at', ['2024-' . $id . '-15', '2024-' . $id2 . '-15'])
+            ->where('application_type_id', 3)
+            ->get();
+
+        foreach ($downloads as $download) {
+            $array = [];
+            $rand_string = "";
+            $file_name_separated = explode('-', explode('/', $download->download_url)[2]);
+            $facility_id = $file_name_separated[0];
+            $file_date = $file_name_separated[1] . '-' . $file_name_separated[2] . '-';
+            if (str_contains($download->download_url, '_')) {
+                $file_date = $file_date . explode('_', $file_name_separated[3])[0];
+                $rand_string = str_replace('.zip', '', explode('_', $file_name_separated[3])[1]);
+            } else {
+                $file_date = $file_date . str_replace(".zip", '', $file_name_separated[3]);
+            }
+            $path = 'app/public/downloads/establishment-txts/' . $file_date .
+                ($rand_string != "" ? "_" . $rand_string : '')
+                . '/' . $facility_id . '/' . $facility_id . '-' .
+                $file_date . '-Food_Establishment.txt';
+            $i = 0;
+            if (file_exists(storage_path($path)) && ($file = fopen(storage_path($path), 'r')) !== false) {
+                while ($line = fgets($file)) {
+                    explode('Z', explode("\t", $line)[5])[0];
+                    $array[$i] =  explode('Z', explode("\t", $line)[5])[0];
+                    $i++;
+                }
+                fclose($file);
+            }
+            DB::beginTransaction();
+            foreach ($array as $permit_no) {
+                if ($establishment = EstablishmentApplications::where('permit_no', $permit_no)->first()) {
+                    ZippedApplications::where('application_id', $establishment->id)
+                        ->where('application_type_id', 3)
+                        ->update(['written' => 1]);
+                }
+            }
+            DB::commit();
         }
     }
 
