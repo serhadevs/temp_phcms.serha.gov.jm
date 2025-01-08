@@ -165,6 +165,8 @@ class TestDownloads extends Controller
             ->where('application_type_id', 3)
             ->get();
 
+        dd($downloads);
+
         foreach ($downloads as $download) {
             $array = [];
             $rand_string = "";
