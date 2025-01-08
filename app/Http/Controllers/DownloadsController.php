@@ -38,6 +38,7 @@ class DownloadsController extends Controller
                 ->where('application_type_id', 1)
                 ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
                 ->whereBetween('created_at', [$filterTimeline, $today])
+                ->where('deleted_at', NULL)
                 ->get();
 
             return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
@@ -55,6 +56,7 @@ class DownloadsController extends Controller
             ->where('application_type_id', 1)
             ->where('created_at', '>', $filterTimeline)
             ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+            ->where('deleted_at', NULL)
             ->get();
 
         // dd($downloads);
@@ -76,6 +78,7 @@ class DownloadsController extends Controller
             ->where('application_type_id', 1)
             ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
+            ->where('deleted_at', NULL)
             ->get();
 
         $application_type_id = 1;
