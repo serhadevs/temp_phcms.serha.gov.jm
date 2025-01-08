@@ -161,7 +161,7 @@ class TestDownloads extends Controller
 
     public function checkFoodEstDownloads($id, $id2)
     {
-        $downloads = DB::table('downloads')->whereBetween('created_at', ['2024-04-30 00:00:00','2024-04-30 17:46:59'])
+        $downloads = DB::table('downloads')->whereBetween('created_at', ['2024-04-30 00:00:00','2024-04-30 18:46:59'])
             ->where('application_type_id', 3)
             ->get();
 
