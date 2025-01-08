@@ -159,9 +159,9 @@ class TestDownloads extends Controller
         }
     }
 
-    public function checkFoodEstDownloads($id, $id2)
+    public function checkFoodEstDownloads($date_1, $date_2, $time_1, $time_2)
     {
-        $downloads = DB::table('downloads')->whereBetween('created_at', [$id . ' 00:00:00', $id2 . ' 23:59:59'])
+        $downloads = DB::table('downloads')->whereBetween('created_at', [$date_1 . ' ' . $time_1, $date_2 . ' ' . $time_2])
             ->where('application_type_id', 3)
             ->get();
 
