@@ -95,6 +95,23 @@ class TestDownloads extends Controller
         }
     }
 
+    public function cleanUpDownloads()
+    {
+        $downloads = Downloads::with('zippedApplications')
+            ->where('application_type_id', 3)
+            ->where('created_at', '>', '2024-01-15')
+            ->where('download_date', NULL)
+            ->get();
+
+        foreach ($downloads as $download) {
+            unlink(storage_path("app/public/") . $download->download_url);
+            foreach ($download->zippedApplications as $zippedApp) {
+                $zippedApp->update(['written' => 2]);
+            }
+            $download->update(['deleted_at' => '0-0-0 00:00:00']);
+        }
+    }
+
     public function checkDownloads(Request $request)
     {
         $start_date = $request->route('date') . " 00:00:00";
