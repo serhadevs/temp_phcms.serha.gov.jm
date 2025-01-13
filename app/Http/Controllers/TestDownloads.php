@@ -109,7 +109,7 @@ class TestDownloads extends Controller
             foreach ($download->zippedApplications as $zippedApp) {
                 $zippedApp->update(['written' => 2]);
             }
-            $download->update(['deleted_at' => '2025-01-00 00:00:00']);
+            $download->update(['deleted_at' => '2025-01-01 00:00:00']);
         }
         DB::commit();
     }
