@@ -103,6 +103,7 @@ class TestDownloads extends Controller
             ->where('download_date', NULL)
             ->get();
 
+        DB::beginTransaction();
         foreach ($downloads as $download) {
             unlink(storage_path("app/public/") . $download->download_url);
             foreach ($download->zippedApplications as $zippedApp) {
@@ -110,6 +111,7 @@ class TestDownloads extends Controller
             }
             $download->update(['deleted_at' => '2025-01-00 00:00:00']);
         }
+        DB::commit();
     }
 
     public function checkDownloads(Request $request)
