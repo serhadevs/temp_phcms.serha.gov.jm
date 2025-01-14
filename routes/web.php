@@ -60,6 +60,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::get('/check/establishment/job/{id}', [TestDownloads::class, 'checkFoodEstDownloads']);
 
 //Users routes for users not logged in
 
@@ -346,7 +347,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/permits/non-existent', [TestNewJobs::class, 'clearAllNonExistentFoodHandlers']);
     Route::get('/delete/unzipped/permits', [TestNewJobs::class, 'deleteAllUnzippedPermits']);
     Route::get('/test/new/job/{id}/{id2}', [TestNewJobs::class, 'permitJob']);
-    Route::get('/check/establishment/job/{id}', [TestDownloads::class, 'checkFoodEstDownloads']);
     Route::get('/jobs/food-establishment/clean', [TestDownloads::class, 'cleanUpDownloads']);
   });
 
