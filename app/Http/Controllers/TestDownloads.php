@@ -180,11 +180,6 @@ class TestDownloads extends Controller
 
     public function checkFoodEstDownloads($id)
     {
-        // $downloads = DB::table('downloads')->whereBetween('created_at', [$date_1 . ' ' . $time_1, $date_2 . ' ' . $time_2])
-        //     ->where('application_type_id', 3)
-        //     ->get();
-
-        // // dd($downloads);
         $downloads = DB::table('downloads')
             ->where('id', $id)
             ->get();
@@ -222,6 +217,7 @@ class TestDownloads extends Controller
                         ->update(['written' => 1]);
                 }
             }
+            $download->update(['touched' => 1]);
             DB::commit();
         }
     }
