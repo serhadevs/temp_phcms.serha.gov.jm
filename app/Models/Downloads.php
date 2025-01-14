@@ -24,7 +24,7 @@ class Downloads extends Model
         'created_at',
         'updated_at',
         'deleted_at',
-        'touched'
+        // 'touched'
     ];
 
     public function zippedApplications(): HasMany

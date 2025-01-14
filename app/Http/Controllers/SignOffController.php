@@ -216,21 +216,21 @@ class SignOffController extends Controller
                 }
             }
             DB::commit();
-            if ($request->data["appTypeId"] == 1) {
-                if ($this->permitJob($request->data["selected_items"])) {
-                    return [
-                        "success",
-                        $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
-                    ];
-                } else {
-                    throw new Exception("Error zipping files");
-                }
-            } else {
+            // if ($request->data["appTypeId"] == 1) {
+            //     if ($this->permitJob($request->data["selected_items"])) {
+            //         return [
+            //             "success",
+            //             $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
+            //         ];
+            //     } else {
+            //         throw new Exception("Error zipping files");
+            //     }
+            // } else {
                 return [
                     "success",
                     $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
                 ];
-            }
+            // }
         } catch (Exception $e) {
             DB::rollBack();
             //Return error message to view
