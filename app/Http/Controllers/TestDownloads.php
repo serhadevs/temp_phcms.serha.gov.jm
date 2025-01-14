@@ -180,8 +180,7 @@ class TestDownloads extends Controller
 
     public function checkFoodEstDownloads($id)
     {
-        $downloads = DB::table('downloads')
-            ->where('id', $id)
+        $downloads = Downloads::where('id', $id)
             ->get();
         foreach ($downloads as $download) {
             $array = [];
