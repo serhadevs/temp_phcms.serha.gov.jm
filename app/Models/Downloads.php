@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Downloads extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'downloads';
 
@@ -23,8 +23,7 @@ class Downloads extends Model
         'download_date',
         'created_at',
         'updated_at',
-        'deleted_at',
-        // 'touched'
+        'deleted_at'
     ];
 
     public function zippedApplications(): HasMany
