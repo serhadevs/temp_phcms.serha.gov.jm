@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ZippedApplications extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'zipped_applications';
 
