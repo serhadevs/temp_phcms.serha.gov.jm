@@ -28,7 +28,7 @@ class Downloads extends Model
 
     public function zippedApplications(): HasMany
     {
-        return $this->hasMany(ZippedApplications::class, 'download_id', 'id');
+        return $this->hasMany(ZippedApplications::class, 'download_id', 'id')->withTrashed();
     }
 
     public $timestamps = true;
