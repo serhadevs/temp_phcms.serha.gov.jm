@@ -20,14 +20,12 @@
                         value="{{ $download->id }}" onchange="handleCheckBox(this.checked, this.value)">
                 </td>
                 <td>
-                    {{-- Need to delete this --}}
-                    {{ count($download?->zippedApplications[0]?->payment) == 0 ? '' : $download?->zippedApplications[0]?->payment[0]?->facility?->name }}
-                    {{-- @if ($application_type_id == 3)
-                        {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->establishmentApplication->user?->facility?->name : '' }}
+                    @if ($application_type_id == 3)
+                        {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->establishmentApplication->user?->facility?->name : explode('-', explode('/', $download->download_url)[2])[0] }}
                     @elseif ($application_type_id == 1)
-                    1
-                        {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->permitApplication->user?->facility?->name : 'N/A' }}
-                    @endif --}}
+                        1
+                        {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->permitApplication->user?->facility?->name : explode('-', explode('/', $download->download_url)[2])[0] }}
+                    @endif
                 </td>
                 <td>{{ $download->application_amount }}</td>
                 <td class="text-center">
