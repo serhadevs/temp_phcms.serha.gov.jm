@@ -34,9 +34,10 @@ class DownloadsController extends Controller
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-            $downloads = Downloads::with('zippedApplications.payment.facility')
+            $downloads = Downloads::with('zippedApplications.permitApplication.user.facility')
+                // Downloads::with('zippedApplications.payment.facility')
                 ->where('application_type_id', 1)
-                ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+                // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->where('deleted_at', NULL)
                 ->get();
@@ -52,10 +53,11 @@ class DownloadsController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $downloads = Downloads::with('zippedApplications.payment.facility')
+        $downloads = Downloads::with('zippedApplications.permitApplication.user.facility')
+            // Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 1)
             ->where('created_at', '>', $filterTimeline)
-            ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+            // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
             ->where('deleted_at', NULL)
             ->get();
 
@@ -74,9 +76,10 @@ class DownloadsController extends Controller
 
         $end_date = $timeline["ending_date"] . " 23:59:59";
 
-        $downloads = Downloads::with('zippedApplications.payment.facility')
+        $downloads = Downloads::with('zippedApplications.permitApplication.user.facility')
+            // Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 1)
-            ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+            // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
             ->where('deleted_at', NULL)
             ->get();
@@ -138,9 +141,10 @@ class DownloadsController extends Controller
 
         $end_date = $timeline["ending_date"] . " 23:59:59";
 
-        $downloads = Downloads::with('zippedApplications.payment.facility')
+        $downloads = Downloads::with('zippedApplications.establishmentApplication.user.facility')
+            // Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 3)
-            ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
+            // ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
             ->get();
 
