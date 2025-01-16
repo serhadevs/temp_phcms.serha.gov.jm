@@ -425,7 +425,7 @@ class TestNewJobs extends Controller
                             $zip->addFromString("STT" . "-" . $key . "-Food_Establishment.txt", $content);
                         }
                     }
-                    $$zip->close();
+                    $zip->close();
 
                     if (empty($content)) {
                         foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
