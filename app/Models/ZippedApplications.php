@@ -39,10 +39,10 @@ class ZippedApplications extends Model
     }
 
     public function permitApplication():HasOne{
-        return $this->hasOne(PermitApplication::class, 'id', 'application_id');
+        return $this->hasOne(PermitApplication::class, 'id', 'application_id')->withTrashed();
     }
 
     public function establishmentApplication():HasOne{
-        return $this->hasOne(EstablishmentApplications::class, 'id', 'application_id');
+        return $this->hasOne(EstablishmentApplications::class, 'id', 'application_id')->withTrashed();
     }
 }
