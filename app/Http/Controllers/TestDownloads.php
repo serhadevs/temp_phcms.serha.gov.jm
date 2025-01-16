@@ -105,7 +105,7 @@ class TestDownloads extends Controller
 
         DB::beginTransaction();
         foreach ($downloads as $download) {
-            unlink(storage_path("app/public/") . $download->download_url);
+            // unlink(storage_path("app/public/") . $download->download_url);
             foreach ($download->zippedApplications as $zippedApp) {
                 $zippedApp->update(['written' => 2]);
             }
