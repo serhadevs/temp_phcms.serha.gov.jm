@@ -104,13 +104,13 @@ class TestDownloads extends Controller
             ->get();
 
         DB::beginTransaction();
-        foreach ($downloads as $download) {
-            // unlink(storage_path("app/public/") . $download->download_url);
-            foreach ($download->zippedApplications as $zippedApp) {
-                $zippedApp->update(['written' => 2]);
-            }
-            $download->update(['deleted_at' => '2025-01-01 00:00:00']);
-        }
+        // foreach ($downloads as $download) {
+        //     // unlink(storage_path("app/public/") . $download->download_url);
+        //     foreach ($download->zippedApplications as $zippedApp) {
+        //         $zippedApp->update(['written' => 2]);
+        //     }
+        //     $download->update(['deleted_at' => '2025-01-01 00:00:00']);
+        // }
         DB::commit();
     }
 

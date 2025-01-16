@@ -348,6 +348,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/delete/unzipped/permits', [TestNewJobs::class, 'deleteAllUnzippedPermits']);
     Route::get('/test/new/job/{id}/{id2}', [TestNewJobs::class, 'permitJob']);
     Route::get('/jobs/food-establishment/clean', [TestDownloads::class, 'cleanUpDownloads']);
+    Route::get('/test/job/food-establishment', [TestNewJobs::class, 'foodEstJob']);
   });
 
 

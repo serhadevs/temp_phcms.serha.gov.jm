@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Downloads;
+use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
 use App\Models\PermitApplication;
 use App\Models\ZippedApplications;
@@ -318,6 +319,167 @@ class TestNewJobs extends Controller
                     }
                 } catch (Exception $e) {
                     return $e->getMessage();
+                }
+            }
+        }
+    }
+
+    public function foodEstJob()
+    {
+        $food_establishments = EstablishmentApplications::with('user', 'testResults', 'operators', 'establishmentCategory', 'signOff', 'zippedApplication', 'payment')
+            ->doesntHave('zippedApplication')
+            ->has('signOff')
+            ->has('testResults')
+            // ->has('payment')
+            ->whereRelation('signOff', 'created_at', '>', '2025-01-16')
+            ->get();
+
+        $grouped_by_facility = $food_establishments->groupBy('user.facility_id');
+
+        $rand_string = explode('.', time() / rand(10000, 99999))[0];
+
+        foreach ($grouped_by_facility as $key => $facility_permit) {
+            if ($key == 1) {
+                $sch_per_date = $facility_permit->groupBy('testResults.test_date');
+                foreach ($sch_per_date as $key => $sch_permit) {
+                    $content = "";
+                    $counter = 0;
+                    $download_url = "downloads/establishment-archives/" . "STC-" . $key . "_" . $rand_string . ".zip";
+                    $zip = new ZipArchive();
+
+                    $create_download = Downloads::create([
+                        'application_type_id' => 3,
+                        'application_amount' => 0,
+                        'category' => 'Food Establishment',
+                        'download_url' => $download_url
+                    ]);
+
+                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                        DB::beginTransaction();
+                        foreach ($sch_permit as $item) {
+                            $content = $content . "\t" .
+                                trim(ucwords(strtolower($item->establishment_name))) . "\t" . trim(ucwords(strtolower($item->operators[0]?->name_of_operator))) . "\t"
+                                . trim(ucwords(strtolower($item->establishment_address))) . "\t" . trim(ucwords(strtolower($item->establishment_address))) . "\t"
+                                . $item->permit_no . "Z" . $item->zone . "-0010233" . "\r\n";
+
+                            if (str_contains($content, $item->permit_no)) {
+                                ZippedApplications::create([
+                                    'application_type_id' => '3',
+                                    'application_id' => $item->id,
+                                    'download_id' => $create_download->id
+                                ]);
+                                $counter++;
+                            }
+                        }
+                        $create_download->update(['application_amount' => $counter]);
+                        DB::commit();
+
+                        if (!empty($content)) {
+                            $zip->addFromString("STC" . "-" . $key . "-Food_Establishment.txt", $content);
+                        }
+                    }
+                    $zip->close();
+
+                    if (empty($content)) {
+                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                            $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
+                        }
+                        $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
+                    }
+                }
+            } else if ($key == 2) {
+                $stt_per_date = $facility_permit->groupBy('testResults.test_date');
+                foreach ($stt_per_date as $key => $stt_permit) {
+                    $content = "";
+                    $counter = 0;
+                    $download_url = "downloads/establishment-archives/" . "STT-" . $key . "_" . $rand_string . ".zip";
+                    $zip = new ZipArchive();
+
+                    $create_download = Downloads::create([
+                        'application_type_id' => 3,
+                        'application_amount' => 0,
+                        'category' => 'Food Establishment',
+                        'download_url' => $download_url
+                    ]);
+
+                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                        DB::beginTransaction();
+                        foreach ($stt_permit as $item) {
+                            $content = $content . "\t" .
+                                ucwords(strtolower($item->establishment_name)) . "\t" . ucwords(strtolower($item->operators[0]?->name_of_operator)) . "\t"
+                                . ucwords(strtolower($item->establishment_address)) . "\t" . ucwords(strtolower($item->establishment_address)) . "\t"
+                                . $item->permit_no . "Z" . $item->zone . "-0010233" . "\r\n";
+
+                            if (str_contains($content, $item->permit_no)) {
+                                ZippedApplications::create([
+                                    'application_type_id' => '3',
+                                    'application_id' => $item->id,
+                                    'download_id' => $create_download->id
+                                ]);
+                                $counter++;
+                            }
+                        }
+                        $create_download->update(['application_amount' => $counter]);
+                        DB::commit();
+                        if (!empty($content)) {
+                            $zip->addFromString("STT" . "-" . $key . "-Food_Establishment.txt", $content);
+                        }
+                    }
+                    $$zip->close();
+
+                    if (empty($content)) {
+                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                            $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
+                        }
+                        $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
+                    }
+                }
+            } else if ($key == 3) {
+                $ksa_per_date = $facility_permit->groupBy('testResults.test_date');
+                foreach ($ksa_per_date as $key => $ksa_permit) {
+                    $content = "";
+                    $counter = 0;
+                    $download_url = "downloads/establishment-archives/" . "KSA-" . $key . "_" . $rand_string . ".zip";
+                    $zip = new ZipArchive();
+
+                    $create_download = Downloads::create([
+                        'application_type_id' => 3,
+                        'application_amount' => 0,
+                        'category' => 'Food Establishment',
+                        'download_url' => $download_url
+                    ]);
+
+                    if ($zip->open(storage_path('app/public/' . $download_url), ZipArchive::CREATE)) {
+                        DB::beginTransaction();
+                        foreach ($ksa_permit as $item) {
+                            $content = $content . "\t" .
+                                ucwords(strtolower($item->establishment_name)) . "\t" . ucwords(strtolower($item->operators[0]?->name_of_operator)) . "\t"
+                                . ucwords(strtolower($item->establishment_address)) . "\t" . ucwords(strtolower($item->establishment_address)) . "\t"
+                                . $item->permit_no . "Z" . $item->zone . "-0010233" . "\r\n";
+
+                            if (str_contains($content, $item->permit_no)) {
+                                ZippedApplications::create([
+                                    'application_type_id' => '3',
+                                    'application_id' => $item->id,
+                                    'download_id' => $create_download->id
+                                ]);
+                                $counter++;
+                            }
+                        }
+                        $create_download->update(['application_amount' => $counter]);
+                        DB::commit();
+                        if (!empty($content)) {
+                            $zip->addFromString("KSA" . "-" . $key . "-Food_Establishment.txt", $content);
+                        }
+                    }
+                    $zip->close();
+
+                    if (empty($content)) {
+                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
+                            $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
+                        }
+                        $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
+                    }
                 }
             }
         }
