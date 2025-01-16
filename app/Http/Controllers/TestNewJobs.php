@@ -331,7 +331,7 @@ class TestNewJobs extends Controller
             ->has('signOff')
             ->has('testResults')
             // ->has('payment')
-            ->whereRelation('signOff', 'created_at', '>', '2025-01-16')
+            ->whereRelation('signOff', 'created_at', '>', '2024-01-16')
             ->get();
 
         $grouped_by_facility = $food_establishments->groupBy('user.facility_id');

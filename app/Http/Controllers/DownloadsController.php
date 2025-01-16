@@ -100,9 +100,9 @@ class DownloadsController extends Controller
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-            $downloads = Downloads::with('zippedApplications.payment.facility')
+            $downloads = Downloads::with('zippedApplications.establishmentApplication.user.facility')
                 ->where('application_type_id', 3)
-                ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
+                // ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
 
@@ -117,9 +117,10 @@ class DownloadsController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
         }
 
-        $downloads = Downloads::with('zippedApplications.payment.facility')
+        $downloads = Downloads::with('zippedApplications.establishmentApplication.user.facility')
+            // Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 3)
-            ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
+            // ->whereRelation('zippedApplications.payment', 'application_type_id', 3)
             ->where('created_at', '>', $filterTimeline)
             ->get();
 
@@ -244,10 +245,10 @@ class DownloadsController extends Controller
      */
     public function destroyPrintable(Request $request)
     {
-     $now = \Carbon\Carbon::now()->toDateTimeString();
+        $now = \Carbon\Carbon::now()->toDateTimeString();
         try {
             if ($request->route('app_type')) {
-              
+
                 PrintableApplications::where('id', $request->route('id'))
                     ->where('application_type_id', $request->route('app_type'))
                     ->update(
@@ -255,7 +256,8 @@ class DownloadsController extends Controller
                     );
             } else {
                 Downloads::find($request->route('id'))->update([
-                    'deleted_at', $now
+                    'deleted_at',
+                    $now
                 ]);
             }
             return "success";

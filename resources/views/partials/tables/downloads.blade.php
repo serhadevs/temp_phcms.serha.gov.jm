@@ -20,7 +20,9 @@
                         value="{{ $download->id }}" onchange="handleCheckBox(this.checked, this.value)">
                 </td>
                 <td>
-                    {{ count($download?->zippedApplications[0]?->payment) == 0 ? '' : $download?->zippedApplications[0]?->payment[0]?->facility?->name }}
+                    {{-- Need to delete this --}}
+                    {{-- {{ count($download?->zippedApplications[0]?->payment) == 0 ? '' : $download?->zippedApplications[0]?->payment[0]?->facility?->name }} --}}
+                    {{ $download->zipped_applications[0]?->establishmentApplication->user?->facility?->name }}
                 </td>
                 <td>{{ $download->application_amount }}</td>
                 <td class="text-center">
