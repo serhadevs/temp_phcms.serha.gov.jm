@@ -87,8 +87,6 @@ class DownloadsController extends Controller
 
         $application_type_id = 1;
 
-        // dd($downloads);
-
         return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
     }
 

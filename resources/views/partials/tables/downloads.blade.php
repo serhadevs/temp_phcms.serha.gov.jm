@@ -23,7 +23,6 @@
                     @if ($application_type_id == 3)
                         {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->establishmentApplication->user?->facility?->name : explode('-', explode('/', $download->download_url)[2])[0] }}
                     @elseif ($application_type_id == 1)
-                        1
                         {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->permitApplication->user?->facility?->name : explode('-', explode('/', $download->download_url)[2])[0] }}
                     @endif
                 </td>
