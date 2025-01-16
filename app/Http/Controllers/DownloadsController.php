@@ -76,15 +76,18 @@ class DownloadsController extends Controller
 
         $end_date = $timeline["ending_date"] . " 23:59:59";
 
-        $downloads = Downloads::with('zippedApplications.permitApplication.user.facility')
-            // Downloads::with('zippedApplications.payment.facility')
+        $downloads = 
+        // Downloads::with('zippedApplications.permitApplication.user.facility')
+            Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 1)
-            // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
+            ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
             ->where('deleted_at', NULL)
             ->get();
 
         $application_type_id = 1;
+
+        dd($downloads);
 
         return view('downloads.food_handlers_permits', compact('downloads', 'application_type_id'));
     }
