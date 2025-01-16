@@ -26,7 +26,7 @@
                         {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->establishmentApplication->user?->facility?->name : '' }}
                     @elseif ($application_type_id == 1)
                     1
-                        {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->permitApplication->user?->facility?->name : '' }}
+                        {{ $download->zippedApplications->isNotEmpty() ? $download->zippedApplications[0]?->permitApplication->user?->facility?->name : 'N/A' }}
                     @endif
                 </td>
                 <td>{{ $download->application_amount }}</td>
