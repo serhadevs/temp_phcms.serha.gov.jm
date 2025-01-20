@@ -70,6 +70,8 @@ class SignOffController extends Controller
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.payment')
                     ->where('facility_id', auth()->user()->facility_id)
                     ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
+                    ->whereRelation('permitApplication', 'photo_upload', '<>', NULL)
+                    ->whereRelation('permitApplication', 'photo_upload', '<>', '0')
                     ->has('permitApplication.testResults')
                     ->has('permitApplication.payment')
                     ->with(['permitApplication' => function ($query) {
@@ -84,6 +86,8 @@ class SignOffController extends Controller
                     ->doesntHave('permitApplication.establishmentClinics')
                     ->has('permitApplication.testResults')
                     ->has('permitApplication.payment')
+                    ->whereRelation('permitApplication', 'photo_upload', '<>', NULL)
+                    ->whereRelation('permitApplication', 'photo_upload', '<>', '0')
                     ->with(['permitApplication' => function ($query) {
                         $query->orderBy('lastname');
                     }])
@@ -106,18 +110,9 @@ class SignOffController extends Controller
                 ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->get();
         } elseif ($app_type_id == 5) {
-            // $applications = DB::table('swimming_pools_applications')
-            //     ->join('test_results', function ($join) use ($date_of_inspection) {
-            //         $join->on('test_results.application_id', '=', 'swimming_pools_applications.id')
-            //             ->where('test_results.application_type_id', '=', 5)
-            //             ->where('test_results.deleted_at', '=', null)
-            //             ->where('test_results.facility_id', '=', Auth()->user()->facility_id)
-            //             ->where('test_results.test_date', '=', $date_of_inspection);
-            //     })
-            //     ->select('test_results.test_date', 'test_results.test_location', 'test_results.comments', 'test_results.staff_contact', 'test_results.overall_score', 'test_results.critical_score', 'swimming_pools_applications.id as pool_id', 'swimming_pools_applications.*')
-            //     ->get();
             $applications = SwimmingPoolsApplications::with('testResults', 'payment')
                 ->has('payment')
+                ->has('testResults')
                 ->whereRelation('testResults', 'test_date', $date_of_inspection)
                 ->whereRelation('testResults', 'facility_id', auth()->user()->facility_id)
                 ->get();
