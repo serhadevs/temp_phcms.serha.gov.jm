@@ -22,6 +22,13 @@ class TestNewJobs extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function manualJobs()
+    {
+        $this->permitJob();
+        $this->foodEstJob();
+    }
+
     public function printClinicPermits($clinic_id)
     {
         try {
@@ -83,7 +90,7 @@ class TestNewJobs extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function permitJob($id, $id2)
+    public function permitJob()
     {
         //Get all permit applications
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs', 'zippedApplication')
@@ -330,7 +337,7 @@ class TestNewJobs extends Controller
             ->doesntHave('zippedApplication')
             ->has('signOff')
             ->has('testResults')
-            // ->has('payment')
+            ->has('payment')
             ->whereRelation('signOff', 'created_at', '>', '2024-01-15')
             ->get();
 
