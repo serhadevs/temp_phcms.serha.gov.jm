@@ -76,8 +76,8 @@ class DownloadsController extends Controller
 
         $end_date = $timeline["ending_date"] . " 23:59:59";
 
-        $downloads = 
-        Downloads::with('zippedApplications.permitApplication.user.facility')
+        $downloads =
+            Downloads::with('zippedApplications.permitApplication.user.facility')
             // Downloads::with('zippedApplications.payment.facility')
             ->where('application_type_id', 1)
             // ->whereRelation('zippedApplications.payment', 'application_type_id', 1)
@@ -191,9 +191,9 @@ class DownloadsController extends Controller
             $filterTimeline = $today;
         } else if ($id == "1") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
-            $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication')
+            $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication', 'user.facility')
                 ->has('signOffs')
-                ->has('payments')
+                // ->has('payments')
                 ->has('printableApplication')
                 ->where('sign_off_status', 1)
                 ->whereBetween('created_at', [$filterTimeline, $today])
@@ -207,11 +207,13 @@ class DownloadsController extends Controller
             $filterTimeline = date_format(date_modify(new DateTime(), "-90 days"), "Y-m-d");
         } else if ($id == "180") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-180 days"), "Y-m-d");
+        } else if ($id == "365") {
+            $filterTimeline = date_format(date_modify(new DateTime(), "-365 days"), "Y-m-d");
         }
 
-        $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication')
+        $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication', 'user.facility')
             ->has('signOffs')
-            ->has('payments')
+            // ->has('payments')
             ->has('printableApplication')
             ->where('sign_off_status', 1)
             ->where('created_at', '>', $filterTimeline)
@@ -231,9 +233,9 @@ class DownloadsController extends Controller
 
         $end_date = $timeline["ending_date"] . " 23:59:59";
 
-        $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication')
+        $tourist_ests = TouristEstablishments::with('signOffs', 'testResults', 'payments.facility', 'printableApplication', 'user.facility')
             ->has('signOffs')
-            ->has('payments')
+            // ->has('payments')
             ->has('printableApplication')
             ->where('sign_off_status', 1)
             ->whereBetween('created_at', [$timeline['starting_date'], $end_date])

@@ -14,7 +14,10 @@
     <tbody>
         @foreach ($tourist_ests as $est)
             <tr>
-                <td>{{ $est->payments->facility?->name }}</td>
+                <td>
+                    {{-- {{ $est?->payments?->facility?->name }} --}}
+                    {{ $est->user?->facility?->name }}
+                </td>
                 <td>{{ $est->establishment_name }}</td>
                 <td>{{ $est->establishment_address }}</td>
                 <td>{{ $est->permit_no }}</td>

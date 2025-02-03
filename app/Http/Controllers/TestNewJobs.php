@@ -6,6 +6,8 @@ use App\Models\Downloads;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
 use App\Models\PermitApplication;
+use App\Models\PrintableApplications;
+use App\Models\TouristEstablishments;
 use App\Models\ZippedApplications;
 use Carbon\Carbon;
 use DateTime;
@@ -27,6 +29,7 @@ class TestNewJobs extends Controller
     {
         $this->permitJob();
         $this->foodEstJob();
+        $this->touristJob();
     }
 
     public function printClinicPermits($clinic_id)
@@ -489,6 +492,20 @@ class TestNewJobs extends Controller
                     }
                 }
             }
+        }
+    }
+
+    public function touristJob()
+    {
+        $tourist_ests = TouristEstablishments::with('printableApplication')
+            ->doesntHave('printableApplication')
+            ->get();
+
+        foreach ($tourist_ests as $tourist_est) {
+            PrintableApplications::create([
+                'application_id' => $tourist_est->id,
+                'application_type_id' => 6
+            ]);
         }
     }
 
