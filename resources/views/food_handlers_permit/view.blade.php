@@ -36,7 +36,7 @@
                     </a>
 
 
-                    <span>{{ $permit_application->firstname ?? "No First Name". ' ' . $permit_application->lastname ?? "No Lastname" }}</span>
+                    <span>{{ $permit_application->firstname . ' ' . $permit_application->lastname }}</span>
                 </h4>
                 {{--  --}}
                 <div class="card-body">
