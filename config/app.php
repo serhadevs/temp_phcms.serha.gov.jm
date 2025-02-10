@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
-
+use Illuminate\Support\Carbon;
 return [
 
     /*
@@ -70,6 +70,8 @@ return [
     */
 
     'timezone' => 'Etc/GMT+5',
+   
+
 
     /*
     |--------------------------------------------------------------------------
@@ -163,6 +165,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        App\Providers\CarbonConfigServiceProvider::class,
         //Yajra\DataTables\DataTablesServiceProvider::class,
         /*
          * Package Service Providers...

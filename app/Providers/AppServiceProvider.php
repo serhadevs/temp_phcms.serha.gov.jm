@@ -26,10 +26,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        $carbonConfig = config('app.carbon_config');
+        if (is_callable($carbonConfig)) {
+            $carbonConfig();
+        }
         if (Schema::hasTable('stmp_settings')) {
             $stmpsettings = StmpSettings::first();
             //dd($stmpsettings);
-    
+
             if ($stmpsettings) {
                 $data = [
                     'driver' => $stmpsettings->mailer,
@@ -43,8 +48,8 @@ class AppServiceProvider extends ServiceProvider
                         'name' => 'PHCMS'
                     ]
                 ];
-    
-                Config::set('mail',$data);
+
+                Config::set('mail', $data);
             }
         }
     }
