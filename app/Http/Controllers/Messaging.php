@@ -20,17 +20,17 @@ class Messaging extends Controller
     }
 
     public function showMessages(){
-        if(in_array(auth()->user()->role_id,[1])){
-            $messages = Messages::with('user','permit_applications','emailtypes')->orderBy('created_at', 'desc')->get();
-        }else{
-            $messages = Messages::with('user','permit_applications','emailtypes','facility')->where('facility_id',auth()->user()->facility_id)->latest()->get();
+        if (in_array(auth()->user()->role_id, [1])) {
+            $messages = Messages::with('user', 'permit_applications', 'emailtypes')->orderBy('created_at', 'desc')->get();
+        } else {
+            $messages = Messages::with('user', 'permit_applications', 'emailtypes', 'facility')
+                ->whereHas('user', function ($query) {
+                    $query->where('facility_id', auth()->user()->facility_id);
+                })
+                ->latest()
+                ->get();
         }
-
-        // 
-        
-
-        //dd($messages);
-        return view('messages.index',compact('messages'));
+        return view('messages.index', compact('messages'));
     }
 
 
