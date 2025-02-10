@@ -33,4 +33,8 @@ class Messages extends Model
     public function permit_applications(): BelongsTo{
         return $this->belongsTo(PermitApplication::class,'permit_application_id','id');
     }
+
+    public function facility(): BelongsTo{
+        return $this->belongsTo(Facility::class,'facility_id','id');
+    }
 }
