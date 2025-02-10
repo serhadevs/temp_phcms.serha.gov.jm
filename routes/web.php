@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   ROute::get('/examdates/{id}/{day}', [AppointmentController::class, 'filterExamDates'])->name('filter.examdates');
 
   //Permit Application Route
+  Route::post('/permit/application/appointment/create', [PermitApplicationController::class, 'addNewAppointment'])->name('permit.application.appointment.create');
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
   Route::post("/permit/application", [PermitApplicationController::class, 'store'])->name('food_handlers_permit.store');
   Route::get("/permit/filter/{id}", [PermitApplicationController::class, 'index'])->name('permit.index');
@@ -96,6 +97,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::put('/permit/application/update/{id}', [PermitApplicationController::class, 'editApplication'])->name('permit.application.update');
   Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
   Route::delete('/permit/application/delete/{id}', [PermitApplicationController::class, 'destroy'])->name('permit.application.delete');
+
 
   //Barber Cosmetics Routes
   Route::get('/barber-cosmet/create', [BarberCosmetApplicationsController::class, 'create'])->name('barber-cosmet.create');

@@ -32,16 +32,16 @@
                     @endif --}}
 
                     <a class="btn btn-primary" onclick="history.back()">
-                       Back
+                        Back
                     </a>
-    
+
 
                     <span>{{ $permit_application->firstname . ' ' . $permit_application->lastname }}</span>
                 </h4>
                 {{--  --}}
                 <div class="card-body">
-                    <form action="{{ route('permit.application.update', ['id' => $permit_application->id]) }}"
-                        method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('permit.application.update', ['id' => $permit_application->id]) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -786,7 +786,22 @@
 
                                 <div class="mt-3">
                                     <div class="card">
-                                        <h4 class="text-muted card-header">Appointment Info</h4>
+                                        <div class="card-header">
+                                            <h4 class="text-muted row justify-content-between">
+                                                <div class="col">
+                                                    Appointment Info
+                                                </div>
+                                                <div class="col-auto">
+                                                    @if ($permit_application->establishment_clinic_id == '' && count($appointments) == 0)
+                                                        <button type="button" class="btn btn-primary"
+                                                            onclick="addAppointment({{ json_encode($appointment_available) }}, {{ json_encode($permit_application->id) }} )">
+                                                            Add Appointment
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </h4>
+                                        </div>
+
                                         <div class="card-body">
                                             @include('partials.tables.permit_applications_appointments_table')
                                         </div>
@@ -1018,6 +1033,81 @@
         }
     </script>
 
+    <script>
+        function addAppointment(avaiable_appointments, permit_application_id) {
+            swal.fire({
+                icon: 'question',
+                title: "Add Appointment to Permit Application",
+                text: "Please enter date of appointment",
+                input: 'date',
+                inputAttributes: {
+                    required: true
+                },
+                showCancelButton: true,
+                showConfirmButton: true,
+                cancelButtonText: "Cancel",
+                confirmButtonText: "Continue"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swal.fire({
+                        icon: 'question',
+                        title: 'Add Appointment to Permit Application',
+                        text: 'Select exam session',
+                        input: 'select',
+                        inputAttributes: {
+                            required: true
+                        },
+                        inputOptions: avaiable_appointments,
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        cancelButtonText: "Cancel",
+                        confirmButtonText: "Continue"
+                    }).then((result2) => {
+                        if (result2.isConfirmed) {
+                            swal.fire({
+                                icon: 'warning',
+                                title: "Are you sure you want to add appointment",
+                                showCancelButton: true,
+                                showConfirmButton: true,
+                                cancelButtonText: "No, Cancel",
+                                confirmButtonText: "Yes, Confirm"
+                            }).then((result3) => {
+                                if (result3.isConfirmed) {
+                                    $.post({!! json_encode(url('/permit/application/appointment/create')) !!}, {
+                                        _method: "POST",
+                                        data: {
+                                            appointment_date: result.value,
+                                            permit_application_id: permit_application_id,
+                                            exam_date_id: result2.value
+                                        },
+                                        _token: "{{ csrf_token() }}"
+                                    }).then((end_result) => {
+                                        if (end_result[0] == 'success') {
+                                            swal.fire(
+                                                "Done!",
+                                                end_result[1],
+                                                "success").then(
+                                                esc => {
+                                                    if (esc) {
+                                                        location
+                                                            .reload();
+                                                    }
+                                                });
+                                        } else {
+                                            swal.fire(
+                                                "Oops! Something went wrong.",
+                                                end_result,
+                                                "error");
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    </script>
     <script>
         function requestSignoffReversal(permit_id) {
             swal.fire({

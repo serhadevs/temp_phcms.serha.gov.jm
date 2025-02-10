@@ -100,7 +100,7 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages', 'messages.user','printedcard','collected_cards','signOffs.user:id,firstname,lastname')
+        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages', 'messages.user', 'printedcard', 'collected_cards', 'signOffs.user:id,firstname,lastname')
             ->find($application_id);
         //dd($permit_application);
 
@@ -122,6 +122,7 @@ class PermitApplicationController extends Controller
             ExamDates::with('examSites', 'permitCategory')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 1)
+                ->where('permit_category_id', $permit_application->permit_category_id)
                 ->get() as $appointment
         ) {
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
@@ -154,6 +155,7 @@ class PermitApplicationController extends Controller
             ExamDates::with('examSites', 'permitCategory')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 1)
+                ->where('permit_category_id', $permit_application->permit_category_id)
                 ->get() as $appointment
         ) {
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
@@ -355,7 +357,7 @@ class PermitApplicationController extends Controller
     {
         $categories = PermitCategory::all();
         $appointments_available = ExamDates::join('exam_sites', 'exam_dates.exam_site_id', '=', 'exam_sites.id')
-        ->join('permit_categories', 'permit_categories.id', '=', 'exam_dates.permit_category_id')
+            ->join('permit_categories', 'permit_categories.id', '=', 'exam_dates.permit_category_id')
             ->where('exam_dates.facility_id', auth()->user()->facility_id)
             ->select('exam_dates.id', 'permit_category_id', 'exam_day', 'exam_start_time', 'exam_sites.name as site_name', 'permit_categories.name as category_name')
             // ->orderByRaw('DAY(exam_dates.exam_day)')
@@ -442,14 +444,14 @@ class PermitApplicationController extends Controller
             ['date_of_birth', '=', $permit_application['date_of_birth']],
             ['cell_phone', '=', $permit_application['cell_phone']],
         ])
-        ->where('created_at', '>', date_format(new DateTime(), 'Y-m-d'))
-        ->exists();
-        
+            ->where('created_at', '>', date_format(new DateTime(), 'Y-m-d'))
+            ->exists();
+
         //dd($exists);
 
         if ($exists) {
             // If an exact match is found, return with an error message
-                return redirect()->route('dashboard.dashboard')->with('error', 'An applicant exists with the same details.');
+            return redirect()->route('dashboard.dashboard')->with('error', 'An applicant exists with the same details.');
         }
 
         $new_permit_application = PermitApplication::create($permit_application);
@@ -602,6 +604,25 @@ class PermitApplicationController extends Controller
         }
         DB::commit();
         return redirect()->route('permit.index', ['id' => 0])->with('success', 'Renewal has been completed successfully. The Application Id is' . $new_application->id);
+    }
+
+    public function addNewAppointment(Request $request)
+    {
+        try {
+            if (Appointments::create([
+                'appointment_date' => $request->data['appointment_date'],
+                'facility_id' => auth()->user()->facility_id,
+                'permit_application_id' => $request->data['permit_application_id'],
+                'exam_date_id' => $request->data['exam_date_id'],
+            ])) {
+                return [
+                    "success",
+                    "Appointment has been added for " . $request->appointment_date
+                ];
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
