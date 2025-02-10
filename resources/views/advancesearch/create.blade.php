@@ -80,15 +80,19 @@
                             <div class="col col-md-6" id="food_est_name_div" style="display:none">
                             
                                 <label for="exampleDataList" class="form-label">Food Establishment Name</label>
-                                <input class="form-control" list="datalistOptions"
+                                {{-- <input class="form-control" list="datalistOptions"
                                     placeholder="Type to search..." name ="food_est_name">
                                 <datalist id="datalistOptions">
                                     @foreach ($food_establishments as $food_est)
                                         <option value="{{ $food_est->establishment_name }}">
                                             {{ $food_est->establishment_name }}</option>
                                     @endforeach
-                                </datalist>
+                                </datalist> --}}
+
+                              
                             </div>
+
+                           
                             <div class="col col-md-6 col-sm-12 mt-3" id="operator_div" style="display:none">
                                 <label for="" class="form-label">Operator Name</label>
                                 <input type="text" class="form-control" name="operator_name"
@@ -113,6 +117,8 @@
                                 </datalist>
                             </div>
                         </div>
+
+                        
                 </div>
                 <div class="card-footer">
                     <a  onclick = "history.back()" class="btn btn-danger">Back</a>
