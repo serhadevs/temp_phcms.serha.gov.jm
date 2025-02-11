@@ -42,6 +42,7 @@ use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
 
 
 
@@ -57,6 +58,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Livewire::setScriptRoute([
+//   'middleware' => ['web'],
+// ]);
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');

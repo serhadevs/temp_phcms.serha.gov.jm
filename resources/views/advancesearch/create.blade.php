@@ -80,14 +80,14 @@
                             <div class="col col-md-6" id="food_est_name_div" style="display:none">
                             
                                 <label for="exampleDataList" class="form-label">Food Establishment Name</label>
-                                {{-- <input class="form-control" list="datalistOptions"
+                                <input class="form-control" list="datalistOptions"
                                     placeholder="Type to search..." name ="food_est_name">
                                 <datalist id="datalistOptions">
                                     @foreach ($food_establishments as $food_est)
                                         <option value="{{ $food_est->establishment_name }}">
                                             {{ $food_est->establishment_name }}</option>
                                     @endforeach
-                                </datalist> --}}
+                                </datalist>
 
                               
                             </div>

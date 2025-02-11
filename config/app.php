@@ -166,6 +166,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\CarbonConfigServiceProvider::class,
+        Livewire\LivewireServiceProvider::class,
         //Yajra\DataTables\DataTablesServiceProvider::class,
         /*
          * Package Service Providers...
