@@ -156,10 +156,10 @@
                                   
                                 </div> --}}
 
-                                <div class="row g-3 mb-3">
+                                {{-- <div class="row g-3 mb-3">
                                    <livewire:establishmentnamesearch />
                                 </div>
-                               
+                                --}}
                                 <div class="row">
                                     <!-- Food Establishments that are expiring -->
                                     <div class="col mb-3">
