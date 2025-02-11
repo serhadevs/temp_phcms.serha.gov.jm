@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class HealthCertApplications extends Model
+class HealthCertApplications extends Model implements Auditable
 {
     use HasFactory;
     use SoftDeletes;
     // use Loggable;
+    use \OwenIt\Auditing\Auditable;
 
     protected $table = "health_cert_applications";
 

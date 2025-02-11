@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class TestResult extends Model
+class TestResult extends Model implements Auditable
 {
     use HasFactory;
     use SoftDeletes;
+    use \OwenIt\Auditing\Auditable;
     // use Loggable;
 
     protected $table = "test_results";

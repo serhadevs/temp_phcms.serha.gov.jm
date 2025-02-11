@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class ExamDates extends Model
+class ExamDates extends Model implements Auditable
 {
     use HasFactory;
     use SoftDeletes;
     // use Loggable;
+    use \OwenIt\Auditing\Auditable;
 
     protected $table = "exam_dates";
     protected $guarded = [];
