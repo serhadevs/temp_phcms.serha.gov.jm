@@ -12,12 +12,12 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use OwenIt\Auditing\Contracts\Auditable;
+//use OwenIt\Auditing\Contracts\Auditable;
 
-class User extends Authenticatable implements Auditable
+class User extends Authenticatable 
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-     use \OwenIt\Auditing\Auditable;
+     //use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'id',
