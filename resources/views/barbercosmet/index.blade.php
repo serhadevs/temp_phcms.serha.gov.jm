@@ -6,10 +6,10 @@
     @include('partials.sidebar._sidebar')
     <div class="main">
         @include('partials.navbar._navbar')
-        @include('partials.messages.messages')
         <div class="container-fluid">
             <div class="card">
                 @include('partials.messages.table_loading')
+                @include('partials.messages.messages')
                 <div class="card-header">
                     <div class="row justify-content-between">
                         <div class="col">
@@ -59,7 +59,8 @@
                             <div class="col col-md-3">
                                 <input type="date" class="form-control" placeholder="Starting Date" name="starting_date"
                                     value="{{ old('starting_date') }}" id="starting_date">
-                                <input type="text" id="interval" class="form-control" name="interval" hidden value="{{ old('interval') }}">
+                                <input type="text" id="interval" class="form-control" name="interval" hidden
+                                    value="{{ old('interval') }}">
                                 @error('starting_date')
                                     <p class="fw-bold text-danger errors">{{ $message }}</p>
                                 @enderror
@@ -131,6 +132,11 @@
                     }
 
                 }
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", (event) => {
+                    loading.close();
+                });
             </script>
         </div>
     </div>
