@@ -189,12 +189,12 @@ class SignOffController extends Controller
 
                         if ($request->data["appTypeId"] == 1) {
                             if ($application->permit_type == "student") {
-                                $expiry_date = date_format(date_modify(new DateTime($exam_date->test_date), "+{$application->no_of_years} years"), "Y-m-d");
+                                $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+{$application->no_of_years} years"), "Y-m-d");
                             } else {
-                                $expiry_date = date_format(date_modify(new DateTime($exam_date->test_date), "+1 years"), "Y-m-d");
+                                $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+1 years"), "Y-m-d");
                             }
                         } else {
-                            $expiry_date = date_format(date_modify(new DateTime($exam_date->test_date), "+1 years"), "Y-m-d");
+                            $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+1 years"), "Y-m-d");
                         }
 
                         SignOff::create([
@@ -221,10 +221,10 @@ class SignOffController extends Controller
             //         throw new Exception("Error zipping files");
             //     }
             // } else {
-                return [
-                    "success",
-                    $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
-                ];
+            return [
+                "success",
+                $counter . " Applications of " . count($request->data['selected_items']) . " were successfully signed off."
+            ];
             // }
         } catch (Exception $e) {
             DB::rollBack();
