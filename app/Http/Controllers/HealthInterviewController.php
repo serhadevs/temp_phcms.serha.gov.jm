@@ -45,7 +45,7 @@ class HealthInterviewController extends Controller
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->get();
-                //dd($health_interviews);
+            //dd($health_interviews);
             return view('test_center.health_interviews.index', compact('health_interviews'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
@@ -62,9 +62,9 @@ class HealthInterviewController extends Controller
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
 
-            //dd($health_interviews);
-            
-        if(!$health_interviews){
+        //dd($health_interviews);
+
+        if (!$health_interviews) {
             return view('dashboard.dashboard')->with('error', 'Error with interviews');
         }
         return view('test_center.health_interviews.index', compact('health_interviews'));
@@ -85,7 +85,7 @@ class HealthInterviewController extends Controller
             ->whereBetween('created_at', [$timeline["starting_date"], $end_date])
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
-            // dd($health_interviews);
+        // dd($health_interviews);
         return view('test_center.health_interviews.index', compact('health_interviews'));
     }
 
@@ -252,8 +252,20 @@ class HealthInterviewController extends Controller
         ]);
 
         if ($request->app_type_id == "1") {
+            if (HealthInterview::where('permit_application_id', $request->application_id)->first()) {
+                return redirect()->route('health-interview.index', ['id' => 0])->with('error', '
+                Health Interview for ' . ($request->app_type_id == '1' ? 'Permit Application :
+                ' . $request->application_id : 'Health Certificate Application: ' . $request->application_id) . ' has already been entered
+                ');
+            }
             $health_interview["permit_application_id"] = $request->application_id;
         } else if ($request->app_type_id == "2") {
+            if (HealthInterview::where('health_cert_application_id', $request->application_id)->first()) {
+                return redirect()->route('health-interview.index', ['id' => 0])->with('error', '
+            Health Interview for ' . ($request->app_type_id == '1' ? 'Permit Application :
+            ' . $request->application_id : 'Health Certificate Application: ' . $request->application_id) . ' has already been entered
+            ');
+            }
             $health_interview["health_cert_application_id"] = $request->application_id;
         }
 
