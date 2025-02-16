@@ -134,6 +134,7 @@ class SignOffController extends Controller
         $counter = 0;
         try {
             DB::beginTransaction();
+            dd($request->data["selected_items"]);
             foreach ($request->data["selected_items"] as $item) {
                 if ($request->data["appTypeId"] == "1") {
                     $application = PermitApplication::with('healthInterviews')
