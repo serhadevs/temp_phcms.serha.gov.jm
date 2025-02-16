@@ -361,7 +361,7 @@
     function testing(checkStatus, value) {
         if (checkStatus == true) {
             selected_items.push(value);
-            console.log(selected_items);
+            // console.log(selected_items);
         } else {
             var index = selected_items.indexOf(value);
             if (index !== -1) selected_items.splice(index, 1);
@@ -381,7 +381,7 @@
         }).then(result => {
             if (result.isConfirmed) {
                 if (result.isConfirmed) {
-                    console.log("app type:" + appTypeId);
+                    // console.log("app type:" + appTypeId);
                     $.post({!! json_encode(url('/sign-off/approve')) !!}, {
                         _method: "POST",
                         data: {
