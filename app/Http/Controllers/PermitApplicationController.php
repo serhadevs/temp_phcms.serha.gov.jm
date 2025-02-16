@@ -210,6 +210,13 @@ class PermitApplicationController extends Controller
                         }
                         $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
                         $edits['photo_upload'] = $path;
+
+                        $edits['photo_upload'] = 0;
+
+                        if ($edits['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
+                            $file = $request->file('photo_upload');
+                            $edits['photo_upload'] = 'photo_upload/' . $edits['permit_no'] . '.' . $file->extension();
+                        }
                     } else {
                         $edits['photo_upload'] = $permit->photo_upload;
                     }
