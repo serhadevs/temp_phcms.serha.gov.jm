@@ -215,7 +215,7 @@ class PermitApplicationController extends Controller
 
                         if ($edits['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
                             $file = $request->file('photo_upload');
-                            $edits['photo_upload'] = 'photo_upload/' . $edits['permit_no'] . '.' . $file->extension();
+                            $edits['photo_upload'] = 'photo_uploads/' . $edits['permit_no'] . '.' . $file->extension();
                         }
                     } else {
                         $edits['photo_upload'] = $permit->photo_upload;
@@ -438,7 +438,7 @@ class PermitApplicationController extends Controller
 
             if ($permit_application['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
                 $file = $request->file('photo_upload');
-                $permit_application['photo_upload'] = 'photo_upload/' . $permit_application['permit_no'] . '.' . $file->extension();
+                $permit_application['photo_upload'] = 'photo_uploads/' . $permit_application['permit_no'] . '.' . $file->extension();
             }
         } else {
             $permit_application['photo_upload'] = "";
@@ -562,7 +562,7 @@ class PermitApplicationController extends Controller
 
             if ($permit_application['photo_upload'] == '0' && auth()->user()->facility_id == 1) {
                 $file = $request->file('photo_upload');
-                $permit_application['photo_upload'] = 'photo_upload/' . $permit_application['permit_no'] . '.' . $file->extension();
+                $permit_application['photo_upload'] = 'photo_uploads/' . $permit_application['permit_no'] . '.' . $file->extension();
             }
         } else {
             $permit_application['photo_upload'] = $old_permit->photo_upload;
