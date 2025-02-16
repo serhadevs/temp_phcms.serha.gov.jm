@@ -133,7 +133,6 @@ class SignOffController extends Controller
         // $request->data["appTypeId"];
         $counter = 0;
         try {
-            dd($request->data["selected_items"]);
             DB::beginTransaction();
             foreach ($request->data["selected_items"] as $item) {
                 if ($request->data["appTypeId"] == "1") {
