@@ -137,7 +137,7 @@ class PermitApplicationController extends Controller
                                                         
         // dd($tdbetwappandprint);
 
-        return view('food_handlers_permit.view', compact('tdbetwappandprint','permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function editView(Request $request)
