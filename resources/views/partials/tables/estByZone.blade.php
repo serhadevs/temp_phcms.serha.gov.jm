@@ -2,30 +2,33 @@
     <thead>
         <tr>
             
-            <th>App#</th>
+            <th>Zone</th>
             <th>Est Name</th>
+            <th>Operators</th>
             <th>Est Address</th>
+            <th>Category</th>
             <th>Permit #</th>
             <th>Expiry Date</th>
+            <th>Inspection Date</th>
             <th>Sat/UnSat</th>
             <th>Sign Off</th>
-            <th>Zone</th>
-            <th>Inspection Date</th>
-            <th>Operators</th>
+           
+           
 
         </tr>
     </thead>
     <tbody>
         @foreach ($establishments as $item)
             <tr>
-                <td>{{ $item->id }}</td>
+                <td><span class="badge text-bg-primary">{{ $item->zone }}</span></td>
                 <td>{{ $item->establishment_name }}</td>
+                <td>@foreach ($item->operators as $operator)
+                    <span class="badge text-bg-primary">{{ $operator->name_of_operator }}</span>
+                @endforeach</td>
                 <td>{{ $item->establishment_address }}</td>
+                <td><span class="badge text-bg-primary">{{ $item->establishmentCategory?->name }}</span></td>
                 <td>{{ $item->permit_no }}</td>
                 <td>{{ optional($item->signOff)->expiry_date ?? "No Expiry Date" }}</td>
-                <td> <span class="badge text-bg-{{ $item->testResults?->critical_score >= 59 ? "success" : "danger" }}">{{ $item->testResults?->critical_score >= 59 ? "Satisfactory" : "Not Satisfactory"  }}</span></td>
-                <td><span class="badge text-bg-{{ $item->signOff?->is_granted == 1 ? "success" : "danger" }}">{{ $item->signOff?->is_granted == 1 ? "Signed Off" : "Not Signed Off"}}</span></td>
-                <td><span class="badge text-bg-primary">{{ $item->zone }}</span></td>
                 <td>
                     <span class="badge text-bg-primary">
                         @if(optional($item->testResults)->test_date)
@@ -35,9 +38,11 @@
                         @endif
                     </span>
                 </td>
-                <td>@foreach ($item->operators as $operator)
-                    <span class="badge text-bg-primary">{{ $operator->name_of_operator }}</span>
-                @endforeach</td>
+                <td> <span class="badge text-bg-{{ $item->testResults?->critical_score >= 59 ? "success" : "danger" }}">{{ $item->testResults?->critical_score >= 59 ? "Satisfactory" : "Not Satisfactory"  }}</span></td>
+                <td><span class="badge text-bg-{{ $item->signOff?->is_granted == 1 ? "success" : "danger" }}">{{ $item->signOff?->is_granted == 1 ? "Signed Off" : "Not Signed Off"}}</span></td>
+                
+               
+               
 
                 
                 
