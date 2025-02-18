@@ -36,7 +36,7 @@ use App\Models\ExamSites;
 use App\Notifications\SignOff;
 use Illuminate\Support\Facades\Notification;
 use App\Models\Messages;
-
+use Illuminate\Support\Facades\URL;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -166,7 +166,7 @@ class PermitApplicationController extends Controller
         return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
 
-    public function editApplication(Request $request, $id)
+    public function updateApplication(Request $request, $id)
     {
         $edits = $request->validate([
             'firstname' => "required",
@@ -246,6 +246,9 @@ class PermitApplicationController extends Controller
                             }
                             if ($permit->update($edits)) {
                                 DB::commit();
+                                if (str_contains($request->previous_url, 'food-handlers-clinics')) {
+                                    return redirect()->route('food-handlers-clinics.view', ['id' => explode("view/", $request->previous_url)[1]])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ':' . $permit->id . ' has be updated successfully']);
+                                }
                                 return redirect()->route('permit.application.view', ['id' => $permit->id])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ':' . $permit->id . ' has be updated successfully']);
                             } else {
                                 throw new Exception("Error updating Food Handlers Application. Unable to update Permit Application.");

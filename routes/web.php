@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post("/permit/filter", [PermitApplicationController::class, 'customFilterApplications'])->name('permit.index.custom');
   Route::get('/permit/view/{id}', [PermitApplicationController::class, 'viewApplication'])->name('permit.application.view');
   Route::put('/permit/application/update/appointment/{id}', [PermitApplicationController::class, 'updatePermitAppointment'])->name('permit.application.update.appointment');
-  Route::put('/permit/application/update/{id}', [PermitApplicationController::class, 'editApplication'])->name('permit.application.update');
+  Route::put('/permit/application/update/{id}', [PermitApplicationController::class, 'updateApplication'])->name('permit.application.update');
   Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
   Route::delete('/permit/application/delete/{id}', [PermitApplicationController::class, 'destroy'])->name('permit.application.delete');
 
