@@ -521,7 +521,7 @@ class ReportController extends Controller
 
         // Start building query
         $query = EstablishmentApplications::with('establishmentCategory', 'user','operators','signOff','testResults','establishmentCategory')
-            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)->where('id','394');
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id);
 
         // Apply zone filter if not 7
         if ($incomingFields['zone'] != 7) {
