@@ -176,7 +176,8 @@
     </table>
     <div>
         <a href="{{ route('sign-off') }}" class="btn btn-danger">Back to Sign Offs</a>
-        <button class="btn btn-primary" onclick="approveSignOff({{ json_encode($app_type_id) }})"> <i
+        <button class="btn btn-primary"
+            onclick="approveSignOff({{ json_encode($app_type_id) }}, selected_items.length)"> <i
                 class="bi bi-box-arrow-in-right"></i>
             Approve</button>
     </div>
@@ -369,9 +370,9 @@
         }
     }
 
-    function approveSignOff(appTypeId) {
+    function approveSignOff(appTypeId, numOfApplications) {
         swal.fire({
-            title: "Are you sure you want to approve the selected applications?",
+            title: "Are you sure you want to approve the " + numOfApplications + " selected applications?",
             text: "Tip: Always ensure that you review each application thoroughly before approval.",
             icon: "warning",
             showCancelButton: true,
