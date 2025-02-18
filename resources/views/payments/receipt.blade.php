@@ -91,8 +91,8 @@
     </script>
     <script>
         function printReceipt(receipt_info) {
-            console.log(receipt_info);
-            var mywindow = window.open('', 'PRINT', 'height=600,width=600');
+            // console.log(receipt_info);
+            var mywindow = window.open('', 'PRINT', 'height=900,width=900');
 
             var serha = `<h2>SOUTH EAST REGIONAL HEALTH AUTHORITY</h2>`;
 
