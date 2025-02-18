@@ -36,7 +36,8 @@
                     </a>
 
 
-                    <span>{{ $permit_application->firstname ?? 'No First Name' }} {{ $permit_application->lastname ?? 'No Last Name' }}</span>
+                    <span>{{ $permit_application->firstname ?? 'No First Name' }}
+                        {{ $permit_application->lastname ?? 'No Last Name' }}</span>
                 </h4>
                 {{--  --}}
                 <div class="card-body">
@@ -454,6 +455,7 @@
                                     <h4 class="text-muted card-header">
                                         Applicant Information
                                     </h4>
+                                    <input type="text" name="previous_url" value={{ url()->previous() }} hidden>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">

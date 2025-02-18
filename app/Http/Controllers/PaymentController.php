@@ -395,8 +395,7 @@ class PaymentController extends Controller
         $payment = Payments::find($payment_id);
 
         // dd($payment);
-        if ($payment->application_type_id == 1 || $payment->application_type_id == 8 || $payment->application_type_id == 9) {
-            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)->name;
+        if ($payment->application_type_id == 1) {
             $application = PermitApplication::with('permitCategory')->find($payment->application_id);
             $receipt_info['applicant_name'] = $application?->firstname . " " . $application?->lastname;
             $receipt_info['permit_category'] = $application?->permitCategory?->name;
@@ -423,18 +422,18 @@ class PaymentController extends Controller
             }
         } else if ($payment->application_type_id == 3) {
             $receipt_info['applicant_name'] = EstablishmentApplications::find($payment->application_id)?->establishment_name;
-            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
         } else if ($payment->application_type_id == 4) {
             $receipt_info['applicant_name'] = EstablishmentClinics::find($payment->application_id)?->name;
-            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
         } else if ($payment->application_type_id == 2) {
             $health_certif = HealthCertApplications::find($payment->application_id);
             $receipt_info['applicant_name'] = $health_certif->firstname . " " . $health_certif->lastname;
-            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
         } else if ($payment->application_type_id == 6) {
             $receipt_info['applicant_name'] = TouristEstablishments::find($payment->application_id)->establishment_name;
-            $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
+        } else if ($payment->application_type_id == 5) {
+            $receipt_info['applicant_name'] = SwimmingPoolsApplications::find($payment->application_id)->firstname . ' ' . SwimmingPoolsApplications::find($payment->application_id)->lastname;
         }
+
+        $receipt_info['app_type'] = ApplicationType::find($payment->application_type_id)?->name;
 
         $receipt_info['application_no'] = $payment->application_id;
         $receipt_info['payment_date_time'] = $payment->created_at->format('M-d-Y h:i:s a');
