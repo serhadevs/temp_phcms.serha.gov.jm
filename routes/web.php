@@ -275,6 +275,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/printed-cards', [ReportController::class, 'printedCardsIndex'])->name('reports.printed-cards.index');
   Route::post('/reports/printed-cards/show', [ReportController::class, 'generatePrintedCards'])->name('reports.printed-cards.show');
 
+  Route::get('/aireport',[ReportController::class, 'generateReport']);
+
   //Renewals
   Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class, 'renewal'])->name('food_handlers_permit.renewal');
   Route::post('/permit/application/renewal', [PermitApplicationController::class, 'storeRenewal'])->name('food_handlers_permit.renew');
@@ -388,6 +390,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/reports/productivity', [ReportController::class, 'productivityReport'])->name('reports.productivity');
   Route::get('/reports/category-by-zone', [ReportController::class, 'countCategoriesByZone'])->name('reports.category.zone');
   Route::post('/reports/category-by-zone/show', [ReportController::class, 'viewCountCategoriesByZone'])->name('reports.category.show');
+
+  Route::get('/reports/establishment-by-zone', [ReportController::class, 'allEstablishmentsByZone'])->name('reports.establishment.zone');
+  Route::post('/reports/establishment-by-zone/show', [ReportController::class, 'viewAllEstablishmentsByZone'])->name('reports.establishment.show');
 
   //Inspections Report
   Route::get('/reports/inspections', [ReportController::class, 'createInspectionsReport'])->name('reports.inspections');

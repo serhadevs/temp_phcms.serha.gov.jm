@@ -27,6 +27,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class ReportController extends Controller
 {
@@ -447,61 +448,91 @@ class ReportController extends Controller
         return view('reports.categorybyzonecount.view', compact('start_date', 'end_date', 'counts', 'zone'));
     }
 
-    // public function productivityReportCreate(){
-    //     return view('reports.productivity.index');
-    // }
+    public function generateReport()
+    {
+        // Fetch data from database
 
-    // public function productivityReport(Request $request) {
-    //     // Validate the incoming request fields
-    //     $incomingFields = $request->validate([
-    //         'starting_date' => 'required|date',
-    //         'ending_date' => 'required|date'
-    //     ]);
+        $start_date = '2025-01-01';
+        $end_date = '2025-02-01';
+        $data = DB::table('permit_applications')
+            ->select('firstname', 'lastname', 'application_date')
+            ->orderBy('application_date', 'desc')
+            ->whereBetween('application_date', [$start_date, $end_date])
+            ->get();
 
-    //     // Ensure the dates are formatted correctly
-    //     $start_date = $incomingFields['starting_date'] . ' 17:00:00';
-    //     $end_date = $incomingFields['ending_date'] . ' 21:00:00';
+        // Format data for AI prompt
+        $formattedData = $this->formatDataForAI($data);
 
-    //     // Get the facility user IDs once
-    //     $facilityUserIds = User::facilityUsers()->pluck('id')->flatten();
+        // Generate report using OpenAI
+        $response = OpenAI::chat()->create([
+            'model' => 'gpt-3.5-turbo',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You are a data analyst generating a report. Analyze the following data and provide insights.'
+                ],
+                [
+                    'role' => 'user',
+                    'content' => "Provide a count of permit applications between 01-01-2025 and 01-02-2025: \n\n" . $formattedData
+                ]
+            ],
+            'temperature' => 0.7,
+            'max_tokens' => 1000
+        ]);
 
-    //     // Retrieve the permit applications and group by user
-    //     $permits = PermitApplication::with('user')
-    //         ->whereBetween('created_at', [$start_date, $end_date])
-    //         ->whereIn('user_id', $facilityUserIds)
-    //         ->get()
-    //         ->groupBy('user_id');
+        $report = $response->choices[0]->message->content;
 
-    //         dd($permits);
+        dd($report);
+    }
 
-    //     // Retrieve the establishment applications and group by user
-    //     $establishments = EstablishmentApplications::with('user')
-    //         ->whereBetween('created_at', [$start_date, $end_date])
-    //         ->whereIn('user_id', $facilityUserIds)
-    //         ->get()
-    //         ->groupBy('user_id');
+    private function formatDataForAI($data)
+    {
+        $output = "Data Analysis:\n\n";
 
-    //     // Retrieve the test results and group by user
-    //     $tests = TestResult::with('user')
-    //         ->whereBetween('created_at', [$start_date, $end_date])
-    //         ->whereIn('user_id', $facilityUserIds)
-    //         ->get()
-    //         ->groupBy('user_id');
+        // Total users
+        $output .= "Total Applications: " . count($data) . "\n\n";
 
-    //     // Count the number of applications for each user
-    //     $permitCounts = $permits->map(function ($items, $userId) {
-    //         return ['user' => $items->first()->user, 'count' => $items->count()];
-    //     });
+        // Monthly signups
+        $monthlySignups = $data->groupBy(function ($date) {
+            return \Carbon\Carbon::parse($date->application_date)->format('Y-m');
+        });
 
-    //     $establishmentCounts = $establishments->map(function ($items, $userId) {
-    //         return ['user' => $items->first()->user, 'count' => $items->count()];
-    //     });
+        $output .= "Monthly Applications:\n";
+        foreach ($monthlySignups as $month => $users) {
+            $output .= "$month: " . count($users) . " users\n";
+        }
 
-    //     $testCounts = $tests->map(function ($items, $userId) {
-    //         return ['user' => $items->first()->user, 'count' => $items->count()];
-    //     });
+        return $output;
+    }
 
-    //     return view('reports.productivity.view', compact('permitCounts', 'establishmentCounts', 'testCounts', 'start_date', 'end_date'));
-    // }
+    //All Establishments by Zone Report 
 
+    public function allEstablishmentsByZone()
+    {
+        return view('reports.establishments.estbyzone');
+    }
+
+    public function viewAllEstablishmentsByZone(Request $request)
+    {
+        // Validate input
+        $incomingFields = $request->validate([
+            'zone' => 'required'
+        ]);
+
+        // Start building query
+        $query = EstablishmentApplications::with('establishmentCategory', 'user','operators','signOff','testResults')
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id);
+
+        // Apply zone filter if not 7
+        if ($incomingFields['zone'] != 7) {
+            $query->where('zone', $incomingFields['zone']);
+        }
+
+        // Limit results after filtering
+        $establishments = $query->get();
+
+        //dd($establishments);
+
+        return view('reports.establishments.viewest', compact('establishments'));
+    }
 }

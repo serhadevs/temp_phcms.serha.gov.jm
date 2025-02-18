@@ -33,7 +33,7 @@
                             </div>
 
                             <div class="col">
-                                <label for="ending_date" class="form-label">Zone</label>
+                                <label for="zone" class="form-label">Zone</label>
                                 <select name="zone" id="zone" class="form-control">
                                     <option selected disabled>Select a Zone</option>
                                     @if (in_array(auth()->user()->facility_id, [2, 3]))

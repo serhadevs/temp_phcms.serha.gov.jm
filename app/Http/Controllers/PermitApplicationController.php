@@ -128,9 +128,16 @@ class PermitApplicationController extends Controller
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
-        //dd($permit_application);
+        // if($permit_application->printedcard && $permit_application->printedcard?->created_at){
+        //     $tdbetwappandprint = Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at));
+        // }else{
+        //     $tdbetwappandprint = 0;
+        // }
+                                                       
+                                                        
+        // dd($tdbetwappandprint);
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
+        return view('food_handlers_permit.view', compact('tdbetwappandprint','permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function editView(Request $request)

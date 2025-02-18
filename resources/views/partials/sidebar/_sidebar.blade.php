@@ -325,6 +325,9 @@
                 <li class="sidebar-item">
                     <a href="{{ route('reports.category.zone') }}" class="sidebar-link">Est. Categories By Zone</a>
                 </li>
+                <li class="sidebar-item">
+                    <a href="{{ route('reports.establishment.zone') }}" class="sidebar-link">Ests. By Zone</a>
+                </li>
             </ul>
 
         </li>
