@@ -33,7 +33,7 @@
                 <td>
 
                     @if (optional($item->testResults)->test_date)
-                        {{ \Carbon\Carbon::parse(optional($item->testResults)->test_date)->format('d, F Y') }}
+                        {{ \Carbon\Carbon::parse(optional($item->testResults)->test_date)->format('d F Y') }}
                     @else
                         No Inspection Date
                     @endif
@@ -41,7 +41,7 @@
                 </td>
                 <td>
                     @if (optional($item->signOff)->expiry_date)
-                        {{ \Carbon\Carbon::parse(optional($item->signOff)->expiry_date)->format('d,F Y') }}
+                        {{ \Carbon\Carbon::parse(optional($item->signOff)->expiry_date)->format('d F Y') }}
                     @else
                         No Expiry Date
                     @endif
