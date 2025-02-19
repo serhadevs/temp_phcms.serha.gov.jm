@@ -23,14 +23,18 @@
                             <select class="form-select" id="module" name="module">
                                 <option selected disabled>Select Module </option>
                                 @if (!in_array(auth()->user()->role_id, [4, 9]))
-                                    <option value="1">Food Handlers</option>
-                                    <option value="2">Onsite</option>
-                                    <option value="6">Food Establishment</option>
-                                    <option value="3">Test Results</option>
-                                    <option value="4">Health Interview</option>
+                                    <option value="1" {{ old('module') == '1' ? 'selected' : '' }}>Food Handlers
+                                    </option>
+                                    <option value="2" {{ old('module') == '2' ? 'selected' : '' }}>Onsite</option>
+                                    <option value="6" {{ old('module') == '6' ? 'selected' : '' }}>Food Establishment
+                                    </option>
+                                    <option value="3" {{ old('module') == '3' ? 'selected' : '' }}>Test Results
+                                    </option>
+                                    <option value="4" {{ old('module') == '4' ? 'selected' : '' }}>Health Interview
+                                    </option>
                                 @endif
                                 @if (in_array(auth()->user()->role_id, [1, 4, 5, 8, 9]))
-                                    <option value="5">Payments</option>
+                                    <option value="5" {{ old('module') == '5' ? 'selected' : '' }}>Payments</option>
                                 @endif
                             </select>
                         </div>
@@ -43,17 +47,26 @@
                                 <input type="text" class="form-control" name = "firstname" placeholder="First name"
                                     aria-label="First name">
                             </div>
+                            @error('firstname')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                             <div class="col-md-6" id="last_name_div">
                                 <label for="Last name" class="form-label">LastName</label>
                                 <input type="text" class="form-control" name="lastname" placeholder="Last name"
                                     aria-label="Last name">
                             </div>
+                            @error('lastname')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="row g-3 my-2">
                             <div class="col-md-6" id="app_no_div" style="display:none">
                                 <label for="application" class="form-label">Application Number</label>
                                 <input type="text" class="form-control" placeholder="Application Number"
                                     aria-label="Application Number" name="application_number">
+                                @error('application_number')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col-md-6" id="est_clinic_name_div" style="display:none">
                                 <label for="establishment" class="form-label">Establishment Clinic Name</label>
@@ -64,6 +77,9 @@
                                         <option value="{{ $est->name }}">{{ $est->name }}</option>
                                     @endforeach
                                 </datalist>
+                                @error('establishment_clinic_name')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col-md-6" id="app_type_div" style="display:none">
                                 <label for="app_type" class="form-label">Application Type</label>
@@ -72,37 +88,45 @@
                                     <option value="2">Food Establishment</option>
                                     <option value="3">Barber & Hair Salon</option>
                                 </select>
+                                @error('app_type')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col-md-6" id="receipt_div" style="display:none">
                                 <label for="Receipt No" class="form-label">Receipt Number</label>
                                 <input type="text" class="form-control" aria-label="Receipt No" name="receipt_no">
+                                @error('receipt_no')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="col col-md-6" id="food_est_name_div" style="display:none">
-                            
                                 <label for="exampleDataList" class="form-label">Food Establishment Name</label>
-                                <input class="form-control" list="datalistOptions"
-                                    placeholder="Type to search..." name ="food_est_name">
+                                <input class="form-control" list="datalistOptions" placeholder="Type to search..."
+                                    name ="food_est_name">
                                 <datalist id="datalistOptions">
                                     @foreach ($food_establishments as $food_est)
                                         <option value="{{ $food_est->establishment_name }}">
                                             {{ $food_est->establishment_name }}</option>
                                     @endforeach
                                 </datalist>
-
-                              
+                                @error('food_est_name')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
-
-                           
                             <div class="col col-md-6 col-sm-12 mt-3" id="operator_div" style="display:none">
                                 <label for="" class="form-label">Operator Name</label>
                                 <input type="text" class="form-control" name="operator_name"
                                     placeholder="Type to Search..." list="operatorsList">
                                 <datalist id="operatorsList">
                                     @foreach ($operators as $operator)
-                                        <option value="{{ $operator->name_of_operator }}">{{ $operator->name_of_operator }}
+                                        <option value="{{ $operator->name_of_operator }}">
+                                            {{ $operator->name_of_operator }}
                                         </option>
                                     @endforeach
                                 </datalist>
+                                @error('operator_name')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div class="col col-md-6 col-sm-12 mt-3" id ="address" style="display: none">
@@ -115,13 +139,40 @@
                                             {{ $food_est_address->establishment_address }}</option>
                                     @endforeach
                                 </datalist>
+                                @error('address')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row my-2 g-3">
+                            <div class="col-md-6" id="test_date_div" style="display:none">
+                                <label for="" class="form-label">Test Date</label>
+                                <input type="date" class="form-control" name="test_date"
+                                    value="{{ old('test_date') }}">
+                                @error('test_date')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="col-md-6" id="test_location_div" style="display:none">
+                                <label for="" class="form-label">Test Location</label>
+                                <input type="text" list="testLocation" class="form-control" name="test_location"
+                                    placeholder="Type to search" value="{{ old('test_location') }}">
+                                <datalist id="testLocation">
+                                    @foreach ($test_locations as $test_location)
+                                        <option value="{{ $test_location->test_location }}">
+                                            {{ $test_location->test_location }}
+                                        </option>
+                                    @endforeach
+                                </datalist>
+                                @error('test_location')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
-                        
                 </div>
                 <div class="card-footer">
-                    <a  onclick = "history.back()" class="btn btn-danger">Back</a>
+                    <a onclick = "history.back()" class="btn btn-danger">Back</a>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>
@@ -136,42 +187,56 @@
                 document.getElementById('receipt_div').style.display = "none";
                 document.getElementById('food_est_name_div').style.display = "none";
                 document.getElementById('operator_div').style.display = "none";
+                document.getElementById('test_location_div').style.display = "none";
+                document.getElementById('test_date_div').style.display = "none";
+                document.getElementById('address').style.display = "none";
             }
 
             document.getElementById('module').addEventListener('change', function() {
+                showRelevantFields(this.value);
+            });
+
+            window.onload = () => {
+                if (document.getElementById('module').value != '') {
+                    showRelevantFields(document.getElementById('module').value);
+                }
+            }
+
+            function showRelevantFields(module_value) {
                 hideAll();
-                if (this.value == '1') {
+                if (module_value == '1') {
                     document.getElementById('name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('est_clinic_name_div').style.display = "";
-                } else if (this.value == '2') {
+                    document.getElementById('test_location_div').style.display = "";
+                    document.getElementById('test_date_div').style.display = "";
+                } else if (module_value == '2') {
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('est_clinic_name_div').style.display = "";
-                } else if (this.value == "3") {
+                } else if (module_value == "3") {
                     document.getElementById('name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('app_type_div').style.display = "";
                     document.querySelector('#app_type option:nth-child(3)').style.display = "none";
                     document.querySelector('#app_type option:nth-child(2)').style.display = "";
                     document.getElementById('address').style.display = "none"
-                } else if (this.value == "4") {
+                } else if (module_value == "4") {
                     document.getElementById('name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('app_type_div').style.display = "";
                     document.querySelector('#app_type option:nth-child(3)').style.display = "";
                     document.querySelector('#app_type option:nth-child(2)').style.display = "none";
-
-                } else if (this.value == '5') {
+                } else if (module_value == '5') {
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('receipt_div').style.display = "";
-
-                } else if (this.value == '6') {
+                } else if (module_value == '6') {
                     document.getElementById('food_est_name_div').style.display = "";
                     document.getElementById('app_no_div').style.display = "";
                     document.getElementById('operator_div').style.display = "block";
-                    document.getElementById('address').style.display = ""
+                    document.getElementById('address').style.display = "";
+                    document.getElementById('test_date_div').style.display = "";
                 }
-            })
+            }
 
             document.getElementById('app_type').addEventListener('change', function() {
                 if (this.value == "1") {
@@ -185,7 +250,7 @@
                 } else if (this.value == '2') {
                     document.getElementById('name_div').style.display = "none";
                     document.getElementById('food_est_name_div').style.display = "";
-                    document.getElementById('address').style.display = "none"
+                    document.getElementById('address').style.display = "none";
                 }
             })
         </script>

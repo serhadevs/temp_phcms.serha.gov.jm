@@ -8,6 +8,7 @@ use App\Models\FoodEstablishmentOperators;
 use App\Models\HealthCertApplications;
 use App\Models\Payments;
 use App\Models\PermitApplication;
+use App\Models\TestResult;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -17,9 +18,7 @@ use Exception;
 
 class AdvanceSearchController extends Controller
 {
-    public function index()
-    {
-    }
+    public function index() {}
 
     public function create()
     {
@@ -34,12 +33,19 @@ class AdvanceSearchController extends Controller
             ->get();
 
         $food_addresses = EstablishmentApplications::with('user')
-        ->whereRelation('user','facility_id',auth()->user()->facility_id)
-        ->orderBy('establishment_address','asc')
-        // ->where('id',144)
-        ->get();
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->orderBy('establishment_address', 'asc')
+            // ->where('id',144)
+            ->get();
 
-        //dd($food_addresses);
+        $test_locations = DB::table('test_results')
+            ->select('test_location')
+            ->where('application_type_id', 1)
+            ->where('facility_id', auth()->user()->facility_id)
+            ->groupBy('test_location')
+            ->get();
+
+        // dd($test_locations->first()->test_location);
 
         $operators = FoodEstablishmentOperators::with('foodEstablishment.user')
             ->whereRelation('foodEstablishment.user', 'facility_id', auth()->user()->facility_id)
@@ -47,24 +53,28 @@ class AdvanceSearchController extends Controller
             ->select('name_of_operator')
             ->get();
 
-        return view('advancesearch.create', compact('establishment_clinics', 'food_establishments', 'operators','food_addresses'));
+        return view('advancesearch.create', compact('establishment_clinics', 'food_establishments', 'operators', 'food_addresses', 'test_locations'));
     }
 
     public function show(Request $request)
     {
         $module = $request->validate([
             'module' => 'required',
+            'test_location' => 'nullable|min:3'
         ]);
         try {
             if ($module['module'] == '1') {
-                if (!$request->firstname && !$request->lastname && !$request->application_number && !$request->establishment_clinic_name) {
+                if (!$request->firstname && !$request->lastname && !$request->application_number && !$request->establishment_clinic_name  && !$request->test_date && !$request->test_location) {
                     return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
                 }
+
                 $firstname = $request->firstname;
                 $lastname = $request->lastname;
                 $id = $request->application_number;
                 $est_clinic_name = $request->establishment_clinic_name;
-                $permit_applications = PermitApplication::with('user', 'establishmentClinics', 'signOffs')
+                $test_date = $request->test_date;
+                $test_location = str_replace(array(',', '-', '.', '\'', ' ', '-', '&', '#', '(', ')'), '', $request->test_location);
+                $permit_applications = PermitApplication::with('user', 'establishmentClinics', 'signOffs', 'testResults')
                     ->when(
                         $firstname,
                         function ($query, string $firstname) {
@@ -85,7 +95,16 @@ class AdvanceSearchController extends Controller
                         function ($query, $est_clinic_name) {
                             $query->whereRelation('establishmentClinics', 'name', 'like', "%" . $est_clinic_name . "%");
                         }
-                    )
+                    )->when($test_date, function ($query, string $test_date) {
+                        $query->whereRelation('testResults', 'test_date', $test_date);
+                    })->when($test_location, function ($query, string $test_location) {
+                        $query->whereHas(
+                            'testResults',
+                            function ($query2) use ($test_location) {
+                                $query2->whereRaw('replace(replace(replace(replace(replace(replace(replace(replace(test_location, ")", ""), "(", ""),"#", ""), ",", ""),".", ""), "-", ""), "&", "")," ", "") LIKE ?', ["%" . $test_location . "%"]);
+                            }
+                        );
+                    })
                     ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                     ->get();
                 $module = 1;
@@ -138,8 +157,6 @@ class AdvanceSearchController extends Controller
                     $module = 3;
                     $est_name = $request->food_est_name;
                     $application_id = $request->application_number;
-                    
-
                     $applications = EstablishmentApplications::with('establishmentCategory', 'testResults', 'user', 'signOff')
                         ->when($est_name, function ($query, string $est_name) {
                             $query->where('establishment_name', 'like', '%' . $est_name . '%');
@@ -147,7 +164,6 @@ class AdvanceSearchController extends Controller
                         ->when($application_id, function ($query, string $application_id) {
                             $query->where('id', '=', $application_id);
                         })
-                       
                         ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                         ->get();
 
@@ -210,26 +226,26 @@ class AdvanceSearchController extends Controller
                 $module = 5;
                 return view('advancesearch.view', compact('payments_info', 'module'));
             } else if ($module['module'] == '6') {
-                if (!$request->application_number && !$request->food_est_name && !$request->operator_name && !$request->address) {
+                if (!$request->application_number && !$request->food_est_name && !$request->operator_name && !$request->address && !$request->test_location) {
                     return redirect()->route('advance-search')->with('error', 'At least one field has to be entered for search.');
                 }
 
                 $id = $request->application_number;
                 $est_name = $request->food_est_name;
                 $operator_name = $request->operator_name;
-                $address = $request->address;
+                $address = str_replace(array(',', '-', '.', '\'', ' ', '-', '&', '#', '(', ')'), '', $request->address);
                 $food_establishments = EstablishmentApplications::with('user', 'operators')
                     ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                     ->when($id, function ($query, string $id) {
                         $query->where('id', $id);
                     })->when($est_name, function ($query, string $est_name) {
                         $query->where('establishment_name', 'like', '%' . $est_name . '%');
-                    }) ->when($address, function ($query, string $address) {
-                        $query->where('establishment_address', '=', $address);
-                    })
-                    ->when($operator_name, function ($query, string $operator_name) {
+                    })->when($operator_name, function ($query, string $operator_name) {
                         $query->whereRelation('operators', 'name_of_operator', 'like', '%' . $operator_name . '%');
-                    })->get();
+                    })->when($address, function ($query, string $address) {
+                        $query->whereRaw('replace(replace(replace(replace(replace(replace(replace(replace(establishment_address, ")", ""), "(", ""),"#", ""), ",", ""),".", ""), "-", ""), "&", "")," ", "") LIKE ?', ["%" . $address . "%"]);
+                    })
+                    ->get();
                 $module = 6;
 
                 return view('advancesearch.view', compact('food_establishments', 'module'));
@@ -237,6 +253,5 @@ class AdvanceSearchController extends Controller
         } catch (Exception $e) {
             return $e->getMessage();
         }
-
     }
 }
