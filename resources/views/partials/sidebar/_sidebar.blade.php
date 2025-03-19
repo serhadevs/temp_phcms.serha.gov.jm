@@ -308,11 +308,11 @@
                     </li>
                 @endif
 
-                @if(in_array(auth()->user()->role_id,[1]))
+                {{-- @if(in_array(auth()->user()->role_id,[1]))
                 <li class="sidebar-item">
                     <a href="{{ route('report.generate.ai') }}" class="sidebar-link">AI Generated Report</a>
                 </li>
-                @endif
+                @endif --}}
 
                
 
