@@ -31,7 +31,8 @@ class Payments extends Model implements Auditable
         'updated_at',
         'deleted_at',
         'manual_receipt_no',
-        'manual_receipt_date'
+        'manual_receipt_date',
+        'payment_type_id'
     ];
 
     public $timestamps = true;
@@ -61,7 +62,13 @@ class Payments extends Model implements Auditable
         return $this->hasOne(User::class, 'id', 'cashier_user_id')->withTrashed();
     }
 
-    public function application_id(): HasOne{
-        return $this->hasOne(SignOff::class,'id','application_id');
+    public function application_id(): HasOne
+    {
+        return $this->hasOne(SignOff::class, 'id', 'application_id');
+    }
+
+    public function paymentType(): HasOne
+    {
+        return $this->hasOne(PaymentTypes::class, 'id', 'payment_type_id');
     }
 }

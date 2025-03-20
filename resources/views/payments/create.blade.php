@@ -82,6 +82,19 @@
                                     @enderror
                                 </div>
                                 <div class="mt-3">
+                                    <label for="" class="form-label">Payment Type</label>
+                                    <select name="payment_type_id" id="" class="form-select">
+                                        @foreach ($payment_types as $payment_type)
+                                            <option value="{{ $payment_type->id }}"
+                                                {{ old('payment_type_id') == $payment_type->id ? 'selected' : '' }}>
+                                                {{ $payment_type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('payment_type_id')
+                                        <p class="text-danger">This is a required field</p>
+                                    @enderror
+                                </div>
+                                <div class="mt-3">
                                     <div class="mt-3" style="display:none" id="backlog_1">
                                         <label for="" class="form-label">Receipt No of manual receipt</label>
                                         <input type="text" class="form-control" name="manual_receipt_no"
@@ -102,7 +115,8 @@
                                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
                                             onchange="backlog(this.checked)" value="1" name="is_backlog"
                                             {{ old('is_backlog') == '1' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Backlog Payment</label>
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Backlog
+                                            Payment</label>
                                     </div>
                                 </div>
                                 <div class="mt-4">
@@ -169,6 +183,7 @@
                                 if (document.getElementById('application_id').value != "") {
                                     var app_id = $('#application_id').val();
                                     var price_id = $('#prices').val();
+                                    // console.
                                     if (app_id != '') {
                                         $('#result').html('');
                                         $.ajax({

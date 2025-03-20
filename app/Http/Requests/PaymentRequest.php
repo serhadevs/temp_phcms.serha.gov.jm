@@ -25,12 +25,13 @@ class PaymentRequest extends FormRequest
     {
         return [
             'price_id' => 'required',
-                'application_id' => 'required',
-                'amount_paid' => 'required',
-                'total_cost' => 'required',
-                'change_amt' => 'required|numeric|min:0',
-                'manual_receipt_no' => 'required_if:is_backlog,1',
-                'manual_receipt_date' => 'required_if:is_backlog,1'
+            'application_id' => 'required',
+            'amount_paid' => 'required',
+            'total_cost' => 'required',
+            'change_amt' => 'required|numeric|min:0',
+            'manual_receipt_no' => 'required_if:is_backlog,1',
+            'manual_receipt_date' => 'required_if:is_backlog,1',
+            'payment_type_id' => 'required'
         ];
     }
 }
