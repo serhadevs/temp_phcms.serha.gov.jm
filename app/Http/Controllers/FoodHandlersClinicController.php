@@ -238,7 +238,12 @@ class FoodHandlersClinicController extends Controller
 
         $edit_mode = 1;
 
-        return view('food_handlers_clinic.view', compact('application', 'edit_mode'));
+        $applications_signed_off = PermitApplication::where('establishment_clinic_id', $request->route('id'))
+            ->where('sign_off_status', 1)
+            ->count();
+
+
+        return view('food_handlers_clinic.view', compact('application', 'edit_mode', 'applications_signed_off'));
     }
 
     /**

@@ -32,6 +32,10 @@
                     @if (!empty($receipt_info['permit_category']))
                         <h5 class="mt-3">Permit Category : {{ $receipt_info['permit_category'] }}</h5>
                     @endif
+                    @if (!empty($receipt_info['payment_type']))
+                        <h5 class="mt-3">Payment Type : {{ $receipt_info['payment_type'] }}</h5>
+                    @endif
+                    <h5></h5>
                     @if (!empty($receipt_info['receipt_no']))
                         <h5 class="mt-3">Receipt Number : {{ $receipt_info['receipt_no'] }}</h5>
                     @endif
@@ -103,7 +107,7 @@
             if (typeof receipt_info['permit_category'] != 'undefined') {
                 mywindow.document.write('Permit Category      : ' + receipt_info['permit_category'] + "<br>");
             }
-
+            mywindow.document.write('Payment Type     : ' + receipt_info['payment_type'] + "<br>");
             mywindow.document.write('Receipt No.     : ' + receipt_info['receipt_no'] + "<br>");
 
 

@@ -15,9 +15,11 @@ use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
 use App\Models\Facility;
+use App\Models\FoodEstablishmentOperators;
 use App\Models\HealthCertApplications;
 use App\Models\PaymentCancellationRequests;
 use App\Models\Payments;
+use App\Models\PaymentTypes;
 use App\Models\PermitApplication;
 use App\Models\Prices;
 use App\Models\Renewals;
@@ -294,7 +296,9 @@ class PaymentController extends Controller
             ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
-        return view('payments.create', compact('prices'));
+        $payment_types = PaymentTypes::all();
+
+        return view('payments.create', compact('prices', 'payment_types'));
     }
 
     public function createFromApplication(Request $request)
@@ -316,11 +320,13 @@ class PaymentController extends Controller
             $price_id = Prices::where('application_type_id', $app_type)->first()->id;
         }
 
+        $payment_types = PaymentTypes::all();
+
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
             ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
-        return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id'));
+        return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id', 'payment_types'));
     }
 
     public function applyClinicPermitPayment($clinic_id)
@@ -392,7 +398,7 @@ class PaymentController extends Controller
     public function printReceipt(Request $request)
     {
         $payment_id = $request->route('id');
-        $payment = Payments::find($payment_id);
+        $payment = Payments::with('paymentType')->find($payment_id);
 
         // dd($payment);
         if ($payment->application_type_id == 1) {
@@ -442,12 +448,9 @@ class PaymentController extends Controller
         $receipt_info['total_cost'] = $payment->total_cost;
         $receipt_info['amount_paid'] = $payment->amount_paid;
         $receipt_info['change_amt'] = $payment->change_amt;
+        $receipt_info['payment_type'] = $payment->paymentType?->name;
         $cashier = User::find($payment->cashier_user_id);
         $receipt_info['cashier'] = $cashier->firstname[0] . ". " . $cashier->lastname;
-
-
-
-
 
         return view('payments.receipt', compact('receipt_info'));
     }
@@ -514,32 +517,32 @@ class PaymentController extends Controller
         // $email = $applicant->email;
 
         if ($applicant !== null) {
-            $email = $applicant->email;
+            // $email = $applicant->email;
 
-            try {
-                if ($email) {
-                    dispatch(new SendPaymentReceiptEmail($email, $applicant, $register_new_payment, $cashier_name, $receipt_number));
-                    Messages::create([
-                        'permit_application_id' => $applicant->id,
-                        'email_type_id' => 2,
-                        'to' => $email,
-                        'status' => 'sent',
-                        'error_message' => 'none',
-                        'user_id' => auth()->user()->id,
-                        'sent_at' => \Carbon\Carbon::now()
-                    ]);
-                }
-            } catch (\Exception $e) {
-                Messages::create([
-                    'permit_application_id' => $applicant->id,
-                    'email_type_id' => 2,
-                    'to' => $email,
-                    'status' => 'error',
-                    'error_message' => 'none',
-                    'user_id' => auth()->user()->id,
-                    'sent_at' => \Carbon\Carbon::now()
-                ]);
-            }
+            // try {
+            //     if ($email) {
+            //         dispatch(new SendPaymentReceiptEmail($email, $applicant, $register_new_payment, $cashier_name, $receipt_number));
+            //         Messages::create([
+            //             'permit_application_id' => $applicant->id,
+            //             'email_type_id' => 2,
+            //             'to' => $email,
+            //             'status' => 'sent',
+            //             'error_message' => 'none',
+            //             'user_id' => auth()->user()->id,
+            //             'sent_at' => \Carbon\Carbon::now()
+            //         ]);
+            //     }
+            // } catch (\Exception $e) {
+            //     Messages::create([
+            //         'permit_application_id' => $applicant->id,
+            //         'email_type_id' => 2,
+            //         'to' => $email,
+            //         'status' => 'error',
+            //         'error_message' => 'none',
+            //         'user_id' => auth()->user()->id,
+            //         'sent_at' => \Carbon\Carbon::now()
+            //     ]);
+            // }
         } else {
             // Handle the case where $applicant is null
             $email = null; // or provide a default value or error message
@@ -585,9 +588,11 @@ class PaymentController extends Controller
             $output = "";
             $results = DB::table('permit_applications')
                 ->join('permit_categories', 'permit_categories.id', '=', 'permit_applications.permit_category_id')
+                ->join('users', 'permit_applications.user_id', '=', 'users.id')
                 ->where('permit_applications.id', $application_id)
-                // ->where('permit_applications.deleted_at', '=', NULL)
-                // ->where('permit_applications.sign_off_status', '=', 1)
+                ->where('permit_applications.deleted_at', '=', NULL)
+                ->where('users.facility_id', auth()->user()->facility_id)
+                ->select('permit_applications.*', 'permit_categories.name')
                 ->get();
 
             $appointments = DB::table('appointments')
@@ -622,7 +627,11 @@ class PaymentController extends Controller
         } else if ($application_type_id == 2) {
             $output = "";
             $results = DB::table('health_cert_applications')
-                ->where('id', '=', $application_id)
+                ->join('users', 'health_cert_applications.user_id', '=', 'users.id')
+                ->where('health_cert_applications.id', '=', $application_id)
+                ->where('users.facility_id', auth()->user()->facility_id)
+                ->where('health_cert_applications.deleted_at', '=', NULL)
+                ->select('health_cert_applications.*')
                 ->get();
 
             if ($results->isEmpty()) {
@@ -645,8 +654,13 @@ class PaymentController extends Controller
             $output = "";
             $results = DB::table('establishment_applications')
                 ->join('establishment_categories', 'establishment_categories.id', '=', 'establishment_applications.establishment_category_id')
+                ->join('users', 'establishment_applications.user_id', '=', 'users.id')
                 ->where('establishment_applications.id', '=', $application_id)
+                ->where('users.facility_id', auth()->user()->facility_id)
+                ->where('establishment_applications.deleted_at', '=', NULL)
                 ->get();
+
+            $operators = FoodEstablishmentOperators::where('establishment_application_id', $application_id)->get();
 
             if ($results->isEmpty()) {
                 $output = '<h4>Application Information</h4><p class="text-danger">Data Not found</p>';
@@ -654,12 +668,18 @@ class PaymentController extends Controller
             } else {
                 $output = $output = "<h4>Application Info</h4>";
                 foreach ($results as $result) {
-                    $output .= "<p>Application Type : $result->establishment_name</p>";
+                    // $output .= "<p>Application Type : $result->establishment_name</p>";
                     $output .= "<p>Establishment Name : $result->establishment_name</p>";
                     $output .= "<p>Establishment Address : $result->establishment_address</p>";
                     $output .= "<p>Food Type : $result->food_type</p>";
                     $output .= "<p>Establishment Category: $result->name</p>";
-                    $output .= "<p>Operator Names: </p>";
+                    $output .= "<p>Operator Names:</p>";
+                    $output .= "<ul>";
+                    foreach ($operators as $operator) {
+                        $output .= "<li>" . $operator->name_of_operator . "</li>";
+                    }
+                    $output .= "</ul>";
+
                     $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
                 echo $output;
@@ -667,7 +687,11 @@ class PaymentController extends Controller
         } else if ($application_type_id == 4) {
             $output = "";
             $results = DB::table('establishment_clinics')
-                ->where('id', '=', $application_id)
+                ->join('users', 'establishment_clinics.user_id', '=', 'users.id')
+                ->where('establishment_clinics.id', '=', $application_id)
+                ->where('users.facility_id', auth()->user()->facility_id)
+                ->where('establishment_clinics.deleted_at', '=', NULL)
+                ->select('establishment_clinics.*')
                 ->get();
 
             if ($results->isEmpty()) {
@@ -689,7 +713,11 @@ class PaymentController extends Controller
         } else if ($application_type_id == 5) {
             $output = "";
             $results = DB::table('swimming_pools_applications')
-                ->where('id', '=', $application_id)
+                ->join('users', 'swimming_pools_applications.user_id', '=', 'users.id')
+                ->where('swimming_pools_applications.id', '=', $application_id)
+                ->where('users.facility_id', auth()->user()->facility_id)
+                ->where('swimming_pools_applications.deleted_at', '=', NULL)
+                ->select('swimming_pools_applications.firstname', 'swimming_pools_applications.lastname', 'swimming_pools_applications.swimming_pool_address')
                 ->get();
 
             if ($results->isEmpty()) {
@@ -709,7 +737,11 @@ class PaymentController extends Controller
         } else  if ($application_type_id == 6) {
             $output = "";
             $results = DB::table('tourist_establishments')
-                ->where('id', '=', $application_id)
+                ->join('users', 'tourist_establishments.user_id', '=', 'users.id')
+                ->where('tourist_establishments.id', '=', $application_id)
+                ->where('users.facility_id', auth()->user()->facility_id)
+                ->where('tourist_establishments.deleted_at', '=', NULL)
+                ->select('tourist_establishments.*')
                 ->get();
 
             if ($results->isEmpty()) {
