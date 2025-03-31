@@ -296,7 +296,9 @@ class PaymentController extends Controller
             ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
-        $payment_types = PaymentTypes::all();
+        $payment_types = PaymentTypes::with('paymentTypeFacilities')
+            ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
+            ->get();
 
         return view('payments.create', compact('prices', 'payment_types'));
     }
@@ -320,7 +322,10 @@ class PaymentController extends Controller
             $price_id = Prices::where('application_type_id', $app_type)->first()->id;
         }
 
-        $payment_types = PaymentTypes::all();
+        $payment_types = PaymentTypes::with('paymentTypeFacilities')
+            ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
+            ->get();
+
 
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
             ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Facility extends Model
@@ -22,4 +23,9 @@ class Facility extends Model
     ];
 
     public $timestamps = true;
+
+    public function paymentTypeFacilities(): HasMany
+    {
+        return $this->hasMany(PaymentTypeFacilities::class, 'facility_id', 'id');
+    }
 }

@@ -81,7 +81,7 @@
                                         <p class="text-danger">Cannot be a negative number</p>
                                     @enderror
                                 </div>
-                                <div class="mt-3">
+                                <div class="mt-3" {{ auth()->user()->facility_id == 3 ? '' : 'hidden' }}>
                                     <label for="" class="form-label">Payment Type</label>
                                     <select name="payment_type_id" id="" class="form-select">
                                         @foreach ($payment_types as $payment_type)

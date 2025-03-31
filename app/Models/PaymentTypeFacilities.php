@@ -4,28 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PaymentTypes extends Model
+class PaymentTypeFacilities extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = "payment_types";
+    protected $table = "payment_type_facilities";
 
     protected $fillable = [
-        'id',
-        'name',
+        'payment_type_id',
+        'facility_id',
         'created_at',
         'updated_at',
         'deleted_at'
     ];
-
-    public function paymentTypeFacilities(): HasMany
-    {
-        return $this->hasMany(PaymentTypeFacilities::class, 'payment_type_id', 'id');
-    }
 
     public $timestamps = true;
 }
