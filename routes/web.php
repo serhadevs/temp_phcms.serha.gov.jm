@@ -398,6 +398,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/inspections', [ReportController::class, 'createInspectionsReport'])->name('reports.inspections');
   Route::post('/reports/inspections/show', [ReportController::class, 'generateInspectionsReport'])->name('reports.inspections.show');
 
+  Route::get('/reports/downloads/test', [ReportController::class, 'downloadsTest']);
+
 
   //Training Manual Page
   Route::get('/training-manuals', [TrainingManualsController::class, 'index'])->name("training.manuals");

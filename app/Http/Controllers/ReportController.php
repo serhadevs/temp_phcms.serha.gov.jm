@@ -520,7 +520,7 @@ class ReportController extends Controller
         ]);
 
         // Start building query
-        $query = EstablishmentApplications::with('establishmentCategory', 'user','operators','signOff','testResults','establishmentCategory')
+        $query = EstablishmentApplications::with('establishmentCategory', 'user', 'operators', 'signOff', 'testResults', 'establishmentCategory')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id);
 
         // Apply zone filter if not 7
@@ -534,5 +534,17 @@ class ReportController extends Controller
         //dd($establishments);
 
         return view('reports.establishments.viewest', compact('establishments'));
+    }
+
+    public function downloadsTest()
+    {
+        $downloads = Downloads::withCount('zippedApplications')
+            ->where('created_at', '>', '2024-01-01')
+            ->where('application_type_id', 3)
+            ->get();
+
+        // dd($downloads);
+
+        return view('reports.download_test.index', compact('downloads'));
     }
 }
