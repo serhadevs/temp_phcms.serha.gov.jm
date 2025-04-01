@@ -343,25 +343,25 @@
                 </div>
             </div>
         </div>
-        <script src="https://unpkg.com/imask"></script>
+        {{-- <script src="https://unpkg.com/imask"></script> --}}
         <script>
-            const trn = document.getElementById('trn');
-            const cell_phone = document.getElementById('cell_phone');
-            const work_phone = document.getElementById('work_phone');
-            const home_phone = document.getElementById('home_phone');
+            // const trn = document.getElementById('trn');
+            // const cell_phone = document.getElementById('cell_phone');
+            // const work_phone = document.getElementById('work_phone');
+            // const home_phone = document.getElementById('home_phone');
 
-            const maskOptions = {
-                mask: '000-000-000'
-            }
+            // const maskOptions = {
+            //     mask: '000-000-000'
+            // }
 
-            const maskOptions2 = {
-                mask: '1(000)000-0000'
-            }
+            // const maskOptions2 = {
+            //     mask: '1(000)000-0000'
+            // }
 
-            const mask1 = IMask(trn, maskOptions);
-            const mask2 = IMask(cell_phone, maskOptions2);
-            const mask3 = IMask(work_phone, maskOptions2);
-            const mask4 = IMask(home_phone, maskOptions2);
+            // const mask1 = IMask(trn, maskOptions);
+            // const mask2 = IMask(cell_phone, maskOptions2);
+            // const mask3 = IMask(work_phone, maskOptions2);
+            // const mask4 = IMask(home_phone, maskOptions2);
 
             // const hamBurger = document.querySelector(".toggle-btn");
 

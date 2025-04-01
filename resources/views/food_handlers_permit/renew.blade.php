@@ -314,7 +314,7 @@
                 </div>
             </div>
         </div>
-        <script src="https://unpkg.com/imask"></script>
+        {{-- <script src="https://unpkg.com/imask"></script>
         <script>
             const trn = document.getElementById('trn');
             const cell_phone = document.getElementById('cell_phone');
@@ -339,7 +339,7 @@
             hamBurger.addEventListener("click", function() {
                 document.querySelector("#sidebar").classList.toggle("expand");
             });
-        </script>
+        </script> --}}
         <script>
             $(document).ready(function() {
                 $("input[name='permit_type']").change(function() {
