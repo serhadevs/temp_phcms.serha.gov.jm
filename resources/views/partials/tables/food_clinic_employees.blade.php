@@ -61,9 +61,9 @@
 <script>
     new DataTable('#food_clinic_employees', {
         scrollX: true,
-        initComplete: function() {
-            loading.close()
-        },
+        // initComplete: function() {
+        //     loading.close()
+        // },
         responsive: true
     });
 </script>

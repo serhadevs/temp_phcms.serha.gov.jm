@@ -475,7 +475,7 @@
             }
         </script>
 
-        {{-- <script src="https://unpkg.com/imask"></script>
+        <script src="https://unpkg.com/imask"></script>
         <script>
             const telephone = document.getElementById('telephone');
 
@@ -484,7 +484,7 @@
             }
 
             const mask1 = IMask(telephone, maskOptions);
-        </script> --}}
+        </script>
     </div>
     @include('partials.messages.loading_message')
 
