@@ -25,7 +25,8 @@ class FoodEstablishmentController extends Controller
     public function index($id)
     {
         if (auth()->user()->default_filter_id != "") {
-            $id = auth()->user()->default_filter_id;
+            //Allow latty to see food establishments up to the last 6 months
+            $id = 180;
         }
 
         $today = date_format(new Datetime(), "Y-m-d");
