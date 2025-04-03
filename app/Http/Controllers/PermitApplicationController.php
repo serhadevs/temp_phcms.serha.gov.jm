@@ -191,7 +191,8 @@ class PermitApplicationController extends Controller
             'photo_upload' => 'nullable',
             'permit_category_id' => 'required',
             'permit_type' => 'required',
-            'edit_reason' => 'required'
+            'edit_reason' => 'required',
+            'no_of_years'=>'required_if:permit_type,student'
         ]);
         try {
             if ($permit = PermitApplication::with('signOffs', 'user')
@@ -226,7 +227,7 @@ class PermitApplicationController extends Controller
                         $edits['photo_upload'] = $permit->photo_upload;
                     }
 
-                    $permit_array_used_compare = PermitApplication::where('id', $id)->select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'gender', 'cell_phone', 'home_phone', 'work_phone', 'trn', 'email', 'permit_no', 'photo_upload', 'permit_category_id', 'permit_type')->first()->toArray();
+                    $permit_array_used_compare = PermitApplication::where('id', $id)->select('firstname', 'middlename', 'lastname', 'address', 'date_of_birth', 'gender', 'cell_phone', 'home_phone', 'work_phone', 'trn', 'email', 'permit_no', 'photo_upload', 'permit_category_id', 'permit_type', 'no_of_years')->first()->toArray();
 
                     if (isset($new_image_name)) {
                         $permit_array_used_compare['photo_upload'] = 'photo_uploads/archives/' . $new_image_name;

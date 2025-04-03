@@ -592,7 +592,7 @@
                                             </div>
                                             <div class="col">
                                                 <label for="" class="form-label">Permit Type</label>
-                                                <select name="permit_type" id="permit_type" class="form-select" disabled>
+                                                <select name="permit_type" id="permit_type" class="form-select" disabled onchange="showNoYears(this.value)">
                                                     <option value="regular"
                                                         {{ old('permit_type') ? (old('permit_type') == 'regular' ? 'selected' : '') : ($permit_application->permit_type == 'regular' ? 'selected' : '') }}>
                                                         REGULAR</option>
@@ -607,6 +607,17 @@
                                                     <strong class="text-danger fw-bold">{{ $message }}</strong>
                                                 @enderror
                                             </div>
+                                        </div>
+                                        <div class="mt-3" id="no_of_years_div"
+                                            {{ (old('permit_type') == 'student' ? '' : $permit_application->permit_type != 'student') ? 'hidden' : '' }}>
+                                            <label for="" class="form-label">Number of Years</label>
+                                            <input type="text" class="form-control" name="no_of_years"
+                                                id="no_of_years"
+                                                value="{{ old('no_of_years') ? old('no_of_years') : $permit_application->no_of_years }}"
+                                                disabled>
+                                            @error('no_of_years')
+                                                <strong class="text-danger fw-bold errors">{{ $message }}</strong>
+                                            @enderror
                                         </div>
                                         <div class="mt-3" style="display:none" id="reason_for_edit">
                                             <label for="" class="form-label">
@@ -978,6 +989,12 @@
             }
         }
 
+        function showNoYears(value) {
+            if (value == "student") {
+                document.getElementById('no_of_years_div').removeAttribute('hidden');
+            }
+        }
+
         function allowEdit() {
             $("#firstname").removeAttr("disabled");
             $("#lastname").removeAttr("disabled");
@@ -992,6 +1009,7 @@
             $("#email").removeAttr("disabled");
             $('#permit_cat_id').removeAttr("disabled");
             $('#permit_type').removeAttr("disabled");
+            $('#no_of_years').removeAttr("disabled");
             document.getElementById("updBtn").style.display = "";
             document.getElementById('reason_for_edit').style.display = "";
             // if ($("#applicant_img").attr('src') == undefined) {
@@ -1003,7 +1021,7 @@
             });
         }
     </script>
-    <script> 
+    <script>
         function populatePaymentModal(payment_info, appointment_date, est_appointment_date) {
             document.querySelector('h1.payment-header').innerHTML = "Payment ID - " + payment_info['id'];
             document.getElementById('payment_ap_id').innerHTML = payment_info['application_id'];
