@@ -597,7 +597,7 @@ class TestDownloads extends Controller
             15305,
             15306,
             15309
-        ])
+        ])->where('touched', NULL)
             ->get();
         foreach ($downloads as $download) {
             $array = [];
