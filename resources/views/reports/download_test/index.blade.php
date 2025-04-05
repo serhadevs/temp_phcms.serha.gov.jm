@@ -57,6 +57,12 @@
                 new DataTable('#currentUsers', {
                     responsive: true,
                     scrollX: true,
+                    aLengthMenu: [
+                        [parseInt(10), parseInt(25), parseInt(50), parseInt(75), parseInt(100), parseInt(500),
+                            parseInt(1000), parseInt(5000), parseInt(-1)
+                        ],
+                        [10, 25, 50, 75, 100, 500, 1000, 5000, "All"]
+                    ],
                 });
             </script>
         </div>
