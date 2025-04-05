@@ -23,6 +23,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::call(function(){
-    Mail::to('test@google.com')->send(new DailyReportFoodPermits());
-})->everyMinute();
+// Schedule::call(function(){
+//     Mail::to('test@google.com')->send(new DailyReportFoodPermits());
+// })->everyMinute();
