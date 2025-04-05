@@ -11,7 +11,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Downloads extends Model implements Auditable
 {
     use HasFactory;
-    use SoftDeletes;
+    // use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
 
     protected $table = 'downloads';
@@ -25,7 +25,8 @@ class Downloads extends Model implements Auditable
         'download_date',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'touched'
     ];
 
     public function zippedApplications(): HasMany
