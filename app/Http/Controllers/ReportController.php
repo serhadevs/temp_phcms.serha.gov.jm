@@ -539,7 +539,7 @@ class ReportController extends Controller
     public function downloadsTest()
     {
         $downloads = Downloads::withCount('zippedApplications')
-            ->where('created_at', '>', '2024-01-01')
+            ->whereBetween('created_at', ['2024-01-30', '2024-12-31'])
             ->where('application_type_id', 3)
             ->get();
 
