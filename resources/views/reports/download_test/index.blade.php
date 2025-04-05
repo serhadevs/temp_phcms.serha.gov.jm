@@ -17,8 +17,8 @@
                         <thead>
                             <tr>
                                 <th>Download ID</th>
-                                <th>Download Number</th>
-                                <th>Actual Download Number</th>
+                                <th>Application Amount</th>
+                                <th>Number of Zipped Applications</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
