@@ -195,7 +195,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get('/sign-off/food-establishments', [SignOffController::class, 'viewSignOffs'])->name('sign-off-establishments');
   Route::post('/sign-off/request/reversal', [SignOffController::class, 'requestSignoffReversal'])->name('sign-off.request.reversal');
-  Route::get('/sign-off/reversal/requests/index', [SignOffController::class, 'viewReversalRequests']);
+  Route::get('/sign-off/reversal/requests', [SignOffController::class, 'viewReversalRequests']);
   Route::get('/sign-off/reversal/approve/{id}', [SignOffController::class, 'approveReversal']);
 
   //Test Results
