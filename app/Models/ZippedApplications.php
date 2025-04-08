@@ -25,7 +25,7 @@ class ZippedApplications extends Model implements Auditable
         'download_id',
         'created_at',
         'updated_at',
-        'written',
+        // 'written',
         'deleted_at'
     ];
 

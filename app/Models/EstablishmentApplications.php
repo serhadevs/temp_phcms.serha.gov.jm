@@ -14,7 +14,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class EstablishmentApplications extends Model implements Auditable
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
     // use Loggable;
 
