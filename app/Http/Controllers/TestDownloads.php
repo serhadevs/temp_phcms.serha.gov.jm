@@ -1517,6 +1517,8 @@ class TestDownloads extends Controller
         // ->where('touched', NULL)
         ->get();
 
+        dd($downloads);
+
         foreach ($downloads as $download) {
             $array = [];
             $rand_string = "";
