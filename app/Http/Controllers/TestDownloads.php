@@ -1546,7 +1546,7 @@ class TestDownloads extends Controller
                 fclose($file);
             }
             // dd($array);
-            DB::beginTransaction();
+            // DB::beginTransaction();
             foreach ($array as $permit_no) {
                 if ($establishment = EstablishmentApplications::where('permit_no', $permit_no)->first()) {
                     ZippedApplications::where('application_id', $establishment->id)
@@ -1555,7 +1555,7 @@ class TestDownloads extends Controller
                 }
             }
             $download->update(['touched' => 1]);
-            DB::commit();
+            // DB::commit();
         }
 
         return "success";
