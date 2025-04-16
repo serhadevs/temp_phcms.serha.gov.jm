@@ -1517,7 +1517,7 @@ class TestDownloads extends Controller
         // ->where('touched', NULL)
         ->get();
 
-        dd($downloads);
+        // dd($downloads);
 
         foreach ($downloads as $download) {
             $array = [];
@@ -1545,6 +1545,7 @@ class TestDownloads extends Controller
                 }
                 fclose($file);
             }
+            $dd($array);
             DB::beginTransaction();
             foreach ($array as $permit_no) {
                 if ($establishment = EstablishmentApplications::where('permit_no', $permit_no)->first()) {
