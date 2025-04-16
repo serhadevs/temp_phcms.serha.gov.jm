@@ -470,4 +470,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
   Route::get('/apm', '\Done\LaravelAPM\ApmController@index')->name('apm');
+
+  Route::get("/test/clear-appointments", [TestDownloads::class, 'clearAppointments']);
+  Route::get("/test/sanitize-data", [TestDownloads::class, 'sanitizeAppointments']);
 });

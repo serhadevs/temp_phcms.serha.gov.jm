@@ -13,7 +13,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Appointments extends Model implements Auditable
 {
     use HasFactory;
-    use SoftDeletes;
+    // use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
 
     protected $table = "appointments";

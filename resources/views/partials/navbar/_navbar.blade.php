@@ -15,11 +15,11 @@
                     </span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    @forelse ($user->notifications as $messages)
+                    {{-- @forelse ($user->notifications as $messages)
                         <li><a href="#" class="dropdown-item">{{ $messages->data['message'] }}</a></li> 
                     @empty
                         <li><a class="dropdown-item" href="#">No new notifications</a></li>
-                    @endforelse
+                    @endforelse --}}
 
                 </ul>
             </li>
