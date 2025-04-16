@@ -1536,7 +1536,7 @@ class TestDownloads extends Controller
                 . '/' . $facility_id . '/' . $facility_id . '-' .
                 $file_date . '-Food_Establishment.txt';
             $i = 0;
-            dd($path);
+            // dd($path);
             if (file_exists(storage_path($path)) && ($file = fopen(storage_path($path), 'r')) !== false) {
                 while ($line = fgets($file)) {
                     explode('Z', explode("\t", $line)[5])[0];
