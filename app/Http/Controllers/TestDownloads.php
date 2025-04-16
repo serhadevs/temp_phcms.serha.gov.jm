@@ -1545,7 +1545,7 @@ class TestDownloads extends Controller
                 }
                 fclose($file);
             }
-            dd($array);
+            // dd($array);
             DB::beginTransaction();
             foreach ($array as $permit_no) {
                 if ($establishment = EstablishmentApplications::where('permit_no', $permit_no)->first()) {
