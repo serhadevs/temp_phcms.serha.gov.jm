@@ -308,11 +308,7 @@
                     </li>
                 @endif
 
-                {{-- @if(in_array(auth()->user()->role_id,[1]))
-                <li class="sidebar-item">
-                    <a href="{{ route('report.generate.ai') }}" class="sidebar-link">AI Generated Report</a>
-                </li>
-                @endif --}}
+               
 
                
 
@@ -367,6 +363,16 @@
                 <span>Training Manuals</span>
             </a>
         </li>
+
+        @if(in_array(auth()->user()->role_id,[1]))
+        <li class="sidebar-item">
+            <a href="{{ route('coupons.index') }}" class="sidebar-link">
+                <i class="lni lni-cog"></i>
+                <span>Coupons</span>
+            </a>
+            
+        </li>
+        @endif
 
 
     </ul>

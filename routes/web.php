@@ -8,6 +8,7 @@ use App\Http\Controllers\BarberCosmetApplicationsController;
 use App\Http\Controllers\BarberCosmetTestResultController;
 use App\Http\Controllers\ClinicPermitApplicationController;
 use App\Http\Controllers\CollectCardController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DownloadsController;
 use App\Http\Controllers\ExamDateController;
@@ -462,6 +463,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/collected-card/create', 'create')->name('collectedcards.create');
     Route::post('/collected-card/store', 'store')->name('collectedcards.store');
   });
+
+  Route::resource('coupons', CouponController::class);
 
   Route::resource('outstandingcardtxt', OutstandingCardPrintController::class);
   Route::get('zipped/{clinic_id}', [SignOffController::class, 'printClinicPermits'])->name('zipped');
