@@ -66,6 +66,7 @@ use Livewire\Livewire;
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/check/establishment/job/{id}', [TestDownloads::class, 'checkFoodEstDownloads']);
+Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::class, 'sanitizeAppointmentsParams']);
 
 //Users routes for users not logged in
 
