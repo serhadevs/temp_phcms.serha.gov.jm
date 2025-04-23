@@ -36,6 +36,8 @@ use App\Http\Controllers\TestNewJobs;
 use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
+use App\Http\Controllers\ExamStepController;
+use App\Http\Controllers\ExamController;
 
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\printerAuthAttempt;
@@ -276,7 +278,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/printed-cards', [ReportController::class, 'printedCardsIndex'])->name('reports.printed-cards.index');
   Route::post('/reports/printed-cards/show', [ReportController::class, 'generatePrintedCards'])->name('reports.printed-cards.show');
 
-  Route::get('/aireport',[ReportController::class, 'generateReport']);
+  Route::get('/aireport', [ReportController::class, 'generateReport']);
 
   //Renewals
   Route::get('/permit/application/renewal/{id}', [PermitApplicationController::class, 'renewal'])->name('food_handlers_permit.renewal');
@@ -464,8 +466,22 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::post('/collected-card/store', 'store')->name('collectedcards.store');
   });
 
+  //Coupons
   Route::resource('coupons', CouponController::class);
 
+  //Student Exam Routes
+  Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
+  Route::get('/exams/create', [ExamController::class, 'create'])->name('exams.create');
+  Route::post('/exams', [ExamController::class, 'store'])->name('exams.store');
+  Route::post('/exams/update/{id}', [ExamController::class, 'update'])->name('exams.update');
+  Route::get('/exam/{examId}/step/{step}', [ExamStepController::class, 'showStep'])->name('exam.step');
+  Route::post('/exam/{examId}/step/{step}', [ExamStepController::class, 'storeAnswer'])->name('exam.step.submit');
+  Route::get('/exam/{examId}/review', [ExamController::class, 'review'])->name('exam.review');
+
+
+  //Printed Applications 
+
+  Route::get('/print-application/{id}', [PermitApplicationController::class, 'printApplication'])->name('printed.applications');
   Route::resource('outstandingcardtxt', OutstandingCardPrintController::class);
   Route::get('zipped/{clinic_id}', [SignOffController::class, 'printClinicPermits'])->name('zipped');
 

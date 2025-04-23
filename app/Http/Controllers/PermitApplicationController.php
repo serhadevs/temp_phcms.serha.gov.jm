@@ -37,6 +37,7 @@ use App\Notifications\SignOff;
 use Illuminate\Support\Facades\Notification;
 use App\Models\Messages;
 use Illuminate\Support\Facades\URL;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -133,8 +134,8 @@ class PermitApplicationController extends Controller
         // }else{
         //     $tdbetwappandprint = 0;
         // }
-                                                       
-                                                        
+
+
         // dd($tdbetwappandprint);
 
         return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
@@ -192,7 +193,7 @@ class PermitApplicationController extends Controller
             'permit_category_id' => 'required',
             'permit_type' => 'required',
             'edit_reason' => 'required',
-            'no_of_years'=>'required_if:permit_type,student'
+            'no_of_years' => 'required_if:permit_type,student'
         ]);
         try {
             if ($permit = PermitApplication::with('signOffs', 'user')
@@ -506,7 +507,7 @@ class PermitApplicationController extends Controller
             //Appointment email function. 
             $sendAppointmentMail = new Services();
 
-    
+
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
                 $sendAppointmentMail->sendAppointmentEmail($new_permit_application);
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
@@ -750,6 +751,36 @@ class PermitApplicationController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return $e->getMessage();
+        }
+    }
+
+    public function printApplication($id)
+    {
+        try {
+            $permit_application = PermitApplication::with([
+                'permitCategory',
+                'payment',
+                'user',
+                'establishmentClinics',
+                'signOffs',
+                'testResults',
+                'healthInterviews.healthInterviewSymptom.symptoms',
+                'appointment.editTransactions'
+            ])
+                ->findOrFail($id);
+
+            //dd($permit_application);
+
+            // Convert the object to an array that can be passed to the view
+            $imagePath = storage_path('app/public/' . $permit_application->photo_upload);
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $imageSrc = 'data:image/' . pathinfo($imagePath, PATHINFO_EXTENSION) . ';base64,' . $imageData;
+            $pdf = Pdf::loadView('pdf.form', ['permit_application' => $permit_application],['imageSrc' => $imageSrc]);
+
+            $filename = $permit_application->firstname . '_' . $permit_application->lastname . '_' . $permit_application->id . '.pdf';
+            return $pdf->stream($filename);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Unable to generate PDF: ' . $e->getMessage());
         }
     }
 }

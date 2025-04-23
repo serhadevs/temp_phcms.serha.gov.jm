@@ -374,6 +374,16 @@
         </li>
         @endif
 
+        @if(in_array(auth()->user()->role_id,[1]))
+        <li class="sidebar-item">
+            <a href="{{ route('exams.index') }}" class="sidebar-link">
+                <i class="lni lni-cog"></i>
+                <span>Exams</span>
+            </a>
+            
+        </li>
+        @endif
+
 
     </ul>
 </aside>

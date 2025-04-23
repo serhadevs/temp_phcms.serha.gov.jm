@@ -452,9 +452,10 @@
                                     @csrf
                                     @method('PUT') --}}
                                 <div class="card">
-                                    <h4 class="text-muted card-header">
-                                        Applicant Information
-                                    </h4>
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h4 class="text-muted mb-0">Application Information</h4>
+                                        {{-- <a href = "{{ route('printed.applications',['id'=>$permit_application->id]) }}" class="btn btn-danger btn-sm">Print Application</a> --}}
+                                    </div>
                                     <input type="text" name="previous_url" value={{ url()->previous() }} hidden>
                                     <div class="card-body">
                                         <div class="row">
