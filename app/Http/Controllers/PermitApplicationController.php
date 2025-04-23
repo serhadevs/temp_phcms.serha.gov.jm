@@ -504,41 +504,11 @@ class PermitApplicationController extends Controller
             }
 
             //Appointment email function. 
+            $sendAppointmentMail = new Services();
 
-            function AppointmentEmail($new_permit_application)
-            {
-                $sendEmailInfo = PermitApplication::with('permitCategory', 'appointment', 'user')->find($new_permit_application->id);
-                $appointment = DB::table('appointments')
-                    ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')
-                    ->join('exam_sites', 'exam_sites.id', '=', 'exam_dates.exam_site_id')
-                    ->where('appointments.facility_id', auth()->user()->facility_id)
-                    ->where('appointments.permit_application_id', $sendEmailInfo->id)
-                    ->where('exam_dates.application_type_id', 1)
-                    ->orderBy('appointments.created_at', 'desc')
-                    ->first();
-
-
-                if ($sendEmailInfo->email) {
-                    dispatch(new SendPermitApplicationEmailJob($sendEmailInfo, $appointment));
-                    Messages::create([
-                        'permit_application_id' => $sendEmailInfo->id,
-                        'email_type_id' => 1,
-                        'to' => $sendEmailInfo->email,
-                        'status' => 'sent',
-                        'error_message' => 'none',
-                        'user_id' => auth()->user()->id,
-                        'sent_at' => \Carbon\Carbon::now()
-                    ]);
-                }
-            }
-
-            //Notification::send($user, new SignOff($new_permit_application));
-
-
+    
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
-
-                AppointmentEmail($new_permit_application);
-
+                $sendAppointmentMail->sendAppointmentEmail($new_permit_application);
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
             } else {
 
