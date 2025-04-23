@@ -184,8 +184,8 @@ class TestDownloads extends Controller
     public function checkFoodEstDownloads($id)
     {
         $downloads = Downloads::where('id', $id)
-        ->where('touched', NULL)
-        ->get();
+            ->where('touched', NULL)
+            ->get();
 
         foreach ($downloads as $download) {
             $array = [];
@@ -292,7 +292,7 @@ class TestDownloads extends Controller
 
     public function sanitizeAppointments()
     {
-        $path = storage_path("app/public/to_delete_1.csv");
+        $path = storage_path("app/public/to_delete_9.csv");
 
         $handle = fopen($path, "r");
         $rows = [];
@@ -307,7 +307,7 @@ class TestDownloads extends Controller
                 $appointment->update(['exam_date_id' => $rows[1]]);
             }
 
-            dd($rows[0]);
+            // dd($rows[0]);
             if ($exam_date->deleted_at == NULL) {
                 $exam_date->update(['deleted_at' => '2025-04-09 18:00:00']);
             }
@@ -315,6 +315,29 @@ class TestDownloads extends Controller
         }
 
         fclose($handle);
+    }
+
+
+    public function sanitizeAppointmentsParams($old_date_id, $new_date_id)
+    {
+        DB::beginTransaction();
+        $appointments = Appointments::where('exam_date_id', $old_date_id)->get();
+        $old_exam_date = ExamDates::find($old_date_id);
+
+        $new_exam_date = ExamDates::find($new_date_id);
+
+        foreach ($appointments as $appointment) {
+            $appointment->update(['exam_date_id' => $new_date_id]);
+        }
+
+        if ($old_exam_date->deleted_at == NULL) {
+            $old_exam_date->update(['deleted_at' => '2025-04-09 18:00:00']);
+        }
+
+        if ($new_exam_date->deleted_at != NULL) {
+            $new_exam_date->update(['deleted_at' => NULL]);
+        }
+        DB::commit();
     }
 
     // public function testCheckJob(){
