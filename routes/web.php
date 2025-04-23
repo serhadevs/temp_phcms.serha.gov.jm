@@ -474,5 +474,4 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get("/test/clear-appointments", [TestDownloads::class, 'clearAppointments']);
   Route::get("/test/sanitize-data", [TestDownloads::class, 'sanitizeAppointments']);
-  Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::class, 'sanitizeAppointmentsParams']);
 });
