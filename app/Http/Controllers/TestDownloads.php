@@ -339,7 +339,7 @@ class TestDownloads extends Controller
         }
         DB::commit();
 
-        return $old_date_id . "," . $new_date_id;
+        return $old_date_id . "," . $new_date_id."\n";
     }
 
     // public function testCheckJob(){
