@@ -26,7 +26,7 @@ class Downloads extends Model implements Auditable
         'created_at',
         'updated_at',
         'deleted_at',
-        'touched'
+        //'touched'
     ];
 
     public function zippedApplications(): HasMany
