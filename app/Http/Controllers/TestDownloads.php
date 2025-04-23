@@ -338,6 +338,8 @@ class TestDownloads extends Controller
             $new_exam_date->update(['deleted_at' => NULL]);
         }
         DB::commit();
+
+        return "success";
     }
 
     // public function testCheckJob(){
