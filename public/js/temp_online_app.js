@@ -470,7 +470,7 @@ function validateReview() {
         validateEmployment("confirmation") &&
         validateAdditional("confirmation")
     ) {
-        traverse(6, 5);
+        document.getElementById("online_application_form").submit();
     }
 }
 
