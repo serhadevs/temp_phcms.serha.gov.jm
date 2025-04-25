@@ -107,8 +107,9 @@ function validatePersonal(validationType) {
             sex
         );
     } else {
-        removeError("sex", sex);
+        removeError(prefix_string + "sex", sex);
     }
+    console.log(sex.selectedIndex);
 
     if (
         !document.getElementById(prefix_string + "fname_error") &&
@@ -385,9 +386,12 @@ function validateAdditional(validationType) {
     applied = document.querySelector(
         "select[name='" + prefix_string + "applied']"
     );
-    years = document.querySelector("input[name='" + prefix_string + "years']");
+    years = document.querySelector("select[name='" + prefix_string + "years']");
     granted = document.querySelector(
         "select[name='" + prefix_string + "granted'"
+    );
+    preferred = document.querySelector(
+        "select[name='" + prefix_string + "preferred']"
     );
 
     if (teacher.selectedIndex != 0) {
@@ -421,7 +425,7 @@ function validateAdditional(validationType) {
     }
 
     if (student.selectedIndex == 1) {
-        if (years.value != "") {
+        if (years.selectedIndex != 0) {
             removeError(prefix_string + "years", years);
         } else {
             createErrorMessage(
@@ -444,12 +448,19 @@ function validateAdditional(validationType) {
         removeError(prefix_string + "granted", granted);
     }
 
+    if (preferred.selectedIndex != 0) {
+        removeError(prefix_string + "preferred", preferred);
+    } else {
+        createErrorMessage(prefix_string + "preferred", "Required", preferred);
+    }
+
     if (
         !document.getElementById(prefix_string + "teacher_error") &&
         !document.getElementById(prefix_string + "student_error") &&
         !document.getElementById(prefix_string + "applied_error") &&
         !document.getElementById(prefix_string + "years_error") &&
-        !document.getElementById(prefix_string + "granted_error")
+        !document.getElementById(prefix_string + "granted_error") &&
+        !document.getElementById(prefix_string + "preferred_error")
     ) {
         if (validationType == "individual") {
             populateConfirmation();

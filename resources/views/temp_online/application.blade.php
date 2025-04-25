@@ -79,7 +79,8 @@
                     <img src="./images/serha_logo.png" class="w-7">
                 </a>
             </div>
-            <form action="{{ route('permit.online.application.store') }}" method="POST" id="online_application_form" enctype="multipart/form-data">
+            <form action="{{ route('permit.online.application.store') }}" method="POST" id="online_application_form"
+                enctype="multipart/form-data">
                 @csrf
                 @method('POST')
                 <div class="card card-md">
@@ -108,7 +109,7 @@
                         <div class="mb-2">
                             <label for="" class="form-label" id="sex_label">Gender</label>
                             <select name="sex" id="" class="form-select">
-                                <option value="">Please select a gender</option>
+                                <option disabled selected>Please select a gender</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
@@ -249,49 +250,96 @@
                     </div>
                     <div class="card-body" id="card-4" style="display:none">
                         <h2 class="h2 text-center mb-4">Enter Additional Information</h2>
+                        {{-- <div class="row"> --}}
+                        {{-- <div class="col-md-6 col-xs-12"> --}}
                         <div class="mb-3">
                             <label class="form-label" id="teacher_label">Are you a teacher</label>
                             <select name="teacher" id="" class="form-select">
-                                <option value="">Please enter an answer</option>
-                                <option value="">Yes</option>
-                                <option value="">No</option>
+                                <option selected disabled>Please enter an answer</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
                             </select>
                         </div>
-                        <div class="mb-2">
+                        {{-- </div> --}}
+                        {{-- <div class="col-md-6 col-xs-12"> --}}
+                        <div class="mb-3">
                             <label class="form-label" id="student_label">
                                 Are you a student?
                             </label>
-                            <select name="student" id="" class="form-select">
-                                <option value="">Please enter an answer</option>
-                                <option value="">Yes</option>
-                                <option value="">No</option>
+                            <select name="student" id="" class="form-select"
+                                onchange="showNoYears(this.value)">
+                                <option selected disabled>Please enter an answer</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
                             </select>
                         </div>
-                        <div class="mb-2">
+                        <div class="mb-3" style="display:none" id="container_years">
+                            <label for="" class="form-label" id="years_label">
+                                Will you finish the current school program by
+                                {{ date('F', strtotime('00-' . date('m') . '-01')) . ' ' . (date('Y') + 1) }}?
+                            </label>
+                            <select name="years" id="" class="form-select">
+                                <option disabled selected>Please select an answer</option>
+                                <option value="1">Yes</option>
+                                <option value="2">No</option>
+                            </select>
+                        </div>
+                        {{-- </div> --}}
+                        {{-- </div> --}}
+                        <div class="mb-3">
                             <label for="" class="form-label" id="applied_label">Have you ever applied for a
                                 Food
                                 Handler's
                                 Permit?</label>
-                            <select name="applied" id="" class="form-select">
-                                <option value="">Please enter an answer</option>
-                                <option value="">Yes</option>
-                                <option value="">No</option>
+                            <select name="applied" id="" class="form-select"
+                                onchange="showGranted(this.value)">
+                                <option disabled selected>Please enter an answer</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
                             </select>
                         </div>
-                        <div class="mb-2" style="">
-                            <label for="" class="form-label" id="years_label">How many years until you
-                                graduate
-                                your current
-                                school?</label>
-                            <input type="text" class="form-control" name="years">
-                        </div>
-                        <div class="mb-2" style="">
+                        <div class="mb-3" style="display:none" id="container_granted">
                             <label for="" class="form-label" id="granted_label">Did you receive your food
                                 handler's permit?</label>
                             <select name="granted" id="" class="form-select">
-                                <option value="">Please enter an answer</option>
-                                <option value="">Yes</option>
-                                <option value="">No</option>
+                                <option selected disabled>Please enter an answer</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" style="">
+                            <label for="" class="form-label" id="preferred_label">
+                                Preferred Pick up Location
+                            </label>
+                            <select name="preferred" id="" class="form-select">
+                                <option selected disabled>Please enter an answer</option>
+                                <option value="1">St.Catherine Health Department,5 Burke Rd, Spanish Town</option>
+                                <option value="2">
+                                    St.Thomas Health Department, Princess Margaret Hospital, Morant Bay
+                                </option>
+                                <option value="3">KSA Health Department, 1a Caledonia Crescent, Kingston</option>
+                            </select>
+                        </div>
+                        <div class="mb-2" hidden>
+                            <label for="" class="form-label" id="permit_cat_label">What is the purpose of
+                                this
+                                foo handlers permit?</label>
+                            <select name="permit_cat" id="" class="form-select">
+                                {{-- <option disabled selected>Please enter an answer</option> --}}
+                                <option value="1" selected>General Food Handlers</option>
+                                <option value="2">To work in supermarket, bar, wholesale. I will not be cooking
+                                    food</option>
+                                <option value="3">To operate as a street side vendor</option>
+                                <option value="4">To work in dairy factory or facility</option>
+                                <option value="5">Raise chickens or to handle seafood</option>
+                                <option value="6">To operate as a butcher</option>
+                                <option value="7">To work in a restaurant or cookshop where I will be cooking
+                                </option>
+                                <option value="8">To work in a tourist establishment where I will not be cooking
+                                </option>
+                                <option value="10">To work in a bakery or work with baked goods</option>
+                                <option value="11" hidden>To be a teacher</option>
+                                <option value="12">To work at a temporary event</option>
                             </select>
                         </div>
                         <div class="form-footer">
@@ -392,9 +440,9 @@
                             <div class="col-sm-12 col-md-6 mb-2">
                                 <label for="" class="form-label" id="confirm_sex_label">Gender</label>
                                 <select name="confirm_sex" id="" class="form-select">
-                                    <option value="">Please select an option</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Male">Male</option>
+                                    <option selected disabled>Please select an option</option>
+                                    <option value="female">Female</option>
+                                    <option value="male">Male</option>
                                 </select>
                             </div>
                         </div>
@@ -491,7 +539,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12 col-md-4 mb-2">
+                            <div class="col-sm-12 col-md-6 mb-3">
                                 <label for="" class="form-label" id="confirm_teacher_label">Are you a
                                     teacher?</label>
                                 <select name="confirm_teacher" id="" class="form-select">
@@ -500,7 +548,7 @@
                                     <option value="0">No</option>
                                 </select>
                             </div>
-                            <div class="col-sm-12 col-md-4 mb-2">
+                            <div class="col-sm-12 col-md-6 mb-3">
                                 <label for="" class="form-label" id="confirm_student_label">Are you a
                                     student?</label>
                                 <select class="form-select" name="confirm_student">
@@ -509,7 +557,23 @@
                                     <option value="0">No</option>
                                 </select>
                             </div>
-                            <div class="col-sm-12 col-md-4 mb-2">
+
+                        </div>
+                        <div class="mb-3">
+                            <div class="mb-3" style="display:none" id="confirm_container_years">
+                                <label for="" class="form-label" id="confirm_years_label">
+                                    Will you finish the current school program by
+                                    {{ date('F', strtotime('00-' . date('m') . '-01')) . ' ' . (date('Y') + 1) }}?
+                                </label>
+                                <select name="confirm_years" id="" class="form-select">
+                                    <option disabled selected>Please select an answer</option>
+                                    <option value="1">Yes</option>
+                                    <option value="2">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-xs-12 mb-3">
                                 <label for="" class="form-label" id="confirm_applied_label">Have you applied
                                     before?</label>
                                 <select name="confirm_applied" id="" class="form-select">
@@ -518,24 +582,50 @@
                                     <option value="0">No</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6">
-                                <label for="" class="form-label" id="confirm_years_label"
-                                    id="confirm_years_label">Years
-                                    left in school
-                                    program</label>
-                                <input type="text" class="form-control" name ="confirm_years">
-                            </div>
-                            <div class="col-sm-12 col-md-6">
+                            <div class="col col-xs-12" id="container_confirm_granted" style="display:none">
                                 <label for="" class="form-label" id="confirm_granted_label">Did you receive
                                     permit?</label>
                                 <select name="confirm_granted" id="" class="form-select">
                                     <option value="">Please enter an answer</option>
-                                    <option value="">Yes</option>
-                                    <option value="">No</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="mb-3" style="">
+                            <label for="" class="form-label" id="confirm_preferred_label">
+                                Preferred Pick up Location
+                            </label>
+                            <select name="confirm_preferred" id="" class="form-select">
+                                <option>Please enter an answer</option>
+                                <option value="1">St.Catherine Health Department,5 Burke Rd, Spanish Town</option>
+                                <option value="2">
+                                    St.Thomas Health Department, Princess Margaret Hospital, Morant Bay
+                                </option>
+                                <option value="3">KSA Health Department, 1a Caledonia Crescent, Kingston</option>
+                            </select>
+                        </div>
+                        <div class="mb-2" hidden>
+                            <label for="" class="form-label" id="confirm_permit_cat_label">What is the purpose of
+                                this
+                                foo handlers permit?</label>
+                            <select name="confirm_permit_cat" id="" class="form-select">
+                                {{-- <option disabled selected>Please enter an answer</option> --}}
+                                <option value="1" selected>General Food Handlers</option>
+                                <option value="2">To work in supermarket, bar, wholesale. I will not be cooking
+                                    food</option>
+                                <option value="3">To operate as a street side vendor</option>
+                                <option value="4">To work in dairy factory or facility</option>
+                                <option value="5">Raise chickens or to handle seafood</option>
+                                <option value="6">To operate as a butcher</option>
+                                <option value="7">To work in a restaurant or cookshop where I will be cooking
+                                </option>
+                                <option value="8">To work in a tourist establishment where I will not be cooking
+                                </option>
+                                <option value="10">To work in a bakery or work with baked goods</option>
+                                <option value="11" hidden>To be a teacher</option>
+                                <option value="12">To work at a temporary event</option>
+                            </select>
                         </div>
                         <div class="form-footer">
                             <button type="button" class="btn btn-primary w-100" onclick="validateReview()">
@@ -669,8 +759,6 @@
         });
     });
 </script>
-
-
 <script>
     const input = document.getElementById('imageInput');
     const preview = document.getElementById('previewImage');
@@ -705,6 +793,27 @@
         }
     });
 </script>
+<script>
+    function showNoYears(selected) {
+        // console.log(selected);
+        if (selected == 1) {
+            document.getElementById('container_years').style.display = '';
+            document.getElementById('confirm_container_years').style.display = '';
+        } else {
+            document.getElementById('container_years').style.display = 'none';
+            document.getElementById('confirm_container_years').style.display = 'none';
+        }
+    }
 
+    function showGranted(selected) {
+        if (selected == 1) {
+            document.getElementById('container_granted').style.display = '';
+            document.getElementById('container_confirm_granted').style.display = '';
+        } else {
+            document.getElementById('container_granted').style.display = 'none';
+            document.getElementById('container_confirm_granted').style.display = 'none';
+        }
+    }
+</script>
 
 </html>

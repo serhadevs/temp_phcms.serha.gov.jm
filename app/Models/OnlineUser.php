@@ -20,6 +20,7 @@ class OnlineUser extends Authenticatable
     protected $fillable = [
         'permit_no',
         'email',
+        'email_verified_at',
         'password',
     ];
 
