@@ -79,8 +79,12 @@ Route::post('/forget-password', [UserController::class, 'forgetpassword'])->name
 Route::get('/reset/{token}', [UserController::class, 'reset']);
 Route::post('/reset/{token}', [UserController::class, 'post_reset']);
 
-//Temp Online Applications
-Route::get("/online/application", [OnlineApplicationController::class, 'index']);
+//Online Application for FOod Handlers Permit
+Route::get("/permit/online/application", [OnlineApplicationController::class, 'index'])->name('permit.online.application');
+Route::get('/permit/online/application/confirm', [OnlineApplicationController::class, 'createConfirm']);
+Route::post('/online/application/verify', [OnlineApplicationController::class, 'verifyEmail'])->name('permit.online.application.verify');
+Route::post("/permit/online-application", [OnlineApplicationController::class, 'store'])->name("permit.online.application.store");
+
 
 Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
