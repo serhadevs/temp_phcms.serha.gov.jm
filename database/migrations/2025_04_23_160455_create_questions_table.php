@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('student_exams', function (Blueprint $table) {
+        Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->integer('user_id')->nullable();
-            $table->softDeletes();
+            $table->string('exam_id')->nullable();
+            $table->string('question');
+            $table->string('user_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('student_exams');
+        Schema::dropIfExists('questions');
     }
 };

@@ -15,8 +15,13 @@ class Questions extends Model implements Auditable
     public $timestamps = true;
     protected $guarded = [];
 
-    public function exam()
+    // public function exam()
+    // {
+    //     return $this->belongsTo(StudentExam::class);
+    // }
+
+    public function answers()
     {
-        return $this->belongsTo(StudentExam::class);
+        return $this->hasMany(Answers::class, 'question_id');
     }
 }

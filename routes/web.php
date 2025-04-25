@@ -38,8 +38,9 @@ use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\ExamStepController;
 use App\Http\Controllers\ExamController;
-
+use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnswersController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Payments;
 use App\Models\PermitApplication;
@@ -483,6 +484,22 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/exam/{examId}/step/{step}', [ExamStepController::class, 'storeAnswer'])->name('exam.step.submit');
   Route::get('/exam/{examId}/review', [ExamController::class, 'review'])->name('exam.review');
 
+  //Questions Routes
+  Route::get('/questions', [QuestionsController::class, 'index'])->name('questions.index');
+  Route::get('/questions/create/{id}', [QuestionsController::class, 'create'])->name('questions.create');
+  Route::post('/questions/store/{id}', [QuestionsController::class, 'store'])->name('questions.store');
+  Route::get('/questions/view/{id}', [QuestionsController::class, 'show'])->name('questions.view');
+  Route::get('/questions/edit/{id}', [QuestionsController::class, 'edit'])->name('questions.edit');
+  Route::post('/questions/update/{id}', [QuestionsController::class, 'update'])->name('questions.update');
+  Route::get('/questions/take-exam/{id}', [ExamController::class, 'takeExam'])->name('questions.take-exam');
+  Route::post('/questions/take-exam/start-exam', [ExamController::class, 'startExam'])->name('questions.start-exam');
+  Route::post('/questions/take-exam/store', [ExamController::class, 'submitExam'])->name('questions.take-exam.store');
+  Route::get('/questions/take-exam/exam', [ExamController::class, 'exams'])->name('questions.exam');
+
+  //Answers Routes
+  Route::get('/answers', [AnswersController::class, 'index'])->name('answers.index');
+  Route::get('/answers/create/{id}/{exam_id}', [AnswersController::class, 'create'])->name('answers.create');
+  Route::post('/answers/store/{id}/{exam_id}', [AnswersController::class, 'store'])->name('answers.store');
 
   //Printed Applications 
 
