@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 
@@ -16,8 +17,13 @@ class StudentExam extends Model implements Auditable
     protected $guarded = [];
 
 
-    public function questions()
+    public function questions(): HasMany
     {
-        return $this->hasMany(Questions::class);
+        return $this->hasMany(Questions::class, 'exam_id', 'id');
+    }
+
+    public function getQuestionCountAttribute()
+    {
+        return $this->questions()->count();
     }
 }

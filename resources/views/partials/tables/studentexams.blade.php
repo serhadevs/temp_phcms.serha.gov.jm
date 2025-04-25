@@ -3,6 +3,7 @@
         <tr>
             <th>#</th>
             <th>Exam Name</th>
+            <th>Questions</th>
             <th>Actions</th>
            
             
@@ -14,11 +15,14 @@
             <tr>
                 <td>{{ $item->id}}</td>
                 <td>{{ $item->title }}</td>
+                <td>{{ $item->question_count }}</td>
                 <td>
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
                     data-bs-target="#addStudentExamModal"  data-id="{{ $item->id }}"
                     data-title="{{ $item->title }}">Edit</button>
-                    <button class="btn btn-success btn-sm">Add Questions</button>
+                    <a href = {{ route('questions.create',['id' => $item->id]) }} class="btn btn-success btn-sm">Add Questions</a>
+                    <a href="{{ route('questions.take-exam',['id' => $item->id]) }}" class="btn btn-success btn-sm">Take Exam</a>
+                    <a href="{{ route('questions.view',['id' => $item->id]) }}" class="btn btn-success btn-sm">View Questions</a>
                     <button class="btn btn-danger btn-sm">Delete</button>
                 </td>
             </tr>

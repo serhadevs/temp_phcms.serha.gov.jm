@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('application_id');
-            $table->foreignId('exam_id');
-            $table->foreignId('question_id');
-            $table->string('selected_answer');
+            // $table->string('question_id')->nullable();
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->string('answer');
+            $table->string('user_id')->nullable();
+            $table->string('is_correct')->nullable();
+            $table->string('is_active')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
