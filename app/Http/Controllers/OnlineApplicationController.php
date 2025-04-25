@@ -157,11 +157,28 @@ class OnlineApplicationController extends Controller
             'signature_link' => $form_data['signature_link']
         ]);
 
+        // if ($new_application) {
+        //     return view('temp_online.payment', compact('new_application'));
+        // }
+
         if ($new_application) {
-            return view('temp_online.payment');
+            return redirect()->route('permit.online.application.payment', ['id' => $new_application->id])
+                ->with('success', 'Application created successfully');
         }
         // } catch (Exception $e) {
         // }
+    }
+
+    public function payment($id)
+    {
+        $permit_application = PermitApplication::find($id);
+        return view('temp_online.payment', compact('permit_application'));
+    }
+
+    public function completedApplication($id)
+    {
+        $application = PermitApplication::find($id);
+        return view('temp_online.completed_application', compact('application'));
     }
 
     /**

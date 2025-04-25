@@ -84,6 +84,11 @@ Route::get("/permit/online/application", [OnlineApplicationController::class, 'i
 Route::get('/permit/online/application/confirm', [OnlineApplicationController::class, 'createConfirm']);
 Route::post('/online/application/verify', [OnlineApplicationController::class, 'verifyEmail'])->name('permit.online.application.verify');
 Route::post("/permit/online-application", [OnlineApplicationController::class, 'store'])->name("permit.online.application.store");
+Route::get('/permit/online/application/payment/{id}', [OnlineApplicationController::class, 'payment'])->name('permit.online.application.payment');
+Route::post('/permit/online/application/payment/confirm', [PaymentController::class, 'registerOnlinePayment'])->name('permit.online.application.payment.process');
+Route::get('/permit/online/application/complete/{id}', [OnlineApplicationController::class, 'completedApplication'])->name('permit.online.application.complete');
+
+Route::post('/coupon/redeem', [CouponController::class, 'redeem'])->name('coupons.redeem');
 
 
 Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
@@ -474,6 +479,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Coupons
   Route::resource('coupons', CouponController::class);
+ 
+  
+  
 
   //Student Exam Routes
   Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
