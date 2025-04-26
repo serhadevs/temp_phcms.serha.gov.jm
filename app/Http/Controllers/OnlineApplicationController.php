@@ -37,21 +37,68 @@ class OnlineApplicationController extends Controller
         return view('temp_online.verify_email');
     }
 
+    public function getStarted()
+    {
+        return view('temp_online.index');
+    }
+
+    public function resendLink(){
+        return view('temp_online.verify_email_confirmation');
+    }
+
+
+    // public function verifyEmail(Request $request)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email'
+    //     ]);
+
+    //     $new_online_user = OnlineUser::create([
+    //         'email' => $request->email
+    //     ]);
+
+    //     $services = new Services();
+
+    //     if ($services->sendOUVerifyEmail($request->email, URL::temporarySignedRoute('permit.online.application', now()->addMinutes(60), ['online_user' => $new_online_user->id]), $new_online_user->id)) {
+    //         return view('temp_online.verify_email_confirmation');
+    //     }
+    // }
 
     public function verifyEmail(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
+        try {
+            $request->validate([
+                'email' => 'required|email'
+            ]);
 
-        $new_online_user = OnlineUser::create([
-            'email' => $request->email
-        ]);
+            $new_online_user = OnlineUser::create([
+                'email' => $request->email
+            ]);
 
-        $services = new Services();
+            $services = new Services();
+            $temporaryUrl = URL::temporarySignedRoute(
+                'permit.online.application',
+                now()->addMinutes(60),
+                ['online_user' => $new_online_user->id]
+            );
 
-        if ($services->sendOUVerifyEmail($request->email, URL::temporarySignedRoute('permit.online.application', now()->addMinutes(60), ['online_user' => $new_online_user->id]), $new_online_user->id)) {
-            return view('temp_online.verify_email_confirmation');
+            if ($services->sendOUVerifyEmail($request->email, $temporaryUrl, $new_online_user->id)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Verification email sent successfully',
+                    'redirect' => '/permit/online/application/resend-link'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to send verification email'
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
         }
     }
 
@@ -162,8 +209,18 @@ class OnlineApplicationController extends Controller
         // }
 
         if ($new_application) {
-            return redirect()->route('permit.online.application.payment', ['id' => $new_application->id])
-                ->with('success', 'Application created successfully');
+            $expires = time() + 3600; // Expires in 1 hour
+            $onlineUser = $request->online_id; 
+            
+            $data = "expires={$expires}&online_user={$onlineUser}";
+            $signature = hash_hmac('sha256', $data, config('app.key'));
+            
+            return redirect()->route('permit.online.application.payment', [
+                'id' => $new_application->id,
+                'expires' => $expires,
+                'online_user' => $onlineUser,
+                'signature' => $signature
+            ])->with('success', 'Application created successfully');
         }
         // } catch (Exception $e) {
         // }
