@@ -556,7 +556,7 @@ class PaymentController extends Controller
             'application_id' => 'required',
             'amount_paid' => 'required',
             'total_cost' => 'required',
-            'change_amt' => 'required|numeric|min:0',
+            //'change_amt' => 'required|numeric|min:0',
             // 'manual_receipt_no' => 'required_if:is_backlog,1',
             // 'manual_receipt_date' => 'required_if:is_backlog,1',
             'payment_type_id' => 'required',
@@ -565,6 +565,7 @@ class PaymentController extends Controller
             'application_type_id' => 'required',
         ]);
         $new_payment['receipt_no'] = rand(1000000, 9999999);
+        $new_payment['change_amt'] = $new_payment['amount_paid'] - $new_payment['total_cost'];
         $receipt_number = $new_payment['receipt_no'];
         $register_new_payment = Payments::create($new_payment);
         $application_id = $register_new_payment->application_id;

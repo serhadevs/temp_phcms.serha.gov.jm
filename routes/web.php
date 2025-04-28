@@ -86,7 +86,8 @@ Route::get('/permit/online/application/confirm', [OnlineApplicationController::c
 Route::post('/online/application/verify', [OnlineApplicationController::class, 'verifyEmail'])->name('permit.online.application.verify');
 Route::get('/permit/online/application/resend-link', [OnlineApplicationController::class, 'resendLink'])->name('permit.online.application.resend');
 Route::post("/permit/online-application", [OnlineApplicationController::class, 'store'])->name("permit.online.application.store");
-Route::get('/permit/online/application/payment/{id}', [OnlineApplicationController::class, 'payment'])->name('permit.online.application.payment')->middleware('verify.signature');;
+Route::get('/permit/online/application/payment/{id}', [OnlineApplicationController::class, 'payment'])->name('permit.online.application.payment');
+Route::get('/permit/online/application/payment/coupon-redeem/{id}', [OnlineApplicationController::class, 'redeemCoupon'])->name('permit.online.application.payment.coupon');
 Route::post('/permit/online/application/payment/confirm', [PaymentController::class, 'registerOnlinePayment'])->name('permit.online.application.payment.process');
 Route::get('/permit/online/application/complete/{id}', [OnlineApplicationController::class, 'completedApplication'])->name('permit.online.application.complete');
 

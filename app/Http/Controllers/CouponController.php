@@ -63,7 +63,7 @@ class CouponController extends Controller
 
     public function show($id)
     {
-        // Logic to display a specific coupon
+        return view('temp_online.coupon');
     }
 
     public function edit($id)

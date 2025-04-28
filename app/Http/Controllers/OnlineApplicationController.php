@@ -221,6 +221,7 @@ class OnlineApplicationController extends Controller
                 'online_user' => $onlineUser,
                 'signature' => $signature
             ])->with('success', 'Application created successfully');
+            return redirect()->route('permit.online.application.payment.coupon', ['id' => $new_application->id])->with('success', 'Application created successfully');
         }
         // } catch (Exception $e) {
         // }
@@ -230,6 +231,11 @@ class OnlineApplicationController extends Controller
     {
         $permit_application = PermitApplication::find($id);
         return view('temp_online.payment', compact('permit_application'));
+    }
+
+    public function redeemCoupon($id){
+        $permit_application = PermitApplication::find($id);
+        return view('temp_online.coupon', compact('permit_application'));
     }
 
     public function completedApplication($id)

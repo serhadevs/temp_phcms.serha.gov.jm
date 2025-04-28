@@ -230,7 +230,7 @@
             </div>
         </section>
 
-        <section class="section py-5">
+        {{-- <section class="section py-5">
             <div class="container">
                 <div class="row items-center text-center g-lg-10">
                     <div class="col-md-6 col-lg">
@@ -287,7 +287,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
     </div>
 
     <div class="modal modal-blur fade" id="verifyModal" tabindex="-1" role="dialog" aria-hidden="true">
