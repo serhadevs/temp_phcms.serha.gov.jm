@@ -550,6 +550,32 @@ class PaymentController extends Controller
         return redirect()->route('payment.receipt.print', ['id' => $register_new_payment->getOriginal()["id"]])->with(['success' => 'Payment has been process successfully. The receipt number is ' . $new_payment["receipt_no"] . '']);
     }
 
+    public function registerOnlinePayment(Request $request){
+        $new_payment = $request->validate([
+            'price_id' => 'required',
+            'application_id' => 'required',
+            'amount_paid' => 'required',
+            'total_cost' => 'required',
+            //'change_amt' => 'required|numeric|min:0',
+            // 'manual_receipt_no' => 'required_if:is_backlog,1',
+            // 'manual_receipt_date' => 'required_if:is_backlog,1',
+            'payment_type_id' => 'required',
+            'facility_id' => 'required',
+            'cashier_user_id' => 'required',
+            'application_type_id' => 'required',
+        ]);
+        $new_payment['receipt_no'] = rand(1000000, 9999999);
+        $new_payment['change_amt'] = $new_payment['amount_paid'] - $new_payment['total_cost'];
+        $receipt_number = $new_payment['receipt_no'];
+        $register_new_payment = Payments::create($new_payment);
+        $application_id = $register_new_payment->application_id;
+        //dd($application_id);
+        if($register_new_payment){
+            return redirect()->route('permit.online.application.complete',['id' => $application_id]);
+        }
+        
+    }
+
     public function searchApplication(Request $request)
     {
         $application_id = $request->route('app_id');

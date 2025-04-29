@@ -81,9 +81,17 @@ Route::post('/reset/{token}', [UserController::class, 'post_reset']);
 
 //Online Application for FOod Handlers Permit
 Route::get("/permit/online/application", [OnlineApplicationController::class, 'index'])->name('permit.online.application');
-Route::get('/permit/online/application/confirm', [OnlineApplicationController::class, 'createConfirm']);
+Route::get("permit/online/application/get-started", [OnlineApplicationController::class, 'getStarted'])->name('permit.online.application.get-started');
+Route::get('/permit/online/application/confirm', [OnlineApplicationController::class, 'createConfirm'])->name('permit.online.confirm');
 Route::post('/online/application/verify', [OnlineApplicationController::class, 'verifyEmail'])->name('permit.online.application.verify');
+Route::get('/permit/online/application/resend-link', [OnlineApplicationController::class, 'resendLink'])->name('permit.online.application.resend');
 Route::post("/permit/online-application", [OnlineApplicationController::class, 'store'])->name("permit.online.application.store");
+Route::get('/permit/online/application/payment/{id}', [OnlineApplicationController::class, 'payment'])->name('permit.online.application.payment');
+Route::get('/permit/online/application/payment/coupon-redeem/{id}', [OnlineApplicationController::class, 'redeemCoupon'])->name('permit.online.application.payment.coupon');
+Route::post('/permit/online/application/payment/confirm', [PaymentController::class, 'registerOnlinePayment'])->name('permit.online.application.payment.process');
+Route::get('/permit/online/application/complete/{id}', [OnlineApplicationController::class, 'completedApplication'])->name('permit.online.application.complete');
+
+Route::post('/coupon/redeem', [CouponController::class, 'redeem'])->name('coupons.redeem');
 
 
 Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
@@ -474,6 +482,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Coupons
   Route::resource('coupons', CouponController::class);
+ 
+  
+  
 
   //Student Exam Routes
   Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
