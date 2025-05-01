@@ -343,7 +343,7 @@ class FoodEstablishmentController extends Controller
                                 'facility_id' => auth()->user()->facility_id,
                                 'reason' => $request->data['reason']
                             ])) {
-                                if ($operator->update(['deleted_at' => new DateTime()])) {
+                                if ($operator->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     DB::commit();
                                     return "success";
                                 } else {
@@ -464,7 +464,7 @@ class FoodEstablishmentController extends Controller
                         'facility_id' => auth()->user()->facility_id,
                         'reason' => $request->data['reason']
                     ])) {
-                        if ($food_est->update(['deleted_at' => new DateTime()])) {
+                        if ($food_est->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
                             return ['success', 'Food Establishment ' . $food_est->establishment_name . ':' . $food_est->id . ' has been deleted successfully.'];
                         } else {
@@ -625,7 +625,7 @@ class FoodEstablishmentController extends Controller
                     'facility_id' => auth()->user()->facility_id,
                     'reason' => $request->data['reason']
                 ])) {
-                    if ($estCategory->update(['deleted_at' => new DateTime()])) {
+                    if ($estCategory->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                         DB::commit();
                         return [
                             'success',
