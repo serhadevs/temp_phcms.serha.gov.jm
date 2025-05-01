@@ -202,7 +202,7 @@ class FoodEstablishmentController extends Controller
             ]);
 
             $old_application->update([
-                'deleted_at' => new DateTime()
+                'deleted_at' => date('Y-m-d H:i:s')
             ]);
 
             return redirect()->route('food-establishment.filter', 0)->with('success', 'Food Establishment application for renewal has been entered successfully. The Est App ID : ' . $est_application_id);
