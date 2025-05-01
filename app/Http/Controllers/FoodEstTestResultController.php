@@ -339,7 +339,7 @@ class FoodEstTestResultController extends Controller
                             'facility_id' => auth()->user()->facility_id,
                             'reason' => $request->data['reason']
                         ])) {
-                            if ($result->update(['deleted_at' => new DateTime()])) {
+                            if ($result->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 DB::commit();
                                 return [
                                     'success',

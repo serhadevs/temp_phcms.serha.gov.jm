@@ -259,7 +259,7 @@ class DownloadsController extends Controller
                 PrintableApplications::where('id', $request->route('id'))
                     ->where('application_type_id', $request->route('app_type'))
                     ->update(
-                        ['deleted_at' => new DateTime()]
+                        ['deleted_at' => date('Y-m-d H:i:s')]
                     );
             } else {
                 Downloads::find($request->route('id'))->update([
@@ -306,7 +306,7 @@ class DownloadsController extends Controller
     {
         try {
             if (Downloads::find($request->route('id'))) {
-                if (Downloads::find($request->route('id'))->update(['deleted_at' => new DateTime()])) {
+                if (Downloads::find($request->route('id'))->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                     return "success";
                 }
             }
@@ -321,7 +321,7 @@ class DownloadsController extends Controller
             DB::beginTransaction();
             foreach ($request->data["selected_items"] as $item) {
                 if (Downloads::find($item)) {
-                    if (!Downloads::find($item)->update(['deleted_at' => new DateTime()])) {
+                    if (!Downloads::find($item)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                         throw new Exception("Issue deleting a record");
                     }
                 } else {

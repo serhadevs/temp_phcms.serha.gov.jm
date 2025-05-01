@@ -1181,7 +1181,7 @@ class PaymentController extends Controller
     //                 'total_cost' => 0,
     //                 'change_amt' => 0,
     //                 'manual_receipt_no' => "Change Needed",
-    //                 'manual_receipt_date' => new DateTime()
+    //                 'manual_receipt_date' => date('Y-m-d H:i:s')
     //             ]);
     //             $count++;
     //         } else {
@@ -1314,7 +1314,7 @@ class PaymentController extends Controller
         try {
             if (PaymentCancellationRequests::find($request->data["cancellation_id"])) {
                 if ($request->data["approval_stat"] == "1") {
-                    Payments::find(PaymentCancellationRequests::find($request->data["cancellation_id"])->payment_id)->update(["deleted_at" => new DateTime()]);
+                    Payments::find(PaymentCancellationRequests::find($request->data["cancellation_id"])->payment_id)->update(["deleted_at" => date('Y-m-d H:i:s')]);
                 }
                 PaymentCancellationRequests::find($request->data["cancellation_id"])->update(["approved" => $request->data["approval_stat"], "approver_user_id" => auth()->user()->id]);
                 return "success";

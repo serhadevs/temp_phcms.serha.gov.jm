@@ -246,8 +246,8 @@ class SwimmingPoolsApplicationController extends Controller
                 'old_application_id' => $old_application->id,
                 'application_type_id' => 5
             ])) {
-                TestResult::where('application_type_id', 5)->where('application_id', $id)->first()->update(['deleted_at' => new DateTime()]);
-                if ($old_application->update(['deleted_at' => new DateTime()])) {
+                TestResult::where('application_type_id', 5)->where('application_id', $id)->first()->update(['deleted_at' => date('Y-m-d H:i:s')]);
+                if ($old_application->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                     return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('success', 'Swimming Pool renewal application for ' . $new_swimming_pool->firstname . ' ' . $new_swimming_pool->lastname . ' has been entered successfully. The Application ID is ' . $new_swimming_pool->id);
                 }
             }
@@ -280,7 +280,7 @@ class SwimmingPoolsApplicationController extends Controller
                         'facility_id' => auth()->user()->facility_id,
                         'reason' => $request->data['reason']
                     ])) {
-                        if ($s_pool->update(['deleted_at' => new DateTime()])) {
+                        if ($s_pool->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
                             return [
                                 'success',

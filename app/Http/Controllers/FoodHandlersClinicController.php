@@ -128,7 +128,7 @@ class FoodHandlersClinicController extends Controller
                     'old_application_id' => $id
                 ])) {
                     $counter = 0;
-                    $old_clinic->update(['deleted_at' => new DateTime()]);
+                    $old_clinic->update(['deleted_at' => date('Y-m-d H:i:s')]);
                     $permit_ids = explode(",", $food_handlers_clinic['renewable_permits']);
                     foreach ($permit_ids as $permit_id) {
                         if ($permit = PermitApplication::find($permit_id)) {
@@ -151,15 +151,15 @@ class FoodHandlersClinicController extends Controller
                                     'old_application_id' => $permit->id
                                 ])) {
                                     if ($appointment = Appointments::where('permit_application_id', $permit_id)->first()) {
-                                        $appointment->update(['deleted_at' => new DateTime()]);
+                                        $appointment->update(['deleted_at' => date('Y-m-d H:i:s')]);
                                     }
                                     if ($health_interview = HealthInterview::where('permit_application_id', $permit_id)->first()) {
-                                        $health_interview->update(['deleted_at' => new DateTime()]);
+                                        $health_interview->update(['deleted_at' => date('Y-m-d H:i:s')]);
                                     }
                                     if ($test_result = TestResult::where('application_id', $permit_id)->where('application_type_id', 1)->first()) {
-                                        $test_result->update(['deleted_at' => new DateTime()]);
+                                        $test_result->update(['deleted_at' => date('Y-m-d H:i:s')]);
                                     }
-                                    $permit->update(['deleted_at' => new DateTime()]);
+                                    $permit->update(['deleted_at' => date('Y-m-d H:i:s')]);
                                 }
                             }
                         }
@@ -459,7 +459,7 @@ class FoodHandlersClinicController extends Controller
                         'facility_id' => auth()->user()->facility_id,
                         'reason' => $request->data['reason']
                     ])) {
-                        if ($food_clinic->update(['deleted_at' => new DateTime()])) {
+                        if ($food_clinic->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
                             return ['success', 'Food Establishment Clinic ' . $food_clinic->name . ' was deleted successfully'];
                         }

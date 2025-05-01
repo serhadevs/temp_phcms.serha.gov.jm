@@ -551,7 +551,7 @@ class TestNewJobs extends Controller
 
             DB::beginTransaction();
             foreach ($unzipped_permits as $unzipped_permit) {
-                $unzipped_permit->update(['deleted_at' => new DateTime()]);
+                $unzipped_permit->update(['deleted_at' => date('Y-m-d H:i:s')]);
             }
             DB::commit();
         } catch (Exception $e) {

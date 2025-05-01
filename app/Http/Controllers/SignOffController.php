@@ -321,7 +321,7 @@ class SignOffController extends Controller
                         DB::beginTransaction();
                         if ($edit->update(['approved' => 1])) {
                             if ($application->update(['sign_off_status' => NULL])) {
-                                if ($sign_off->update(['deleted_at' => new DateTime()])) {
+                                if ($sign_off->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     DB::commit();
                                     return [
                                         "success",

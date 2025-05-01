@@ -491,7 +491,7 @@ class HealthInterviewController extends Controller
                         'facility_id' => auth()->user()->facility_id,
                         'reason' => $request->data['reason']
                     ])) {
-                        if ($interview->update(['deleted_at' => new DateTime()])) {
+                        if ($interview->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             //Delete all symptoms and travel history
                             DB::commit();
                             return [
@@ -532,7 +532,7 @@ class HealthInterviewController extends Controller
                             'facility_id' => auth()->user()->facility_id,
                             'reason' => $request->data['reason']
                         ])) {
-                            if ($interview_sym->update(['deleted_at' => new DateTime()])) {
+                            if ($interview_sym->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 DB::commit();
                                 return [
                                     'success',
@@ -627,7 +627,7 @@ class HealthInterviewController extends Controller
                             'facility_id' => auth()->user()->facility_id,
                             'reason' => $request->data['reason']
                         ])) {
-                            if ($trip->update(['deleted_at' => new DateTime()])) {
+                            if ($trip->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 DB::commit();
                                 return [
                                     'success',

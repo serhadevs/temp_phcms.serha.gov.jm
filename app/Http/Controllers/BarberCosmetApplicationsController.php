@@ -435,7 +435,7 @@ class BarberCosmetApplicationsController extends Controller
                 'new_application_id' => $new_application->id,
                 'application_type_id' => '2'
             ])) {
-                if ($old_application->update(['deleted_at' => new DateTime()])) {
+                if ($old_application->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                     if (Appointments::create(
                         [
                             'appointment_date' => $health_cert_app['appointment_date'],
@@ -447,14 +447,14 @@ class BarberCosmetApplicationsController extends Controller
                         if (Appointments::where('health_cert_application_id', $id)
                             ->orderBy('created_at', 'desc')
                             ->first()
-                            ->update(['deleted_at' => new DateTime()])
+                            ->update(['deleted_at' => date('Y-m-d H:i:s')])
                         ) {
                             if ($old_health_interview = HealthInterview::where('health_cert_application_id', $id)->first()) {
-                                $old_health_interview->update(['deleted_at' => new DateTime()]);
+                                $old_health_interview->update(['deleted_at' => date('Y-m-d H:i:s')]);
                             }
 
                             if ($old_test_results = TestResult::where('application_id', $id)->where('application_type_id', 2)->first()) {
-                                $old_test_results->update(['deleted_at' => new DateTime()]);
+                                $old_test_results->update(['deleted_at' => date('Y-m-d H:i:s')]);
                             }
                             return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Health Certificate Application has been renewed successfully. The New Application ID is: ' . $new_application->id);
                         }
@@ -494,33 +494,33 @@ class BarberCosmetApplicationsController extends Controller
                         'reason' => $request->data['reason']
                     ])) {
                         if (!empty($application->appointment->first())) {
-                            if (!Appointments::where('health_cert_application_id', $id)->first()->update(['deleted_at' => new DateTime()])) {
+                            if (!Appointments::where('health_cert_application_id', $id)->first()->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 throw new Exception("Delete Operation failed. Unable to delete appointment created for this application.");
                             }
                         }
                         if (!empty($application->testResults)) {
-                            if (!TestResult::find($application->testResults?->id)->update(['deleted_at' => new DateTime()])) {
+                            if (!TestResult::find($application->testResults?->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 throw new Exception("Delete operation failed. System was unable to delete Test Results");
                             }
                         }
                         if (!empty($application->healthInterviews)) {
                             foreach ($application->healthInterviews?->healthInterviewSymptom as $sym) {
-                                if (!HealthInterviewSymptom::find($sym->id)->update(['deleted_at' => new DateTime()])) {
+                                if (!HealthInterviewSymptom::find($sym->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     throw new Exception("Delete operation failed. Unable to delete symptom added in health interview");
                                 }
                             }
-                            if (!HealthInterview::find($application->healthInterviews?->id)->update(['deleted_at' => new DateTime()])) {
+                            if (!HealthInterview::find($application->healthInterviews?->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 throw new Exception('Delete operation failed. Unable to delete health interviews.');
                             }
                         }
                         if (!empty($application->travelHistory)) {
                             foreach ($application->travelHistory as $travel) {
-                                if (!TravelHistory::find($travel->id)->update(['deleted_at' => new DateTime()])) {
+                                if (!TravelHistory::find($travel->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     throw new Exception('Delete operation failed. Unable to delete travel history');
                                 }
                             }
                         }
-                        if ($application->update(['deleted_at' => new DateTime()])) {
+                        if ($application->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
                             return [
                                 'success',

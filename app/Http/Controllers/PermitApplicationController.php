@@ -703,34 +703,34 @@ class PermitApplicationController extends Controller
                         'reason' => $request->data['reason']
                     ])) {
                         if (!empty($permit->appointment->first())) {
-                            if (!Appointments::where('permit_application_id', $id)->first()->update(['deleted_at' => new DateTime()])) {
+                            if (!Appointments::where('permit_application_id', $id)->first()->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 throw new Exception("Delete Operation failed. Unable to delete appointment created for this application.");
                             }
                         }
                         if (!empty($permit->testResults)) {
-                            if (!TestResult::find($permit->testResults?->id)->update(['deleted_at' => new DateTime()])) {
+                            if (!TestResult::find($permit->testResults?->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 throw new Exception("Delete operation failed. System was unable to delete Test Results");
                             }
                         }
                         if (!empty($permit->healthInterviews)) {
                             foreach ($permit->healthInterviews?->healthInterviewSymptom as $sym) {
-                                if (!HealthInterviewSymptom::find($sym->id)->update(['deleted_at' => new DateTime()])) {
+                                if (!HealthInterviewSymptom::find($sym->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     throw new Exception("Delete operation failed. Unable to delete symptom added in health interview");
                                 }
                             }
-                            if (!HealthInterview::find($permit->healthInterviews?->id)->update(['deleted_at' => new DateTime()])) {
+                            if (!HealthInterview::find($permit->healthInterviews?->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 throw new Exception('Delete operation failed. Unable to delete health interviews.');
                             }
                         }
                         if (!empty($permit->travelHistory)) {
                             foreach ($permit->travelHistory as $travel) {
-                                if (!TravelHistory::find($travel->id)->update(['deleted_at' => new DateTime()])) {
+                                if (!TravelHistory::find($travel->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     throw new Exception('Delete operation failed. Unable to delete travel history');
                                 }
                             }
                         }
                         //Add delete for messages
-                        if ($permit->update(['deleted_at' => new DateTime()])) {
+                        if ($permit->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
                             return [
                                 'success',

@@ -331,7 +331,7 @@ class BarberCosmetTestResultController extends Controller
                             'facility_id' => auth()->user()->facility_id,
                             'reason' => $request->data['reason']
                         ])) {
-                            if ($results->update(['deleted_at' => new DateTime()])) {
+                            if ($results->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 DB::commit();
                                 return [
                                     'success',

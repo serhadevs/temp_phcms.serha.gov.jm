@@ -537,7 +537,7 @@ class TouristEstApplicationsController extends Controller
                             'facility_id' => auth()->user()->facility_id,
                             'reason' => $request->data['edit_reason']
                         ])) {
-                            if ($service->update(['deleted_at' => new DateTime()])) {
+                            if ($service->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 DB::commit();
                                 return [
                                     'success',
@@ -583,7 +583,7 @@ class TouristEstApplicationsController extends Controller
                             'facility_id' => auth()->user()->facility_id,
                             'reason' => $request->data['edit_reason']
                         ])) {
-                            if ($manager->update(['deleted_at' => new DateTime()])) {
+                            if ($manager->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 DB::commit();
                                 return [
                                     'success',
@@ -700,13 +700,13 @@ class TouristEstApplicationsController extends Controller
         if ($new_tourist_est = TouristEstablishments::create($tourist_est)) {
             foreach ($old_application->managers as $manager) {
                 TouristEstManagers::find($manager->id)->update([
-                    'deleted_at' => new DateTime()
+                    'deleted_at' => date('Y-m-d H:i:s')
                 ]);
             }
 
             foreach ($old_application->services as $service) {
                 TouristEstServices::find($service->id)->update([
-                    'deleted_at' => new DateTime()
+                    'deleted_at' => date('Y-m-d H:i:s')
                 ]);
             }
 
@@ -743,7 +743,7 @@ class TouristEstApplicationsController extends Controller
 
             if ($old_test_results = TestResult::where('application_id', $id)->where('application_type_id', 6)->first()) {
                 $old_test_results->update([
-                    'deleted_at' => new DateTime()
+                    'deleted_at' => date('Y-m-d H:i:s')
                 ]);
             }
 
@@ -755,7 +755,7 @@ class TouristEstApplicationsController extends Controller
 
                 ]
             )) {
-                if ($old_application->update(['deleted_at' => new DateTime()])) {
+                if ($old_application->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                     return redirect()->route('tourist-establishments.index.filter', ['id' => 0])->with('success', 'Tourist Establishment ' . $new_tourist_est->establishment_name . ' has been renewed successfully. The Application ID is: ' . $new_tourist_est->id . '.');
                 }
             }
@@ -779,14 +779,14 @@ class TouristEstApplicationsController extends Controller
                         'reason' => $request->data['reason']
                     ])) {
                         if (!empty($application->testResults)) {
-                            if (!TestResult::find($application->testResults?->id)->update(['deleted_at' => new DateTime()])) {
+                            if (!TestResult::find($application->testResults?->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 throw new Exception("Error deleting application. Unable to delete test results");
                             }
                         }
 
                         if (!empty($application->managers->first())) {
                             foreach ($application->managers as $manager) {
-                                if (!TouristEstManagers::find($manager->id)->update(['deleted_at' => new DateTime()])) {
+                                if (!TouristEstManagers::find($manager->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     throw new Exception("Error deleting application. Unable to delete manger.");
                                 }
                             }
@@ -794,13 +794,13 @@ class TouristEstApplicationsController extends Controller
 
                         if (!empty($application->services->first())) {
                             foreach ($application->services as $service) {
-                                if (!TouristEstServices::find($service->id)->update(['deleted_at' => new DateTime()])) {
+                                if (!TouristEstServices::find($service->id)->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                     throw new Exception("Error deleting application. Unable to delete service");
                                 }
                             }
                         }
 
-                        if ($application->update(['deleted_at' => new DateTime()])) {
+                        if ($application->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
                             return [
                                 'success',
