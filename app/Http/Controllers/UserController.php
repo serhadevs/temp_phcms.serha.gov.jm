@@ -24,31 +24,66 @@ class UserController extends Controller
     //Show Users that are currently registered on the system
     //Shows currently logged in users
     //Route: /settings/users
+
+    private function getUsers($facility_id = null,$role_id = null)
+{
+    $query = User::where('status', 1)
+        ->whereNull('deleted_at');
+
+    if ($facility_id) {
+        $query->where('facility_id', $facility_id);
+    }
+
+    if ($role_id) {
+        $query->where('role_id', $role_id);
+    }
+
+    return $query->latest('created_at')
+        ->get([
+            'last_seen', 'id', 'firstname', 'lastname', 'facility_id',
+            'role_id', 'telephone', 'email', 'status', 'created_at', 'updated_at'
+        ]);
+}
+
     public function index()
     {
 
         if (Auth::user()->role_id == 1) {
-            $users = DB::table('users')
-                ->join('roles', 'roles.id', '=', 'users.role_id')
-                ->latest('users.created_at')
-                ->select('users.id', 'users.firstname', 'users.lastname', 'users.facility_id', 'users.role_id', 'users.telephone', 'users.email', 'users.status', 'users.created_at', 'users.updated_at', 'roles.name', 'roles.description')
-                ->whereNull('users.deleted_at')
-                ->where('users.status',1)
-                ->get();
-                
+            
+            $users = $this->getUsers();
+
+            // $users = User::where('status', 1)->latest('created_at')->get();
+            // dd($users->take(5));
             $facilities = Facility::all();
+            $roles = DB::table('roles')->pluck('name', 'id');
+            //dd($roles);
         } elseif (Auth::user()->role_id == 2) {
-            $users = User::where('facility_id', Auth::user()->facility_id)->get();
+            // $users = User::where('facility_id', Auth::user()->facility_id)->get();
+          $users = $this->getUsers();
+            $roles = DB::table('roles')->pluck('name', 'id');
+            //dd($roles);
         }
 
-        //dd($users);
 
-        $currentUsers = User::select("*")
-            ->whereNotNull('last_seen')
-            ->orderBy('last_seen', 'DESC')
-            ->get();
 
-        return view('users.index', compact('users', 'facilities', 'currentUsers'));
+        return view('users.index', compact('users', 'facilities','roles'));
+    }
+
+    //Filter Users By Facility
+    //Route: /settings/users/filter
+    //This function filters the users by facility
+
+    public function filterUsers(Request $request)
+    {
+    
+        $facility_id = $request->facility_id;
+        //dd($facility_id);
+        $role_id = $request->role_id;
+        $users = $this->getUsers($facility_id,$role_id);
+        $facilities = Facility::all();
+        $roles = DB::table('roles')->pluck('name', 'id');
+
+        return view('users.index', compact('users','facilities','roles'));
     }
 
     //Shows currently logged in users
@@ -404,4 +439,6 @@ class UserController extends Controller
 
         return redirect()->back()->with("success", "User successfully deactivated");
     }
+
+    
 }

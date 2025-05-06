@@ -49,7 +49,7 @@ class SummaryReportController extends Controller
             // ->get()
             ;
 
-        // dd($facilities_with_pos);
+        // dd(array($facilities_with_pos));
 
         return view('reports.summaryreport.index', compact('payment_types', 'facilities_with_pos'));
     }
