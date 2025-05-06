@@ -52,8 +52,28 @@ class SignOff extends Model implements Auditable
 
     public function establishmentApplication($value): HasOne
     {
-        dd($value);
+        // dd($value);
         return $this->hasOne(EstablishmentApplications::class, 'id', 'application_id');
+    }
+
+    public function estApplication(): HasOne
+    {
+        return $this->hasOne(EstablishmentApplications::class, 'id', 'application_id');
+    }
+
+    public function healthCertApplication(): HasOne
+    {
+        return $this->hasOne(HealthCertApplications::class, 'id', 'application_id');
+    }
+
+    public function swimmingPool(): HasOne
+    {
+        return $this->hasOne(SwimmingPoolsApplications::class, 'id', 'application_id');
+    }
+
+    public function touristEstApplication(): HasOne
+    {
+        return $this->hasOne(TouristEstablishments::class, 'id', 'application_id');
     }
 
     public function application($query)

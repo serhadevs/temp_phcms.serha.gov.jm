@@ -37,6 +37,10 @@ class Appointments extends Model implements Auditable
         return $this->belongsTo(PermitApplication::class, 'permit_application_id', 'id');
     }
 
+    public function healthCertApplication():HasOne{
+        return $this->hasOne(HealthCertApplications::class, 'id', 'health_cert_application_id');
+    }
+
     public function examDate(): HasOne
     {
         return $this->hasOne(ExamDates::class, 'id', 'exam_date_id')->withTrashed();
