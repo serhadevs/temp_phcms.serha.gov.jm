@@ -30,8 +30,7 @@
                                 <input type="date" class="form-control" name="ending_date" max="date">
                             </div>
                             <div class="col"
-                                style="display:{{ in_array(auth()->user()->facility_id, array($facilities_with_pos)) ? in_array(auth()->user()->role_id, [1, 4, 9] ? '' : 'none') : 'none' }}">
-                                {{-- <div class="col"> --}}
+                                style="display:{{ in_array(auth()->user()->facility_id, $facilities_with_pos) ? (in_array(auth()->user()->role_id, [1, 4, 9]) ? '' : 'none') : 'none' }}">
                                 <label for="" class="form-label">Payment Type Id</label>
                                 <select name="payment_type_id" id="" class="form-select">
                                     @foreach ($payment_types as $payment_type)
@@ -40,8 +39,9 @@
                                             {{ $payment_type->name }}</option>
                                     @endforeach
                                     <option value="">No Consideration for payment</option>
+                                    <option value="100">Cash or Card Payment</option>
                                 </select>
-                                {{-- </div> --}}
+
                             </div>
                         </div>
 
