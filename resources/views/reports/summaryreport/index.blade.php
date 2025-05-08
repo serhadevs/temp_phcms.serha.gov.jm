@@ -35,8 +35,8 @@
                                 {{-- <div class="col"> --}}
                                 <label for="" class="form-label">Payment Type</label>
 =======
-                                style="display:{{ in_array(auth()->user()->facility_id, $facilities_with_pos) ? (in_array(auth()->user()->role_id, [1, 4, 9]) ? '' : 'none') : 'none' }}">
-                                <label for="" class="form-label">Payment Type Id</label>
+                                {{-- style="display:{{ in_array(auth()->user()->facility_id, $facilities_with_pos) ? (in_array(auth()->user()->role_id, [1, 4, 9]) ? '' : 'none') : 'none' }}">
+                                <label for="" class="form-label">Payment Type Id</label> --}}
 >>>>>>> dd63e5dd51581a731eff4365189ca838d8732067
                                 <select name="payment_type_id" id="" class="form-select">
                                     @foreach ($payment_types as $payment_type)
