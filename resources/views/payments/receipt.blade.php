@@ -86,13 +86,13 @@
             </div>
         </div>
     </div>
-    <script>
+    {{-- <script>
         const hamBurger = document.querySelector(".toggle-btn");
 
         hamBurger.addEventListener("click", function() {
             document.querySelector("#sidebar").classList.toggle("expand");
         });
-    </script>
+    </script> --}}
     <script>
         function printReceipt(receipt_info) {
             // console.log(receipt_info);
