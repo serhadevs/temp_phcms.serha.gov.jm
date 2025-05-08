@@ -132,7 +132,7 @@
             mywindow.document.write('Cashier    : ' + receipt_info['cashier'] + "<br><br>");
 
             mywindow.document.write('REMINDER: TAKE ALONG THIS RECEIPT' + "<br>" + 'WITH YOU ON THE APPOINTMENT DATE.' +
-                "<br>" + '***DO NOT LOSE THIS RECEIPT!***');
+                "<br>" + '***DO NOT LOSE THIS RECEIPT!***' + '<br>');
             mywindow.document.write('***YOU CAN RESCHEDULE YOUR' + "<br>" + 'APPOINTMENT DATE ONCE.****');
 
             // mywindow.document.write('</head><body >');
