@@ -47,7 +47,7 @@ class SummaryReportController extends Controller
             ->pluck('facility_id')
             ->toArray()
             // ->get()
-            ;
+        ;
 
         // dd(array($facilities_with_pos));
 
@@ -60,6 +60,9 @@ class SummaryReportController extends Controller
             'starting_date' => 'required|date',
             'ending_date' => 'required|date',
         ]);
+
+        //$request->payment_type_id == 100
+        //This is for both cash and card
 
         $foodHandlers = $this->foodhandlerSummary($timeline['starting_date'], $timeline['ending_date'], $request->payment_type_id);
         $barberCosmet = $this->barberCosmetSummary($timeline['starting_date'], $timeline['ending_date'], $request->payment_type_id);
@@ -112,6 +115,7 @@ class SummaryReportController extends Controller
             ->whereBetween('sign_off_date', [$starting_date, $ending_date])
             ->where('application_type_id', 1)
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('permitApplication.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('permitApplication.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -128,6 +132,7 @@ class SummaryReportController extends Controller
         //Where in might be wrong
         $noRenewals = Renewals::with('permitApplication.payment')
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('permitApplication.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('permitApplication.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -208,6 +213,7 @@ class SummaryReportController extends Controller
 
         $noTrainingSessions = Appointments::with('applications.payment')
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('applications.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('applications.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -252,6 +258,7 @@ class SummaryReportController extends Controller
             ->whereBetween('sign_off_date', [$starting_date, $ending_date])
             ->where('application_type_id', 2)
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('healthCertApplication.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('healthCertApplication.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -267,6 +274,7 @@ class SummaryReportController extends Controller
 
         $noRenewals = Renewals::with('healthCertApplication.payment')
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('healthCertApplication.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('healthCertApplication.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -358,6 +366,7 @@ class SummaryReportController extends Controller
             ->whereBetween('sign_off_date', [$starting_date, $ending_date])
             ->where('application_type_id', 3)
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('estApplication.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('estApplication.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -376,6 +385,7 @@ class SummaryReportController extends Controller
             // ->whereIn('ea.user_id', User::facilityUsers()->pluck('id')->flatten())
             // ->whereNotNull('ea.id')
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('establishmentApplication.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('establishmentApplication.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -499,6 +509,7 @@ class SummaryReportController extends Controller
             ->whereBetween('sign_off_date', [$starting_date, $ending_date])
             ->where('application_type_id', 5)
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('swimmingPool.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('swimmingPool.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -516,6 +527,7 @@ class SummaryReportController extends Controller
             // ->whereBetween('application_date', [$starting_date, $ending_date])
             // ->whereIn('sa.user_id', User::facilityUsers()->pluck('id')->flatten())
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('swimmingPoolApplication.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('swimmingPoolApplication.payment', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -606,6 +618,7 @@ class SummaryReportController extends Controller
             ->whereBetween('sign_off_date', [$starting_date, $ending_date])
             ->where('application_type_id', 6)
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('touristEstApplication.payments');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('touristEstApplication.payments', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -621,6 +634,7 @@ class SummaryReportController extends Controller
 
         $noRenewals = Renewals::with('touristEstApplication.payments')
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('touristEstApplication.payments');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('touristEstApplication.payments', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -679,6 +693,7 @@ class SummaryReportController extends Controller
 
         $persons_trained = TestResult::with('touristEstablishment.payments')
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('touristEstablishment.payments');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('touristEstablishment.payments', function ($q) {
                         $q->where('payment_type_id', 1)
@@ -738,6 +753,7 @@ class SummaryReportController extends Controller
 
         $noRenewals = Renewals::with('estClinic.payment')
             ->when($payment_type, function ($query, string $payment_type) {
+                $query->has('estClinic.payment');
                 $query->when($payment_type == 1, function ($query2, string $payment_type) {
                     $query2->whereHas('estClinic.payment', function ($q) {
                         $q->where('payment_type_id', 1)
