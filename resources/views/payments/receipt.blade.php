@@ -86,13 +86,13 @@
             </div>
         </div>
     </div>
-    <script>
+    {{-- <script>
         const hamBurger = document.querySelector(".toggle-btn");
 
         hamBurger.addEventListener("click", function() {
             document.querySelector("#sidebar").classList.toggle("expand");
         });
-    </script>
+    </script> --}}
     <script>
         function printReceipt(receipt_info) {
             // console.log(receipt_info);
@@ -132,7 +132,8 @@
             mywindow.document.write('Cashier    : ' + receipt_info['cashier'] + "<br><br>");
 
             mywindow.document.write('REMINDER: TAKE ALONG THIS RECEIPT' + "<br>" + 'WITH YOU ON THE APPOINTMENT DATE.' +
-                "<br>" + '***DO NOT LOSE THIS RECEIPT!***');
+                "<br>" + '***DO NOT LOSE THIS RECEIPT!***' + '<br>');
+            mywindow.document.write('***YOU CAN RESCHEDULE YOUR' + "<br>" + 'APPOINTMENT DATE ONCE.****');
 
             // mywindow.document.write('</head><body >');
             // mywindow.document.write('<h1>' + document.title  + '</h1>');
