@@ -27,9 +27,9 @@ class TestNewJobs extends Controller
 
     public function manualJobs()
     {
-        // $this->permitJob();
-        $this->foodEstJob();
-        // $this->touristJob();
+        $this->permitJob();
+        // $this->foodEstJob();
+        $this->touristJob();
     }
 
     public function printClinicPermits($clinic_id)
