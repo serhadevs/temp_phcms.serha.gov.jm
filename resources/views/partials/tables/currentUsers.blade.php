@@ -1,4 +1,4 @@
-<div class="card">
+{{-- <div class="card">
     <div class="card-header">
         <h3>Current Users</h3>
     </div>
@@ -43,7 +43,7 @@
     <div class="card-footer">
         <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
     </div>
-</div>
+</div> --}}
 
 
 

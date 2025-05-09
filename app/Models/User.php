@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\ExamSites;
+use App\Models\Facility;
+use App\Models\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Yungts97\LaravelUserActivityLog\Traits\Loggable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
+use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 
 class User extends Authenticatable implements Auditable
 {
@@ -94,6 +98,16 @@ class User extends Authenticatable implements Auditable
     public function examSite(): HasOne{
         return $this->hasOne(ExamSites::class,'facility_id','facility_id');
     }
+
+    public function OnlineUser(){
+        return Cache::has('user-is-online-' . $this->id);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+   
 
     public $timestamps = true;
 }
