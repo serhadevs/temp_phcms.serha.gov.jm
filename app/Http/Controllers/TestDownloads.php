@@ -894,7 +894,7 @@ class TestDownloads extends Controller
 
         foreach ($urls as $url) {
             // storage_path('app/public/'
-            Storage::copy('app/public/' . $url[1], 'app/public/copies/' . $url[0] . '.zip');
+            Storage::copy(storage_path('app/public/' . $url[1]), storage_path('app/public/copies/' . $url[0] . '.zip'));
         }
 
         return 'success';
