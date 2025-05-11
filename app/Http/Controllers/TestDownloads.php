@@ -19,6 +19,8 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use DateTime;
 use Illuminate\Support\Facades\Storage;
+use File;
+use Illuminate\Support\Facades\File as FacadesFile;
 
 class TestDownloads extends Controller
 {
@@ -894,7 +896,7 @@ class TestDownloads extends Controller
 
         foreach ($urls as $url) {
             // storage_path('app/public/'
-            Storage::copy(storage_path('app/public/' . $url[1]), storage_path('app/public/copies/' . $url[0] . '.zip'));
+            FacadesFile::copy(storage_path('app/public/' . $url[1]), storage_path('app/public/copies/' . $url[0] . '.zip'));
         }
 
         return 'success';
