@@ -375,6 +375,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::get('/delete/unzipped/permits', [TestNewJobs::class, 'deleteAllUnzippedPermits']);
     Route::get('/jobs/food-establishment/clean', [TestDownloads::class, 'cleanUpDownloads']);
     Route::get('/manual/jobs/run', [TestNewJobs::class, 'manualJobs']);
+    Route::get('/test/copy-downloads', [TestDownloads::class, 'copyDownloadsToBeChecked']);
   });
 
 
@@ -483,9 +484,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Coupons
   Route::resource('coupons', CouponController::class);
- 
-  
-  
+
+
+
 
   //Student Exam Routes
   Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
