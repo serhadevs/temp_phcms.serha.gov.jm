@@ -57,7 +57,10 @@ class SignOffController extends Controller
             'exam_date' => 'required_if:app_type_id,1,2',
             'clinic_mode' => 'required_if:app_type_id,1',
             'exam_site' => 'required_if:clinic_mode,regular|required_if:app_type_id,2',
-            'date_of_inspection' => 'required_if:app_type_id,3,5,6'
+            'date_of_inspection' => 'required_if:app_type_id,3,5,6',
+            'filter_lastname' => 'nullable',
+            'start_last_name' => 'required_if:filter_lastname,1',
+            'end_last_name' => 'required_if:filter_lastname,1'
         ]);
         $app_type_id = $request->route('id');
         $exam_date = Carbon::parse($request->exam_date)->format('Y-m-d');
@@ -77,6 +80,11 @@ class SignOffController extends Controller
                     ->with(['permitApplication' => function ($query) {
                         $query->orderBy('lastname');
                     }])
+                    ->when($sign_off_params['filter_lastname'] == 1, function ($query, array $sign_off_params) {
+                        $query->whereHas('permitApplication', function ($query2, array $sign_off_params) {
+                            $query2->whereRaw("lastname REGEXP '^[" . $sign_off_params['start_last_name'] . "-" . $sign_off_params['end_last_name'] . "].*';");
+                        });
+                    })
                     ->get();
             } else if ($clinic_mode == "regular") {
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'permitApplication.payment')
