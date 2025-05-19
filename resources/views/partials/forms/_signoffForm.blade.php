@@ -45,7 +45,7 @@
 <form action="/sign-off/show-applications/{{ $id }}" method="POST">
     @csrf
     @method('POST')
-    {{ $errors }}
+    {{-- {{ $errors }} --}}
     <input type="text" value="{{ $id }}" name="app_type_id" hidden>
     @if ($id == 1)
         <div class="mb-2">
@@ -188,6 +188,8 @@
             document.getElementById('exam_site_container').style.display = "none";
             document.getElementById('last_name_checkbox').style.display = "";
         } else if (value == "regular") {
+            document.getElementById('last_name_checkbox_input').checked = false;
+            document.getElementById('last_name_sorter').style.display = "none";
             document.getElementById('exam_site_container').style.display = "";
             document.getElementById('last_name_checkbox').style.display = "none";
         }
