@@ -156,9 +156,6 @@
                                   
                                 </div> --}}
 
-                                {{-- <div class="row g-3 mb-3">
-                                   <livewire:establishmentnamesearch />
-                                </div> --}}
                                
                                 <div class="row">
                                     <!-- Food Establishments that are expiring -->
@@ -202,6 +199,15 @@
                                                            
                                                           </div>
                                                           <a href="{{ route('food-establishments.expiry', ['days' => 90]) }}" class="btn btn-primary">View</a>
+
+                                                        </li>
+
+                                                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                          <div class="ms-2 me-auto">
+                                                            <div class="fw-bold">View all Food Establishments that have expired between a date</div>
+                                                           
+                                                          </div>
+                                                            <a href="{{ route('est.expired') }}" class="btn btn-primary">View                                           </a>
 
                                                         </li>
                                                       </ol>
@@ -308,53 +314,5 @@
     </script>
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    {{-- <script>
-        $(document).ready(function() {
-
-            function getExpiryCount(days) {
-                $.ajax({
-                    url: `/dashboard/expiry/${encodeURIComponent(days)}`,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log('Response:', data);
-                        // Update the content of the element with ID 'expiryCount'
-                        if ($('#expiryCount').length) {
-                            console.log(data.expiry_count)
-                            const expiryCount = data.expiry_count || 0;
-                            const expiryMessage = expiryCount === 0 ?
-                                'There are no establishments expiring today.' :
-                                `${expiryCount} Establishments expiring in: ${days} days.`;
-                            $('#expiryCount').text(expiryMessage);
-                            
-                            $('#expiryBtn').attr('href','/food-establishments/expiry/'+ days)
-                           
-
-                        } else {
-                            console.warn('Element with ID "expiryCount" not found.');
-                        }
-                        
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error:', status, error);
-                        console.error('Response:', xhr.responseText);
-                    }
-                });
-            }
-
-            // Initial fetch for 30 days expiry count
-            getExpiryCount(0);
-
-            // Fetch expiry count when the dropdown value changes
-            $('#expiry_date').change(function() {
-                const selectedValue = $(this).val();
-                console.log('Selected Value:', selectedValue);
-                getExpiryCount(selectedValue); // Pass the selected value to fetch data dynamically
-            });
-        });
-    </script> --}}
-
-    {{-- @livewireScripts --}}
-
 
 @endsection

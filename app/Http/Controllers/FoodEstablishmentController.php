@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use OpenAI\Enums\Moderations\Category;
 
 class FoodEstablishmentController extends Controller
 {
@@ -211,7 +212,7 @@ class FoodEstablishmentController extends Controller
 
     public function view(Request $request)
     {
-        $est_application = EstablishmentApplications::with('operators.editTransactions', 'zippedApplication', 'editTransactions','testResults','signOff','signOff.user:id,firstname,lastname')->find($request->route('id'));
+        $est_application = EstablishmentApplications::with('operators.editTransactions', 'zippedApplication', 'editTransactions', 'testResults', 'signOff', 'signOff.user:id,firstname,lastname')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $enableEditFeature = "0";
         $app_type_id = 3;
@@ -646,10 +647,11 @@ class FoodEstablishmentController extends Controller
         }
     }
 
-    public function expiredEstabtablishments($days){
-        
-        
-        $now = Carbon::now(); 
+    public function expiredEstabtablishments($days)
+    {
+
+
+        $now = Carbon::now();
         switch ($days) {
             case 0:
                 $expiryDays = $now;
@@ -664,32 +666,63 @@ class FoodEstablishmentController extends Controller
                 $expiryDays = $now->copy()->addDays(90);
                 break;
             default:
-                $expiryDays = $now; 
+                $expiryDays = $now;
                 break;
         }
-        
-    
+
+
         // Fetch Expired Application
         try {
-            
+
             $food_establishments = EstablishmentApplications::with('payment')
-            ->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
-            ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
-            //->where('sign_offs.sign_off_status',1)
-            ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])
-            ->get();
+                ->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
+                ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
+                //->where('sign_offs.sign_off_status',1)
+                ->whereBetween('sign_offs.expiry_date', isset($expiryDays) && $expiryDays != $now ? [$now, $expiryDays] : [$now])
+                ->get();
 
             //dd($food_establishments);
 
-            return view('establishments.expiredapplications.index',compact('food_establishments','days','now'));
+            return view('establishments.expiredapplications.index', compact('food_establishments', 'days', 'now'));
         } catch (\Throwable $e) {
             Log::error('Error fetching expiry count: ' . $e->getMessage());
             $food_establishments = 0;
         }
-
-        
-        
     }
 
-   
+    public function createExpiredEstablishments()
+    {
+
+        $categories = EstablishmentCategories::all();
+        return view('establishments.expiredapplications.create', compact('categories'));
+    }
+
+    public function showAllExpiredEstablishments(Request $request)
+    {
+
+        $validatedFields = $request->validate([
+            'starting_date' => 'required',
+            'ending_date' => 'required',
+
+        ]);
+
+        $starting_date = $validatedFields['starting_date'];
+        $ending_date = $validatedFields['ending_date'];
+
+
+        $food_establishments = EstablishmentApplications::with('payment')
+            ->join('sign_offs', 'sign_offs.application_id', '=', 'establishment_applications.id')
+            ->whereIn('establishment_applications.user_id', User::facilityUserId()->pluck('id'))
+            
+            ->whereBetween('sign_offs.expiry_date', [$starting_date, $ending_date])
+        
+            ->where('sign_offs.is_granted', 1)
+            ->get();
+        //dd($food_establishments->take(10));
+
+        $days = $starting_date;
+        $now = $ending_date;
+
+        return view('establishments.expiredapplications.index', compact('food_establishments', 'starting_date', 'ending_date'));
+    }
 }

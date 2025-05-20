@@ -13,7 +13,11 @@
                     <h2 class="card-header">
                         <div class="row justify-content-between">
                             <div class="col">
+                                @if(isset($starting_date) && !empty($starting_date) && isset($ending_date) && !empty($ending_date))
+                                 <h2 class="text-muted">Expired Food Establishments Between {{ \Carbon\Carbon::parse($starting_date)->format('F d Y') }} and {{ \Carbon\Carbon::parse($ending_date)->format('F d Y') }}</h2>
+                                @else
                                 <h2 class="text-muted">Food Establishments Expiring within {{ $days }} days from {{ \Carbon\Carbon::parse($now)->format('F d Y') }}</h2>
+                                @endif
                             </div>
                             {{-- <div class="col-auto no-wrap">
                                 <div class="row">
@@ -69,51 +73,7 @@
                     </div>
                 </div>
             </div>
-            {{-- <script>
-                $(document).ready(function() {
-                    $('#starting_date').change(function() {
-                        calcInterval();
-                    })
-
-                    $('#ending_date').change(function() {
-                        calcInterval();
-                    })
-
-                    $('#starting_date').keyup(function() {
-                        calcInterval();
-                    })
-
-                    $('#ending_date').keyup(function() {
-                        calcInterval();
-                    })
-                })
-
-                window.onload = () => {
-                    errors = document.querySelectorAll(".errors");
-                    if (errors[0]) {
-                        showSearchBar();
-                    }
-                }
-
-                function calcInterval() {
-                    if (document.getElementById('starting_date').value && document.getElementById('ending_date').value) {
-                        var starting_date = new Date(document.getElementById("starting_date").value);
-                        var ending_date = new Date(document.getElementById("ending_date").value);
-                        var datediff = (ending_date.getMonth() - starting_date.getMonth()) + (12 * (ending_date.getFullYear() -
-                            starting_date.getFullYear()));
-                        document.getElementById('interval').value = datediff;
-                    }
-                }
-
-                function showSearchBar() {
-                    if (document.getElementById("search-row").style.display == "none") {
-                        document.getElementById("search-row").style.display = "";
-                    } else {
-                        document.getElementById("search-row").style.display = "none";
-                    }
-
-                }
-            </script> --}}
+            
         </main>
     </div>
 
