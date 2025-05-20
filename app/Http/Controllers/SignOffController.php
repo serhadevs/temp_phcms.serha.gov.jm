@@ -83,11 +83,13 @@ class SignOffController extends Controller
                     ->with(['permitApplication' => function ($query) {
                         $query->orderBy('lastname');
                     }])
-                    ->when($sign_off_params['filter_lastname'] == 1, function ($query) use ($start_last_name, $end_last_name) {
-                        $query->whereHas('permitApplication', function ($query2) use ($start_last_name, $end_last_name) {
+                    // ->when($sign_off_params['filter_lastname'] == 1, function ($query) use ($start_last_name, $end_last_name) {
+                    //     $query
+                        ->whereHas('permitApplication', function ($query2) use ($start_last_name, $end_last_name) {
                             $query2->whereRaw("lastname REGEXP '^[" . $start_last_name . "-" . $end_last_name . "].*'");
-                        });
-                    })
+                        })
+                        // ;
+                    // })
                     ->get();
             } else if ($clinic_mode == "regular") {
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'permitApplication.payment')
