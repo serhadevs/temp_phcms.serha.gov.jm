@@ -71,14 +71,13 @@ class SignOffController extends Controller
         if ($app_type_id == 1) {
             if ($clinic_mode == "onsite") {
                 $start_last_name = $request->filter_lastname ? $sign_off_params['start_last_name'] : '';
-                $end_last_name = $sign_off_params['filter_lastname'] == '1' ? $sign_off_params['end_last_name'] : '';
+                $end_last_name = $request->filter_lastname ? $sign_off_params['end_last_name'] : '';
                 $last_name_array = array([$start_last_name, $end_last_name]);
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.payment')
                     ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
                     ->when($sign_off_params['filter_lastname'] == 1, function ($query) use ($start_last_name, $end_last_name) {
                         $query->whereHas('permitApplication', function ($query2) use ($start_last_name, $end_last_name) {
                             $query2->whereRaw("lastname REGEXP '^[" . $start_last_name . "-" . $end_last_name . "].*'");
-                            // $query2->whereRaw("lastname REGEXP '^[a-e].*'");
                         });
                     })
                     ->where('facility_id', auth()->user()->facility_id)
@@ -89,12 +88,6 @@ class SignOffController extends Controller
                     ->with(['permitApplication' => function ($query) {
                         $query->orderBy('lastname');
                     }])
-                    // ->when($sign_off_params['filter_lastname'] == 1, function ($query) use ($start_last_name, $end_last_name) {
-                    //     $query->whereHas('permitApplication', function ($query2) use ($start_last_name, $end_last_name) {
-                    //         $query2->whereRaw("lastname REGEXP '^[" . $start_last_name . "-" . $end_last_name . "].*'");
-                    //         // $query2->whereRaw("lastname REGEXP '^[a-e].*'");
-                    //     });
-                    // })
                     ->get();
             } else if ($clinic_mode == "regular") {
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.appointment.examDate.examSites', 'permitApplication.payment')
