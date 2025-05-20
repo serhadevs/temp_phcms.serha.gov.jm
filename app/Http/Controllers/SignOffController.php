@@ -75,7 +75,7 @@ class SignOffController extends Controller
                 $last_name_array = array([$start_last_name, $end_last_name]);
                 $applications = HealthInterview::with('permitApplication.permitCategory', 'permitApplication.establishmentClinics', 'permitApplication.testResults', 'permitApplication.travelHistory', 'healthInterviewSymptom.symptoms', 'permitApplication.payment')
                     ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
-                    ->when($sign_off_params['filter_lastname'] == 1, function ($query) use ($start_last_name, $end_last_name) {
+                    ->when($request->filter_lastname == 1, function ($query) use ($start_last_name, $end_last_name) {
                         $query->whereHas('permitApplication', function ($query2) use ($start_last_name, $end_last_name) {
                             $query2->whereRaw("lastname REGEXP '^[" . $start_last_name . "-" . $end_last_name . "].*'");
                         });
