@@ -85,7 +85,7 @@ class SignOffController extends Controller
                     }])
                     ->when($sign_off_params['filter_lastname'] == 1, function ($query) use ($start_last_name, $end_last_name) {
                         $query->whereHas('permitApplication', function ($query2) use ($start_last_name, $end_last_name) {
-                            $query2->whereRaw("lastname REGEXP '^[" . $start_last_name . "-" . $end_last_name . "].*';");
+                            $query2->whereRaw("lastname REGEXP '^[" . $start_last_name . "-" . $end_last_name . "].*'");
                             // $query2->whereRaw("lastname REGEXP '^[a-e].*'");
                         });
                     })
