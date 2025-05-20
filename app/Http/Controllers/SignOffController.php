@@ -82,7 +82,6 @@ class SignOffController extends Controller
                         });
                     })
                     ->where('facility_id', auth()->user()->facility_id)
-                    // ->whereRelation('permitApplication.establishmentClinics', 'proposed_date', $exam_date)
                     ->whereRelation('permitApplication', 'photo_upload', '<>', NULL)
                     ->whereRelation('permitApplication', 'photo_upload', '<>', '0')
                     ->has('permitApplication.testResults')
