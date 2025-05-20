@@ -102,6 +102,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Expired Establishments
   Route::get('/establishments/expiry/{days}', [FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('est.expiry');
+  Route::get('/establishments/expired',[FoodEstablishmentController::class, 'createExpiredEstablishments'])->name('est.expired');
+  Route::post('/establishments/expired/view',[FoodEstablishmentController::class, 'showAllExpiredEstablishments'])->name('est.expired.store');
   //Appointments
 
   Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
