@@ -27,6 +27,9 @@
                 Paid By
             </th>
             <th>
+                Payment Type
+            </th>
+            <th>
                 Action
             </th>
         </tr>
@@ -52,6 +55,9 @@
                 <td>{{ $payment_data->change_amt }}</td>
                 <td>{{ \Carbon\Carbon::parse($payment_data->created_at)->format('d M Y') }}</td>
                 <td>{{ substr($payment_data->cashier?->firstname, 0, 1) . '.' . $payment_data->cashier?->lastname }}
+                </td>
+                <td>
+                    {{ $payment_data->paymentType?->name ? $payment_data->paymentType?->name: 'Cash' }}
                 </td>
                 <td>
                     <button class="btn btn-danger btn-sm"
