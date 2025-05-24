@@ -377,6 +377,20 @@ class PermitApplicationController extends Controller
             ->join('permit_categories', 'permit_categories.id', '=', 'exam_dates.permit_category_id')
             ->where('exam_dates.facility_id', auth()->user()->facility_id)
             ->select('exam_dates.id', 'permit_category_id', 'exam_day', 'exam_start_time', 'exam_sites.name as site_name', 'permit_categories.name as category_name')
+            ->orderBy('exam_site_id')
+            // ->orderBy('DATE(exam_start_time)')
+            ->orderByRaw("
+                CASE WHEN exam_day = 'mon' then 1
+                WHEN exam_day = 'tue' then 2
+                WHEN exam_day = 'wed' then 3
+                WHEN exam_day = 'thur' then 4
+                WHEN exam_day = 'fri' then 5
+                WHEN exam_day = 'sat' then 6
+                else 7 end
+            ")
+            ->orderByRaw("
+                STR_TO_DATE(exam_start_time, '%l:%i %p')
+            ")
             // ->orderByRaw('DAY(exam_dates.exam_day)')
             ->where('application_type_id', 1)
             ->get();
@@ -390,6 +404,20 @@ class PermitApplicationController extends Controller
         $categories = PermitCategory::all();
         $appointments_available = ExamDates::where('facility_id', auth()->user()->facility_id)
             ->where('application_type_id', 1)
+            ->orderBy('permit_category_id')
+            ->orderBy('exam_site_id')
+            ->orderByRaw("
+                CASE WHEN exam_day = 'mon' then 1
+                WHEN exam_day = 'tue' then 2
+                WHEN exam_day = 'wed' then 3
+                WHEN exam_day = 'thur' then 4
+                WHEN exam_day = 'fri' then 5
+                WHEN exam_day = 'sat' then 6
+                else 7 end
+            ")
+            ->orderByRaw("
+                STR_TO_DATE(exam_start_time, '%l:%i %p')
+            ")
             ->get();
 
         $application = PermitApplication::find($request->route('id'));
@@ -775,7 +803,7 @@ class PermitApplicationController extends Controller
             $imagePath = storage_path('app/public/' . $permit_application->photo_upload);
             $imageData = base64_encode(file_get_contents($imagePath));
             $imageSrc = 'data:image/' . pathinfo($imagePath, PATHINFO_EXTENSION) . ';base64,' . $imageData;
-            $pdf = Pdf::loadView('pdf.form', ['permit_application' => $permit_application],['imageSrc' => $imageSrc]);
+            $pdf = Pdf::loadView('pdf.form', ['permit_application' => $permit_application], ['imageSrc' => $imageSrc]);
 
             $filename = $permit_application->firstname . '_' . $permit_application->lastname . '_' . $permit_application->id . '.pdf';
             return $pdf->stream($filename);
