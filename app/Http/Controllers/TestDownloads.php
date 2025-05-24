@@ -273,7 +273,8 @@ class TestDownloads extends Controller
                 ->where('permit_category_id', $rows[1])
                 ->where('application_type_id', $rows[2])
                 ->where('exam_day', $rows[3])
-                ->where('exam_start_time', $rows[4])
+                // ->where('exam_start_time', $rows[4])
+                ->whereRaw('replace(replace(exam_start_time, ".", ""), " ", "") = ?', $rows[4])
                 ->where('exam_site_id', $rows[5])
                 ->get();
             $contents .= "Group " . $i . "," . "Group " . $i . "," . "Group " . $i . "," . "Group " . $i . "," . "Group " . $i . "," . "Group " . $i . "," . "Group " . $i . "," . "Group " . $i . "\n";

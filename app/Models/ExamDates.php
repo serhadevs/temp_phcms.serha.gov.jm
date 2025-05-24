@@ -13,7 +13,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class ExamDates extends Model implements Auditable
 {
     use HasFactory;
-    use SoftDeletes;
+    // use SoftDeletes;
     // use Loggable;
     use \OwenIt\Auditing\Auditable;
 

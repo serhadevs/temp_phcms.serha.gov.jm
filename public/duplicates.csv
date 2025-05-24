@@ -1,663 +1,718 @@
-id,facility_id,per_cat_id,app_type_id,exam_day,exam_start_time,exam_site_id,deleted_at
+id,facility,cat_id,app_type,exam_day,start_time,site_id,deleted_at
 Group 1,Group 1,Group 1,Group 1,Group 1,Group 1,Group 1,Group 1
-262,1,1,1,mon,1:00 PM,7,3/20/2023 19:52
-345,1,1,1,mon,1:00 PM,7,Not Deleted
-452,1,1,1,mon,1:00 PM,7,7/4/2019 22:16
+404,1,1,1,fri,9:00 AM,6,Not Deleted
+993,1,1,1,fri,09:00A.M,6,Not Deleted
 Group 2,Group 2,Group 2,Group 2,Group 2,Group 2,Group 2,Group 2
-251,1,1,1,mon,10:00 AM,19,1/25/2019 17:58
-302,1,1,1,mon,10:00 AM,19,3/21/2023 13:53
+262,1,1,1,mon,1:00 PM,7,3/20/23 19:52
+345,1,1,1,mon,1:00 PM,7,Not Deleted
+452,1,1,1,mon,1:00 PM,7,7/4/19 22:16
 Group 3,Group 3,Group 3,Group 3,Group 3,Group 3,Group 3,Group 3
-232,1,1,1,mon,10:00 AM,32,2/4/2019 16:33
-299,1,1,1,mon,10:00 AM,32,7/8/2019 15:19
-337,1,1,1,mon,10:00 AM,32,11/23/2023 18:09
-363,1,1,1,mon,10:00 AM,32,Not Deleted
-432,1,1,1,mon,10:00 AM,32,11/18/2019 22:55
+251,1,1,1,mon,10:00 AM,19,1/25/19 17:58
+302,1,1,1,mon,10:00 AM,19,3/21/23 13:53
 Group 4,Group 4,Group 4,Group 4,Group 4,Group 4,Group 4,Group 4
-650,1,1,1,mon,12:00 AM,6,7/30/2020 14:50
-653,1,1,1,mon,12:00 AM,6,7/30/2020 14:50
+232,1,1,1,mon,10:00 AM,32,2/4/19 16:33
+299,1,1,1,mon,10:00 AM,32,7/8/19 15:19
+337,1,1,1,mon,10:00 AM,32,11/23/23 18:09
+363,1,1,1,mon,10:00 AM,32,Not Deleted
+432,1,1,1,mon,10:00 AM,32,11/18/19 22:55
 Group 5,Group 5,Group 5,Group 5,Group 5,Group 5,Group 5,Group 5
-273,1,1,1,thur,10:00 AM,24,3/20/2023 19:52
-284,1,1,1,thur,10:00 AM,24,5/27/2019 17:42
+650,1,1,1,mon,12:00 AM,6,7/30/20 14:50
+653,1,1,1,mon,12:00 AM,6,7/30/20 14:50
 Group 6,Group 6,Group 6,Group 6,Group 6,Group 6,Group 6,Group 6
-215,1,1,1,tue,2:00 PM,6,12/11/2018 16:10
-277,1,1,1,tue,2:00 PM,6,7/18/2019 16:22
-330,1,1,1,tue,2:00 PM,6,3/21/2023 14:03
-332,1,1,1,tue,2:00 PM,6,8/5/2019 17:44
+273,1,1,1,thur,10:00 AM,24,3/20/23 19:52
+284,1,1,1,thur,10:00 AM,24,5/27/19 17:42
 Group 7,Group 7,Group 7,Group 7,Group 7,Group 7,Group 7,Group 7
-75,1,1,1,tue,8:30 AM,6,12/10/2018 19:36
-221,1,1,1,tue,8:30 AM,6,3/20/2023 19:50
-226,1,1,1,tue,8:30 AM,6,7/18/2019 16:14
-329,1,1,1,tue,8:30 AM,6,3/21/2023 14:03
-453,1,1,1,tue,8:30 AM,6,8/28/2019 22:25
+586,1,1,1,thur,10:00 AM,26,Not Deleted
+901,1,1,1,thur,10:00AM,26,Not Deleted
 Group 8,Group 8,Group 8,Group 8,Group 8,Group 8,Group 8,Group 8
-187,1,1,1,tue,8:30 AM,8,1/8/2019 18:10
-230,1,1,1,tue,8:30 AM,8,7/11/2019 21:36
-295,1,1,1,tue,8:30 AM,8,3/20/2023 19:52
+215,1,1,1,tue,2:00 PM,6,12/11/18 16:10
+277,1,1,1,tue,2:00 PM,6,7/18/19 16:22
+330,1,1,1,tue,2:00 PM,6,3/21/23 14:03
+332,1,1,1,tue,2:00 PM,6,8/5/19 17:44
 Group 9,Group 9,Group 9,Group 9,Group 9,Group 9,Group 9,Group 9
-280,1,1,1,tue,9:00 AM,31,3/20/2023 19:52
-455,1,1,1,tue,9:00 AM,31,Not Deleted
+356,1,1,1,tue,2:30 PM,6,Not Deleted
+1038,1,1,1,tue,02:30P.M,6,Not Deleted
 Group 10,Group 10,Group 10,Group 10,Group 10,Group 10,Group 10,Group 10
-415,1,1,1,tue,10:00 AM,38,Not Deleted
-462,1,1,1,tue,10:00 AM,38,Not Deleted
+75,1,1,1,tue,8:30 AM,6,12/10/18 19:36
+221,1,1,1,tue,8:30 AM,6,3/20/23 19:50
+226,1,1,1,tue,8:30 AM,6,7/18/19 16:14
+329,1,1,1,tue,8:30 AM,6,3/21/23 14:03
+453,1,1,1,tue,8:30 AM,6,8/28/19 22:25
 Group 11,Group 11,Group 11,Group 11,Group 11,Group 11,Group 11,Group 11
-269,1,1,1,tue,10:00 AM,9,8/5/2019 23:35
-399,1,1,1,tue,10:00 AM,9,Not Deleted
+187,1,1,1,tue,8:30 AM,8,1/8/19 18:10
+230,1,1,1,tue,8:30 AM,8,7/11/19 21:36
+295,1,1,1,tue,8:30 AM,8,3/20/23 19:52
 Group 12,Group 12,Group 12,Group 12,Group 12,Group 12,Group 12,Group 12
-197,1,1,1,tue,11:00 AM,6,2/19/2019 16:01
-272,1,1,1,tue,11:00 AM,6,3/20/2023 19:52
-290,1,1,1,tue,11:00 AM,6,3/20/2023 19:52
-402,1,1,1,tue,11:00 AM,6,Not Deleted
+280,1,1,1,tue,9:00 AM,31,3/20/23 19:52
+455,1,1,1,tue,9:00 AM,31,Not Deleted
 Group 13,Group 13,Group 13,Group 13,Group 13,Group 13,Group 13,Group 13
-271,1,1,1,tue,11:00 AM,8,3/20/2023 19:52
-331,1,1,1,tue,11:00 AM,8,7/27/2019 16:09
+415,1,1,1,tue,10:00 AM,38,4/9/25 18:00
+462,1,1,1,tue,10:00 AM,38,Not Deleted
 Group 14,Group 14,Group 14,Group 14,Group 14,Group 14,Group 14,Group 14
-178,1,1,1,wed,2:00 PM,6,12/10/2018 19:36
-233,1,1,1,wed,2:00 PM,6,3/20/2023 19:50
-282,1,1,1,wed,2:00 PM,6,3/20/2023 19:52
+269,1,1,1,tue,10:00 AM,9,8/5/19 23:35
+399,1,1,1,tue,10:00 AM,9,Not Deleted
 Group 15,Group 15,Group 15,Group 15,Group 15,Group 15,Group 15,Group 15
-292,1,1,1,wed,2:00 PM,9,6/17/2019 19:15
-416,1,1,1,wed,2:00 PM,9,Not Deleted
+197,1,1,1,tue,11:00 AM,6,2/19/19 16:01
+272,1,1,1,tue,11:00 AM,6,3/20/23 19:52
+290,1,1,1,tue,11:00 AM,6,3/20/23 19:52
+402,1,1,1,tue,11:00 AM,6,Not Deleted
 Group 16,Group 16,Group 16,Group 16,Group 16,Group 16,Group 16,Group 16
-79,1,1,1,wed,8:30 AM,6,12/10/2018 19:36
-216,1,1,1,wed,8:30 AM,6,7/11/2019 21:54
-225,1,1,1,wed,8:30 AM,6,3/20/2023 19:50
-328,1,1,1,wed,8:30 AM,6,7/18/2019 16:22
+271,1,1,1,tue,11:00 AM,8,3/20/23 19:52
+331,1,1,1,tue,11:00 AM,8,7/27/19 16:09
 Group 17,Group 17,Group 17,Group 17,Group 17,Group 17,Group 17,Group 17
-355,1,1,1,wed,8:30 AM,7,Not Deleted
-599,1,1,1,wed,8:30 AM,7,Not Deleted
+178,1,1,1,wed,2:00 PM,6,12/10/18 19:36
+233,1,1,1,wed,2:00 PM,6,3/20/23 19:50
+282,1,1,1,wed,2:00 PM,6,3/20/23 19:52
 Group 18,Group 18,Group 18,Group 18,Group 18,Group 18,Group 18,Group 18
-236,1,1,1,wed,8:30 AM,8,1/8/2019 17:12
-258,1,1,1,wed,8:30 AM,8,3/20/2023 19:52
+292,1,1,1,wed,2:00 PM,9,6/17/19 19:15
+416,1,1,1,wed,2:00 PM,9,Not Deleted
+1103,1,1,1,wed,02:00P.M,9,Not Deleted
 Group 19,Group 19,Group 19,Group 19,Group 19,Group 19,Group 19,Group 19
-239,1,1,1,wed,8:30 AM,9,3/20/2023 19:50
-265,1,1,1,wed,8:30 AM,9,8/14/2019 20:32
-340,1,1,1,wed,8:30 AM,9,1/5/2024 19:25
+79,1,1,1,wed,8:30 AM,6,12/10/18 19:36
+216,1,1,1,wed,8:30 AM,6,7/11/19 21:54
+225,1,1,1,wed,8:30 AM,6,3/20/23 19:50
+328,1,1,1,wed,8:30 AM,6,7/18/19 16:22
 Group 20,Group 20,Group 20,Group 20,Group 20,Group 20,Group 20,Group 20
-254,1,1,1,wed,10:00 AM,35,8/9/2019 13:05
-389,1,1,1,wed,10:00 AM,35,Not Deleted
-444,1,1,1,wed,10:00 AM,35,Not Deleted
+355,1,1,1,wed,8:30 AM,7,4/9/25 18:00
+599,1,1,1,wed,8:30 AM,7,Not Deleted
 Group 21,Group 21,Group 21,Group 21,Group 21,Group 21,Group 21,Group 21
-208,1,1,1,wed,11:00 AM,6,7/3/2019 18:05
-217,1,1,1,wed,11:00 AM,6,3/4/2019 14:27
-270,1,1,1,wed,11:00 AM,6,3/20/2023 19:52
-283,1,1,1,wed,11:00 AM,6,3/20/2023 19:52
-291,1,1,1,wed,11:00 AM,6,7/18/2019 16:22
+236,1,1,1,wed,8:30 AM,8,1/8/19 17:12
+258,1,1,1,wed,8:30 AM,8,3/20/23 19:52
 Group 22,Group 22,Group 22,Group 22,Group 22,Group 22,Group 22,Group 22
-200,1,1,1,wed,11:00 AM,8,1/10/2019 22:05
-288,1,1,1,wed,11:00 AM,8,3/20/2023 19:52
-421,1,1,1,wed,11:00 AM,8,Not Deleted
-435,1,1,1,wed,11:00 AM,8,8/3/2019 16:15
+239,1,1,1,wed,8:30 AM,9,3/20/23 19:50
+265,1,1,1,wed,8:30 AM,9,8/14/19 20:32
+340,1,1,1,wed,8:30 AM,9,1/5/24 19:25
 Group 23,Group 23,Group 23,Group 23,Group 23,Group 23,Group 23,Group 23
-368,1,1,1,wed,11:00 AM,9,Not Deleted
-405,1,1,1,wed,11:00 AM,9,Not Deleted
-410,1,1,1,wed,11:00 AM,9,Not Deleted
+395,1,1,1,wed,9:00 AM,6,Not Deleted
+983,1,1,1,wed,09:00A.M,6,Not Deleted
 Group 24,Group 24,Group 24,Group 24,Group 24,Group 24,Group 24,Group 24
-1093,1,1,1,wed,11:30A.M,9,Not Deleted
-1098,1,1,1,wed,11:30A.M,9,Not Deleted
+254,1,1,1,wed,10:00 AM,35,8/9/19 13:05
+389,1,1,1,wed,10:00 AM,35,4/9/25 18:00
+444,1,1,1,wed,10:00 AM,35,Not Deleted
 Group 25,Group 25,Group 25,Group 25,Group 25,Group 25,Group 25,Group 25
-847,1,1,2,thur,2:30 PM,6,3/21/2023 13:57
-859,1,1,2,thur,2:30 PM,6,3/21/2023 13:57
-862,1,1,2,thur,2:30 PM,6,3/21/2023 13:57
+208,1,1,1,wed,11:00 AM,6,7/3/19 18:05
+217,1,1,1,wed,11:00 AM,6,3/4/19 14:27
+270,1,1,1,wed,11:00 AM,6,3/20/23 19:52
+283,1,1,1,wed,11:00 AM,6,3/20/23 19:52
+291,1,1,1,wed,11:00 AM,6,7/18/19 16:22
 Group 26,Group 26,Group 26,Group 26,Group 26,Group 26,Group 26,Group 26
-235,1,11,1,mon,10:00 AM,32,5/30/2019 19:54
-472,1,11,1,mon,10:00 AM,32,Not Deleted
+200,1,1,1,wed,11:00 AM,8,1/10/19 22:05
+288,1,1,1,wed,11:00 AM,8,3/20/23 19:52
+421,1,1,1,wed,11:00 AM,8,Not Deleted
+435,1,1,1,wed,11:00 AM,8,8/3/19 16:15
 Group 27,Group 27,Group 27,Group 27,Group 27,Group 27,Group 27,Group 27
-275,1,11,1,thur,10:00 AM,24,1/17/2019 21:14
-424,1,11,1,thur,10:00 AM,24,Not Deleted
+368,1,1,1,wed,11:00 AM,9,4/9/25 18:00
+405,1,1,1,wed,11:00 AM,9,4/9/25 18:00
+410,1,1,1,wed,11:00 AM,9,Not Deleted
 Group 28,Group 28,Group 28,Group 28,Group 28,Group 28,Group 28,Group 28
-279,1,11,1,tue,1:00 PM,31,7/29/2019 21:07
-454,1,11,1,tue,1:00 PM,31,9/17/2019 23:06
+1093,1,1,1,wed,11:30A.M,9,4/9/25 18:00
+1098,1,1,1,wed,11:30A.M,9,Not Deleted
 Group 29,Group 29,Group 29,Group 29,Group 29,Group 29,Group 29,Group 29
-177,1,11,1,tue,2:00 PM,6,12/10/2018 18:40
-220,1,11,1,tue,2:00 PM,6,1/17/2019 21:09
-300,1,11,1,tue,2:00 PM,6,2/1/2019 20:27
-396,1,11,1,tue,2:00 PM,6,3/21/2023 15:19
-397,1,11,1,tue,2:00 PM,6,6/24/2019 16:10
+847,1,1,2,thur,2:30 PM,6,3/21/23 13:57
+859,1,1,2,thur,2:30 PM,6,3/21/23 13:57
+862,1,1,2,thur,2:30 PM,6,3/21/23 13:57
 Group 30,Group 30,Group 30,Group 30,Group 30,Group 30,Group 30,Group 30
-204,1,11,1,tue,2:00 PM,8,12/11/2018 16:10
-376,1,11,1,tue,2:00 PM,8,6/1/2023 19:27
-629,1,11,1,tue,2:00 PM,8,10/30/2019 17:58
+235,1,11,1,mon,10:00 AM,32,5/30/19 19:54
+472,1,11,1,mon,10:00 AM,32,Not Deleted
 Group 31,Group 31,Group 31,Group 31,Group 31,Group 31,Group 31,Group 31
-419,1,11,1,tue,10:00 AM,38,7/3/2019 23:44
-554,1,11,1,tue,10:00 AM,38,10/2/2019 15:06
+275,1,11,1,thur,10:00 AM,24,1/17/19 21:14
+424,1,11,1,thur,10:00 AM,24,Not Deleted
 Group 32,Group 32,Group 32,Group 32,Group 32,Group 32,Group 32,Group 32
-223,1,11,1,wed,2:00 PM,6,1/17/2019 21:14
-398,1,11,1,wed,2:00 PM,6,Not Deleted
+279,1,11,1,tue,1:00 PM,31,7/29/19 21:07
+454,1,11,1,tue,1:00 PM,31,9/17/19 23:06
 Group 33,Group 33,Group 33,Group 33,Group 33,Group 33,Group 33,Group 33
-294,1,11,1,wed,2:00 PM,8,8/28/2019 22:49
-630,1,11,1,wed,2:00 PM,8,4/14/2023 13:04
-879,1,11,1,wed,2:00 PM,8,Not Deleted
+177,1,11,1,tue,2:00 PM,6,12/10/18 18:40
+220,1,11,1,tue,2:00 PM,6,1/17/19 21:09
+300,1,11,1,tue,2:00 PM,6,2/1/19 20:27
+396,1,11,1,tue,2:00 PM,6,3/21/23 15:19
+397,1,11,1,tue,2:00 PM,6,6/24/19 16:10
 Group 34,Group 34,Group 34,Group 34,Group 34,Group 34,Group 34,Group 34
-267,1,11,1,wed,2:00 PM,9,1/22/2019 21:30
-458,1,11,1,wed,2:00 PM,9,Not Deleted
+204,1,11,1,tue,2:00 PM,8,12/11/18 16:10
+376,1,11,1,tue,2:00 PM,8,6/1/23 19:27
+629,1,11,1,tue,2:00 PM,8,10/30/19 17:58
 Group 35,Group 35,Group 35,Group 35,Group 35,Group 35,Group 35,Group 35
-1096,1,11,1,wed,11:30A.M,9,Not Deleted
-1101,1,11,1,wed,11:30A.M,9,Not Deleted
+884,1,11,1,tue,2:30 PM,8,Not Deleted
+1081,1,11,1,tue,02:30P.M,8,Not Deleted
 Group 36,Group 36,Group 36,Group 36,Group 36,Group 36,Group 36,Group 36
-358,1,13,1,wed,11:30 AM,6,Not Deleted
-367,1,13,1,wed,11:30 AM,6,Not Deleted
+419,1,11,1,tue,10:00 AM,38,7/3/19 23:44
+554,1,11,1,tue,10:00 AM,38,10/2/19 15:06
 Group 37,Group 37,Group 37,Group 37,Group 37,Group 37,Group 37,Group 37
-245,1,2,1,mon,1:00 PM,7,1/16/2019 21:45
-346,1,2,1,mon,1:00 PM,7,6/27/2019 14:29
-468,1,2,1,mon,1:00 PM,7,Not Deleted
+223,1,11,1,wed,2:00 PM,6,1/17/19 21:14
+398,1,11,1,wed,2:00 PM,6,Not Deleted
 Group 38,Group 38,Group 38,Group 38,Group 38,Group 38,Group 38,Group 38
-425,1,2,1,mon,10:00 AM,27,Not Deleted
-447,1,2,1,mon,10:00 AM,27,Not Deleted
+294,1,11,1,wed,2:00 PM,8,8/28/19 22:49
+630,1,11,1,wed,2:00 PM,8,4/14/23 13:04
+879,1,11,1,wed,2:00 PM,8,Not Deleted
 Group 39,Group 39,Group 39,Group 39,Group 39,Group 39,Group 39,Group 39
-231,1,2,1,mon,10:00 AM,32,1/7/2019 20:25
-339,1,2,1,mon,10:00 AM,32,10/30/2019 17:54
-347,1,2,1,mon,10:00 AM,32,2/22/2019 16:37
-463,1,2,1,mon,10:00 AM,32,7/23/2019 19:42
-639,1,2,1,mon,10:00 AM,32,Not Deleted
+267,1,11,1,wed,2:00 PM,9,1/22/19 21:30
+458,1,11,1,wed,2:00 PM,9,Not Deleted
+1106,1,11,1,wed,02:00P.M,9,Not Deleted
 Group 40,Group 40,Group 40,Group 40,Group 40,Group 40,Group 40,Group 40
-433,1,2,1,sat,11:00 AM,6,6/7/2019 19:31
-601,1,2,1,sat,11:00 AM,6,Not Deleted
+1096,1,11,1,wed,11:30A.M,9,4/9/25 18:00
+1101,1,11,1,wed,11:30A.M,9,Not Deleted
 Group 41,Group 41,Group 41,Group 41,Group 41,Group 41,Group 41,Group 41
-286,1,2,1,thur,1:00 PM,22,1/29/2019 13:52
-448,1,2,1,thur,1:00 PM,22,9/12/2019 22:38
-626,1,2,1,thur,1:00 PM,22,Not Deleted
+358,1,13,1,wed,11:30 AM,6,4/9/25 18:00
+367,1,13,1,wed,11:30 AM,6,Not Deleted
 Group 42,Group 42,Group 42,Group 42,Group 42,Group 42,Group 42,Group 42
-437,1,2,1,thur,10:00 AM,39,1/27/2020 20:15
-438,1,2,1,thur,10:00 AM,39,6/5/2019 15:06
-439,1,2,1,thur,10:00 AM,39,6/5/2019 15:07
+403,1,2,1,fri,9:00 AM,6,Not Deleted
+994,1,2,1,fri,09:00A.M,6,Not Deleted
 Group 43,Group 43,Group 43,Group 43,Group 43,Group 43,Group 43,Group 43
-246,1,2,1,tue,1:00 PM,10,9/16/2019 23:54
-618,1,2,1,tue,1:00 PM,10,3/21/2023 15:23
+245,1,2,1,mon,1:00 PM,7,1/16/19 21:45
+346,1,2,1,mon,1:00 PM,7,6/27/19 14:29
+468,1,2,1,mon,1:00 PM,7,Not Deleted
 Group 44,Group 44,Group 44,Group 44,Group 44,Group 44,Group 44,Group 44
-198,1,2,1,tue,2:00 PM,8,1/8/2019 18:07
-477,1,2,1,tue,2:00 PM,8,7/11/2019 22:05
-551,1,2,1,tue,2:00 PM,8,3/9/2023 21:16
+425,1,2,1,mon,10:00 AM,27,4/9/25 18:00
+447,1,2,1,mon,10:00 AM,27,Not Deleted
 Group 45,Group 45,Group 45,Group 45,Group 45,Group 45,Group 45,Group 45
-186,1,2,1,tue,8:30 AM,6,12/10/2018 19:36
-213,1,2,1,tue,8:30 AM,6,2/1/2019 20:27
-384,1,2,1,tue,8:30 AM,6,Not Deleted
+231,1,2,1,mon,10:00 AM,32,1/7/19 20:25
+339,1,2,1,mon,10:00 AM,32,10/30/19 17:54
+347,1,2,1,mon,10:00 AM,32,2/22/19 16:37
+463,1,2,1,mon,10:00 AM,32,7/23/19 19:42
+639,1,2,1,mon,10:00 AM,32,Not Deleted
 Group 46,Group 46,Group 46,Group 46,Group 46,Group 46,Group 46,Group 46
-202,1,2,1,tue,8:30 AM,8,7/23/2019 19:49
-582,1,2,1,tue,8:30 AM,8,3/21/2023 14:50
+433,1,2,1,sat,11:00 AM,6,6/7/19 19:31
+601,1,2,1,sat,11:00 AM,6,Not Deleted
 Group 47,Group 47,Group 47,Group 47,Group 47,Group 47,Group 47,Group 47
-76,1,2,1,tue,11:00 AM,6,12/10/2018 18:40
-224,1,2,1,tue,11:00 AM,6,1/22/2019 21:30
-260,1,2,1,tue,11:00 AM,6,1/17/2019 16:57
-298,1,2,1,tue,11:00 AM,6,5/6/2019 16:18
-442,1,2,1,tue,11:00 AM,6,9/2/2019 15:51
-606,1,2,1,tue,11:00 AM,6,Not Deleted
+286,1,2,1,thur,1:00 PM,22,1/29/19 13:52
+448,1,2,1,thur,1:00 PM,22,9/12/19 22:38
+626,1,2,1,thur,1:00 PM,22,Not Deleted
 Group 48,Group 48,Group 48,Group 48,Group 48,Group 48,Group 48,Group 48
-188,1,2,1,tue,11:00 AM,8,1/8/2019 18:10
-296,1,2,1,tue,11:00 AM,8,2/1/2019 20:27
-354,1,2,1,tue,11:00 AM,8,9/17/2019 23:09
-459,1,2,1,tue,11:00 AM,8,8/13/2020 21:14
-877,1,2,1,tue,11:00 AM,8,Not Deleted
+480,1,2,1,thur,9:00 AM,6,Not Deleted
+989,1,2,1,thur,09:00A.M,6,Not Deleted
 Group 49,Group 49,Group 49,Group 49,Group 49,Group 49,Group 49,Group 49
-457,1,2,1,wed,1:00 PM,7,7/29/2019 22:04
-597,1,2,1,wed,1:00 PM,7,Not Deleted
+437,1,2,1,thur,10:00 AM,39,1/27/20 20:15
+438,1,2,1,thur,10:00 AM,39,6/5/19 15:06
+439,1,2,1,thur,10:00 AM,39,6/5/19 15:07
 Group 50,Group 50,Group 50,Group 50,Group 50,Group 50,Group 50,Group 50
-304,1,2,1,wed,2:00 PM,6,3/21/2023 14:02
-362,1,2,1,wed,2:00 PM,6,9/2/2019 15:53
+246,1,2,1,tue,1:00 PM,10,9/16/19 23:54
+618,1,2,1,tue,1:00 PM,10,3/21/23 15:23
 Group 51,Group 51,Group 51,Group 51,Group 51,Group 51,Group 51,Group 51
-201,1,2,1,wed,2:00 PM,8,2/4/2019 18:17
-366,1,2,1,wed,2:00 PM,8,10/30/2019 18:01
+198,1,2,1,tue,2:00 PM,8,1/8/19 18:07
+477,1,2,1,tue,2:00 PM,8,7/11/19 22:05
+551,1,2,1,tue,2:00 PM,8,3/9/23 21:16
 Group 52,Group 52,Group 52,Group 52,Group 52,Group 52,Group 52,Group 52
-342,1,2,1,wed,2:00 PM,9,5/27/2019 12:44
-443,1,2,1,wed,2:00 PM,9,10/30/2019 17:58
+186,1,2,1,tue,8:30 AM,6,12/10/18 19:36
+213,1,2,1,tue,8:30 AM,6,2/1/19 20:27
+384,1,2,1,tue,8:30 AM,6,Not Deleted
 Group 53,Group 53,Group 53,Group 53,Group 53,Group 53,Group 53,Group 53
-207,1,2,1,wed,8:30 AM,6,2/1/2019 20:27
-357,1,2,1,wed,8:30 AM,6,4/4/2019 20:53
-774,1,2,1,wed,8:30 AM,6,Not Deleted
+202,1,2,1,tue,8:30 AM,8,7/23/19 19:49
+582,1,2,1,tue,8:30 AM,8,3/21/23 14:50
 Group 54,Group 54,Group 54,Group 54,Group 54,Group 54,Group 54,Group 54
-592,1,2,1,wed,8:30 AM,8,Not Deleted
-603,1,2,1,wed,8:30 AM,8,Not Deleted
+76,1,2,1,tue,11:00 AM,6,12/10/18 18:40
+224,1,2,1,tue,11:00 AM,6,1/22/19 21:30
+260,1,2,1,tue,11:00 AM,6,1/17/19 16:57
+298,1,2,1,tue,11:00 AM,6,5/6/19 16:18
+442,1,2,1,tue,11:00 AM,6,9/2/19 15:51
+606,1,2,1,tue,11:00 AM,6,Not Deleted
 Group 55,Group 55,Group 55,Group 55,Group 55,Group 55,Group 55,Group 55
-255,1,2,1,wed,10:00 AM,35,6/18/2019 20:31
-602,1,2,1,wed,10:00 AM,35,3/21/2023 13:59
-881,1,2,1,wed,10:00 AM,35,Not Deleted
+188,1,2,1,tue,11:00 AM,8,1/8/19 18:10
+296,1,2,1,tue,11:00 AM,8,2/1/19 20:27
+354,1,2,1,tue,11:00 AM,8,9/17/19 23:09
+459,1,2,1,tue,11:00 AM,8,8/13/20 21:14
+877,1,2,1,tue,11:00 AM,8,Not Deleted
 Group 56,Group 56,Group 56,Group 56,Group 56,Group 56,Group 56,Group 56
-78,1,2,1,wed,11:00 AM,6,12/10/2018 19:36
-185,1,2,1,wed,11:00 AM,6,12/10/2018 19:36
-194,1,2,1,wed,11:00 AM,6,1/17/2019 16:57
-227,1,2,1,wed,11:00 AM,6,2/27/2019 22:02
-228,1,2,1,wed,11:00 AM,6,1/17/2019 21:14
-373,1,2,1,wed,11:00 AM,6,2/21/2023 17:45
-460,1,2,1,wed,11:00 AM,6,Not Deleted
+457,1,2,1,wed,1:00 PM,7,7/29/19 22:04
+597,1,2,1,wed,1:00 PM,7,Not Deleted
 Group 57,Group 57,Group 57,Group 57,Group 57,Group 57,Group 57,Group 57
-257,1,2,1,wed,11:00 AM,8,1/18/2019 16:33
-352,1,2,1,wed,11:00 AM,8,Not Deleted
-451,1,2,1,wed,11:00 AM,8,7/30/2020 14:50
+304,1,2,1,wed,2:00 PM,6,3/21/23 14:02
+362,1,2,1,wed,2:00 PM,6,9/2/19 15:53
 Group 58,Group 58,Group 58,Group 58,Group 58,Group 58,Group 58,Group 58
-242,1,2,1,wed,11:00 AM,9,5/16/2019 16:49
-266,1,2,1,wed,11:00 AM,9,8/14/2019 20:34
-343,1,2,1,wed,11:00 AM,9,5/6/2019 18:51
-615,1,2,1,wed,11:00 AM,9,4/13/2023 16:23
+201,1,2,1,wed,2:00 PM,8,2/4/19 18:17
+366,1,2,1,wed,2:00 PM,8,10/30/19 18:01
 Group 59,Group 59,Group 59,Group 59,Group 59,Group 59,Group 59,Group 59
-1094,1,2,1,wed,11:30A.M,9,Not Deleted
-1099,1,2,1,wed,11:30A.M,9,Not Deleted
+342,1,2,1,wed,2:00 PM,9,5/27/19 12:44
+443,1,2,1,wed,2:00 PM,9,10/30/19 17:58
+1104,1,2,1,wed,02:00P.M,9,Not Deleted
 Group 60,Group 60,Group 60,Group 60,Group 60,Group 60,Group 60,Group 60
-414,1,3,1,wed,11:00 AM,8,5/27/2019 13:41
-593,1,3,1,wed,11:00 AM,8,Not Deleted
+207,1,2,1,wed,8:30 AM,6,2/1/19 20:27
+357,1,2,1,wed,8:30 AM,6,4/4/19 20:53
+774,1,2,1,wed,8:30 AM,6,Not Deleted
 Group 61,Group 61,Group 61,Group 61,Group 61,Group 61,Group 61,Group 61
-573,1,5,1,tue,2:00 PM,9,7/23/2019 19:53
-577,1,5,1,tue,2:00 PM,9,Not Deleted
+592,1,2,1,wed,8:30 AM,8,4/9/25 18:00
+603,1,2,1,wed,8:30 AM,8,Not Deleted
 Group 62,Group 62,Group 62,Group 62,Group 62,Group 62,Group 62,Group 62
-212,1,5,1,tue,8:30 AM,6,12/19/2018 16:29
-372,1,5,1,tue,8:30 AM,6,6/27/2019 14:29
+255,1,2,1,wed,10:00 AM,35,6/18/19 20:31
+602,1,2,1,wed,10:00 AM,35,3/21/23 13:59
+881,1,2,1,wed,10:00 AM,35,Not Deleted
 Group 63,Group 63,Group 63,Group 63,Group 63,Group 63,Group 63,Group 63
-206,1,5,1,wed,8:30 AM,8,7/29/2019 21:07
-596,1,5,1,wed,8:30 AM,8,Not Deleted
+78,1,2,1,wed,11:00 AM,6,12/10/18 19:36
+185,1,2,1,wed,11:00 AM,6,12/10/18 19:36
+194,1,2,1,wed,11:00 AM,6,1/17/19 16:57
+227,1,2,1,wed,11:00 AM,6,2/27/19 22:02
+228,1,2,1,wed,11:00 AM,6,1/17/19 21:14
+373,1,2,1,wed,11:00 AM,6,2/21/23 17:45
+460,1,2,1,wed,11:00 AM,6,Not Deleted
 Group 64,Group 64,Group 64,Group 64,Group 64,Group 64,Group 64,Group 64
-1097,1,5,1,wed,11:30A.M,9,Not Deleted
-1102,1,5,1,wed,11:30A.M,9,Not Deleted
+257,1,2,1,wed,11:00 AM,8,1/18/19 16:33
+352,1,2,1,wed,11:00 AM,8,Not Deleted
+451,1,2,1,wed,11:00 AM,8,7/30/20 14:50
 Group 65,Group 65,Group 65,Group 65,Group 65,Group 65,Group 65,Group 65
-581,1,6,1,wed,9:00 AM,7,7/29/2019 22:04
-590,1,6,1,wed,9:00 AM,7,Not Deleted
+242,1,2,1,wed,11:00 AM,9,5/16/19 16:49
+266,1,2,1,wed,11:00 AM,9,8/14/19 20:34
+343,1,2,1,wed,11:00 AM,9,5/6/19 18:51
+615,1,2,1,wed,11:00 AM,9,4/13/23 16:23
 Group 66,Group 66,Group 66,Group 66,Group 66,Group 66,Group 66,Group 66
-248,1,7,1,mon,10:00 AM,32,1/24/2019 18:58
-338,1,7,1,mon,10:00 AM,32,1/5/2024 19:23
+1094,1,2,1,wed,11:30A.M,9,4/9/25 18:00
+1099,1,2,1,wed,11:30A.M,9,Not Deleted
 Group 67,Group 67,Group 67,Group 67,Group 67,Group 67,Group 67,Group 67
-428,1,7,1,sat,1:00 PM,6,11/7/2019 22:27
-634,1,7,1,sat,1:00 PM,6,Not Deleted
+414,1,3,1,wed,11:00 AM,8,5/27/19 13:41
+593,1,3,1,wed,11:00 AM,8,Not Deleted
 Group 68,Group 68,Group 68,Group 68,Group 68,Group 68,Group 68,Group 68
-365,1,7,1,thur,2:00 PM,7,5/27/2019 13:41
-807,1,7,1,thur,2:00 PM,7,Not Deleted
+573,1,5,1,tue,2:00 PM,9,7/23/19 19:53
+577,1,5,1,tue,2:00 PM,9,Not Deleted
 Group 69,Group 69,Group 69,Group 69,Group 69,Group 69,Group 69,Group 69
-77,1,7,1,tue,2:00 PM,6,12/10/2018 19:36
-219,1,7,1,tue,2:00 PM,6,2/1/2019 20:27
-349,1,7,1,tue,2:00 PM,6,10/8/2019 15:28
-461,1,7,1,tue,2:00 PM,6,Not Deleted
-775,1,7,1,tue,2:00 PM,6,Not Deleted
+212,1,5,1,tue,8:30 AM,6,12/19/18 16:29
+372,1,5,1,tue,8:30 AM,6,6/27/19 14:29
 Group 70,Group 70,Group 70,Group 70,Group 70,Group 70,Group 70,Group 70
-189,1,7,1,tue,2:00 PM,8,1/8/2019 18:10
-238,1,7,1,tue,2:00 PM,8,4/25/2019 20:34
-297,1,7,1,tue,2:00 PM,8,3/20/2023 19:52
+888,1,5,1,tue,9:00 AM,6,Not Deleted
+982,1,5,1,tue,09:00A.M,6,Not Deleted
 Group 71,Group 71,Group 71,Group 71,Group 71,Group 71,Group 71,Group 71
-353,1,7,1,tue,8:30 AM,8,9/17/2019 23:05
-631,1,7,1,tue,8:30 AM,8,8/13/2020 20:45
+902,1,5,1,tue,11:30AM,8,Not Deleted
+1072,1,5,1,tue,11:30A.M,8,Not Deleted
 Group 72,Group 72,Group 72,Group 72,Group 72,Group 72,Group 72,Group 72
-203,1,7,1,tue,11:00 AM,8,6/25/2019 13:51
-605,1,7,1,tue,11:00 AM,8,Not Deleted
+553,1,5,1,wed,2:00 PM,9,7/22/19 18:08
+1107,1,5,1,wed,02:00P.M,9,Not Deleted
 Group 73,Group 73,Group 73,Group 73,Group 73,Group 73,Group 73,Group 73
-253,1,7,1,wed,1:00 PM,7,1/16/2019 21:46
-289,1,7,1,wed,1:00 PM,7,6/27/2019 21:06
+206,1,5,1,wed,8:30 AM,8,7/29/19 21:07
+596,1,5,1,wed,8:30 AM,8,Not Deleted
 Group 74,Group 74,Group 74,Group 74,Group 74,Group 74,Group 74,Group 74
-163,1,7,1,wed,2:00 PM,6,12/10/2018 19:36
-218,1,7,1,wed,2:00 PM,6,1/7/2019 21:31
-261,1,7,1,wed,2:00 PM,6,11/12/2019 15:33
-644,1,7,1,wed,2:00 PM,6,Not Deleted
+1097,1,5,1,wed,11:30A.M,9,4/9/25 18:00
+1102,1,5,1,wed,11:30A.M,9,Not Deleted
 Group 75,Group 75,Group 75,Group 75,Group 75,Group 75,Group 75,Group 75
-256,1,7,1,wed,10:00 AM,35,4/17/2019 15:09
-407,1,7,1,wed,10:00 AM,35,Not Deleted
+581,1,6,1,wed,9:00 AM,7,7/29/19 22:04
+590,1,6,1,wed,9:00 AM,7,Not Deleted
 Group 76,Group 76,Group 76,Group 76,Group 76,Group 76,Group 76,Group 76
-259,1,7,1,wed,11:00 AM,6,1/22/2019 21:30
-594,1,7,1,wed,11:00 AM,6,Not Deleted
+248,1,7,1,mon,10:00 AM,32,1/24/19 18:58
+338,1,7,1,mon,10:00 AM,32,1/5/24 19:23
 Group 77,Group 77,Group 77,Group 77,Group 77,Group 77,Group 77,Group 77
-1095,1,7,1,wed,11:30A.M,9,Not Deleted
-1100,1,7,1,wed,11:30A.M,9,Not Deleted
+428,1,7,1,sat,1:00 PM,6,11/7/19 22:27
+634,1,7,1,sat,1:00 PM,6,Not Deleted
 Group 78,Group 78,Group 78,Group 78,Group 78,Group 78,Group 78,Group 78
-209,1,7,1,wed,12:00 PM,6,12/11/2018 16:00
-359,1,7,1,wed,12:00 PM,6,2/18/2019 17:09
+365,1,7,1,thur,2:00 PM,7,5/27/19 13:41
+807,1,7,1,thur,2:00 PM,7,Not Deleted
 Group 79,Group 79,Group 79,Group 79,Group 79,Group 79,Group 79,Group 79
-234,1,9,1,tue,11:00 AM,8,1/17/2019 16:57
-361,1,9,1,tue,11:00 AM,8,Not Deleted
+578,1,7,1,thur,9:00 AM,6,Not Deleted
+990,1,7,1,thur,09:00A.M,6,Not Deleted
 Group 80,Group 80,Group 80,Group 80,Group 80,Group 80,Group 80,Group 80
-783,2,1,1,tue,9:00 AM,5,Not Deleted
-789,2,1,1,tue,9:00 AM,5,Not Deleted
+77,1,7,1,tue,2:00 PM,6,12/10/18 19:36
+219,1,7,1,tue,2:00 PM,6,2/1/19 20:27
+349,1,7,1,tue,2:00 PM,6,10/8/19 15:28
+461,1,7,1,tue,2:00 PM,6,Not Deleted
+775,1,7,1,tue,2:00 PM,6,4/9/25 18:00
 Group 81,Group 81,Group 81,Group 81,Group 81,Group 81,Group 81,Group 81
-1,2,1,1,wed,2:00 PM,5,1/31/2019 13:56
-74,2,1,1,wed,2:00 PM,5,Not Deleted
-82,2,1,1,wed,2:00 PM,5,Not Deleted
-322,2,1,1,wed,2:00 PM,5,Not Deleted
-324,2,1,1,wed,2:00 PM,5,Not Deleted
+189,1,7,1,tue,2:00 PM,8,1/8/19 18:10
+238,1,7,1,tue,2:00 PM,8,4/25/19 20:34
+297,1,7,1,tue,2:00 PM,8,3/20/23 19:52
 Group 82,Group 82,Group 82,Group 82,Group 82,Group 82,Group 82,Group 82
-2,2,1,1,wed,9:00 AM,5,9/26/2022 16:36
-73,2,1,1,wed,9:00 AM,5,Not Deleted
-170,2,1,1,wed,9:00 AM,5,Not Deleted
-317,2,1,1,wed,9:00 AM,5,Not Deleted
-320,2,1,1,wed,9:00 AM,5,Not Deleted
-321,2,1,1,wed,9:00 AM,5,Not Deleted
-323,2,1,1,wed,9:00 AM,5,Not Deleted
+353,1,7,1,tue,8:30 AM,8,9/17/19 23:05
+631,1,7,1,tue,8:30 AM,8,8/13/20 20:45
 Group 83,Group 83,Group 83,Group 83,Group 83,Group 83,Group 83,Group 83
-86,2,2,1,thur,2:00 PM,12,Not Deleted
-167,2,2,1,thur,2:00 PM,12,Not Deleted
+203,1,7,1,tue,11:00 AM,8,6/25/19 13:51
+605,1,7,1,tue,11:00 AM,8,Not Deleted
 Group 84,Group 84,Group 84,Group 84,Group 84,Group 84,Group 84,Group 84
-84,2,2,1,thur,2:00 PM,13,1/30/2019 15:28
-313,2,2,1,thur,2:00 PM,13,Not Deleted
-318,2,2,1,thur,2:00 PM,13,Not Deleted
+253,1,7,1,wed,1:00 PM,7,1/16/19 21:46
+289,1,7,1,wed,1:00 PM,7,6/27/19 21:06
 Group 85,Group 85,Group 85,Group 85,Group 85,Group 85,Group 85,Group 85
-85,2,2,1,thur,9:00 AM,12,Not Deleted
-166,2,2,1,thur,9:00 AM,12,Not Deleted
+163,1,7,1,wed,2:00 PM,6,12/10/18 19:36
+218,1,7,1,wed,2:00 PM,6,1/7/19 21:31
+261,1,7,1,wed,2:00 PM,6,11/12/19 15:33
+644,1,7,1,wed,2:00 PM,6,Not Deleted
 Group 86,Group 86,Group 86,Group 86,Group 86,Group 86,Group 86,Group 86
-88,2,2,1,tue,2:00 PM,11,1/30/2019 15:24
-316,2,2,1,tue,2:00 PM,11,Not Deleted
+268,1,7,1,wed,2:00 PM,9,8/26/19 17:51
+1105,1,7,1,wed,02:00P.M,9,Not Deleted
 Group 87,Group 87,Group 87,Group 87,Group 87,Group 87,Group 87,Group 87
-94,2,2,1,tue,2:00 PM,14,8/19/2021 15:40
-165,2,2,1,tue,2:00 PM,14,Not Deleted
-315,2,2,1,tue,2:00 PM,14,Not Deleted
+256,1,7,1,wed,10:00 AM,35,4/17/19 15:09
+407,1,7,1,wed,10:00 AM,35,Not Deleted
 Group 88,Group 88,Group 88,Group 88,Group 88,Group 88,Group 88,Group 88
-95,2,2,1,tue,9:00 AM,13,Not Deleted
-311,2,2,1,tue,9:00 AM,13,Not Deleted
+259,1,7,1,wed,11:00 AM,6,1/22/19 21:30
+594,1,7,1,wed,11:00 AM,6,Not Deleted
 Group 89,Group 89,Group 89,Group 89,Group 89,Group 89,Group 89,Group 89
-83,2,2,1,tue,9:00 AM,14,Not Deleted
-164,2,2,1,tue,9:00 AM,14,Not Deleted
+1095,1,7,1,wed,11:30A.M,9,4/9/25 18:00
+1100,1,7,1,wed,11:30A.M,9,Not Deleted
 Group 90,Group 90,Group 90,Group 90,Group 90,Group 90,Group 90,Group 90
-87,2,2,1,wed,2:00 PM,5,Not Deleted
-308,2,2,1,wed,2:00 PM,5,Not Deleted
-310,2,2,1,wed,2:00 PM,5,Not Deleted
+209,1,7,1,wed,12:00 PM,6,12/11/18 16:00
+359,1,7,1,wed,12:00 PM,6,2/18/19 17:09
 Group 91,Group 91,Group 91,Group 91,Group 91,Group 91,Group 91,Group 91
-175,2,3,1,thur,9:00 AM,13,Not Deleted
-314,2,3,1,thur,9:00 AM,13,Not Deleted
+234,1,9,1,tue,11:00 AM,8,1/17/19 16:57
+361,1,9,1,tue,11:00 AM,8,Not Deleted
 Group 92,Group 92,Group 92,Group 92,Group 92,Group 92,Group 92,Group 92
-171,2,7,1,wed,2:00 PM,5,1/31/2019 13:56
-326,2,7,1,wed,2:00 PM,5,Not Deleted
+783,2,1,1,tue,9:00 AM,5,4/9/25 18:00
+789,2,1,1,tue,9:00 AM,5,Not Deleted
 Group 93,Group 93,Group 93,Group 93,Group 93,Group 93,Group 93,Group 93
-307,2,7,1,wed,9:00 AM,5,Not Deleted
-325,2,7,1,wed,9:00 AM,5,Not Deleted
+1,2,1,1,wed,2:00 PM,5,Not Deleted
+74,2,1,1,wed,2:00 PM,5,4/9/25 18:00
+82,2,1,1,wed,2:00 PM,5,4/9/25 18:00
+322,2,1,1,wed,2:00 PM,5,4/9/25 18:00
+324,2,1,1,wed,2:00 PM,5,4/9/25 18:00
 Group 94,Group 94,Group 94,Group 94,Group 94,Group 94,Group 94,Group 94
-921,3,1,1,fri,01:00 P.M,3,Not Deleted
-960,3,1,1,fri,01:00 P.M,3,Not Deleted
+2,2,1,1,wed,9:00 AM,5,9/26/22 16:36
+73,2,1,1,wed,9:00 AM,5,4/9/25 18:00
+170,2,1,1,wed,9:00 AM,5,4/9/25 18:00
+317,2,1,1,wed,9:00 AM,5,4/9/25 18:00
+320,2,1,1,wed,9:00 AM,5,4/9/25 18:00
+321,2,1,1,wed,9:00 AM,5,4/9/25 18:00
+323,2,1,1,wed,9:00 AM,5,Not Deleted
 Group 95,Group 95,Group 95,Group 95,Group 95,Group 95,Group 95,Group 95
-926,3,1,1,fri,01:00 P.M,48,Not Deleted
-966,3,1,1,fri,01:00 P.M,48,Not Deleted
+86,2,2,1,thur,2:00 PM,12,4/9/25 18:00
+167,2,2,1,thur,2:00 PM,12,Not Deleted
 Group 96,Group 96,Group 96,Group 96,Group 96,Group 96,Group 96,Group 96
-150,3,1,1,fri,1:00 PM,3,Not Deleted
-747,3,1,1,fri,1:00 PM,3,2/19/2021 16:02
+84,2,2,1,thur,2:00 PM,13,1/30/19 15:28
+313,2,2,1,thur,2:00 PM,13,4/9/25 18:00
+318,2,2,1,thur,2:00 PM,13,Not Deleted
 Group 97,Group 97,Group 97,Group 97,Group 97,Group 97,Group 97,Group 97
-148,3,1,1,fri,1:00 PM,4,Not Deleted
-745,3,1,1,fri,1:00 PM,4,2/19/2021 16:02
+85,2,2,1,thur,9:00 AM,12,4/9/25 18:00
+166,2,2,1,thur,9:00 AM,12,Not Deleted
 Group 98,Group 98,Group 98,Group 98,Group 98,Group 98,Group 98,Group 98
-687,3,1,1,fri,1:00 PM,41,0000-00-00 00:00:00
-749,3,1,1,fri,1:00 PM,41,2/19/2021 16:02
+88,2,2,1,tue,2:00 PM,11,1/30/19 15:24
+316,2,2,1,tue,2:00 PM,11,Not Deleted
 Group 99,Group 99,Group 99,Group 99,Group 99,Group 99,Group 99,Group 99
-809,3,1,1,fri,1:00 PM,45,10/19/2024 18:31
-824,3,1,1,fri,1:00 PM,45,10/19/2024 18:31
+94,2,2,1,tue,2:00 PM,14,8/19/21 15:40
+165,2,2,1,tue,2:00 PM,14,4/9/25 18:00
+315,2,2,1,tue,2:00 PM,14,Not Deleted
 Group 100,Group 100,Group 100,Group 100,Group 100,Group 100,Group 100,Group 100
-911,3,1,1,fri,09:00 A.M,3,Not Deleted
-959,3,1,1,fri,09:00 A.M,3,Not Deleted
+95,2,2,1,tue,9:00 AM,13,4/9/25 18:00
+311,2,2,1,tue,9:00 AM,13,Not Deleted
 Group 101,Group 101,Group 101,Group 101,Group 101,Group 101,Group 101,Group 101
-916,3,1,1,fri,09:00 A.M,48,Not Deleted
-965,3,1,1,fri,09:00 A.M,48,Not Deleted
+83,2,2,1,tue,9:00 AM,14,4/9/25 18:00
+164,2,2,1,tue,9:00 AM,14,Not Deleted
 Group 102,Group 102,Group 102,Group 102,Group 102,Group 102,Group 102,Group 102
-149,3,1,1,fri,9:00 AM,3,Not Deleted
-746,3,1,1,fri,9:00 AM,3,2/19/2021 16:02
+87,2,2,1,wed,2:00 PM,5,4/9/25 18:00
+308,2,2,1,wed,2:00 PM,5,4/9/25 18:00
+310,2,2,1,wed,2:00 PM,5,Not Deleted
 Group 103,Group 103,Group 103,Group 103,Group 103,Group 103,Group 103,Group 103
-147,3,1,1,fri,9:00 AM,4,Not Deleted
-744,3,1,1,fri,9:00 AM,4,2/19/2021 16:02
+175,2,3,1,thur,9:00 AM,13,4/9/25 18:00
+314,2,3,1,thur,9:00 AM,13,Not Deleted
 Group 104,Group 104,Group 104,Group 104,Group 104,Group 104,Group 104,Group 104
-686,3,1,1,fri,9:00 AM,41,0000-00-00 00:00:00
-748,3,1,1,fri,9:00 AM,41,2/19/2021 16:02
+171,2,7,1,wed,2:00 PM,5,1/31/19 13:56
+326,2,7,1,wed,2:00 PM,5,Not Deleted
 Group 105,Group 105,Group 105,Group 105,Group 105,Group 105,Group 105,Group 105
-808,3,1,1,fri,9:00 AM,45,10/19/2024 18:31
-823,3,1,1,fri,9:00 AM,45,10/19/2024 18:31
+307,2,7,1,wed,9:00 AM,5,4/9/25 18:00
+325,2,7,1,wed,9:00 AM,5,Not Deleted
 Group 106,Group 106,Group 106,Group 106,Group 106,Group 106,Group 106,Group 106
-100,3,1,1,mon,1:00 PM,3,7/16/2019 14:54
-104,3,1,1,mon,1:00 PM,3,12/4/2023 15:40
-613,3,1,1,mon,1:00 PM,3,9/26/2019 18:29
-692,3,1,1,mon,1:00 PM,3,Not Deleted
+150,3,1,1,fri,1:00 PM,3,Not Deleted
+747,3,1,1,fri,1:00 PM,3,2/19/21 16:02
+921,3,1,1,fri,01:00 P.M,3,4/9/25 18:00
+960,3,1,1,fri,01:00 P.M,3,Not Deleted
+969,3,1,1,fri,01:00PM,3,Not Deleted
 Group 107,Group 107,Group 107,Group 107,Group 107,Group 107,Group 107,Group 107
-97,3,1,1,mon,1:00 PM,4,12/10/2018 17:26
-98,3,1,1,mon,1:00 PM,4,7/16/2019 13:58
-102,3,1,1,mon,1:00 PM,4,3/11/2022 15:34
-690,3,1,1,mon,1:00 PM,4,Not Deleted
-696,3,1,1,mon,1:00 PM,4,2/19/2021 15:44
+148,3,1,1,fri,1:00 PM,4,Not Deleted
+745,3,1,1,fri,1:00 PM,4,2/19/21 16:02
 Group 108,Group 108,Group 108,Group 108,Group 108,Group 108,Group 108,Group 108
+687,3,1,1,fri,1:00 PM,41,0000-00-00 00:00:00
+749,3,1,1,fri,1:00 PM,41,2/19/21 16:02
+Group 109,Group 109,Group 109,Group 109,Group 109,Group 109,Group 109,Group 109
+809,3,1,1,fri,1:00 PM,45,10/19/24 18:31
+824,3,1,1,fri,1:00 PM,45,10/19/24 18:31
+Group 110,Group 110,Group 110,Group 110,Group 110,Group 110,Group 110,Group 110
+926,3,1,1,fri,01:00 P.M,48,4/9/25 18:00
+966,3,1,1,fri,01:00 P.M,48,Not Deleted
+Group 111,Group 111,Group 111,Group 111,Group 111,Group 111,Group 111,Group 111
+149,3,1,1,fri,9:00 AM,3,Not Deleted
+746,3,1,1,fri,9:00 AM,3,2/19/21 16:02
+911,3,1,1,fri,09:00 A.M,3,4/9/25 18:00
+959,3,1,1,fri,09:00 A.M,3,Not Deleted
+968,3,1,1,fri,09:00AM,3,Not Deleted
+Group 112,Group 112,Group 112,Group 112,Group 112,Group 112,Group 112,Group 112
+147,3,1,1,fri,9:00 AM,4,Not Deleted
+744,3,1,1,fri,9:00 AM,4,2/19/21 16:02
+Group 113,Group 113,Group 113,Group 113,Group 113,Group 113,Group 113,Group 113
+686,3,1,1,fri,9:00 AM,41,0000-00-00 00:00:00
+748,3,1,1,fri,9:00 AM,41,2/19/21 16:02
+Group 114,Group 114,Group 114,Group 114,Group 114,Group 114,Group 114,Group 114
+808,3,1,1,fri,9:00 AM,45,10/19/24 18:31
+823,3,1,1,fri,9:00 AM,45,10/19/24 18:31
+Group 115,Group 115,Group 115,Group 115,Group 115,Group 115,Group 115,Group 115
+916,3,1,1,fri,09:00 A.M,48,4/9/25 18:00
+965,3,1,1,fri,09:00 A.M,48,Not Deleted
+Group 116,Group 116,Group 116,Group 116,Group 116,Group 116,Group 116,Group 116
+100,3,1,1,mon,1:00 PM,3,7/16/19 14:54
+104,3,1,1,mon,1:00 PM,3,12/4/23 15:40
+613,3,1,1,mon,1:00 PM,3,9/26/19 18:29
+692,3,1,1,mon,1:00 PM,3,Not Deleted
+917,3,1,1,mon,01:00 P.M,3,Not Deleted
+Group 117,Group 117,Group 117,Group 117,Group 117,Group 117,Group 117,Group 117
+97,3,1,1,mon,1:00 PM,4,12/10/18 17:26
+98,3,1,1,mon,1:00 PM,4,7/16/19 13:58
+102,3,1,1,mon,1:00 PM,4,3/11/22 15:34
+690,3,1,1,mon,1:00 PM,4,Not Deleted
+696,3,1,1,mon,1:00 PM,4,2/19/21 15:44
+Group 118,Group 118,Group 118,Group 118,Group 118,Group 118,Group 118,Group 118
 671,3,1,1,mon,1:00 PM,41,0000-00-00 00:00:00
 694,3,1,1,mon,1:00 PM,41,0000-00-00 00:00:00
-Group 109,Group 109,Group 109,Group 109,Group 109,Group 109,Group 109,Group 109
-812,3,1,1,mon,1:00 PM,45,11/24/2022 15:26
-818,3,1,1,mon,1:00 PM,45,10/19/2024 18:33
-Group 110,Group 110,Group 110,Group 110,Group 110,Group 110,Group 110,Group 110
-99,3,1,1,mon,9:00 AM,3,7/16/2019 13:59
-614,3,1,1,mon,9:00 AM,3,Not Deleted
+Group 119,Group 119,Group 119,Group 119,Group 119,Group 119,Group 119,Group 119
+812,3,1,1,mon,1:00 PM,45,11/24/22 15:26
+818,3,1,1,mon,1:00 PM,45,10/19/24 18:33
+Group 120,Group 120,Group 120,Group 120,Group 120,Group 120,Group 120,Group 120
+99,3,1,1,mon,9:00 AM,3,7/16/19 13:59
+614,3,1,1,mon,9:00 AM,3,4/9/25 18:00
 691,3,1,1,mon,9:00 AM,3,Not Deleted
-Group 111,Group 111,Group 111,Group 111,Group 111,Group 111,Group 111,Group 111
-101,3,1,1,mon,9:00 AM,4,7/16/2019 17:36
-109,3,1,1,mon,9:00 AM,4,Not Deleted
-195,3,1,1,mon,9:00 AM,4,Not Deleted
+907,3,1,1,mon,09:00 A.M,3,Not Deleted
+Group 121,Group 121,Group 121,Group 121,Group 121,Group 121,Group 121,Group 121
+101,3,1,1,mon,9:00 AM,4,7/16/19 17:36
+109,3,1,1,mon,9:00 AM,4,4/9/25 18:00
+195,3,1,1,mon,9:00 AM,4,4/9/25 18:00
 689,3,1,1,mon,9:00 AM,4,Not Deleted
-Group 112,Group 112,Group 112,Group 112,Group 112,Group 112,Group 112,Group 112
+Group 122,Group 122,Group 122,Group 122,Group 122,Group 122,Group 122,Group 122
 670,3,1,1,mon,9:00 AM,41,0000-00-00 00:00:00
 693,3,1,1,mon,9:00 AM,41,0000-00-00 00:00:00
-699,3,1,1,mon,9:00 AM,41,2/19/2021 15:44
-Group 113,Group 113,Group 113,Group 113,Group 113,Group 113,Group 113,Group 113
-810,3,1,1,mon,9:00 AM,45,10/19/2024 18:32
-811,3,1,1,mon,9:00 AM,45,11/24/2022 15:26
-Group 114,Group 114,Group 114,Group 114,Group 114,Group 114,Group 114,Group 114
-920,3,1,1,thur,01:00 P.M,3,Not Deleted
-958,3,1,1,thur,01:00 P.M,3,Not Deleted
-Group 115,Group 115,Group 115,Group 115,Group 115,Group 115,Group 115,Group 115
-925,3,1,1,thur,01:00 P.M,48,Not Deleted
-964,3,1,1,thur,01:00 P.M,48,Not Deleted
-Group 116,Group 116,Group 116,Group 116,Group 116,Group 116,Group 116,Group 116
-138,3,1,1,thur,1:00 PM,3,Not Deleted
-619,3,1,1,thur,1:00 PM,3,Not Deleted
-733,3,1,1,thur,1:00 PM,3,2/19/2021 16:02
-Group 117,Group 117,Group 117,Group 117,Group 117,Group 117,Group 117,Group 117
-136,3,1,1,thur,1:00 PM,4,Not Deleted
-731,3,1,1,thur,1:00 PM,4,2/19/2021 16:02
-Group 118,Group 118,Group 118,Group 118,Group 118,Group 118,Group 118,Group 118
-683,3,1,1,thur,1:00 PM,41,0000-00-00 00:00:00
-735,3,1,1,thur,1:00 PM,41,2/19/2021 16:02
-Group 119,Group 119,Group 119,Group 119,Group 119,Group 119,Group 119,Group 119
-910,3,1,1,thur,09:00 A.M,3,Not Deleted
-957,3,1,1,thur,09:00 A.M,3,Not Deleted
-Group 120,Group 120,Group 120,Group 120,Group 120,Group 120,Group 120,Group 120
-915,3,1,1,thur,09:00 A.M,48,Not Deleted
-963,3,1,1,thur,09:00 A.M,48,Not Deleted
-Group 121,Group 121,Group 121,Group 121,Group 121,Group 121,Group 121,Group 121
-137,3,1,1,thur,9:00 AM,3,Not Deleted
-141,3,1,1,thur,9:00 AM,3,Not Deleted
-732,3,1,1,thur,9:00 AM,3,2/19/2021 16:02
-Group 122,Group 122,Group 122,Group 122,Group 122,Group 122,Group 122,Group 122
-135,3,1,1,thur,9:00 AM,4,Not Deleted
-139,3,1,1,thur,9:00 AM,4,Not Deleted
-730,3,1,1,thur,9:00 AM,4,2/19/2021 16:02
+699,3,1,1,mon,9:00 AM,41,2/19/21 15:44
 Group 123,Group 123,Group 123,Group 123,Group 123,Group 123,Group 123,Group 123
-682,3,1,1,thur,9:00 AM,41,0000-00-00 00:00:00
-734,3,1,1,thur,9:00 AM,41,2/19/2021 16:02
+810,3,1,1,mon,9:00 AM,45,10/19/24 18:32
+811,3,1,1,mon,9:00 AM,45,11/24/22 15:26
 Group 124,Group 124,Group 124,Group 124,Group 124,Group 124,Group 124,Group 124
-114,3,1,1,tue,1:00 PM,3,Not Deleted
-705,3,1,1,tue,1:00 PM,3,Not Deleted
+138,3,1,1,thur,1:00 PM,3,4/9/25 18:00
+619,3,1,1,thur,1:00 PM,3,Not Deleted
+733,3,1,1,thur,1:00 PM,3,2/19/21 16:02
+920,3,1,1,thur,01:00 P.M,3,4/9/25 18:00
+958,3,1,1,thur,01:00 P.M,3,Not Deleted
 Group 125,Group 125,Group 125,Group 125,Group 125,Group 125,Group 125,Group 125
-112,3,1,1,tue,1:00 PM,4,Not Deleted
-703,3,1,1,tue,1:00 PM,4,Not Deleted
+136,3,1,1,thur,1:00 PM,4,Not Deleted
+731,3,1,1,thur,1:00 PM,4,2/19/21 16:02
 Group 126,Group 126,Group 126,Group 126,Group 126,Group 126,Group 126,Group 126
+683,3,1,1,thur,1:00 PM,41,0000-00-00 00:00:00
+735,3,1,1,thur,1:00 PM,41,2/19/21 16:02
+Group 127,Group 127,Group 127,Group 127,Group 127,Group 127,Group 127,Group 127
+925,3,1,1,thur,01:00 P.M,48,4/9/25 18:00
+964,3,1,1,thur,01:00 P.M,48,Not Deleted
+Group 128,Group 128,Group 128,Group 128,Group 128,Group 128,Group 128,Group 128
+137,3,1,1,thur,9:00 AM,3,Not Deleted
+141,3,1,1,thur,9:00 AM,3,4/9/25 18:00
+732,3,1,1,thur,9:00 AM,3,2/19/21 16:02
+910,3,1,1,thur,09:00 A.M,3,4/9/25 18:00
+957,3,1,1,thur,09:00 A.M,3,Not Deleted
+Group 129,Group 129,Group 129,Group 129,Group 129,Group 129,Group 129,Group 129
+135,3,1,1,thur,9:00 AM,4,Not Deleted
+139,3,1,1,thur,9:00 AM,4,4/9/25 18:00
+730,3,1,1,thur,9:00 AM,4,2/19/21 16:02
+Group 130,Group 130,Group 130,Group 130,Group 130,Group 130,Group 130,Group 130
+682,3,1,1,thur,9:00 AM,41,0000-00-00 00:00:00
+734,3,1,1,thur,9:00 AM,41,2/19/21 16:02
+Group 131,Group 131,Group 131,Group 131,Group 131,Group 131,Group 131,Group 131
+915,3,1,1,thur,09:00 A.M,48,4/9/25 18:00
+963,3,1,1,thur,09:00 A.M,48,Not Deleted
+Group 132,Group 132,Group 132,Group 132,Group 132,Group 132,Group 132,Group 132
+114,3,1,1,tue,1:00 PM,3,Not Deleted
+705,3,1,1,tue,1:00 PM,3,4/9/25 18:00
+918,3,1,1,tue,01:00 P.M,3,Not Deleted
+Group 133,Group 133,Group 133,Group 133,Group 133,Group 133,Group 133,Group 133
+112,3,1,1,tue,1:00 PM,4,4/9/25 18:00
+703,3,1,1,tue,1:00 PM,4,Not Deleted
+Group 134,Group 134,Group 134,Group 134,Group 134,Group 134,Group 134,Group 134
 675,3,1,1,tue,1:00 PM,41,0000-00-00 00:00:00
 707,3,1,1,tue,1:00 PM,41,0000-00-00 00:00:00
-Group 127,Group 127,Group 127,Group 127,Group 127,Group 127,Group 127,Group 127
-813,3,1,1,tue,1:00 PM,45,11/24/2022 15:42
-817,3,1,1,tue,1:00 PM,45,10/19/2024 18:33
-Group 128,Group 128,Group 128,Group 128,Group 128,Group 128,Group 128,Group 128
-113,3,1,1,tue,9:00 AM,3,Not Deleted
+Group 135,Group 135,Group 135,Group 135,Group 135,Group 135,Group 135,Group 135
+813,3,1,1,tue,1:00 PM,45,11/24/22 15:42
+817,3,1,1,tue,1:00 PM,45,10/19/24 18:33
+Group 136,Group 136,Group 136,Group 136,Group 136,Group 136,Group 136,Group 136
+113,3,1,1,tue,9:00 AM,3,4/9/25 18:00
 704,3,1,1,tue,9:00 AM,3,Not Deleted
-710,3,1,1,tue,9:00 AM,3,12/7/2020 19:05
-Group 129,Group 129,Group 129,Group 129,Group 129,Group 129,Group 129,Group 129
-111,3,1,1,tue,9:00 AM,4,Not Deleted
+710,3,1,1,tue,9:00 AM,3,12/7/20 19:05
+908,3,1,1,tue,09:00 A.M,3,Not Deleted
+Group 137,Group 137,Group 137,Group 137,Group 137,Group 137,Group 137,Group 137
+111,3,1,1,tue,9:00 AM,4,4/9/25 18:00
 702,3,1,1,tue,9:00 AM,4,Not Deleted
-Group 130,Group 130,Group 130,Group 130,Group 130,Group 130,Group 130,Group 130
+Group 138,Group 138,Group 138,Group 138,Group 138,Group 138,Group 138,Group 138
 674,3,1,1,tue,9:00 AM,41,0000-00-00 00:00:00
 706,3,1,1,tue,9:00 AM,41,0000-00-00 00:00:00
-Group 131,Group 131,Group 131,Group 131,Group 131,Group 131,Group 131,Group 131
-919,3,1,1,wed,01:00 P.M,3,Not Deleted
-956,3,1,1,wed,01:00 P.M,3,Not Deleted
-Group 132,Group 132,Group 132,Group 132,Group 132,Group 132,Group 132,Group 132
-924,3,1,1,wed,01:00 P.M,48,Not Deleted
-962,3,1,1,wed,01:00 P.M,48,Not Deleted
-Group 133,Group 133,Group 133,Group 133,Group 133,Group 133,Group 133,Group 133
-126,3,1,1,wed,1:00 PM,3,Not Deleted
-130,3,1,1,wed,1:00 PM,3,Not Deleted
-134,3,1,1,wed,1:00 PM,3,Not Deleted
-719,3,1,1,wed,1:00 PM,3,2/19/2021 16:02
-Group 134,Group 134,Group 134,Group 134,Group 134,Group 134,Group 134,Group 134
-124,3,1,1,wed,1:00 PM,4,Not Deleted
-128,3,1,1,wed,1:00 PM,4,Not Deleted
-132,3,1,1,wed,1:00 PM,4,Not Deleted
-717,3,1,1,wed,1:00 PM,4,2/19/2021 16:02
-Group 135,Group 135,Group 135,Group 135,Group 135,Group 135,Group 135,Group 135
-679,3,1,1,wed,1:00 PM,41,0000-00-00 00:00:00
-721,3,1,1,wed,1:00 PM,41,2/19/2021 16:02
-Group 136,Group 136,Group 136,Group 136,Group 136,Group 136,Group 136,Group 136
-815,3,1,1,wed,1:00 PM,45,11/24/2022 15:42
-820,3,1,1,wed,1:00 PM,45,10/19/2024 18:33
-Group 137,Group 137,Group 137,Group 137,Group 137,Group 137,Group 137,Group 137
-909,3,1,1,wed,09:00 A.M,3,Not Deleted
-955,3,1,1,wed,09:00 A.M,3,Not Deleted
-Group 138,Group 138,Group 138,Group 138,Group 138,Group 138,Group 138,Group 138
-914,3,1,1,wed,09:00 A.M,48,Not Deleted
-961,3,1,1,wed,09:00 A.M,48,Not Deleted
 Group 139,Group 139,Group 139,Group 139,Group 139,Group 139,Group 139,Group 139
-125,3,1,1,wed,9:00 AM,3,Not Deleted
-718,3,1,1,wed,9:00 AM,3,2/19/2021 16:02
+126,3,1,1,wed,1:00 PM,3,4/9/25 18:00
+130,3,1,1,wed,1:00 PM,3,4/9/25 18:00
+134,3,1,1,wed,1:00 PM,3,Not Deleted
+719,3,1,1,wed,1:00 PM,3,2/19/21 16:02
+919,3,1,1,wed,01:00 P.M,3,4/9/25 18:00
+956,3,1,1,wed,01:00 P.M,3,Not Deleted
 Group 140,Group 140,Group 140,Group 140,Group 140,Group 140,Group 140,Group 140
-123,3,1,1,wed,9:00 AM,4,Not Deleted
-716,3,1,1,wed,9:00 AM,4,2/19/2021 16:02
+124,3,1,1,wed,1:00 PM,4,4/9/25 18:00
+128,3,1,1,wed,1:00 PM,4,4/9/25 18:00
+132,3,1,1,wed,1:00 PM,4,Not Deleted
+717,3,1,1,wed,1:00 PM,4,2/19/21 16:02
 Group 141,Group 141,Group 141,Group 141,Group 141,Group 141,Group 141,Group 141
-678,3,1,1,wed,9:00 AM,41,0000-00-00 00:00:00
-720,3,1,1,wed,9:00 AM,41,2/19/2021 16:02
+679,3,1,1,wed,1:00 PM,41,0000-00-00 00:00:00
+721,3,1,1,wed,1:00 PM,41,2/19/21 16:02
 Group 142,Group 142,Group 142,Group 142,Group 142,Group 142,Group 142,Group 142
-814,3,1,1,wed,9:00 AM,45,11/24/2022 15:42
-819,3,1,1,wed,9:00 AM,45,10/19/2024 18:33
+815,3,1,1,wed,1:00 PM,45,11/24/22 15:42
+820,3,1,1,wed,1:00 PM,45,10/19/24 18:33
 Group 143,Group 143,Group 143,Group 143,Group 143,Group 143,Group 143,Group 143
-894,3,11,1,fri,1:00 PM,4,Not Deleted
-897,3,11,1,fri,1:00 PM,4,Not Deleted
+924,3,1,1,wed,01:00 P.M,48,4/9/25 18:00
+962,3,1,1,wed,01:00 P.M,48,Not Deleted
 Group 144,Group 144,Group 144,Group 144,Group 144,Group 144,Group 144,Group 144
-636,3,12,1,tue,1:00 PM,4,Not Deleted
-637,3,12,1,tue,1:00 PM,4,Not Deleted
+125,3,1,1,wed,9:00 AM,3,Not Deleted
+718,3,1,1,wed,9:00 AM,3,2/19/21 16:02
+909,3,1,1,wed,09:00 A.M,3,4/9/25 18:00
+955,3,1,1,wed,09:00 A.M,3,Not Deleted
 Group 145,Group 145,Group 145,Group 145,Group 145,Group 145,Group 145,Group 145
-154,3,2,1,fri,1:00 PM,3,11/24/2020 13:57
-728,3,2,1,fri,1:00 PM,3,12/3/2020 19:18
-753,3,2,1,fri,1:00 PM,3,2/19/2021 16:02
-758,3,2,1,fri,1:00 PM,3,Not Deleted
+123,3,1,1,wed,9:00 AM,4,Not Deleted
+716,3,1,1,wed,9:00 AM,4,2/19/21 16:02
 Group 146,Group 146,Group 146,Group 146,Group 146,Group 146,Group 146,Group 146
-152,3,2,1,fri,1:00 PM,4,11/24/2020 13:57
-751,3,2,1,fri,1:00 PM,4,2/19/2021 16:02
-777,3,2,1,fri,1:00 PM,4,Not Deleted
+678,3,1,1,wed,9:00 AM,41,0000-00-00 00:00:00
+720,3,1,1,wed,9:00 AM,41,2/19/21 16:02
 Group 147,Group 147,Group 147,Group 147,Group 147,Group 147,Group 147,Group 147
-685,3,2,1,fri,1:00 PM,41,9/30/2021 13:53
-755,3,2,1,fri,1:00 PM,41,2/19/2021 16:02
-760,3,2,1,fri,1:00 PM,41,Not Deleted
+814,3,1,1,wed,9:00 AM,45,11/24/22 15:42
+819,3,1,1,wed,9:00 AM,45,10/19/24 18:33
 Group 148,Group 148,Group 148,Group 148,Group 148,Group 148,Group 148,Group 148
-153,3,2,1,fri,9:00 AM,3,11/24/2020 13:57
-729,3,2,1,fri,9:00 AM,3,12/3/2020 19:18
-752,3,2,1,fri,9:00 AM,3,2/19/2021 16:02
-761,3,2,1,fri,9:00 AM,3,Not Deleted
+914,3,1,1,wed,09:00 A.M,48,4/9/25 18:00
+961,3,1,1,wed,09:00 A.M,48,Not Deleted
 Group 149,Group 149,Group 149,Group 149,Group 149,Group 149,Group 149,Group 149
-151,3,2,1,fri,9:00 AM,4,5/17/2023 13:24
-750,3,2,1,fri,9:00 AM,4,2/19/2021 16:02
+894,3,11,1,fri,1:00 PM,4,4/9/25 18:00
+897,3,11,1,fri,1:00 PM,4,Not Deleted
 Group 150,Group 150,Group 150,Group 150,Group 150,Group 150,Group 150,Group 150
-684,3,2,1,fri,9:00 AM,41,0000-00-00 00:00:00
-754,3,2,1,fri,9:00 AM,41,2/19/2021 16:02
-759,3,2,1,fri,9:00 AM,41,Not Deleted
+636,3,12,1,tue,1:00 PM,4,4/9/25 18:00
+637,3,12,1,tue,1:00 PM,4,Not Deleted
 Group 151,Group 151,Group 151,Group 151,Group 151,Group 151,Group 151,Group 151
-181,3,2,1,mon,1:00 PM,3,11/3/2023 16:51
-526,3,2,1,mon,1:00 PM,3,Not Deleted
-698,3,2,1,mon,1:00 PM,3,Not Deleted
+154,3,2,1,fri,1:00 PM,3,11/24/20 13:57
+728,3,2,1,fri,1:00 PM,3,12/3/20 19:18
+753,3,2,1,fri,1:00 PM,3,2/19/21 16:02
+758,3,2,1,fri,1:00 PM,3,Not Deleted
+941,3,2,1,fri,01:00 P.M,3,Not Deleted
 Group 152,Group 152,Group 152,Group 152,Group 152,Group 152,Group 152,Group 152
-229,3,2,1,mon,1:00 PM,4,3/8/2021 14:11
-524,3,2,1,mon,1:00 PM,4,12/3/2020 19:18
-757,3,2,1,mon,1:00 PM,4,Not Deleted
-778,3,2,1,mon,1:00 PM,4,Not Deleted
+152,3,2,1,fri,1:00 PM,4,11/24/20 13:57
+751,3,2,1,fri,1:00 PM,4,2/19/21 16:02
+777,3,2,1,fri,1:00 PM,4,Not Deleted
 Group 153,Group 153,Group 153,Group 153,Group 153,Group 153,Group 153,Group 153
+685,3,2,1,fri,1:00 PM,41,9/30/21 13:53
+755,3,2,1,fri,1:00 PM,41,2/19/21 16:02
+760,3,2,1,fri,1:00 PM,41,Not Deleted
+Group 154,Group 154,Group 154,Group 154,Group 154,Group 154,Group 154,Group 154
+153,3,2,1,fri,9:00 AM,3,11/24/20 13:57
+729,3,2,1,fri,9:00 AM,3,12/3/20 19:18
+752,3,2,1,fri,9:00 AM,3,2/19/21 16:02
+761,3,2,1,fri,9:00 AM,3,Not Deleted
+931,3,2,1,fri,09:00 A.M,3,Not Deleted
+Group 155,Group 155,Group 155,Group 155,Group 155,Group 155,Group 155,Group 155
+151,3,2,1,fri,9:00 AM,4,5/17/23 13:24
+750,3,2,1,fri,9:00 AM,4,2/19/21 16:02
+Group 156,Group 156,Group 156,Group 156,Group 156,Group 156,Group 156,Group 156
+684,3,2,1,fri,9:00 AM,41,0000-00-00 00:00:00
+754,3,2,1,fri,9:00 AM,41,2/19/21 16:02
+759,3,2,1,fri,9:00 AM,41,Not Deleted
+Group 157,Group 157,Group 157,Group 157,Group 157,Group 157,Group 157,Group 157
+181,3,2,1,mon,1:00 PM,3,11/3/23 16:51
+526,3,2,1,mon,1:00 PM,3,4/9/25 18:00
+698,3,2,1,mon,1:00 PM,3,Not Deleted
+937,3,2,1,mon,01:00 P.M,3,Not Deleted
+Group 158,Group 158,Group 158,Group 158,Group 158,Group 158,Group 158,Group 158
+229,3,2,1,mon,1:00 PM,4,3/8/21 14:11
+524,3,2,1,mon,1:00 PM,4,12/3/20 19:18
+757,3,2,1,mon,1:00 PM,4,4/9/25 18:00
+778,3,2,1,mon,1:00 PM,4,Not Deleted
+Group 159,Group 159,Group 159,Group 159,Group 159,Group 159,Group 159,Group 159
 669,3,2,1,mon,1:00 PM,41,0000-00-00 00:00:00
 700,3,2,1,mon,1:00 PM,41,0000-00-00 00:00:00
-Group 154,Group 154,Group 154,Group 154,Group 154,Group 154,Group 154,Group 154
-103,3,2,1,mon,9:00 AM,3,6/21/2023 17:00
-525,3,2,1,mon,9:00 AM,3,12/3/2020 19:18
-697,3,2,1,mon,9:00 AM,3,Not Deleted
-Group 155,Group 155,Group 155,Group 155,Group 155,Group 155,Group 155,Group 155
-184,3,2,1,mon,9:00 AM,4,12/3/2020 19:18
-529,3,2,1,mon,9:00 AM,4,11/24/2020 13:57
-647,3,2,1,mon,9:00 AM,4,Not Deleted
-695,3,2,1,mon,9:00 AM,4,Not Deleted
-Group 156,Group 156,Group 156,Group 156,Group 156,Group 156,Group 156,Group 156
-142,3,2,1,thur,1:00 PM,3,Not Deleted
-180,3,2,1,thur,1:00 PM,3,Not Deleted
-739,3,2,1,thur,1:00 PM,3,2/19/2021 16:02
-Group 157,Group 157,Group 157,Group 157,Group 157,Group 157,Group 157,Group 157
-140,3,2,1,thur,1:00 PM,4,11/28/2022 21:30
-737,3,2,1,thur,1:00 PM,4,2/19/2021 16:02
-Group 158,Group 158,Group 158,Group 158,Group 158,Group 158,Group 158,Group 158
-681,3,2,1,thur,1:00 PM,41,0000-00-00 00:00:00
-741,3,2,1,thur,1:00 PM,41,2/19/2021 16:02
-Group 159,Group 159,Group 159,Group 159,Group 159,Group 159,Group 159,Group 159
-249,3,2,1,thur,9:00 AM,3,Not Deleted
-738,3,2,1,thur,9:00 AM,3,2/19/2021 16:02
 Group 160,Group 160,Group 160,Group 160,Group 160,Group 160,Group 160,Group 160
-736,3,2,1,thur,9:00 AM,4,2/19/2021 16:02
-762,3,2,1,thur,9:00 AM,4,Not Deleted
+103,3,2,1,mon,9:00 AM,3,6/21/23 17:00
+525,3,2,1,mon,9:00 AM,3,12/3/20 19:18
+697,3,2,1,mon,9:00 AM,3,Not Deleted
+927,3,2,1,mon,09:00 A.M,3,Not Deleted
 Group 161,Group 161,Group 161,Group 161,Group 161,Group 161,Group 161,Group 161
-680,3,2,1,thur,9:00 AM,41,0000-00-00 00:00:00
-740,3,2,1,thur,9:00 AM,41,2/19/2021 16:02
+184,3,2,1,mon,9:00 AM,4,12/3/20 19:18
+529,3,2,1,mon,9:00 AM,4,11/24/20 13:57
+647,3,2,1,mon,9:00 AM,4,4/9/25 18:00
+695,3,2,1,mon,9:00 AM,4,Not Deleted
 Group 162,Group 162,Group 162,Group 162,Group 162,Group 162,Group 162,Group 162
-118,3,2,1,tue,1:00 PM,3,3/24/2021 15:57
-711,3,2,1,tue,1:00 PM,3,12/3/2020 19:18
-770,3,2,1,tue,1:00 PM,3,7/1/2022 13:30
-771,3,2,1,tue,1:00 PM,3,11/23/2022 14:47
-772,3,2,1,tue,1:00 PM,3,Not Deleted
+142,3,2,1,thur,1:00 PM,3,4/9/25 18:00
+180,3,2,1,thur,1:00 PM,3,Not Deleted
+739,3,2,1,thur,1:00 PM,3,2/19/21 16:02
+940,3,2,1,thur,01:00 P.M,3,Not Deleted
 Group 163,Group 163,Group 163,Group 163,Group 163,Group 163,Group 163,Group 163
-116,3,2,1,tue,1:00 PM,4,5/4/2022 16:40
-709,3,2,1,tue,1:00 PM,4,Not Deleted
+140,3,2,1,thur,1:00 PM,4,11/28/22 21:30
+737,3,2,1,thur,1:00 PM,4,2/19/21 16:02
 Group 164,Group 164,Group 164,Group 164,Group 164,Group 164,Group 164,Group 164
-673,3,2,1,tue,1:00 PM,41,0000-00-00 00:00:00
-713,3,2,1,tue,1:00 PM,41,2/19/2021 16:02
+681,3,2,1,thur,1:00 PM,41,0000-00-00 00:00:00
+741,3,2,1,thur,1:00 PM,41,2/19/21 16:02
 Group 165,Group 165,Group 165,Group 165,Group 165,Group 165,Group 165,Group 165
-117,3,2,1,tue,9:00 AM,3,11/24/2020 13:57
-756,3,2,1,tue,9:00 AM,3,Not Deleted
+249,3,2,1,thur,9:00 AM,3,Not Deleted
+738,3,2,1,thur,9:00 AM,3,2/19/21 16:02
+930,3,2,1,thur,09:00 A.M,3,Not Deleted
 Group 166,Group 166,Group 166,Group 166,Group 166,Group 166,Group 166,Group 166
-115,3,2,1,tue,9:00 AM,4,Not Deleted
-708,3,2,1,tue,9:00 AM,4,Not Deleted
+736,3,2,1,thur,9:00 AM,4,2/19/21 16:02
+762,3,2,1,thur,9:00 AM,4,Not Deleted
 Group 167,Group 167,Group 167,Group 167,Group 167,Group 167,Group 167,Group 167
-672,3,2,1,tue,9:00 AM,41,12/3/2020 19:18
-712,3,2,1,tue,9:00 AM,41,12/7/2020 19:05
+680,3,2,1,thur,9:00 AM,41,0000-00-00 00:00:00
+740,3,2,1,thur,9:00 AM,41,2/19/21 16:02
 Group 168,Group 168,Group 168,Group 168,Group 168,Group 168,Group 168,Group 168
-624,3,2,1,wed,1:00 PM,3,Not Deleted
-625,3,2,1,wed,1:00 PM,3,11/14/2019 18:25
-725,3,2,1,wed,1:00 PM,3,2/19/2021 16:02
+118,3,2,1,tue,1:00 PM,3,3/24/21 15:57
+711,3,2,1,tue,1:00 PM,3,12/3/20 19:18
+770,3,2,1,tue,1:00 PM,3,7/1/22 13:30
+771,3,2,1,tue,1:00 PM,3,11/23/22 14:47
+772,3,2,1,tue,1:00 PM,3,Not Deleted
+938,3,2,1,tue,01:00 P.M,3,Not Deleted
 Group 169,Group 169,Group 169,Group 169,Group 169,Group 169,Group 169,Group 169
-192,3,2,1,wed,1:00 PM,4,1/12/2024 15:35
-723,3,2,1,wed,1:00 PM,4,2/19/2021 16:02
-899,3,2,1,wed,1:00 PM,4,Not Deleted
+116,3,2,1,tue,1:00 PM,4,5/4/22 16:40
+709,3,2,1,tue,1:00 PM,4,Not Deleted
 Group 170,Group 170,Group 170,Group 170,Group 170,Group 170,Group 170,Group 170
-677,3,2,1,wed,1:00 PM,41,0000-00-00 00:00:00
-727,3,2,1,wed,1:00 PM,41,2/19/2021 16:02
+673,3,2,1,tue,1:00 PM,41,0000-00-00 00:00:00
+713,3,2,1,tue,1:00 PM,41,2/19/21 16:02
 Group 171,Group 171,Group 171,Group 171,Group 171,Group 171,Group 171,Group 171
-129,3,2,1,wed,9:00 AM,3,12/3/2020 19:22
-724,3,2,1,wed,9:00 AM,3,2/19/2021 16:02
-764,3,2,1,wed,9:00 AM,3,Not Deleted
+117,3,2,1,tue,9:00 AM,3,11/24/20 13:57
+756,3,2,1,tue,9:00 AM,3,Not Deleted
+928,3,2,1,tue,09:00 A.M,3,Not Deleted
 Group 172,Group 172,Group 172,Group 172,Group 172,Group 172,Group 172,Group 172
-127,3,2,1,wed,9:00 AM,4,2/19/2021 16:02
-722,3,2,1,wed,9:00 AM,4,2/19/2021 16:02
-769,3,2,1,wed,9:00 AM,4,3/30/2021 20:39
-773,3,2,1,wed,9:00 AM,4,Not Deleted
+115,3,2,1,tue,9:00 AM,4,4/9/25 18:00
+708,3,2,1,tue,9:00 AM,4,Not Deleted
 Group 173,Group 173,Group 173,Group 173,Group 173,Group 173,Group 173,Group 173
-676,3,2,1,wed,9:00 AM,41,0000-00-00 00:00:00
-726,3,2,1,wed,9:00 AM,41,2/19/2021 16:02
+672,3,2,1,tue,9:00 AM,41,12/3/20 19:18
+712,3,2,1,tue,9:00 AM,41,12/7/20 19:05
 Group 174,Group 174,Group 174,Group 174,Group 174,Group 174,Group 174,Group 174
-179,3,5,1,mon,9:00 AM,4,Not Deleted
-191,3,5,1,mon,9:00 AM,4,Not Deleted
-701,3,5,1,mon,9:00 AM,4,Not Deleted
+624,3,2,1,wed,1:00 PM,3,Not Deleted
+625,3,2,1,wed,1:00 PM,3,11/14/19 18:25
+725,3,2,1,wed,1:00 PM,3,2/19/21 16:02
+939,3,2,1,wed,01:00 P.M,3,Not Deleted
 Group 175,Group 175,Group 175,Group 175,Group 175,Group 175,Group 175,Group 175
-380,3,6,1,thur,9:00 AM,37,11/24/2020 13:57
-800,3,6,1,thur,9:00 AM,37,3/11/2022 15:35
-880,3,6,1,thur,9:00 AM,37,Not Deleted
+192,3,2,1,wed,1:00 PM,4,1/12/24 15:35
+723,3,2,1,wed,1:00 PM,4,2/19/21 16:02
+899,3,2,1,wed,1:00 PM,4,Not Deleted
 Group 176,Group 176,Group 176,Group 176,Group 176,Group 176,Group 176,Group 176
-379,3,6,1,wed,1:00 PM,37,2/19/2021 16:02
-799,3,6,1,wed,1:00 PM,37,3/11/2022 15:37
-801,3,6,1,wed,1:00 PM,37,Not Deleted
+677,3,2,1,wed,1:00 PM,41,0000-00-00 00:00:00
+727,3,2,1,wed,1:00 PM,41,2/19/21 16:02
 Group 177,Group 177,Group 177,Group 177,Group 177,Group 177,Group 177,Group 177
-146,3,7,1,thur,1:00 PM,3,11/24/2020 13:57
-743,3,7,1,thur,1:00 PM,3,2/19/2021 16:02
-763,3,7,1,thur,1:00 PM,3,Not Deleted
+129,3,2,1,wed,9:00 AM,3,12/3/20 19:22
+724,3,2,1,wed,9:00 AM,3,2/19/21 16:02
+764,3,2,1,wed,9:00 AM,3,Not Deleted
+929,3,2,1,wed,09:00 A.M,3,Not Deleted
 Group 178,Group 178,Group 178,Group 178,Group 178,Group 178,Group 178,Group 178
-144,3,7,1,thur,1:00 PM,4,Not Deleted
-742,3,7,1,thur,1:00 PM,4,2/19/2021 16:02
+127,3,2,1,wed,9:00 AM,4,2/19/21 16:02
+722,3,2,1,wed,9:00 AM,4,2/19/21 16:02
+769,3,2,1,wed,9:00 AM,4,3/30/21 20:39
+773,3,2,1,wed,9:00 AM,4,Not Deleted
 Group 179,Group 179,Group 179,Group 179,Group 179,Group 179,Group 179,Group 179
-145,3,7,1,thur,9:00 AM,3,11/24/2020 13:57
-688,3,7,1,thur,9:00 AM,3,7/13/2023 21:09
-893,3,7,1,thur,9:00 AM,3,Not Deleted
+676,3,2,1,wed,9:00 AM,41,0000-00-00 00:00:00
+726,3,2,1,wed,9:00 AM,41,2/19/21 16:02
 Group 180,Group 180,Group 180,Group 180,Group 180,Group 180,Group 180,Group 180
-121,3,7,1,tue,9:00 AM,3,7/26/2021 20:12
-715,3,7,1,tue,9:00 AM,3,2/19/2021 16:02
-780,3,7,1,tue,9:00 AM,3,Not Deleted
+179,3,5,1,mon,9:00 AM,4,4/9/25 18:00
+191,3,5,1,mon,9:00 AM,4,4/9/25 18:00
+701,3,5,1,mon,9:00 AM,4,Not Deleted
 Group 181,Group 181,Group 181,Group 181,Group 181,Group 181,Group 181,Group 181
-119,3,7,1,tue,9:00 AM,4,11/24/2020 13:57
-714,3,7,1,tue,9:00 AM,4,2/19/2021 16:02
+380,3,6,1,thur,9:00 AM,37,11/24/20 13:57
+800,3,6,1,thur,9:00 AM,37,3/11/22 15:35
+880,3,6,1,thur,9:00 AM,37,Not Deleted
 Group 182,Group 182,Group 182,Group 182,Group 182,Group 182,Group 182,Group 182
-133,3,7,1,wed,9:00 AM,3,3/14/2022 14:05
+379,3,6,1,wed,1:00 PM,37,2/19/21 16:02
+799,3,6,1,wed,1:00 PM,37,3/11/22 15:37
+801,3,6,1,wed,1:00 PM,37,Not Deleted
+Group 183,Group 183,Group 183,Group 183,Group 183,Group 183,Group 183,Group 183
+146,3,7,1,thur,1:00 PM,3,11/24/20 13:57
+743,3,7,1,thur,1:00 PM,3,2/19/21 16:02
+763,3,7,1,thur,1:00 PM,3,Not Deleted
+950,3,7,1,thur,01:00 P.M,3,Not Deleted
+Group 184,Group 184,Group 184,Group 184,Group 184,Group 184,Group 184,Group 184
+144,3,7,1,thur,1:00 PM,4,Not Deleted
+742,3,7,1,thur,1:00 PM,4,2/19/21 16:02
+Group 185,Group 185,Group 185,Group 185,Group 185,Group 185,Group 185,Group 185
+145,3,7,1,thur,9:00 AM,3,11/24/20 13:57
+688,3,7,1,thur,9:00 AM,3,7/13/23 21:09
+893,3,7,1,thur,9:00 AM,3,Not Deleted
+949,3,7,1,thur,09:00 A.M,3,Not Deleted
+Group 186,Group 186,Group 186,Group 186,Group 186,Group 186,Group 186,Group 186
+876,3,7,1,tue,1:00 PM,3,Not Deleted
+948,3,7,1,tue,01:00 P.M,3,Not Deleted
+Group 187,Group 187,Group 187,Group 187,Group 187,Group 187,Group 187,Group 187
+121,3,7,1,tue,9:00 AM,3,7/26/21 20:12
+715,3,7,1,tue,9:00 AM,3,2/19/21 16:02
+780,3,7,1,tue,9:00 AM,3,Not Deleted
+947,3,7,1,tue,09:00 A.M,3,Not Deleted
+Group 188,Group 188,Group 188,Group 188,Group 188,Group 188,Group 188,Group 188
+119,3,7,1,tue,9:00 AM,4,11/24/20 13:57
+714,3,7,1,tue,9:00 AM,4,2/19/21 16:02
+Group 189,Group 189,Group 189,Group 189,Group 189,Group 189,Group 189,Group 189
+133,3,7,1,wed,9:00 AM,3,3/14/22 14:05
 803,3,7,1,wed,9:00 AM,3,Not Deleted
