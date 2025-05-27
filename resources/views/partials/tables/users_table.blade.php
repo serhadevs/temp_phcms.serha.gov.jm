@@ -34,7 +34,7 @@
                                         <select class="form-select" id="facility_id" name="facility_id">
                                             <option selected disabled>Select Facility</option>
                                             @foreach ($facilities as $facility)
-                                                <option value="{{ $facility->id }}"">{{ $facility->name }}</option>
+                                                <option value="{{ $facility->id }}">{{ $facility->name }}</option>
                                             @endforeach
                                         </select>
 

@@ -17,11 +17,14 @@ class SendCredentialEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $user;
-    public function __construct($user)
+    public $newUser;
+    public $stringPassword;
+    public function __construct($newUser, $stringPassword)
     {
-        $this->user = $user;
+        $this->newUser = $newUser;
+        $this->stringPassword = $stringPassword;
     }
+   
 
     /**
      * Execute the job.
@@ -30,16 +33,16 @@ class SendCredentialEmail implements ShouldQueue
      */
     public function handle()
     {
-        if (empty($this->user->email)) {
-            Log::error('Unable to send email to user' . $this->user->firstname . ''. $this->user->lastname);
+        if (empty($this->newUser->email)) {
+            Log::error('Unable to send email to user' . $this->newUser->firstname . ''. $this->newUser->lastname);
             return;
         }
 
         try {
-            Mail::to($this->user->email)->send(new SendCredentials($this->user->firstname,$this->user->lastname));
+            Mail::to($this->newUser->email)->send(new SendCredentials($this->newUser,$this->stringPassword));
         } catch (\Throwable $e) {
             Log::error('Failed to send user email', [
-                'user' => $this->user,
+                'user' => $this->newUser,
                 'error' => $e->getMessage()
             ]);
             
