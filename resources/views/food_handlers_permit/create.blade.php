@@ -6,6 +6,7 @@
     @include('partials.sidebar._sidebar')
 
     <div class="main">
+        {{ $errors }}
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             {{-- @include('partials.messages.messages') --}}
@@ -144,6 +145,9 @@
                         <div class="mt-3">
                             <label for="" class="form-label">Upload Photo</label>
                             <input type="file" class="form-control" name="photo_upload">
+                            @error('photo_upload')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="row mt-3">
                             <div class="col">

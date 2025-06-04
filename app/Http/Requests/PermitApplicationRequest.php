@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\ApplicationDateAfterExamDate;
+use App\Rules\FileExtensions;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PermitApplicationRequest extends FormRequest
@@ -19,8 +20,10 @@ class PermitApplicationRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        // dd();
         $this->merge([
             'exam_date' => $this->exam_date,
+            // 'photo_upload'=>$this->photo_upload->extension()
         ]);
     }
 
@@ -40,7 +43,7 @@ class PermitApplicationRequest extends FormRequest
             'date_of_birth' => 'required|date',
             'gender' => 'required',
             'permit_type' => 'required',
-            'no_of_years' => ['required_if:permit_type,student'],
+            'no_of_years' => [ 'nullable', 'numeric', 'required_if:permit_type,student'],
             'cell_phone' => 'nullable',
             'home_phone' => 'nullable',
             'work_phone' => 'nullable',
@@ -52,7 +55,8 @@ class PermitApplicationRequest extends FormRequest
             'applied_before' => 'required',
             'granted' => 'required_if:applied_before,=,1',
             'reason' => 'nullable',
-            'photo_upload' => 'nullable',
+            // 'photo_upload' => 'nullable|extensions:jpg,png,jpeg',
+            'photo_upload' => ['nullable', new FileExtensions($this->photo_upload? pathinfo($this->photo_upload->getClientOriginalName(), PATHINFO_EXTENSION): '')],
             'exam_date' => 'required',
             'exam_session' => 'required',
             // 'application_date' => 'required',
