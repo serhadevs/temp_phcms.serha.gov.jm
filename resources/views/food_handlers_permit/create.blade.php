@@ -6,7 +6,6 @@
     @include('partials.sidebar._sidebar')
 
     <div class="main">
-        {{ $errors }}
         @include('partials.navbar._navbar')
         <div class="container-fluid">
             {{-- @include('partials.messages.messages') --}}
