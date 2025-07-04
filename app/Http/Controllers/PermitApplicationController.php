@@ -395,10 +395,44 @@ class PermitApplicationController extends Controller
             ->where('application_type_id', 1)
             ->get();
 
+        // $exam_sites = ExamSites::where('facility_id', auth()->user()->facility_id)
+        //     ->get();
         //dd($appointments_available[0]);
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
     }
 
+    public function newApplicationAppointmentFeature()
+    {
+        $categories = PermitCategory::all();
+        $appointments_available = ExamDates::join('exam_sites', 'exam_dates.exam_site_id', '=', 'exam_sites.id')
+            ->join('permit_categories', 'permit_categories.id', '=', 'exam_dates.permit_category_id')
+            ->where('exam_dates.facility_id', auth()->user()->facility_id)
+            ->select('exam_dates.id', 'permit_category_id', 'exam_day', 'exam_start_time', 'exam_sites.name as site_name', 'permit_categories.name as category_name')
+            ->orderBy('exam_site_id')
+            // ->orderBy('DATE(exam_start_time)')
+            ->orderByRaw("
+                CASE WHEN exam_day = 'mon' then 1
+                WHEN exam_day = 'tue' then 2
+                WHEN exam_day = 'wed' then 3
+                WHEN exam_day = 'thur' then 4
+                WHEN exam_day = 'fri' then 5
+                WHEN exam_day = 'sat' then 6
+                else 7 end
+            ")
+            ->orderByRaw("
+                STR_TO_DATE(exam_start_time, '%l:%i %p')
+            ")
+            // ->orderByRaw('DAY(exam_dates.exam_day)')
+            ->where('application_type_id', 1)
+            ->get();
+
+        // $exam_sites = ExamSites::where('facility_id', auth()->user()->facility_id)
+        //     ->get();
+        //dd($appointments_available[0]);
+
+        return view('food_handlers_permit.create_with_appointment_sch', compact('categories', 'appointments_available'));
+    }
+    
     public function renewal(Request $request)
     {
         $categories = PermitCategory::all();

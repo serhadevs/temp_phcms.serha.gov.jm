@@ -102,8 +102,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Expired Establishments
   Route::get('/establishments/expiry/{days}', [FoodEstablishmentController::class, 'expiredEstabtablishments'])->name('est.expiry');
-  Route::get('/establishments/expired',[FoodEstablishmentController::class, 'createExpiredEstablishments'])->name('est.expired');
-  Route::post('/establishments/expired/view',[FoodEstablishmentController::class, 'showAllExpiredEstablishments'])->name('est.expired.store');
+  Route::get('/establishments/expired', [FoodEstablishmentController::class, 'createExpiredEstablishments'])->name('est.expired');
+  Route::post('/establishments/expired/view', [FoodEstablishmentController::class, 'showAllExpiredEstablishments'])->name('est.expired.store');
   //Appointments
 
   Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   ROute::get('/examdates/{id}/{day}', [AppointmentController::class, 'filterExamDates'])->name('filter.examdates');
 
   //Permit Application Route
+  Route::get('/permit/application/create-with-appointment', [PermitApplicationController::class, 'newApplicationAppointmentFeature']);
   Route::post('/permit/application/appointment/create', [PermitApplicationController::class, 'addNewAppointment'])->name('permit.application.appointment.create');
   Route::get("/permit/application", [PermitApplicationController::class, 'newApplication'])->name('food_handlers_permit.newApplication');
   Route::post("/permit/application", [PermitApplicationController::class, 'store'])->name('food_handlers_permit.store');
@@ -531,4 +532,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get("/test/clear-appointments", [TestDownloads::class, 'clearAppointments']);
   Route::get("/test/sanitize-data", [TestDownloads::class, 'sanitizeAppointments']);
+
+  Route::post('/booked/dates', [AppointmentController::class, 'getBookedDates'])->name('get.booked.dates');
+  Route::post('/exam/sites/permit-cat', [ExamDateController::class, 'getExamSite'])->name('get.exam.sites.based.on.permit.category');
+  Route::post('/filter/exam/times', [ExamDateController::class, 'getPossibleTime'])->name('get.exam.times');
 });

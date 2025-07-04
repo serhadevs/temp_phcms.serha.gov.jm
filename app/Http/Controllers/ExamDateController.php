@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ApplicationType;
+use App\Models\Appointments;
 use App\Models\ExamDates;
 use App\Models\ExamSites;
 use App\Models\PermitCategory;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
+use Exception;
 
 class ExamDateController extends Controller
 {
@@ -27,11 +29,12 @@ class ExamDateController extends Controller
         return view('admin.examdates', compact('exam_dates', 'exam_days'));
     }
 
-    public function filter($id){
+    public function filter($id)
+    {
         //Find Facility in Database
-        $exam_dates = ExamDates::with('permitCategory', 'facility', 'application_type', 'examSites')->where('facility_id',$id)->get();
+        $exam_dates = ExamDates::with('permitCategory', 'facility', 'application_type', 'examSites')->where('facility_id', $id)->get();
         $exam_days = collect(['mon' => 'Monday', 'tue' => 'Tuesday', 'wed' => 'Wednesday', 'thur' => 'Thursday', 'fri' => 'Friday', 'sat' => 'Saturday', 'sun' => 'Sunday']);
-        return view('admin.examdates',compact('exam_dates','exam_days'));
+        return view('admin.examdates', compact('exam_dates', 'exam_days'));
     }
 
     public function create()
@@ -139,10 +142,74 @@ class ExamDateController extends Controller
             // Redirect back with a success message
             return redirect()->route('examdates')
                 ->with('success', 'Exam date updated successfully.');
-            } catch (\Exception $e) {
-                return redirect()->route('examdates')->with('error', 'Exception Error: ' . $e);
-            } catch (QueryException $e) {
-                return redirect()->route('examdates')->with('error', 'Query Exception Error: ' . $e);
+        } catch (\Exception $e) {
+            return redirect()->route('examdates')->with('error', 'Exception Error: ' . $e);
+        } catch (QueryException $e) {
+            return redirect()->route('examdates')->with('error', 'Query Exception Error: ' . $e);
+        }
+    }
+
+    //get examSites based on permit category id
+    public function getExamSite(Request $request)
+    {
+        try {
+            $exam_sites = ExamSites::where('facility_id', auth()->user()->facility_id)
+                ->whereRelation('examDates', 'permit_category_id', $request->data['permit_category_id'])
+                ->has('examDates')
+                ->select('id', 'name')
+                ->get();
+            return response()->json([
+                'exam_sites' => $exam_sites,
+                'status' => 200
+            ]);
+        } catch (Exception $exception) {
+            return response()->json([
+                'error' => $exception->getMessage(),
+                'status' => 400
+            ]);
+        }
+    }
+
+    public function getPossibleTime(Request $request)
+    {
+        try {
+            $excluded_exam_dates = [];
+            $day = "";
+            $i = 0;
+            $day = date('D', strtotime($request->data['appointment_date'])) != "Thu"
+                ? strtolower(date('D', strtotime($request->data['appointment_date'])))
+                : "thur";
+
+            $exam_dates = Appointments::with('examDate')
+                ->whereRelation('examDate', 'permit_category_id', $request->data['permit_category_id'])
+                ->whereRelation('examDate', 'exam_site_id', $request->data['exam_site_id'])
+                ->where('appointment_date', $request->data['appointment_date'])
+                ->get()
+                ->groupBy('exam_date_id');
+
+            foreach ($exam_dates as $exam_date) {
+                if ($exam_date->count() >= $exam_date[0]->examDate?->capacity) {
+                    $excluded_exam_dates[$i] = $exam_date[0]->exam_date_id;
+                }
             }
+
+            $available_times = ExamDates::whereNotIn('id', $excluded_exam_dates)
+                ->where('permit_category_id', $request->data['permit_category_id'])
+                ->where('exam_site_id', $request->data['exam_site_id'])
+                ->where('exam_day', $day)
+                ->select('exam_start_time')
+                ->orderByRaw("STR_TO_DATE(exam_start_time, '%l:%i %p')")
+                ->get();
+
+            return response()->json([
+                'available_times' => $available_times,
+                'status' => 200
+            ]);
+        } catch (Exception $exception) {
+            return response()->json([
+                'error' => $exception->getMessage(),
+                'status' => 400
+            ]);
+        }
     }
 }

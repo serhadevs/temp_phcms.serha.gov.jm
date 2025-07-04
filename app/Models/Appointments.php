@@ -27,7 +27,8 @@ class Appointments extends Model implements Auditable
         'exam_date_id',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'rescheduled'
     ];
 
     public $timestamps = true;

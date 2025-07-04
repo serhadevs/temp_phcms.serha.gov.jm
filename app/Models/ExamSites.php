@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ExamSites extends Model implements \OwenIt\Auditing\Contracts\Auditable
@@ -33,5 +34,7 @@ class ExamSites extends Model implements \OwenIt\Auditing\Contracts\Auditable
         return $this->belongsTo(Facility::class,'facility_id','id');
     }
 
-
+    public function examDates():HasMany{
+        return $this->hasMany(ExamDates::class, 'exam_site_id', 'id');
+    }
 }
