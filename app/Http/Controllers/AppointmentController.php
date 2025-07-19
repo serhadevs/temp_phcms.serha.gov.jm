@@ -158,9 +158,19 @@ class AppointmentController extends Controller
 
     public function getBookedDates(Request $request)
     {
-        //Also ensure you get the days that actually have a exam day to it
-        //Monday, Tuesday, Wednesday, Thursday
         try {
+            //Also ensure you get the days that actually have a exam day to it
+            //Monday, Tuesday, Wednesday, Thursday
+            $exam_days = ['mon', 'tue', 'wed', 'thur', 'fri'];
+            $excluded_days = [];
+            $x = 0;
+            foreach ($exam_days as $exam_day) {
+                if (!ExamDates::where('exam_day', $exam_day)->first()) {
+                    $excluded_days[$x] = $exam_day;
+                    $x++;
+                }
+            }
+
             $excluded_dates = [];
             $i = 0;
             $appointments = Appointments::with('examDate')
@@ -171,6 +181,8 @@ class AppointmentController extends Controller
                 ->get()
                 ->groupBy('appointment_date');
 
+            //the count that you should be comparing to is not appointments but rather
+            //the sum of all possible days based permit_category_id and exam_site_id
             foreach ($appointments as $appointment) {
                 if ($appointment->count() >= $appointment->sum(function ($appointment) {
                     return $appointment->examDate?->capacity;
@@ -179,14 +191,31 @@ class AppointmentController extends Controller
                     $i++;
                 }
             }
+
+            //Correct function
+            // foreach ($appointments as $appointment) {
+            //     $day = date('D', strtotime($appointment->appointment_date)) != "Thu"
+            //         ? strtolower(date('D', strtotime($appointment->appointment_date)))
+            //         : "thur";
+            //     if (
+            //         $appointment->count() >=
+            //         ExamDates::where('permit_category_id', $request->data['permit_category_id'])
+            //         ->where('exam_site_id', $request->data['exam_site_id'])
+            //         ->where('exam_day', $day)
+            //         ->sum('capacity')
+            //     ) {
+            //         $excluded_dates[$i] = $appointment[0]->appointment_date;
+            //         $i++;
+            //     }
+            // }
             return response()->json([
-                'excluded_dates'=>$excluded_dates,
-                'status'=>200
+                'excluded_dates' => $excluded_dates,
+                'status' => 200
             ]);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
-                'status'=>400
+                'status' => 400
             ]);
         }
     }
