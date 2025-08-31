@@ -38,6 +38,7 @@ class UserController extends Controller
         $query->where('role_id', $role_id);
     }
 
+
     return $query->latest('created_at')
         ->get([
             'last_seen', 'id', 'firstname', 'lastname', 'facility_id',
@@ -172,8 +173,6 @@ class UserController extends Controller
         }
     }
 
-
-
     public function post_reset($token, Request $request)
     {
 
@@ -285,40 +284,37 @@ class UserController extends Controller
     }
 
     public function addUser(Request $request)
+{
+    $incomingFields = $request->validate([
+        'firstname' => 'required',
+        'lastname' => 'required',
+        'facility_id' => 'required',
+        'telephone' => 'required',
+        'email' => 'required|email|unique:users',
+        'role_id' => 'required',
+    ]);
 
-    {
-        //Only the superadmin and admins can add users
-        // if (in_array($request->user()->role_id,[3,4,5,6,7,8,9,10])) {
-        //     return redirect()->route('user.create')->with('error', 'You are not authorized to perform this action.');
-        // }
-
-        $incomingFields = $request->validate([
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'facility_id' => 'required',
-            'telephone' => 'required',
-            'email' => 'required|email|unique:users',
-            'role_id' => 'required',
-
-        ]);
-
-        //dd($incomingFields);
-
-        $incomingFields['status'] = 1;
-        $incomingFields['password'] = bcrypt('password123');
-        $incomingFields['last_seen'] = date('Y-m-d H:i:s');
-        $user = User::create($incomingFields);
-
-      //Send Email to user
-
-      //dispatch(new SendCredentialEmail($user));
-
-        if (!$user) {
-            return redirect()->route('user.index')->with('error', 'Unable to add the user');
-        }
-
-        return redirect()->route('users')->with('success', 'User was added');
+    // Set additional fields
+    $incomingFields['status'] = 1;
+    
+    // Make password a random string of 8 characters
+    $stringPassword = Str::random(8);
+    
+    $incomingFields['password'] = bcrypt($stringPassword);
+    $incomingFields['last_seen'] = date('Y-m-d H:i:s');
+    
+    // Create the user
+    $user = User::create($incomingFields);
+    
+    if (!$user) {
+        return redirect()->route('user.index')->with('error', 'Unable to add the user');
     }
+    
+    // Send Email to the newly created user (use $user instead of querying again)
+    dispatch(new SendCredentialEmail($user, $stringPassword));
+    
+    return redirect()->route('users')->with('success', 'User was added');
+}
 
     public function switchFacility(Request $request)
     {

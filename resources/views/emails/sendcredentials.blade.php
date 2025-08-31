@@ -1,12 +1,19 @@
 @component('mail::message')
-    <p>Dear {{ $user->firstname }} {{ $user->lastname }}</p>
+# Welcome to PHCMS 2.0
 
-    <p>Here are your login credentials for PHCMS 2.0:</p>
+Hello {{ $newUser->firstname }} {{ $newUser->lastname }},
 
-   <p>Username:{{ $user->email }}  </p>
+Your account has been created successfully. Here are your login credentials:
 
-    <p>Password: password123  </p>
+**Email:** {{ $newUser->email }}  
+**Password:** {{ $stringPassword }}
 
-    <p>Welcome to the team<br>
-       PHCMS 2.0</p>
-    @endcomponent
+Please change your password after your first login for security purposes.
+
+@component('mail::button', ['url' => config('app.url')])
+Login Now
+@endcomponent
+
+Thanks,<br>
+{{ config('app.name') }}
+@endcomponent

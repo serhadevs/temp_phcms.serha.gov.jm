@@ -13,12 +13,14 @@ class SendCredentials extends Mailable
 {
     use Queueable, SerializesModels;
 
+
+    public $newUser;
+    public $stringPassword;
    
-    public $user;
-   
-    public function __construct($user)
+    public function __construct($newUser,$stringPassword)
     {
-        $this->user = $user;
+        $this->newUser = $newUser;
+        $this->stringPassword = $stringPassword;
     }
 
     /**
@@ -43,7 +45,8 @@ class SendCredentials extends Mailable
         return new Content(
             markdown: 'emails.sendcredentials',
             with:[
-                'user' => $this->user,
+                'newUser' => $this->newUser,
+                'stringPassword' => $this->stringPassword,
             ]
         );
     }
