@@ -26,7 +26,7 @@
                                 @method('POST')
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
-                                    <select name="price_id" class="form-select" id="prices" onchange="detPrice()">
+                                    <select name="price_id" class="form-select" id="prices" onchange="detPrice();calcChange()">
                                         <option readonly disabled selected>Please select application type</option>
                                         @foreach ($prices as $price)
                                             <option value="{{ $price->id }}" data-price="{{ $price->price }}"
@@ -59,7 +59,7 @@
                                 <div class="mt-3">
                                     <label for="" class="form-label">Total Cost</label>
                                     <input type="number" class="form-control" id="total_cost" name="total_cost"
-                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}" readonly>
+                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}" readonly onkeyup="calcChange()" oninput="calcChange()">
                                     @error('total_cost')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
@@ -68,7 +68,7 @@
                                     <label for="" class="form-label">Amount Paid</label>
                                     <input type="number" class="form-control" id="amount_paid" name="amount_paid"
                                         value = "{{ old('amount_paid') == '' ? '' : old('amount_paid') }}"
-                                        onkeyup="calcChange()">
+                                        onkeyup="calcChange()" oninput="calcChange()">
                                     @error('amount_paid')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
