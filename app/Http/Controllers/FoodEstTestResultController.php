@@ -212,10 +212,10 @@ class FoodEstTestResultController extends Controller
         $app_type_id = '3';
         $system_operation_type_id = 3;
 
-        $result = "TestResult::with('editTransactions')->where('application_id', $id)
+        $result = TestResult::with('editTransactions')->where('application_id', $id)
             ->whereRelation('editTransactions', 'system_operation_type_id', 3)
             ->where('application_type_id', 3)
-            ->first();";
+            ->first();
 
         return view('test_center.food_est.edit', compact('application', 'result', 'app_type_id', 'system_operation_type_id'));
     }
