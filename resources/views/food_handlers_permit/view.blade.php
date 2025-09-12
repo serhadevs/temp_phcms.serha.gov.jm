@@ -673,18 +673,18 @@
                                             </div>
                                             <div class="col mt-3">
                                                 @if (optional($permit_application->signOffs)->expiry_date &&
-                                                        \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->isPast())
+                                                        \Carbon\Carbon::parse($permit_application->signOffs?->expiry_date)->isPast())
                                                     <div class="mt-3">
                                                         <div class="alert alert-danger" role="alert">
                                                             Card has expired on
-                                                            {{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}
+                                                            {{ \Carbon\Carbon::parse($permit_application->signOffs?->expiry_date)->format('d F Y') }}
                                                         </div>
                                                     </div>
                                                 @elseif(optional($permit_application->signOffs)->expiry_date)
                                                     <div class="mt-3">
                                                         <label for="expiry-date" class="form-label">Expiry Date</label>
                                                         <input type="text" id="expiry-date" class="form-control"
-                                                            value="{{ \Carbon\Carbon::parse($permit_application->signOffs->expiry_date)->format('d F Y') }}"
+                                                            value="{{ \Carbon\Carbon::parse($permit_application->signOffs?->expiry_date)->format('d F Y') }}"
                                                             disabled>
                                                     </div>
                                                 @else
@@ -852,7 +852,7 @@
                             Card Pickup Details
                         </h5>
 
-                        @if ($permit_application->printedcard && $permit_application->signOffs->expiry_date > \Carbon\Carbon::now())
+                        @if ($permit_application->printedcard && $permit_application->signOffs?->expiry_date > \Carbon\Carbon::now())
                             <div class="card-body">
                                 Card is ready for pickup
                             </div>
