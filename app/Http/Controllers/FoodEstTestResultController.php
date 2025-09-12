@@ -213,7 +213,6 @@ class FoodEstTestResultController extends Controller
         $system_operation_type_id = 3;
 
         $result = TestResult::with('editTransactions')->where('application_id', $id)
-            ->whereRelation('editTransactions', 'system_operation_type_id', 3)
             ->where('application_type_id', 3)
             ->first();
 
@@ -231,7 +230,6 @@ class FoodEstTestResultController extends Controller
         $is_view = 1;
 
         $result = TestResult::with('editTransactions')->where('application_id', $id)
-            ->whereRelation('editTransactions', 'system_operation_type_id', 3)
             ->where('application_type_id', 3)
             ->first();
 
