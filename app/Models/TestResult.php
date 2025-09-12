@@ -45,7 +45,8 @@ class TestResult extends Model implements Auditable
 
     public function editTransactions(): HasMany
     {
-        return $this->hasMany(EditTransactions::class, 'table_id', 'id');
+        return $this->hasMany(EditTransactions::class, 'table_id', 'id')
+        ->where('system_operation_type_id', 3);
     }
 
     public function establishmentApplication(): BelongsTo
