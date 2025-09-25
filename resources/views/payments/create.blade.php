@@ -94,7 +94,7 @@
                                         <p class="text-danger">This is a required field</p>
                                     @enderror
                                 </div>
-                                @if(in_array(Auth::user()->id,[155,156]))
+                                @if(in_array(Auth::user()->id,[155,156,133,180]))
                                 <div class="mt-3">
                                     <div class="" style="display:none" id="backlog_1">
                                         <label for="" class="form-label">Receipt No of manual receipt</label>
