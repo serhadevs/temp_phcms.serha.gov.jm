@@ -1312,7 +1312,10 @@ class PaymentController extends Controller
     public function approveCancelPaymentRequest(Request $request)
     {
         try {
-            if (PaymentCancellationRequests::find($request->data["cancellation_id"])) {
+            if ($payment_cancellation_request = PaymentCancellationRequests::find($request->data["cancellation_id"])) {
+                if($payment_cancellation_request->requester_user_id == auth()->user()->id){
+                    throw new Exception("You cannot approve the same request that you  entered.");
+                }
                 if ($request->data["approval_stat"] == "1") {
                     Payments::find(PaymentCancellationRequests::find($request->data["cancellation_id"])->payment_id)->update(["deleted_at" => date('Y-m-d H:i:s')]);
                 }
