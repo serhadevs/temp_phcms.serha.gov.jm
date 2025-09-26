@@ -424,7 +424,9 @@
                 </div>
 
                 <div class="card-footer">
-                    <a href="#" onclick="history.back();" class="btn btn-danger"> Back to Previous
+                    <a
+                        href="{{ strpos(URL::previous(), 'advance-search/show') != false ? '/advance-search/create' : URL::previous() }}"
+                        class="btn btn-danger"> Back to Previous
                         Page</a>
                 </div>
             </div>

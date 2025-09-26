@@ -31,7 +31,8 @@
                         </a>
                     @endif --}}
 
-                    <a class="btn btn-primary" onclick="history.back()">
+                    <a class="btn btn-primary"
+                        href="{{ strpos(URL::previous(), 'advance-search/show') != false ? '/advance-search/create' : URL::previous() }}">
                         Back
                     </a>
 
@@ -593,7 +594,8 @@
                                             </div>
                                             <div class="col">
                                                 <label for="" class="form-label">Permit Type</label>
-                                                <select name="permit_type" id="permit_type" class="form-select" disabled onchange="showNoYears(this.value)">
+                                                <select name="permit_type" id="permit_type" class="form-select" disabled
+                                                    onchange="showNoYears(this.value)">
                                                     <option value="regular"
                                                         {{ old('permit_type') ? (old('permit_type') == 'regular' ? 'selected' : '') : ($permit_application->permit_type == 'regular' ? 'selected' : '') }}>
                                                         REGULAR</option>

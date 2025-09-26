@@ -150,7 +150,7 @@
                     <button type="button" class="btn btn-primary" onclick="showLoading(this)">
                         Submit
                     </button>
-                    <a class="btn btn-danger" onclick="history.back()">
+                    <a class="btn btn-danger" href="{{ strpos(URL::previous(), 'advance-search/show') != false ? '/advance-search/create' : URL::previous() }}">
                         Cancel
                     </a>
                 </div>

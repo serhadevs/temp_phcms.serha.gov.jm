@@ -172,7 +172,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <a onclick = "history.back()" class="btn btn-danger">Back</a>
+                    <a href="/dashboard" class="btn btn-danger">Back to Dashboard</a>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>

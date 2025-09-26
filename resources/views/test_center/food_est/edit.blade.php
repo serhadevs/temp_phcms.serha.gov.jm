@@ -45,7 +45,8 @@
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>
-                        <a href="/test-results/food-establishments/filter/0" class="btn btn-danger mt-3">Back</a>
+                        <a href="{{ strpos(URL::previous(), 'advance-search/show') != false ? '/advance-search/create' : '/test-results/food-establishments/filter/0' }}"
+                        class="btn btn-danger mt-3">Back</a>
                         <button class="btn btn-warning mt-3" type="button" onclick="makeEditable()"
                             style="{{ !isset($is_view) ? 'display:none' : '' }}" id="editBtn">
                             Edit Results

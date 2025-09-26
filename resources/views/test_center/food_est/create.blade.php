@@ -30,7 +30,7 @@
                         @method('POST')
                         @csrf
                         @include('partials.forms.test_result_ests')
-                        <a href="/test-results/food-establishments/outstanding/filter/0"
+                        <a href="{{ strpos(URL::previous(), 'advance-search/show') != false ? '/advance-search/create' : '/test-results/food-establishments/outstanding/filter/0' }}"
                             class="btn btn-danger mt-3">Back</a>
                         <button class="btn btn-primary mt-3" type="button" onclick="showLoading(this)">
                             Submit Results

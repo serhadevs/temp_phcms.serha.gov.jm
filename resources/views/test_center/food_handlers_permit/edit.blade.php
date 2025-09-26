@@ -135,7 +135,8 @@
                                 style="{{ isset($is_view) ? 'display:none' : '' }}" id="updateBtn">
                                 Update Results
                             </button>
-                            <a class="btn btn-danger mt-3" onclick="history.back()">
+                            <a class="btn btn-danger mt-3"
+                                href="{{ strpos(URL::previous(), 'advance-search/show') != false ? '/advance-search/create' : URL::previous() }}">
                                 Cancel
                             </a>
                         </div>
