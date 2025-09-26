@@ -94,7 +94,8 @@
                                         <p class="text-danger">This is a required field</p>
                                     @enderror
                                 </div>
-                                {{-- <div class="mt-3">
+                                @if(in_array(Auth::user()->id,[155,156,133,180]))
+                                <div class="mt-3">
                                     <div class="" style="display:none" id="backlog_1">
                                         <label for="" class="form-label">Receipt No of manual receipt</label>
                                         <input type="text" class="form-control" name="manual_receipt_no"
@@ -118,7 +119,8 @@
                                         <label class="form-check-label" for="flexSwitchCheckDefault">Backlog
                                             Payment</label>
                                     </div>
-                                </div> --}}
+                                </div>
+                                @endif
                                 <div class="mt-4">
                                     <button class="btn btn-success" type="button" onclick="showLoading(this)">Submit
                                         Payment</button>
