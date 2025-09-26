@@ -43,7 +43,8 @@ class HealthCertApplications extends Model implements Auditable
         'user_id',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'submitted_by_id'
     ];
 
     public $timestamps = true;

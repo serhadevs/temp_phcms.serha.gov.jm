@@ -34,7 +34,8 @@ class EstablishmentClinics extends Model implements Auditable
         'created_at',
         'updated_at',
         'deleted_at',
-        'due_payments'
+        'due_payments',
+        'submitted_by_id'
     ];
 
     public $timestamps = true;

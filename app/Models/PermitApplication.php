@@ -52,7 +52,8 @@ class PermitApplication extends Model implements Auditable
         'updated_at',
         'deleted_at',
         'no_of_years',
-        'signature_link'
+        'signature_link',
+        'submitted_by_id'
     ];
 
     public $timestamp = true;
