@@ -70,6 +70,15 @@
                                 </a>
 
                             </div>
+                            <div class="card my-2">
+                                <a href="/admin/payment/type/facilities">
+                                    <div class="card-header">
+                                        <h5 class="fw-bold">
+                                            Manage Payment Types
+                                        </h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                         <div class="col-12 col-md">
                             <div class="card shadow">

@@ -536,4 +536,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::post('/booked/dates', [AppointmentController::class, 'getBookedDates'])->name('get.booked.dates');
   Route::post('/exam/sites/permit-cat', [ExamDateController::class, 'getExamSite'])->name('get.exam.sites.based.on.permit.category');
   Route::post('/filter/exam/times', [ExamDateController::class, 'getPossibleTime'])->name('get.exam.times');
+
+  Route::get('/admin/payment/type/facilities', [SettingsController::class, 'allPaymentMethods'])->name('payment.type.facility');
+  Route::get('/admin/payment/type/facilities/{payment_type_id}/{facility_id}', [SettingsController::class, 'changePMethodActiveStatus'])->name('change.active.stat.payment.type');
 });

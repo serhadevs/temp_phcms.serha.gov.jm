@@ -298,6 +298,7 @@ class PaymentController extends Controller
 
         $payment_types = PaymentTypes::with('paymentTypeFacilities')
             ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
+            ->whereRelation('paymentTypeFacilities', 'status', "<>", "0")
             ->get();
 
         return view('payments.create', compact('prices', 'payment_types'));
@@ -324,6 +325,7 @@ class PaymentController extends Controller
 
         $payment_types = PaymentTypes::with('paymentTypeFacilities')
             ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
+            ->whereRelation('paymentTypeFacilities', 'status', "<>", "0")
             ->get();
 
 

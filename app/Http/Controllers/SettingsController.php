@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StmpSettingsRequest;
 use App\Mail\SendTestEmailConfig;
 use App\Models\Downloads;
+use App\Models\PaymentTypeFacilities;
 use App\Models\PermitApplication;
 use App\Models\StmpSettings;
 use App\Models\ZippedApplications;
@@ -71,8 +72,34 @@ class SettingsController extends Controller
 
     public function TestEmail()
     {
-
         Mail::to('tywayneb@serha.gov.jm')->send(new SendTestEmailConfig());
+    }
+
+    public function allPaymentMethods()
+    {
+        $ptfs = PaymentTypeFacilities::all();
+
+        return view('admin.payment_type_facilities_setting', compact('ptfs'));
+    }
+
+    public function changePMethodActiveStatus($payment_type_id, $facility_id)
+    {
+        try {
+            $ptf = PaymentTypeFacilities::where('payment_type_id', $payment_type_id)
+                ->where('facility_id', $facility_id)
+                ->first();
+            if ($ptf->status == "0") {
+                PaymentTypeFacilities::where('payment_type_id', $payment_type_id)
+                    ->where('facility_id', $facility_id)->update(["status" => 1]);
+                return ['success', "Payment Method has been activated"];
+            } else {
+                PaymentTypeFacilities::where('payment_type_id', $payment_type_id)
+                    ->where('facility_id', $facility_id)->update(["status" => 0]);
+                return ['success', "Payment Method has been deactivated"];
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function customPrint()
@@ -148,7 +175,6 @@ class SettingsController extends Controller
                                 $photo_exists = Storage::disk('public')->exists("photo_uploads/" . $index->permit_no . "." . $ext);
 
                                 if ($photo_exists) {
-                                    
                                 }
                             }
                         }
