@@ -43,6 +43,7 @@ class EstablishmentApplications extends Model implements Auditable
         'updated_at',
         'deleted_at',
         'new_est',
+        'submitted_by_id'
     ];
 
     public $timestamps = true;
