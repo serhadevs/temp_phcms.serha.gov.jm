@@ -19,6 +19,7 @@ use App\Models\FoodEstablishmentOperators;
 use App\Models\HealthCertApplications;
 use App\Models\PaymentCancellationRequests;
 use App\Models\Payments;
+use App\Models\PaymentTypeFacilities;
 use App\Models\PaymentTypes;
 use App\Models\PermitApplication;
 use App\Models\Prices;
@@ -298,9 +299,13 @@ class PaymentController extends Controller
 
         $payment_types = PaymentTypes::with('paymentTypeFacilities')
             ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
-            ->whereRelation('paymentTypeFacilities', 'status', "<>", "0")
+            // ->whereRelation('paymentTypeFacilities', 'status', "<>", "0")
             ->get();
-
+        // $payment_types = PaymentTypeFacilities::with('paymentType')
+        //     ->where('facility_id', auth()->user()->facility_id)
+        //     ->where('status', "<>", "0")
+        //     ->get();
+        dd($payment_types);
         return view('payments.create', compact('prices', 'payment_types'));
     }
 
@@ -325,7 +330,7 @@ class PaymentController extends Controller
 
         $payment_types = PaymentTypes::with('paymentTypeFacilities')
             ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
-            ->whereRelation('paymentTypeFacilities', 'status', "<>", "0")
+            // ->whereRelation('paymentTypeFacilities', 'status', "<>", "0")
             ->get();
 
 
@@ -521,7 +526,7 @@ class PaymentController extends Controller
         $applicant = PermitApplication::where('id', $app_id)->first();
         $cashier = User::find($register_new_payment->cashier_user_id);
         $cashier_name = $cashier->firstname[0] . ". " . $cashier->lastname;
-       
+
         //Send email to applicant for payment
         $sendEmail = new Services();
         $sendEmail->sendPaymentEmail($applicant, $register_new_payment, $cashier_name, $receipt_number);
@@ -552,7 +557,8 @@ class PaymentController extends Controller
         return redirect()->route('payment.receipt.print', ['id' => $register_new_payment->getOriginal()["id"]])->with(['success' => 'Payment has been process successfully. The receipt number is ' . $new_payment["receipt_no"] . '']);
     }
 
-    public function registerOnlinePayment(Request $request){
+    public function registerOnlinePayment(Request $request)
+    {
         $new_payment = $request->validate([
             'price_id' => 'required',
             'application_id' => 'required',
@@ -572,10 +578,9 @@ class PaymentController extends Controller
         $register_new_payment = Payments::create($new_payment);
         $application_id = $register_new_payment->application_id;
         //dd($application_id);
-        if($register_new_payment){
-            return redirect()->route('permit.online.application.complete',['id' => $application_id]);
+        if ($register_new_payment) {
+            return redirect()->route('permit.online.application.complete', ['id' => $application_id]);
         }
-        
     }
 
     public function searchApplication(Request $request)
@@ -1315,7 +1320,7 @@ class PaymentController extends Controller
     {
         try {
             if ($payment_cancellation_request = PaymentCancellationRequests::find($request->data["cancellation_id"])) {
-                if($payment_cancellation_request->requester_user_id == auth()->user()->id){
+                if ($payment_cancellation_request->requester_user_id == auth()->user()->id) {
                     throw new Exception("You cannot approve the same request that you  entered.");
                 }
                 if ($request->data["approval_stat"] == "1") {
