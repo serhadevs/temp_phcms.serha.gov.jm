@@ -305,7 +305,7 @@ class PaymentController extends Controller
         //     ->where('facility_id', auth()->user()->facility_id)
         //     ->where('status', "<>", "0")
         //     ->get();
-        dd($payment_types);
+        //dd($payment_types);
         return view('payments.create', compact('prices', 'payment_types'));
     }
 
