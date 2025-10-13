@@ -32,7 +32,8 @@ class Payments extends Model implements Auditable
         'deleted_at',
         'manual_receipt_no',
         'manual_receipt_date',
-        'payment_type_id'
+        'payment_type_id',
+        'wire_transfer_date'
     ];
 
     public $timestamps = true;

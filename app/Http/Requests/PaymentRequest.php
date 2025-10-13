@@ -31,7 +31,8 @@ class PaymentRequest extends FormRequest
             'change_amt' => 'required|numeric|min:0',
             'manual_receipt_no' => 'required_if:is_backlog,1',
             'manual_receipt_date' => 'required_if:is_backlog,1',
-            'payment_type_id' => 'required'
+            'payment_type_id' => 'required',
+            'wire_transfer_date' => 'date|required_if:payment_type_id,4'
         ];
     }
 }

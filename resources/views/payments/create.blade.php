@@ -26,7 +26,8 @@
                                 @method('POST')
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
-                                    <select name="price_id" class="form-select" id="prices" onchange="detPrice();calcChange()">
+                                    <select name="price_id" class="form-select" id="prices"
+                                        onchange="detPrice();calcChange()">
                                         <option readonly disabled selected>Please select application type</option>
                                         @foreach ($prices as $price)
                                             <option value="{{ $price->id }}" data-price="{{ $price->price }}"
@@ -59,7 +60,8 @@
                                 <div class="mt-3">
                                     <label for="" class="form-label">Total Cost</label>
                                     <input type="number" class="form-control" id="total_cost" name="total_cost"
-                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}" readonly onkeyup="calcChange()" oninput="calcChange()">
+                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}" readonly
+                                        onkeyup="calcChange()" oninput="calcChange()">
                                     @error('total_cost')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
@@ -83,7 +85,7 @@
                                 </div>
                                 <div class="mt-3">
                                     <label for="" class="form-label">Payment Type</label>
-                                    <select name="payment_type_id" id="" class="form-select">
+                                    <select name="payment_type_id" id="payment_type_id" class="form-select">
                                         @foreach ($payment_types as $payment_type)
                                             <option value="{{ $payment_type->id }}"
                                                 {{ old('payment_type_id') == $payment_type->id ? 'selected' : '' }}>
@@ -94,33 +96,42 @@
                                         <p class="text-danger">This is a required field</p>
                                     @enderror
                                 </div>
-                                @if(in_array(Auth::user()->id,[155,156,133,180]))
-                                <div class="mt-3">
-                                    <div class="" style="display:none" id="backlog_1">
-                                        <label for="" class="form-label">Receipt No of manual receipt</label>
-                                        <input type="text" class="form-control" name="manual_receipt_no"
-                                            value="{{ old('manual_receipt_no') }}">
-                                        @error('manual_receipt_no')
-                                            <p class="text-danger">This is required if this payment is a part of backlog.</p>
-                                        @enderror
+                                @if (in_array(Auth::user()->id, [155, 156, 133, 180]))
+                                    <div class="mt-3">
+                                        <div class="" style="display:none" id="backlog_1">
+                                            <label for="" class="form-label">Receipt No of manual receipt</label>
+                                            <input type="text" class="form-control" name="manual_receipt_no"
+                                                value="{{ old('manual_receipt_no') }}">
+                                            @error('manual_receipt_no')
+                                                <p class="text-danger">This is required if this payment is a part of backlog.
+                                                </p>
+                                            @enderror
+                                        </div>
+                                        <div class="mt-3" style="display:none" id="backlog_2">
+                                            <label for="" class="form-label">Manual Receipt Date</label>
+                                            <input type="date" class="form-control" name="manual_receipt_date"
+                                                value="{{ old('manual_receipt_date') }}">
+                                            @error('manual_receipt_date')
+                                                <p class="text-danger">This is required if this payment is a part of backlog.
+                                                </p>
+                                            @enderror
+                                        </div>
+                                        <div class="form-check form-switch mt-3">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                                onchange="backlog(this.checked)" value="1" name="is_backlog"
+                                                {{ old('is_backlog') == '1' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Backlog
+                                                Payment</label>
+                                        </div>
                                     </div>
-                                    <div class="mt-3" style="display:none" id="backlog_2">
-                                        <label for="" class="form-label">Manual Receipt Date</label>
-                                        <input type="date" class="form-control" name="manual_receipt_date"
-                                            value="{{ old('manual_receipt_date') }}">
-                                        @error('manual_receipt_date')
-                                            <p class="text-danger">This is required if this payment is a part of backlog.</p>
-                                        @enderror
-                                    </div>
-                                    <div class="form-check form-switch mt-3">
-                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                                            onchange="backlog(this.checked)" value="1" name="is_backlog"
-                                            {{ old('is_backlog') == '1' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Backlog
-                                            Payment</label>
-                                    </div>
-                                </div>
                                 @endif
+                                <div class="mt-3" style="display:none" id="wire_transfer_date_container">
+                                    <label for="" class="form-label">Date of Wire Transfer</label>
+                                    <input type="date" class="form-control" name="wire_transfer_date">
+                                    @error('wire_transfer_date')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
                                 <div class="mt-4">
                                     <button class="btn btn-success" type="button" onclick="showLoading(this)">Submit
                                         Payment</button>
@@ -137,6 +148,19 @@
                                 </div>
                             </div>
                         </div>
+                        <script>
+                            document.getElementById('payment_type_id').addEventListener('change', (e) => {
+                                if (e.target.value == 4) {
+                                    allowWireTransferDateEntry("");
+                                } else {
+                                    allowWireTransferDateEntry("none");
+                                }
+                            })
+
+                            function allowWireTransferDateEntry(display_value) {
+                                document.getElementById('wire_transfer_date_container').style.display = display_value;
+                            }
+                        </script>
                         <script>
                             function backlog(checked_stat) {
                                 if (checked_stat) {
@@ -177,10 +201,17 @@
                                     detPrice();
                                 }
 
-                                if (document.getElementById('flexSwitchCheckDefault').checked) {
-                                    document.getElementById('backlog_1').style.display = "";
-                                    document.getElementById('backlog_2').style.display = "";
+                                if (document.getElementById('payment_type_id').value == 4) {
+                                    allowWireTransferDateEntry("");
                                 }
+
+                                if (document.getElementById('flexSwitchCheckDefault')) {
+                                    if (document.getElementById('flexSwitchCheckDefault').checked) {
+                                        document.getElementById('backlog_1').style.display = "";
+                                        document.getElementById('backlog_2').style.display = "";
+                                    }
+                                }
+
 
                                 if (document.getElementById('application_id').value != "") {
                                     var app_id = $('#application_id').val();

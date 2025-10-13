@@ -27,6 +27,7 @@ use App\Models\Renewals;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
@@ -521,6 +522,9 @@ class PaymentController extends Controller
         $new_payment['cashier_user_id'] = Auth()->user()->id;
         $new_payment['receipt_no'] = rand(1000000, 9999999);
         $receipt_number = $new_payment['receipt_no'];
+        $new_payment['wire_transfer_date'] = date($new_payment['wire_transfer_date']);
+
+        // dd($new_payment);
         $register_new_payment = Payments::create($new_payment);
 
         $applicant = PermitApplication::where('id', $app_id)->first();
