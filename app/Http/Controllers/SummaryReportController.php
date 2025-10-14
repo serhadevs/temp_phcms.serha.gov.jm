@@ -102,9 +102,8 @@ class SummaryReportController extends Controller
                             ->orWhere('payment_type_id', NULL);
                     });
                 });
-
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereBetween('application_date', [$starting_date, $ending_date])
@@ -123,8 +122,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('permitApplication.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('permitApplication.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->count();
@@ -140,8 +139,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('permitApplication.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('permitApplication.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereRelation('permitApplication', 'application_date', '>=', $starting_date)
@@ -162,8 +161,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -182,11 +181,11 @@ class SummaryReportController extends Controller
                 })
                 ->select('total_cost')
                 ->get();
-        } else if ($payment_type == 2) {
+        } else if ($payment_type != 1 && $payment_type != "") {
             $sum_foodHandlers = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 1)
-                ->where('payment_type_id', 2)
+                ->where('payment_type_id', $payment_type)
                 ->select('total_cost')
                 ->get();
         } else {
@@ -221,8 +220,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('applications.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('applications.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->where('facility_id', auth()->user()->facility_id)
@@ -247,8 +246,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payment', 'payment_type_id', $payment_type);
                 });
             })
             ->count();
@@ -266,8 +265,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('healthCertApplication.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('healthCertApplication.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->count();
@@ -282,8 +281,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('healthCertApplication.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('healthCertApplication.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereRelation('healthCertApplication', 'application_date', '>=', $starting_date)
@@ -310,11 +309,11 @@ class SummaryReportController extends Controller
                 })
                 ->select('total_cost')
                 ->get();
-        } else if ($payment_type == 2) {
+        } else if ($payment_type != 1 && $payment_type != "") {
             $sum_barberCosmet = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 2)
-                ->where('payment_type_id', 2)
+                ->where('payment_type_id', $payment_type)
                 ->select('total_cost')
                 ->get();
         } else {
@@ -354,8 +353,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereBetween('application_date', [$starting_date, $ending_date])
@@ -374,8 +373,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('estApplication.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('estApplication.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->count();
@@ -393,8 +392,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('establishmentApplication.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('establishmentApplication.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereRelation('establishmentApplication', 'application_date', '>=', $starting_date)
@@ -415,8 +414,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -440,11 +439,11 @@ class SummaryReportController extends Controller
                 })
                 ->select('total_cost')
                 ->get();
-        } else if ($payment_type == 2) {
+        } else if ($payment_type != 1 && $payment_type != "") {
             $sum_foodEstablishment = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 3)
-                ->where('payment_type_id', 2)
+                ->where('payment_type_id', $payment_type)
                 ->select('total_cost')
                 ->get();
         } else {
@@ -496,8 +495,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -517,8 +516,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('swimmingPool.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('swimmingPool.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->count();
@@ -535,8 +534,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('swimmingPoolApplication.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('swimmingPoolApplication.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereRelation('swimmingPoolApplication', 'application_date', '>=', $starting_date)
@@ -564,11 +563,11 @@ class SummaryReportController extends Controller
                 })
                 ->select('total_cost')
                 ->get();
-        } else if ($payment_type == 2) {
+        } else if ($payment_type != 1 && $payment_type != "") {
             $sum_swimmingPool = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 5)
-                ->where('payment_type_id', 2)
+                ->where('payment_type_id', $payment_type)
                 ->select('total_cost')
                 ->get();
         } else {
@@ -605,8 +604,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payments', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payments', 'payment_type_id', $payment_type);
                 });
             })
             ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -626,8 +625,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('touristEstApplication.payments', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('touristEstApplication.payments', 'payment_type_id', $payment_type);
                 });
             })
             ->count();
@@ -642,8 +641,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('touristEstApplication.payments', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('touristEstApplication.payments', 'payment_type_id', $payment_type);
                 });
             })
             ->whereRelation('touristEstApplication', 'application_date', '>=', $starting_date)
@@ -672,11 +671,11 @@ class SummaryReportController extends Controller
                 })
                 ->select('total_cost')
                 ->get();
-        } else if ($payment_type == 2) {
+        } else if ($payment_type != 1 && $payment_type != "") {
             $sum_touristEstablishments = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 6)
-                ->where('payment_type_id', 2)
+                ->where('payment_type_id', $payment_type)
                 ->select('total_cost')
                 ->get();
         } else {
@@ -701,8 +700,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('touristEstablishment.payments', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('touristEstablishment.payments', 'payment_type_id', $payment_type);
                 });
             })
             ->whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
@@ -743,8 +742,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('payment', 'payment_type_id', $payment_type);
                 });
             })
             ->count();
@@ -761,8 +760,8 @@ class SummaryReportController extends Controller
                     });
                 });
 
-                $query->when($payment_type == 2, function ($query2, string $payment_type) {
-                    $query2->whereRelation('estClinic.payment', 'payment_type_id', 2);
+                $query->when($payment_type != 1, function ($query2, string $payment_type) {
+                    $query2->whereRelation('estClinic.payment', 'payment_type_id', $payment_type);
                 });
             })
             ->whereRelation('estClinic', 'application_date', '>=', $starting_date)
@@ -791,11 +790,11 @@ class SummaryReportController extends Controller
                 })
                 ->select('total_cost')
                 ->get();
-        } else if ($payment_type == 2) {
+        } else if ($payment_type != 1 && $payment_type != "") {
             $sum_foodClinics = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 4)
-                ->where('payment_type_id', 2)
+                ->where('payment_type_id', $payment_type)
                 ->select('total_cost')
                 ->get();
         } else {
