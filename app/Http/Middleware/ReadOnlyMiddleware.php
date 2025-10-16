@@ -16,25 +16,30 @@ class ReadOnlyMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        
         $user = $request->user();
 
-        // Only check if the user is logged in
         if ($user && $user->isAuditor()) {
 
-            // Block all non-GET requests (POST, PUT, PATCH, DELETE)
-            if (! $request->isMethod('get')) {
+            // Allow POST only to specific whitelisted routes
+            $allowedPostRoutes = [
+                '/password-change',
+                '/switch-location',
+            ];
 
-                // You can return a redirect (for web) or JSON (for API)
+            // If not a GET and not one of the whitelisted routes
+            if (! $request->isMethod('get') &&
+                ! in_array($request->path(), $allowedPostRoutes)) {
+
+                // For API or AJAX requests
                 if ($request->expectsJson()) {
                     return response()->json(['message' => 'Auditors have read-only access.'], 403);
                 }
 
+                // For normal web requests
                 return redirect()->back()->with('error', 'Auditors have read-only access.');
             }
         }
 
         return $next($request);
-    
     }
 }
