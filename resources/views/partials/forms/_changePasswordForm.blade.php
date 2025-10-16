@@ -7,6 +7,29 @@
             <div class="col-sm-10">
                 <input type="password" name="password" class="form-control" id="password" placeholder="Password"
                     value="{{ old('password') }}" autocomplete="password">
+                
+                {{-- Password Requirements --}}
+                <div class="mt-2 mb-2">
+                    <small class="text-muted d-block mb-1"><strong>Password Requirements:</strong></small>
+                    <ul class="list-unstyled mb-0" style="font-size: 0.875rem;">
+                        <li id="req-length" class="text-muted">
+                            <span class="requirement-icon">○</span> At least 8 characters
+                        </li>
+                        <li id="req-lowercase" class="text-muted">
+                            <span class="requirement-icon">○</span> One lowercase letter (a-z)
+                        </li>
+                        <li id="req-uppercase" class="text-muted">
+                            <span class="requirement-icon">○</span> One uppercase letter (A-Z)
+                        </li>
+                        <li id="req-number" class="text-muted">
+                            <span class="requirement-icon">○</span> One number (0-9)
+                        </li>
+                        <li id="req-special" class="text-muted">
+                            <span class="requirement-icon">○</span> One special character (!@#$%^&*)
+                        </li>
+                    </ul>
+                </div>
+
                 <div id="password-strength-text" class="mt-1 fw-semibold"></div>
                 <div class="progress mt-2" style="height: 6px;">
                     <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
@@ -43,15 +66,50 @@ document.addEventListener('DOMContentLoaded', function () {
     const strengthText = document.getElementById('password-strength-text');
     const matchText = document.getElementById('password-match-text');
 
+    // Requirement elements
+    const reqLength = document.getElementById('req-length');
+    const reqLowercase = document.getElementById('req-lowercase');
+    const reqUppercase = document.getElementById('req-uppercase');
+    const reqNumber = document.getElementById('req-number');
+    const reqSpecial = document.getElementById('req-special');
+
+    function updateRequirement(element, met) {
+        const icon = element.querySelector('.requirement-icon');
+        if (met) {
+            element.classList.remove('text-muted');
+            element.classList.add('text-success');
+            icon.textContent = '✓';
+        } else {
+            element.classList.remove('text-success');
+            element.classList.add('text-muted');
+            icon.textContent = '○';
+        }
+    }
+
     password.addEventListener('input', function () {
         const val = password.value;
         let strength = 0;
 
-        if (val.length >= 8) strength += 1;
-        if (val.match(/[a-z]/)) strength += 1;
-        if (val.match(/[A-Z]/)) strength += 1;
-        if (val.match(/[0-9]/)) strength += 1;
-        if (val.match(/[^a-zA-Z0-9]/)) strength += 1;
+        // Check requirements
+        const hasLength = val.length >= 8;
+        const hasLowercase = /[a-z]/.test(val);
+        const hasUppercase = /[A-Z]/.test(val);
+        const hasNumber = /[0-9]/.test(val);
+        const hasSpecial = /[^a-zA-Z0-9]/.test(val);
+
+        // Update visual indicators
+        updateRequirement(reqLength, hasLength);
+        updateRequirement(reqLowercase, hasLowercase);
+        updateRequirement(reqUppercase, hasUppercase);
+        updateRequirement(reqNumber, hasNumber);
+        updateRequirement(reqSpecial, hasSpecial);
+
+        // Calculate strength
+        if (hasLength) strength += 1;
+        if (hasLowercase) strength += 1;
+        if (hasUppercase) strength += 1;
+        if (hasNumber) strength += 1;
+        if (hasSpecial) strength += 1;
 
         let percentage = (strength / 5) * 100;
         let color = 'bg-danger';
