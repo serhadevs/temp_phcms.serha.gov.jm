@@ -5,8 +5,14 @@
         <div class="row mb-3">
             <label for="password" class="col-sm-2 col-form-label">New Password</label>
             <div class="col-sm-10">
-                <input type="password" name="password" class="form-control" id="password" placeholder="Password"
-                    value="{{ old('password') }}" autocomplete="password">
+                <div class="position-relative">
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Password"
+                        value="{{ old('password') }}" autocomplete="password">
+                    <button type="button" class="btn btn-link position-absolute end-0 top-0 text-muted" 
+                            id="toggle-password" style="z-index: 10; padding: 0.375rem 0.75rem;">
+                        <i class="bi bi-eye" id="eye-icon-password"></i>
+                    </button>
+                </div>
                 
                 {{-- Password Requirements --}}
                 <div class="mt-2 mb-2">
@@ -43,8 +49,14 @@
         <div class="row mb-3">
             <label for="confirm_password" class="col-sm-2 col-form-label">Confirm Password</label>
             <div class="col-sm-10">
-                <input type="password" name="confirm_password" class="form-control" id="confirm_password" placeholder="Confirm Password"
-                    value="{{ old('confirm_password') }}" autocomplete="confirm_password">
+                <div class="position-relative">
+                    <input type="password" name="confirm_password" class="form-control" id="confirm_password" placeholder="Confirm Password"
+                        value="{{ old('confirm_password') }}" autocomplete="confirm_password">
+                    <button type="button" class="btn btn-link position-absolute end-0 top-0 text-muted" 
+                            id="toggle-confirm-password" style="z-index: 10; padding: 0.375rem 0.75rem;">
+                        <i class="bi bi-eye" id="eye-icon-confirm"></i>
+                    </button>
+                </div>
                 <small id="password-match-text" class="mt-1 fw-semibold"></small>
                 @error('confirm_password')
                     <p class="text-danger">{{ $message }}</p>
@@ -141,6 +153,40 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             matchText.textContent = 'Passwords do not match ❌';
             matchText.className = 'text-danger mt-1 fw-semibold';
+        }
+    });
+
+    // Toggle password visibility
+    const togglePassword = document.getElementById('toggle-password');
+    const eyeIconPassword = document.getElementById('eye-icon-password');
+    
+    togglePassword.addEventListener('click', function () {
+        const type = password.type === 'password' ? 'text' : 'password';
+        password.type = type;
+        
+        if (type === 'text') {
+            eyeIconPassword.classList.remove('bi-eye');
+            eyeIconPassword.classList.add('bi-eye-slash');
+        } else {
+            eyeIconPassword.classList.remove('bi-eye-slash');
+            eyeIconPassword.classList.add('bi-eye');
+        }
+    });
+
+    // Toggle confirm password visibility
+    const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+    const eyeIconConfirm = document.getElementById('eye-icon-confirm');
+    
+    toggleConfirmPassword.addEventListener('click', function () {
+        const type = confirmPassword.type === 'password' ? 'text' : 'password';
+        confirmPassword.type = type;
+        
+        if (type === 'text') {
+            eyeIconConfirm.classList.remove('bi-eye');
+            eyeIconConfirm.classList.add('bi-eye-slash');
+        } else {
+            eyeIconConfirm.classList.remove('bi-eye-slash');
+            eyeIconConfirm.classList.add('bi-eye');
         }
     });
 });
