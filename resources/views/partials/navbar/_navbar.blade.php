@@ -41,7 +41,7 @@
                     @if (in_array(auth()->user()->role_id,[1,8]))
                         <li><a class="dropdown-item" href="{{ route('switch.location') }}">Switch Location</a></li>
                     @endif
-                    <li><a class="dropdown-item" href="">View Profile</a></li>
+                    {{-- <li><a class="dropdown-item" href="">View Profile</a></li> --}}
                     <li><a class="dropdown-item" href="{{ route('user.changepassword') }}">Change Password</a></li>
 
                     <li>

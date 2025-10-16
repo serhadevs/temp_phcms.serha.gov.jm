@@ -20,16 +20,20 @@ class ReadOnlyMiddleware
 
         if ($user && $user->isAuditor()) {
 
-            // Allow POST only to specific whitelisted routes
+            // Allow POST only to specific whitelisted routes (by route name)
             $allowedPostRoutes = [
                 'user.password.change',
+                'password.change',
                 'switch.update',
                 'logout',
             ];
 
+            // Get the current route name
+            $currentRouteName = $request->route() ? $request->route()->getName() : null;
+
             // If not a GET and not one of the whitelisted routes
-            if (! $request->isMethod('get') &&
-                ! in_array($request->path(), $allowedPostRoutes)) {
+            if (!$request->isMethod('get') &&
+                !in_array($currentRouteName, $allowedPostRoutes)) {
 
                 // For API or AJAX requests
                 if ($request->expectsJson()) {
