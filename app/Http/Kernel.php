@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'checkRole' => \App\Http\Middleware\CheckUserRole::class,
         'verify.signature' => \App\Http\Middleware\ValidateSignature::class,
+        'check.default.password' => \App\Http\Middleware\CheckDefaultPassword::class,
     ];
 }
