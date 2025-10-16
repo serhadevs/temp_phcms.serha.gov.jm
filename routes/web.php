@@ -327,7 +327,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   });
 
   Route::get('/change-password', [UserController::class, 'changepasswordMe'])->name('user.changepassword');
-  Route::post('/password-change', [UserController::class, 'store']);
+  Route::post('/password-change', [UserController::class, 'store'])->name('user.password.change');
 
 
 

@@ -22,8 +22,8 @@ class ReadOnlyMiddleware
 
             // Allow POST only to specific whitelisted routes
             $allowedPostRoutes = [
-                '/password-change',
-                '/switch-location',
+                'user.password.change',
+                'switch.update',
                 'logout',
             ];
 

@@ -38,7 +38,7 @@
                         $facility = $facilityMap[Auth::user()->facility_id] ?? 'Unknown Facility';
                     @endphp
                     <li><a class="dropdown-item" href="#">Location: {{ $facility }}</a></li>
-                    @if (auth()->user()->role_id == 1)
+                    @if (in_array(auth()->user()->role_id,[1,8]))
                         <li><a class="dropdown-item" href="{{ route('switch.location') }}">Switch Location</a></li>
                     @endif
                     <li><a class="dropdown-item" href="">View Profile</a></li>
