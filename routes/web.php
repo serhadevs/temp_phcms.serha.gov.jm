@@ -94,7 +94,7 @@ Route::get('/permit/online/application/complete/{id}', [OnlineApplicationControl
 Route::post('/coupon/redeem', [CouponController::class, 'redeem'])->name('coupons.redeem');
 
 
-Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.password']], function () {
+Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
