@@ -454,7 +454,7 @@
                                     @method('PUT') --}}
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="text-muted mb-0">Application Information</h4>
+                                        <h4 class="text-muted mb-0">Applicant Information</h4>
                                         {{-- <a href = "{{ route('printed.applications',['id'=>$permit_application->id]) }}" class="btn btn-danger btn-sm">Print Application</a> --}}
                                     </div>
                                     <input type="text" name="previous_url" value={{ url()->previous() }} hidden>
@@ -650,7 +650,7 @@
 
                                 <div class="card mt-3">
                                     <h4 class="text-muted card-header">
-                                        Application Information
+                                        Permit Application Information
                                     </h4>
                                     <div class="card-body">
                                         {{-- <div class="mt-3"> --}}
@@ -805,7 +805,7 @@
                                         <div class="card-header">
                                             <h4 class="text-muted row justify-content-between">
                                                 <div class="col">
-                                                    Appointment Info
+                                                    Appointment Information
                                                 </div>
                                                 <div class="col-auto">
                                                     @if ($permit_application->establishment_clinic_id == '' && count($appointments) == 0)
