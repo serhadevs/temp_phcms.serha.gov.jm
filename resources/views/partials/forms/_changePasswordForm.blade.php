@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Cancel</a>
+    {{-- <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Cancel</a> --}}
     <button class="btn btn-outline-primary">Change Password</button>
 </form>
 
