@@ -42,13 +42,11 @@ class AuthController extends Controller
             //Check to see if the password is password123 and redirect them to changing the password
 
             if ($credentials['password'] === 'password123') {
-                return redirect('/change-password')->with('info', 'You are required to change your password.');
+                return redirect('/change-password')->with('error', 'You are required to change your password.');
             }
 
             //Check to see if they are logged in already by checking the session_id in the
             //loginlocation table
-
-           
 
             $user = Auth::user();
             $request->session()->regenerate();
