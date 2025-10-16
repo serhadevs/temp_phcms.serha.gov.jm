@@ -24,6 +24,7 @@ class ReadOnlyMiddleware
             $allowedPostRoutes = [
                 '/password-change',
                 '/switch-location',
+                '/logout',
             ];
 
             // If not a GET and not one of the whitelisted routes
