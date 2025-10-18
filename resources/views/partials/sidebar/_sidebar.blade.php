@@ -56,7 +56,7 @@
                 <span>Appointments</span>
             </a>
         </li>
-        @if (in_array(auth()->user()->role_id, [1, 5, 7]))
+        @if (in_array(auth()->user()->role_id, [1, 5,8, 7]))
             <li class="sidebar-item">
                 <a href="/sign-off" class="sidebar-link">
                     <i class="bi bi-clipboard-check"></i>
@@ -101,7 +101,7 @@
 
 
 
-        @if (in_array(auth()->user()->role_id, [1, 3, 4, 9]))
+        @if (in_array(auth()->user()->role_id, [1, 3, 4, 8,9]))
             <li class="sidebar-item">
                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
@@ -125,7 +125,7 @@
         @endif
 
         {{-- Only The Cashiers and the Accountant can access these routes --}}
-        @if (in_array(auth()->user()->role_id, [1, 4, 9]))
+        @if (in_array(auth()->user()->role_id, [1, 4,8, 9]))
             <li class="sidebar-item">
                 <a href="/payments/cancellations" class="sidebar-link">
                     <i class="bi bi-slash-circle"></i>
@@ -247,7 +247,7 @@
         </li>
     @endif
 
-        @if (in_array(auth()->user()->role_id, [1, 6]))
+        @if (in_array(auth()->user()->role_id, [1, 6,8]))
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#downloads" aria-expanded="false" aria-controls="reports">
@@ -283,7 +283,7 @@
                 <li class="sidebar-item">
                     <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
                 </li>
-                @if (in_array(auth()->user()->role_id, [1, 4, 9]))
+                @if (in_array(auth()->user()->role_id, [1, 4,8, 9]))
                     <li class="sidebar-item">
                         <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                     </li>
@@ -296,7 +296,7 @@
                         <a href="/reports/onsite-app/create" class="sidebar-link">Onsite Applications Report</a>
                     </li>
                 @endif
-                @if (in_array(auth()->user()->role_id, [1, 5, 10]))
+                @if (in_array(auth()->user()->role_id, [1, 5,8, 10]))
                     <li class="sidebar-item">
                         <a href="/reports/sign-off/create" class="sidebar-link">Sign Off Report</a>
                     </li>
