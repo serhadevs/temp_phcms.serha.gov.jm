@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 class UserController extends Controller
 {
@@ -459,31 +460,36 @@ class UserController extends Controller
     //Route: settings/reset-password/all'
     //This function allows the Super Admin to set the password_changed_at field to the current date. 
     public function resetAllPasswords(Request $request)
-    {
-        $validatedData = $request->validate([
-            'password' => 'required|string',
-        ]);
+{
+    $validatedData = $request->validate([
+        'password' => 'required|string',
+        'password_changed_at' => 'required|date',
+    ]);
 
-        // Verify that the password entered matches the current user's password
-        if (!Hash::check($validatedData['password'], Auth::user()->password)) {
-            return redirect()->back()
-                ->withErrors(['password' => 'The password you entered is incorrect. Please try again.'])
-                ->withInput();
-        }
-
-        try {
-            // Update the password_changed_at field for all users except the current user (optional)
-            $updateResult = User::where('id', '!=', Auth::id())->where('status', 1)
-                ->update(['password_changed_at' => now()]);
-
-          
-
-            return redirect()->back()->with('success', 'All user passwords have been reset successfully. ' . $updateResult . ' user(s) updated.');
-        } catch (\Exception $e) {
-            Log::error('Password reset error: ' . $e->getMessage());
-            return redirect()->back()
-                ->withErrors(['password' => 'An error occurred while resetting passwords. Please try again.'])
-                ->withInput();
-        }
+    // Verify that the password entered matches the current user's password
+    if (!Hash::check($validatedData['password'], Auth::user()->password)) {
+        return redirect()->back()
+            ->withErrors(['password' => 'The password you entered is incorrect. Please try again.'])
+            ->withInput();
     }
+
+    try {
+        // Update the password_changed_at field for all active users except the current user
+        $updateResult = User::where('id', '!=', Auth::id())
+            ->where('status', 1)
+            ->update(['password_changed_at' => Carbon::parse($validatedData['password_changed_at'])]);
+
+        if ($updateResult === 0) {
+            return redirect()->back()->with('info', 'No active users found to update.');
+        }
+
+        return redirect()->back()->with('success', 'All user passwords have been reset successfully. ' . $updateResult . ' user(s) updated.');
+        
+    } catch (\Exception $e) {
+        Log::error('Password reset error: ' . $e->getMessage());
+        return redirect()->back()
+            ->withErrors(['password' => 'An error occurred while resetting passwords. Please try again.'])
+            ->withInput();
+    }
+}
 }

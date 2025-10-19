@@ -87,6 +87,16 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="password_changed_at" class="form-label">Password Changed Date</label>
+                            <input type="date" name="password_changed_at" id="password_changed_at"
+                                class="form-control @error('password_changed_at') is-invalid @enderror"
+                                value="{{ old('password_changed_at', date('Y-m-d')) }}">
+                            @error('password_changed_at')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <p>Are you sure you want to do this? <strong>All passwords will be reset!</strong></p>
                         </div>
 
