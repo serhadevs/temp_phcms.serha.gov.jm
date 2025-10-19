@@ -1,4 +1,4 @@
-<form action="/password-change" method="post">
+<form action="{{ route('user.password.change') }}" method="post">
     @csrf
 
     <div class="card-body">
@@ -50,7 +50,7 @@
             <label for="confirm_password" class="col-sm-2 col-form-label">Confirm Password</label>
             <div class="col-sm-10">
                 <div class="position-relative">
-                    <input type="password" name="confirm_password" class="form-control" id="confirm_password" placeholder="Confirm Password"
+                    <input type="password" name="password_confirmation" class="form-control" id="password_confirmation" placeholder="Confirm Password"
                         value="{{ old('confirm_password') }}" autocomplete="confirm_password">
                     <button type="button" class="btn btn-link position-absolute end-0 top-0 text-muted" 
                             id="toggle-confirm-password" style="z-index: 10; padding: 0.375rem 0.75rem;">
@@ -58,7 +58,7 @@
                     </button>
                 </div>
                 <small id="password-match-text" class="mt-1 fw-semibold"></small>
-                @error('confirm_password')
+                @error('password_confirmation')
                     <p class="text-danger">{{ $message }}</p>
                 @enderror
             </div>
@@ -66,17 +66,23 @@
     </div>
 
     {{-- <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Cancel</a> --}}
-    <button class="btn btn-outline-primary">Change Password</button>
+    <button class="btn btn-outline-primary" type="submit" name="submit" id="submit">Change Password</button>
 </form>
 
 {{-- Password Strength Script --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
     const password = document.getElementById('password');
-    const confirmPassword = document.getElementById('confirm_password');
+    const confirmPassword = document.getElementById('password_confirmation');
     const strengthBar = document.getElementById('password-strength-bar');
     const strengthText = document.getElementById('password-strength-text');
     const matchText = document.getElementById('password-match-text');
+    const submitButton = document.getElementById('submit');
+
+    // Disable button by default
+    submitButton.disabled = true;
+    submitButton.classList.add('disabled');
 
     // Requirement elements
     const reqLength = document.getElementById('req-length');
@@ -84,6 +90,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const reqUppercase = document.getElementById('req-uppercase');
     const reqNumber = document.getElementById('req-number');
     const reqSpecial = document.getElementById('req-special');
+
+    let currentStrength = 'Weak';
+    let passwordsMatch = false;
 
     function updateRequirement(element, met) {
         const icon = element.querySelector('.requirement-icon');
@@ -98,30 +107,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function evaluateForm() {
+        // Enable button only if strong and passwords match
+        if (currentStrength === 'Strong' && passwordsMatch) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('disabled');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.add('disabled');
+        }
+    }
+
     password.addEventListener('input', function () {
         const val = password.value;
         let strength = 0;
 
-        // Check requirements
         const hasLength = val.length >= 8;
         const hasLowercase = /[a-z]/.test(val);
         const hasUppercase = /[A-Z]/.test(val);
         const hasNumber = /[0-9]/.test(val);
         const hasSpecial = /[^a-zA-Z0-9]/.test(val);
 
-        // Update visual indicators
         updateRequirement(reqLength, hasLength);
         updateRequirement(reqLowercase, hasLowercase);
         updateRequirement(reqUppercase, hasUppercase);
         updateRequirement(reqNumber, hasNumber);
         updateRequirement(reqSpecial, hasSpecial);
 
-        // Calculate strength
-        if (hasLength) strength += 1;
-        if (hasLowercase) strength += 1;
-        if (hasUppercase) strength += 1;
-        if (hasNumber) strength += 1;
-        if (hasSpecial) strength += 1;
+        if (hasLength) strength++;
+        if (hasLowercase) strength++;
+        if (hasUppercase) strength++;
+        if (hasNumber) strength++;
+        if (hasSpecial) strength++;
 
         let percentage = (strength / 5) * 100;
         let color = 'bg-danger';
@@ -139,55 +156,46 @@ document.addEventListener('DOMContentLoaded', function () {
         strengthBar.style.width = percentage + '%';
         strengthText.textContent = `Strength: ${text}`;
         strengthText.className = `mt-1 fw-semibold ${color.replace('bg-', 'text-')}`;
+
+        currentStrength = text;
+        evaluateForm();
     });
 
     confirmPassword.addEventListener('input', function () {
         if (confirmPassword.value === '') {
             matchText.textContent = '';
-            return;
-        }
-
-        if (password.value === confirmPassword.value) {
+            passwordsMatch = false;
+        } else if (password.value === confirmPassword.value) {
             matchText.textContent = 'Passwords match ✅';
             matchText.className = 'text-success mt-1 fw-semibold';
+            passwordsMatch = true;
         } else {
             matchText.textContent = 'Passwords do not match ❌';
             matchText.className = 'text-danger mt-1 fw-semibold';
+            passwordsMatch = false;
         }
+        evaluateForm();
     });
 
     // Toggle password visibility
     const togglePassword = document.getElementById('toggle-password');
     const eyeIconPassword = document.getElementById('eye-icon-password');
-    
     togglePassword.addEventListener('click', function () {
         const type = password.type === 'password' ? 'text' : 'password';
         password.type = type;
-        
-        if (type === 'text') {
-            eyeIconPassword.classList.remove('bi-eye');
-            eyeIconPassword.classList.add('bi-eye-slash');
-        } else {
-            eyeIconPassword.classList.remove('bi-eye-slash');
-            eyeIconPassword.classList.add('bi-eye');
-        }
+        eyeIconPassword.classList.toggle('bi-eye');
+        eyeIconPassword.classList.toggle('bi-eye-slash');
     });
 
     // Toggle confirm password visibility
     const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
     const eyeIconConfirm = document.getElementById('eye-icon-confirm');
-    
     toggleConfirmPassword.addEventListener('click', function () {
         const type = confirmPassword.type === 'password' ? 'text' : 'password';
         confirmPassword.type = type;
-        
-        if (type === 'text') {
-            eyeIconConfirm.classList.remove('bi-eye');
-            eyeIconConfirm.classList.add('bi-eye-slash');
-        } else {
-            eyeIconConfirm.classList.remove('bi-eye-slash');
-            eyeIconConfirm.classList.add('bi-eye');
-        }
+        eyeIconConfirm.classList.toggle('bi-eye');
+        eyeIconConfirm.classList.toggle('bi-eye-slash');
     });
 });
 </script>
+

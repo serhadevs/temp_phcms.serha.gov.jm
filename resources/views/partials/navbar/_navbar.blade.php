@@ -4,10 +4,16 @@
 
 <nav class="navbar navbar-expand px-4 py-3">
     <div class="collapse navbar-collapse">
+        <!-- Search Bar -->
+        <form class="d-flex me-auto" role="search" action="/" method="GET">
+            <input class="form-control" type="search" name="q" placeholder="Search..." aria-label="Search"
+                value="{{ request('q') }}" style="width: 400px;">
+        </form>
+
         <ul class="navbar-nav ms-auto align-items-center">
             <li class="nav-item me-3 dropdown">
-                <button type="button" class="btn btn-primary position-relative dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-expanded="false" data-bs-auto-close="outside">
+                <button type="button" class="btn btn-primary position-relative dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                     <i class="bi bi-bell"></i>
                     <span
                         class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
@@ -38,7 +44,7 @@
                         $facility = $facilityMap[Auth::user()->facility_id] ?? 'Unknown Facility';
                     @endphp
                     <li><a class="dropdown-item" href="#">Location: {{ $facility }}</a></li>
-                    @if (in_array(auth()->user()->role_id,[1,8]))
+                    @if (in_array(auth()->user()->role_id, [1, 8]))
                         <li><a class="dropdown-item" href="{{ route('switch.location') }}">Switch Location</a></li>
                     @endif
                     {{-- <li><a class="dropdown-item" href="">View Profile</a></li> --}}
@@ -55,3 +61,6 @@
         </ul>
     </div>
 </nav>
+
+
+

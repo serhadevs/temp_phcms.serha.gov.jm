@@ -94,7 +94,7 @@ Route::get('/permit/online/application/complete/{id}', [OnlineApplicationControl
 Route::post('/coupon/redeem', [CouponController::class, 'redeem'])->name('coupons.redeem');
 
 
-Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
+Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.password','check.password.expiry']], function () {
 
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
@@ -324,6 +324,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::post('/settings/user/update/{id}', [UserController::class, 'editUser'])->name('users.update');
     Route::put('/settings/user/deactivate/{id}', [UserController::class, 'deactivateUser'])->name('users.destroy');
     Route::post('settings/user/filter', [UserController::class, 'filterUsers'])->name('users.filter');
+    Route::post('settings/reset-password/all', [UserController::class, 'resetAllPasswords'])->name('users.reset.all');
   });
 
   Route::get('/change-password', [UserController::class, 'changepasswordMe'])->name('user.changepassword');
@@ -488,9 +489,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   //Coupons
   Route::resource('coupons', CouponController::class);
 
-
-
-
   //Student Exam Routes
   Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
   Route::get('/exams/create', [ExamController::class, 'create'])->name('exams.create');
@@ -513,7 +511,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/questions/take-exam/exam', [ExamController::class, 'exams'])->name('questions.exam');
 
 
-  //$2y$10$183YCnkw5PrxkctzaOYuX.qIHg5G9tR5IMYaokCMIndazv.NN0X.y
   //Answers Routes
   Route::get('/answers', [AnswersController::class, 'index'])->name('answers.index');
   Route::get('/answers/create/{id}/{exam_id}', [AnswersController::class, 'create'])->name('answers.create');

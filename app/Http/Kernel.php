@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\UserActivity::class,
              \App\Http\Middleware\ReadOnlyMiddleware::class,
+              \App\Http\Middleware\CheckDefaultPassword::class,
         ],
 
         'api' => [
@@ -69,5 +70,6 @@ class Kernel extends HttpKernel
         'checkRole' => \App\Http\Middleware\CheckUserRole::class,
         'verify.signature' => \App\Http\Middleware\ValidateSignature::class,
         'check.default.password' => \App\Http\Middleware\CheckDefaultPassword::class,
+        'check.password.expiry' => \App\Http\Middleware\CheckPasswordExpiry::class,
     ];
 }

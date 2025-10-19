@@ -39,7 +39,8 @@ class User extends Authenticatable implements Auditable
         'deleted_at',
         'status',
         'last_seen',
-        'default_filter_id'
+        'default_filter_id',
+        'password_changed_at',
     ];
 
     /**
@@ -114,6 +115,15 @@ class User extends Authenticatable implements Auditable
     {
         return $this->role_id === 8;
     }
+
+    public function passwordExpiryDate(): ?\Carbon\Carbon
+{
+    if ($this->password_changed_at) {
+        return \Carbon\Carbon::parse($this->password_changed_at)->copy()->addDays(90);
+    }
+
+    return null;
+}
 
 
     public $timestamps = true;

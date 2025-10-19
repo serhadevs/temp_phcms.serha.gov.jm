@@ -11,22 +11,21 @@ class CheckDefaultPassword
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-   
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
 
-        // Check if the user is authenticated
         if ($user) {
+            // Skip middleware check for password change routes
+            if ($request->routeIs('user.changepassword', 'user.password.change', 'logout')) {
+                return $next($request);
+            }
+
             // Check if the password matches the default 'password123'
             if (Hash::check('password123', $user->password)) {
-                // Redirect to password change page
-                return redirect()->route('user.changepassword')->with('error', 'Please change your default password.');
+                return redirect()->route('user.changepassword')
+                    ->with('error', 'Please change your default password before continuing.');
             }
         }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendCredentialEmail;
 use App\Jobs\SendResetPasswordEmail;
+use App\Mail\ForgetPasswordMail;
 use App\Mail\SendCredentials;
 use App\Models\Facility;
 use App\Models\LoginActivity;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -25,32 +27,41 @@ class UserController extends Controller
     //Shows currently logged in users
     //Route: /settings/users
 
-    private function getUsers($facility_id = null,$role_id = null)
-{
-    $query = User::where('status', 1)
-        ->whereNull('deleted_at');
+    private function getUsers($facility_id = null, $role_id = null)
+    {
+        $query = User::where('status', 1)
+            ->whereNull('deleted_at');
 
-    if ($facility_id) {
-        $query->where('facility_id', $facility_id);
+        if ($facility_id) {
+            $query->where('facility_id', $facility_id);
+        }
+
+        if ($role_id) {
+            $query->where('role_id', $role_id);
+        }
+
+
+        return $query->latest('created_at')
+            ->get([
+                'last_seen',
+                'id',
+                'firstname',
+                'lastname',
+                'facility_id',
+                'role_id',
+                'telephone',
+                'email',
+                'status',
+                'created_at',
+                'updated_at'
+            ]);
     }
-
-    if ($role_id) {
-        $query->where('role_id', $role_id);
-    }
-
-
-    return $query->latest('created_at')
-        ->get([
-            'last_seen', 'id', 'firstname', 'lastname', 'facility_id',
-            'role_id', 'telephone', 'email', 'status', 'created_at', 'updated_at'
-        ]);
-}
 
     public function index()
     {
 
         if (Auth::user()->role_id == 1) {
-            
+
             $users = $this->getUsers();
 
             // $users = User::where('status', 1)->latest('created_at')->get();
@@ -60,14 +71,14 @@ class UserController extends Controller
             //dd($roles);
         } elseif (Auth::user()->role_id == 2) {
             // $users = User::where('facility_id', Auth::user()->facility_id)->get();
-          $users = $this->getUsers();
+            $users = $this->getUsers();
             $roles = DB::table('roles')->pluck('name', 'id');
             //dd($roles);
         }
 
 
 
-        return view('users.index', compact('users', 'facilities','roles'));
+        return view('users.index', compact('users', 'facilities', 'roles'));
     }
 
     //Filter Users By Facility
@@ -76,15 +87,15 @@ class UserController extends Controller
 
     public function filterUsers(Request $request)
     {
-    
+
         $facility_id = $request->facility_id;
         //dd($facility_id);
         $role_id = $request->role_id;
-        $users = $this->getUsers($facility_id,$role_id);
+        $users = $this->getUsers($facility_id, $role_id);
         $facilities = Facility::all();
         $roles = DB::table('roles')->pluck('name', 'id');
 
-        return view('users.index', compact('users','facilities','roles'));
+        return view('users.index', compact('users', 'facilities', 'roles'));
     }
 
     //Shows currently logged in users
@@ -216,8 +227,9 @@ class UserController extends Controller
             return "User not found";
         }
 
-        $user->password = bcrypt("password123");
+        $user->password = Hash::make("password123");
         $user->save();
+
         $user->refresh();
 
         return back()->with('success', 'Password reset successfully.');
@@ -247,26 +259,30 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $incomingFields = $request->validate([
-            "password" => "required",
-            "confirm_password" => "required|same:password"
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'password.confirmed' => 'The password confirmation does not match.',
         ]);
 
-        $password = $incomingFields['password'];
+        $user = User::find(auth()->id()); // Ensures it's a proper Eloquent model
 
-        // Find user in the database
-        $user = User::find(auth()->user()->id);
-
-        if (!empty($user)) {
-            // Change the user password
-            $user->password = Hash::make($password);
-            $user->save();
-
-            return redirect()->route("dashboard.dashboard")->with("success", "Your password was reset successfully");
-           
-
-        } else {
-            return redirect()->back()->with('error', "Unable to find user");
+        if (!$user) {
+            return back()->with('error', 'User not found.');
         }
+
+        // Prevent reuse of old password
+        if (Hash::check($request->password, $user->password)) {
+            return back()->with('error', 'Your new password cannot be the same as your current password.');
+        }
+
+        // Update password and timestamp
+        $user->password = Hash::make($request->password);
+        $user->password_changed_at = now();
+        $user->save();
+
+        return redirect()
+            ->route('dashboard.dashboard')
+            ->with('success', 'Your password was reset successfully.');
     }
 
     public function createuser()
@@ -284,37 +300,37 @@ class UserController extends Controller
     }
 
     public function addUser(Request $request)
-{
-    $incomingFields = $request->validate([
-        'firstname' => 'required',
-        'lastname' => 'required',
-        'facility_id' => 'required',
-        'telephone' => 'required',
-        'email' => 'required|email|unique:users',
-        'role_id' => 'required',
-    ]);
+    {
+        $incomingFields = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'facility_id' => 'required',
+            'telephone' => 'required',
+            'email' => 'required|email|unique:users',
+            'role_id' => 'required',
+        ]);
 
-    // Set additional fields
-    $incomingFields['status'] = 1;
-    
-    // Make password a random string of 8 characters
-    $stringPassword = Str::random(8);
-    
-    $incomingFields['password'] = bcrypt($stringPassword);
-    $incomingFields['last_seen'] = date('Y-m-d H:i:s');
-    
-    // Create the user
-    $user = User::create($incomingFields);
-    
-    if (!$user) {
-        return redirect()->route('user.index')->with('error', 'Unable to add the user');
+        // Set additional fields
+        $incomingFields['status'] = 1;
+
+        // Make password a random string of 8 characters
+        $stringPassword = Str::random(8);
+
+        $incomingFields['password'] = bcrypt($stringPassword);
+        $incomingFields['last_seen'] = date('Y-m-d H:i:s');
+
+        // Create the user
+        $user = User::create($incomingFields);
+
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'Unable to add the user');
+        }
+
+        // Send Email to the newly created user (use $user instead of querying again)
+        dispatch(new SendCredentialEmail($user, $stringPassword));
+
+        return redirect()->route('users')->with('success', 'User was added');
     }
-    
-    // Send Email to the newly created user (use $user instead of querying again)
-    dispatch(new SendCredentialEmail($user, $stringPassword));
-    
-    return redirect()->route('users')->with('success', 'User was added');
-}
 
     public function switchFacility(Request $request)
     {
@@ -363,13 +379,16 @@ class UserController extends Controller
         try {
             //Find the user in the database
 
-            $user = User::find($id);
+            $user = User::findOrFirst($id);
 
             //Throw error if the user is not found
 
             if (!$user) {
                 return redirect()->back()->with('error', 'The user was not found in the database');
             }
+
+            //Update changed password_changed_at 
+            $user->password_changed_at = now();
 
             //Update the fields 
             $user_update = User::where('id', $request->id)->update($validatedData);
@@ -436,5 +455,35 @@ class UserController extends Controller
         return redirect()->back()->with("success", "User successfully deactivated");
     }
 
-    
+    //Reset All Passwords
+    //Route: settings/reset-password/all'
+    //This function allows the Super Admin to set the password_changed_at field to the current date. 
+    public function resetAllPasswords(Request $request)
+    {
+        $validatedData = $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        // Verify that the password entered matches the current user's password
+        if (!Hash::check($validatedData['password'], Auth::user()->password)) {
+            return redirect()->back()
+                ->withErrors(['password' => 'The password you entered is incorrect. Please try again.'])
+                ->withInput();
+        }
+
+        try {
+            // Update the password_changed_at field for all users except the current user (optional)
+            $updateResult = User::where('id', '!=', Auth::id())->where('status', 1)
+                ->update(['password_changed_at' => now()]);
+
+          
+
+            return redirect()->back()->with('success', 'All user passwords have been reset successfully. ' . $updateResult . ' user(s) updated.');
+        } catch (\Exception $e) {
+            Log::error('Password reset error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withErrors(['password' => 'An error occurred while resetting passwords. Please try again.'])
+                ->withInput();
+        }
+    }
 }
