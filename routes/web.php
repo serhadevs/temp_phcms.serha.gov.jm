@@ -162,6 +162,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.pas
 
   Route::get("/advance-search/create", [AdvanceSearchController::class, 'create'])->name('advance-search');
   Route::post("/advance-search/show", [AdvanceSearchController::class, 'show'])->name('advance.search.show');
+  Route::get('/permit/search', [AdvanceSearchController::class, 'search'])->name('permit.search');
+
 
   //Food Clinics Routes
   Route::get('/food-handlers-clinics/create', [FoodHandlersClinicController::class, 'create'])->name('food-handlers-clinic.create');

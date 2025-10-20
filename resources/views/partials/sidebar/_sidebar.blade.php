@@ -56,7 +56,7 @@
                 <span>Appointments</span>
             </a>
         </li>
-        @if (in_array(auth()->user()->role_id, [1, 5,8, 7]))
+        @if (in_array(auth()->user()->role_id, [1, 5, 8, 7]))
             <li class="sidebar-item">
                 <a href="/sign-off" class="sidebar-link">
                     <i class="bi bi-clipboard-check"></i>
@@ -101,7 +101,7 @@
 
 
 
-        @if (in_array(auth()->user()->role_id, [1, 3, 4, 8,9]))
+        @if (in_array(auth()->user()->role_id, [1, 3, 4, 8, 9]))
             <li class="sidebar-item">
                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
@@ -125,7 +125,7 @@
         @endif
 
         {{-- Only The Cashiers and the Accountant can access these routes --}}
-        @if (in_array(auth()->user()->role_id, [1, 4,8, 9]))
+        @if (in_array(auth()->user()->role_id, [1, 4, 8, 9]))
             <li class="sidebar-item">
                 <a href="/payments/cancellations" class="sidebar-link">
                     <i class="bi bi-slash-circle"></i>
@@ -136,18 +136,18 @@
 
 
         <li class="sidebar-item">
-            <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#downloads2" aria-expanded="false" aria-controls="reports">
+            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#downloads2" aria-expanded="false" aria-controls="downloads2">
                 <i class="bi bi-file-earmark-medical"></i>
                 <span>Test Results/Inspections</span>
             </a>
             <ul id="downloads2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#download0" aria-expanded="false" aria-controls="reports">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download0" aria-expanded="false" aria-controls="download0">
                         <span>Food Handlers Permits</span>
                     </a>
-                    <ul id="download0" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                    <ul id="download0" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#downloads2">
                         <li class="sidebar-item mx-3">
                             <a href="/test-results/permit/outstanding/filter/0" class="sidebar-link">Outstanding</a>
                         </li>
@@ -157,11 +157,11 @@
                     </ul>
                 </li>
                 <li class="sidebar-item">
-                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#download3" aria-expanded="false" aria-controls="reports">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download3" aria-expanded="false" aria-controls="download3">
                         <span>Food Establishments</span>
                     </a>
-                    <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                    <ul id="download3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#downloads2">
                         <li class="sidebar-item mx-3">
                             <a href="/test-results/food-establishments/outstanding/filter/0"
                                 class="sidebar-link">Outstanding</a>
@@ -172,11 +172,11 @@
                     </ul>
                 </li>
                 <li class="sidebar-item">
-                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#download4" aria-expanded="false" aria-controls="reports">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download4" aria-expanded="false" aria-controls="download4">
                         <span>Swimming Pool</span>
                     </a>
-                    <ul id="download4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                    <ul id="download4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#downloads2">
                         <li class="sidebar-item mx-3">
                             <a href="/test-results/swimming-pools/outstanding/filter/0"
                                 class="sidebar-link">Outstanding</a>
@@ -187,11 +187,11 @@
                     </ul>
                 </li>
                 <li class="sidebar-item">
-                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#download5" aria-expanded="false" aria-controls="reports">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download5" aria-expanded="false" aria-controls="download5">
                         <span>Tourist Establishment</span>
                     </a>
-                    <ul id="download5" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                    <ul id="download5" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#downloads2">
                         <li class="sidebar-item mx-3">
                             <a href="/test-results/tourist-establishments/outstanding/filter/0"
                                 class="sidebar-link">Outstanding</a>
@@ -202,11 +202,11 @@
                     </ul>
                 </li>
                 <li class="sidebar-item">
-                    <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#download6" aria-expanded="false" aria-controls="reports">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#download6" aria-expanded="false" aria-controls="download6">
                         <span>Barber/Cosmet. etc.</span>
                     </a>
-                    <ul id="download6" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#download2">
+                    <ul id="download6" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#downloads2">
                         <li class="sidebar-item mx-3">
                             <a href="/test-results/barber-cosmet/outstanding/filter/0"
                                 class="sidebar-link">Outstanding</a>
@@ -240,14 +240,14 @@
         </li>
 
         @if (in_array(auth()->user()->role_id, [1, 5, 10]))
-        <li class="sidebar-item">
-            <a href="{{ route('examsites.index') }}" class="sidebar-link">
-                <i class="bi bi-slash-circle"></i>
-                <span>Exam Sites</span></a>
-        </li>
-    @endif
+            <li class="sidebar-item">
+                <a href="{{ route('examsites.index') }}" class="sidebar-link">
+                    <i class="bi bi-slash-circle"></i>
+                    <span>Exam Sites</span></a>
+            </li>
+        @endif
 
-        @if (in_array(auth()->user()->role_id, [1, 6,8]))
+        @if (in_array(auth()->user()->role_id, [1, 6, 8]))
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#downloads" aria-expanded="false" aria-controls="reports">
@@ -283,7 +283,7 @@
                 <li class="sidebar-item">
                     <a href="/report/summary-report" class="sidebar-link">Summary Report</a>
                 </li>
-                @if (in_array(auth()->user()->role_id, [1, 4,8, 9]))
+                @if (in_array(auth()->user()->role_id, [1, 4, 8, 9]))
                     <li class="sidebar-item">
                         <a href="/report/payment" class="sidebar-link">Check Off Report</a>
                     </li>
@@ -296,7 +296,7 @@
                         <a href="/reports/onsite-app/create" class="sidebar-link">Onsite Applications Report</a>
                     </li>
                 @endif
-                @if (in_array(auth()->user()->role_id, [1, 5,8, 10]))
+                @if (in_array(auth()->user()->role_id, [1, 5, 8, 10]))
                     <li class="sidebar-item">
                         <a href="/reports/sign-off/create" class="sidebar-link">Sign Off Report</a>
                     </li>
@@ -308,9 +308,9 @@
                     </li>
                 @endif
 
-               
 
-               
+
+
 
                 <li class="sidebar-item">
                     <a href="/reports/printed-cards" class="sidebar-link">Printed Cards Report</a>
@@ -364,24 +364,24 @@
             </a>
         </li>
 
-        @if(in_array(auth()->user()->role_id,[1]))
-        <li class="sidebar-item">
-            <a href="{{ route('coupons.index') }}" class="sidebar-link">
-                <i class="lni lni-cog"></i>
-                <span>Coupons</span>
-            </a>
-            
-        </li>
+        @if (in_array(auth()->user()->role_id, [1]))
+            <li class="sidebar-item">
+                <a href="{{ route('coupons.index') }}" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>Coupons</span>
+                </a>
+
+            </li>
         @endif
 
-        @if(in_array(auth()->user()->role_id,[1]))
-        <li class="sidebar-item">
-            <a href="{{ route('exams.index') }}" class="sidebar-link">
-                <i class="lni lni-cog"></i>
-                <span>Exams</span>
-            </a>
-            
-        </li>
+        @if (in_array(auth()->user()->role_id, [1]))
+            <li class="sidebar-item">
+                <a href="{{ route('exams.index') }}" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>Exams</span>
+                </a>
+
+            </li>
         @endif
 
 
