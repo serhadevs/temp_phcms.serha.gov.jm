@@ -34,6 +34,19 @@ class PermitApplicationRequest extends FormRequest
      */
     public function rules()
     {
+        // determine current id from route-model binding or route/input parameter
+        $id = null;
+        $routeParam = $this->route('permit_application') ?? $this->route('id') ?? $this->input('id');
+        if ($routeParam) {
+            $id = is_object($routeParam) ? $routeParam->id : $routeParam;
+        }
+
+        // build TRN rule; include the ignore-id only when available
+        $trnRule = 'required|unique:permit_applications,trn';
+        if ($id) {
+            $trnRule .= ',' . $id;
+        }
+
         return [
            'permit_category_id' => 'required',
             'firstname' => "required",
@@ -51,7 +64,7 @@ class PermitApplicationRequest extends FormRequest
             'employer' => 'nullable',
             'employer_address' => 'nullable',
             'email' => 'nullable|email',
-            'trn' => 'required|unique:permit_applications,trn,' . $id,
+            'trn' => $trnRule,
 
             'applied_before' => 'required',
             'granted' => 'required_if:applied_before,=,1',
