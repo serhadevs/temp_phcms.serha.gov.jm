@@ -64,7 +64,8 @@ class PermitApplicationRequest extends FormRequest
             'employer' => 'nullable',
             'employer_address' => 'nullable',
             'email' => 'nullable|email',
-            'trn' => $trnRule,
+            // 'trn' => $trnRule,
+            'trn' => 'nullable',
 
             'applied_before' => 'required',
             'granted' => 'required_if:applied_before,=,1',
