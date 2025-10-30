@@ -325,7 +325,25 @@ class PermitApplicationController extends Controller
                                         'appointment_date' => $request->data["appointment_date"],
                                         'exam_date_id' => $request->data["exam_date_id"]
                                     ]
-                                )) {
+                                ))
+
+                                
+
+
+                                {
+                                    //Change the date in the Test Results 
+                                    //Find the results
+                                    $test_result = TestResult::where('application_type_id', 1)
+                                        ->where('application_id', $application->id)
+                                        ->first();
+
+                                    //If the application has a test result, update the test date to match the new appointment date
+
+                                    if ($test_result) {
+                                        $test_result->update([
+                                            'test_date' => $request->data["appointment_date"]
+                                        ]);
+                                    }
                                     DB::commit();
                                     return [
                                         'success',
@@ -432,7 +450,7 @@ class PermitApplicationController extends Controller
 
         return view('food_handlers_permit.create_with_appointment_sch', compact('categories', 'appointments_available'));
     }
-    
+
     public function renewal(Request $request)
     {
         $categories = PermitCategory::all();
