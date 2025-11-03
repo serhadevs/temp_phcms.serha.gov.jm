@@ -6,19 +6,24 @@
             <th>Lastname</th>
             <th>Collected By</th>
             <th>Date Collected</th>
-            <th>ID Presented</th>
-         
+            <th>Picked Up By</th>
+            <th>Id Presented</th>
+
         </tr>
     </thead>
     <tbody>
         @foreach ($collected_cards as $item)
             <tr>
-                <td>{{ $item->app_id}}</td>
-                <td>{{ $item->permit_application?->firstname}}</td>
-                <td>{{ $item->permit_application?->lastname}}</td>
+                <td>{{ $item->app_id }}</td>
+                <td>{{ $item->permit_application?->firstname }}</td>
+                <td>{{ $item->permit_application?->lastname }}</td>
                 <td>{{ \Illuminate\Support\Str::upper($item->collected_by) }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->created_at)->format('F d, Y h:i A') }}</td>
-                <td>{{ $item->identificationType?->name }}</td>
+                <td>
+                    {{ $item->pick_up_id === null ? 'Null' : ($item->pick_up_id == 1 ? 'Self Pick Up' : 'Bearer') }}
+                </td>
+                <td>{{ $item->identificationType?->name ?? 'N/A' }}</td>
+
             </tr>
         @endforeach
     </tbody>
