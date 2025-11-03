@@ -772,7 +772,7 @@ class PermitApplicationController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory','collected')
+            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->find($id)
             ) {
