@@ -6,7 +6,7 @@
             <th>Lastname</th>
             <th>Collected By</th>
             <th>Date Collected</th>
-            <th>Picked Up By</th>
+            <th>Picked Up Type</th>
             <th>Id Presented</th>
 
         </tr>
