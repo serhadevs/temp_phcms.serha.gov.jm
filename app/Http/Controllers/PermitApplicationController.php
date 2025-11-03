@@ -39,6 +39,7 @@ use App\Models\Messages;
 use Illuminate\Support\Facades\URL;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\IdentificationTypes;
+use App\Models\CollectedCards;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -772,7 +773,7 @@ class PermitApplicationController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory')
+            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory','collected_cards')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->find($id)
             ) {
@@ -814,6 +815,14 @@ class PermitApplicationController extends Controller
                                 }
                             }
                         }
+
+                        // if(!empty($permit->collected_cards)){
+                        //     foreach($permit->collected_cards as $card){
+                        //         if(!CollectedCards::find($card->id)->update(['deleted_at' => date('Y-m-d H:i:s')])){
+                        //             throw new Exception('Delete operation failed. Unable to delete collected cards');
+                        //         }
+                        //     }
+                        // }
                         //Add delete for messages
                         if ($permit->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
