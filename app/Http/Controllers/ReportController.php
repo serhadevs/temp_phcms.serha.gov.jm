@@ -578,7 +578,7 @@ class ReportController extends Controller
         $query->whereRelation('user', 'facility_id', Auth::user()->facility_id);
     }
     
-    $collected_cards = $query->paginate(10)
+    $collected_cards = $query
         ->appends($request->only('start_date', 'end_date')); 
 
     return view('reports.collectedcards.show', compact('collected_cards', 'start_date', 'end_date'));
