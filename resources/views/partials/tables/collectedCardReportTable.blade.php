@@ -16,7 +16,7 @@
                 <td>{{ $item->app_id}}</td>
                 <td>{{ $item->permit_application?->firstname}}</td>
                 <td>{{ $item->permit_application?->lastname}}</td>
-                <td>{{ $item->collected_by }}</td>
+                <td>{{ \Illuminate\Support\Str::upper($item->collected_by) }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->created_at)->format('F d, Y h:i A') }}</td>
                 <td>{{ $item->identificationType?->name }}</td>
             </tr>
