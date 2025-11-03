@@ -138,7 +138,12 @@ class PermitApplication extends Model implements Auditable
 
     public function printedcard(): HasOne
     {
-        return $this->hasOne(PrintedPermitCards::class, 'application_id', 'id');
+        // return $this->hasOne(PrintedPermitCards::class, 'application_id', 'id');
+
+        return $this->hasOne(PrintedPermitCards::class, 'application_id', 'id')
+        ->whereHas('download', function ($query) {
+            $query->whereNotNull('download_date');
+        });
     }
 
     public function collected_cards(): HasOne

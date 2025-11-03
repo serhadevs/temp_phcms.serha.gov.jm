@@ -96,4 +96,8 @@ class CollectCardController extends Controller
                 ->with('error', 'An error occurred while saving pickup details. Please try again.');
         }
     }
+
+    // public function onsiteCardCollection(){
+
+    // }
 }

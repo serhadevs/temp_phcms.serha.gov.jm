@@ -15,6 +15,10 @@ class PrintedPermitCards extends Model
 
     protected $guarded = [];
 
+    public function download(){
+        return $this->belongsTo(Downloads::class, 'download_id');
+    }
+
 
     public $timestamps = true;
 }
