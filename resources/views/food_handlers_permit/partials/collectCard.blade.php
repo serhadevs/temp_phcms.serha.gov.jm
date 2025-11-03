@@ -9,7 +9,7 @@
         <div class="card-body">
             Card was collected by
             
-            <strong>{{ $permit_application->collected_cards?->pick_up_id == 2 ? $permit_application->collected_cards?->bearer_firstname : $permit_application->collected_cards->collected_by }}</strong>
+            <strong>{{ $permit_application->collected_cards?->pick_up_id == 2 ? $permit_application->collected_cards?->bearer_firstname . ' ' .$permit_application->collected_cards?->bearer_lastname : $permit_application->collected_cards->collected_by }}</strong>
             on
             <strong>{{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}</strong>.
         </div>
@@ -21,14 +21,6 @@
         </div>
 
         <div class="card-footer">
-            {{-- <button type="button"
-                class="btn btn-success mt-1"
-                data-bs-toggle="modal"
-                onclick="populateCardPickUpModal({{ json_encode($permit_application->id) }}, {{ json_encode($permit_application->payment) }})"
-                data-bs-target="#cardModal">
-                Enter Pickup Details
-            </button> --}}
-
             <a href="{{ route('collectedcards.create',['id' => $permit_application->id]) }}" class="btn btn-success mt-1">Enter Pickup Details</a>
         </div>
 
