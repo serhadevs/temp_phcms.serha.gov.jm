@@ -5,10 +5,11 @@
     </h5>
 
     {{-- CASE 1: Card already collected --}}
-    @if ($permit_application->collected_cards)
+    @if ($permit_application->collected_cards && $permiit_application->pick_up_id = 2)
         <div class="card-body">
             Card was collected by
-            <strong>{{ $permit_application->collected_cards?->collected_by }}</strong>
+            
+            <strong>{{ $permit_application->collected_cards?->pick_up_id == 2 ? $permit_application->collected_cards?->bearer_firstname : $permit_application->collected_cards->collected_by }}</strong>
             on
             <strong>{{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}</strong>.
         </div>
