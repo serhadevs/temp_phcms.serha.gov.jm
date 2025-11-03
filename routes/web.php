@@ -297,6 +297,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.pas
   Route::get('/reports/printed-cards', [ReportController::class, 'printedCardsIndex'])->name('reports.printed-cards.index');
   Route::post('/reports/printed-cards/show', [ReportController::class, 'generatePrintedCards'])->name('reports.printed-cards.show');
 
+  Route::get('/reports/collected-cards', [ReportController::class, 'collectedCardsIndex'])->name('reports.collected-cards.index');
+  Route::post('/reports/collected-cards/show', [ReportController::class, 'collectedCardsReport'])->name('reports.collected-cards.show');
+
   Route::get('/aireport', [ReportController::class, 'generateReport']);
 
   //Renewals
@@ -484,8 +487,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.pas
 
   //Collected Cards 
   Route::controller(CollectCardController::class)->group(function () {
-    Route::get('/collected-card/create', 'create')->name('collectedcards.create');
+    Route::get('/collected-card/create/{id}', 'create')->name('collectedcards.create');
     Route::post('/collected-card/store', 'store')->name('collectedcards.store');
+    // Route::get('/collected-card/report', 'collectedCardReport')->name('collectedcards.report');
   });
 
   //Coupons

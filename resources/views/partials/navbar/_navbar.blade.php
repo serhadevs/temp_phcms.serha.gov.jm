@@ -95,7 +95,7 @@
     </div>
 </div>
 
-<script>
+{{-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
@@ -110,4 +110,4 @@
             }, 500);
         });
     });
-</script>
+</script> --}}

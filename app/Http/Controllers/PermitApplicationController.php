@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Models\Messages;
 use Illuminate\Support\Facades\URL;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\IdentificationTypes;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -101,7 +102,11 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages', 'messages.user', 'printedcard', 'collected_cards', 'signOffs.user:id,firstname,lastname')
+        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults',
+         'healthInterviews.healthInterviewSymptom.symptoms', 
+         'appointment.editTransactions', 'messages',
+          'messages.user', 'printedcard', 'collected_cards',
+           'signOffs.user:id,firstname,lastname')
             ->find($application_id);
         //dd($permit_application);
 
@@ -137,7 +142,7 @@ class PermitApplicationController extends Controller
 
 
         // dd($tdbetwappandprint);
-
+        // $id_types = IdentificationTypes::all();
         return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
 
@@ -767,7 +772,7 @@ class PermitApplicationController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory')
+            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory','collected')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->find($id)
             ) {

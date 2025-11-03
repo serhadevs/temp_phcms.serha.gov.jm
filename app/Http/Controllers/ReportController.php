@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NumberApplicationsByCategory;
 use App\Models\ApplicationType;
+use App\Models\CollectedCards;
 use App\Models\Downloads;
 use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
@@ -25,6 +26,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -548,4 +550,37 @@ class ReportController extends Controller
 
         return view('reports.download_test.index', compact('downloads'));
     }
+
+    public function collectedCardsIndex()
+    {
+        return view('reports.collectedcards.index');
+    }
+
+    public function collectedCardsReport(Request $request)
+{
+    $validatedData = $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+    ]);
+
+    $start_date = $validatedData['start_date'];
+    $end_date = $validatedData['end_date'];
+
+    $query = CollectedCards::with('permit_application', 'identificationType:id,name', 'user:id,firstname,lastname,facility_id')
+        ->whereBetween('created_at', [
+            $start_date . ' 00:00:00',
+            $end_date . ' 23:59:59'
+        ])
+        ->orderBy('created_at', 'desc');
+
+    // Apply facility filter only if user is not admin (role_id != 1)
+    if (Auth::user()->role_id != 1) {
+        $query->whereRelation('user', 'facility_id', Auth::user()->facility_id);
+    }
+    
+    $collected_cards = $query->paginate(10)
+        ->appends($request->only('start_date', 'end_date')); 
+
+    return view('reports.collectedcards.show', compact('collected_cards', 'start_date', 'end_date'));
+}
 }

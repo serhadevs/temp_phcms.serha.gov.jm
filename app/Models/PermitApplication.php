@@ -56,6 +56,10 @@ class PermitApplication extends Model implements Auditable
         'submitted_by_id'
     ];
 
+    protected $attributes = [
+    'occupation' => 'Unemployed',
+];
+
     public $timestamp = true;
 
     public function permitCategory(): HasOne

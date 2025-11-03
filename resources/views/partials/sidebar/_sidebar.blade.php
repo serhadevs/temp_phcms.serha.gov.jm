@@ -308,10 +308,6 @@
                     </li>
                 @endif
 
-
-
-
-
                 <li class="sidebar-item">
                     <a href="/reports/printed-cards" class="sidebar-link">Printed Cards Report</a>
                 </li>
@@ -320,6 +316,9 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ route('reports.category.zone') }}" class="sidebar-link">Est. Categories By Zone</a>
+                </li>
+                 <li class="sidebar-item">
+                    <a href="{{ route('reports.collected-cards.index') }}" class="sidebar-link">Collected Cards</a>
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ route('reports.establishment.zone') }}" class="sidebar-link">Ests. By Zone</a>
