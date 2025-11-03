@@ -578,8 +578,14 @@ class ReportController extends Controller
         $query->whereRelation('user', 'facility_id', Auth::user()->facility_id);
     }
     
-    $collected_cards = $query
-        ->appends($request->only('start_date', 'end_date'))->get(); 
+   $collected_cards = $query
+    ->when($request->filled('start_date'), function ($q) use ($request) {
+        $q->whereDate('collected_at', '>=', $request->start_date);
+    })
+    ->when($request->filled('end_date'), function ($q) use ($request) {
+        $q->whereDate('collected_at', '<=', $request->end_date);
+    })
+    ->get();
 
     return view('reports.collectedcards.show', compact('collected_cards', 'start_date', 'end_date'));
 }
