@@ -579,7 +579,7 @@ class ReportController extends Controller
     }
     
     $collected_cards = $query
-        ->appends($request->only('start_date', 'end_date')); 
+        ->appends($request->only('start_date', 'end_date'))->get(); 
 
     return view('reports.collectedcards.show', compact('collected_cards', 'start_date', 'end_date'));
 }
