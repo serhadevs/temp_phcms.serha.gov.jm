@@ -5,7 +5,7 @@
     </h5>
 
     {{-- CASE 1: Card already collected --}}
-    @if ($permit_application->collected_cards && $permit_application->collected_cards?->pick_up_id == 2)
+    @if ($permit_application->collected_cards)
         <div class="card-body">
             Card was collected by
             
