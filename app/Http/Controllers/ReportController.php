@@ -580,10 +580,10 @@ class ReportController extends Controller
     
    $collected_cards = $query
     ->when($request->filled('start_date'), function ($q) use ($request) {
-        $q->whereDate('collected_at', '>=', $request->start_date);
+        $q->whereDate('created_at', '>=', $request->start_date);
     })
     ->when($request->filled('end_date'), function ($q) use ($request) {
-        $q->whereDate('collected_at', '<=', $request->end_date);
+        $q->whereDate('created_at', '<=', $request->end_date);
     })
     ->get();
 
