@@ -42,6 +42,7 @@ use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnswersController;
 use App\Http\Middleware\printerAuthAttempt;
+use App\Http\Controllers\WaiverApprovalController;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
@@ -494,6 +495,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.pas
 
   //Coupons
   Route::resource('coupons', CouponController::class);
+
+  //Waiver Routes
+  Route::get('/waivers', [WaiverApprovalController::class, 'index'])->name('waivers.index');
+  Route::post('/waivers/approve/{id}', [WaiverApprovalController::class, 'approve'])->name('waivers.approve');
+  Route::post('/waivers/store', [WaiverApprovalController::class, 'store'])->name('waivers.store');
+
 
   //Student Exam Routes
   Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');

@@ -139,6 +139,16 @@
                         <button id="update-button" type="button" class="btn btn-primary mt-4" style="display:none"
                             onclick="showLoading(this)">Update
                             information</button>
+
+                        @if (!is_null($waiver_check) && $waiver_check->count() > 0)
+                            <button class="btn btn-primary mt-3" type="button" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                                onclick="populateModal({{ json_encode($application->toArray()) }}, {{ json_encode($waiver_check) }})"
+                                data-establishment-id="{{ $application->id }}"
+                                data-establishment-name="{{ $application->name }}">
+                                Request Waiver
+                            </button>
+                        @endif
                         <button id="enable-editting" class="btn btn-warning mt-3" type="button"
                             onclick="enableEditing()">
                             Edit Application
@@ -268,5 +278,89 @@
             }
         </script>
         @include('partials.messages.loading_message')
+
+        @include('food_handlers_clinic.partials.waiverRequestModal')
+
+        <script>
+            let app_id = null;
+            let establishment_id = null;
+            let waiver_application_id = null;
+
+            function populateModal(application, waiver_check) {
+                // Set modal title
+                const modalTitle = document.getElementById('modalTitle');
+                modalTitle.textContent = `Request Waiver for ${application.name}`;
+
+                // Store IDs for submission
+                app_id = application.id;
+                establishment_id = application.id;
+                console.log(waiver_check);
+                waiver_application_id = waiver_check
+
+                console.log("Application ID:", app_id);
+                console.log("Establishment ID:", establishment_id);
+                console.log("Waiver Application ID:", waiver_application_id[0].id);
+
+                // Optionally, prefill waiver amount
+                const amountInput = document.getElementById('waiverAmountInput');
+                if (waiver_check?.amount) {
+                    amountInput.value = waiver_check.amount;
+                } else {
+                    amountInput.value = '';
+                }
+            }
+
+            function submitWaiver() {
+                const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = tokenMeta ? tokenMeta.content : '{{ csrf_token() }}'; // fallback
+                const amount = document.getElementById('waiverAmountInput').value;
+
+
+                if (!amount || isNaN(amount)) {
+                    Swal.fire('Error!', 'Please enter a valid waiver amount.', 'error');
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Submitting...',
+                    text: 'Please wait while we process your request.',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                fetch('/waivers/store', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            waiver_establishment_id: waiver_application_id[0].id,
+                            application_id: app_id,
+                            waiver_amount: amount
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.close();
+                        if (data.status === 'success') {
+                            Swal.fire('Success!', data.message, 'success').then(() => location.reload());
+                        } else {
+                            Swal.fire('Error!', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        Swal.close();
+                        Swal.fire('Error!', 'Something went wrong.', 'error');
+                    });
+            }
+        </script>
+
+
+
+
     </div>
+
 @endsection

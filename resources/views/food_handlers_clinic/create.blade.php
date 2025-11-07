@@ -15,10 +15,61 @@
                     <form action="{{ route('food-handlers-clinic.store') }}" method="POST">
                         @csrf
                         @method('POST')
-                        <div class="">
+                        <div class="mt-3">
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="gridCheck">
+                                    <label class="form-check-label" for="gridCheck">
+                                        Does this establishment have a waiver applied?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3" id="waiver_establishment">
+                            <div class="row gt-3">
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Select Establishment (If Waiver
+                                        Applied)</label>
+                                    <select name="waiver_establishment_id" id="waiver_establishment_id" class="form-select">
+                                        <option value="">-- Select Establishment --</option>
+                                        @foreach ($waivers as $waiver)
+                                            <option value="{{ $waiver->id }}"
+                                                {{ old('waiver_establishment_id') == $waiver->id ? 'selected' : '' }}>
+                                                {{ $waiver->establishment_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('waiver_establishment_id')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Amount Being Waived</label>
+                                    <div class="input-group mb-3">
+
+                                        <span class="input-group-text">$</span>
+                                        <input type="text" class="form-control @error('waiver_amount')
+                                            is-invalid
+                                        @enderror"
+                                            aria-label="Amount (to the nearest dollar)" name="waiver_amount"
+                                            value="{{ old('waiver_amount') }}">
+                                        <span class="input-group-text">.00</span>
+                                        @error('waiver_amount')
+                                            <div class="is-invalid">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="mt-3">
                             <label for="" class="form-label">Establishment Name</label>
                             <input type="text" class="form-control" name="name" value="{{ old('name') }}"
-                                oninput="this.value = this.value.toUpperCase()">
+                                oninput="this.value = this.value.toUpperCase()" id="establishment_name">
                             @error('name')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
@@ -66,7 +117,7 @@
                             @enderror
                         </div>
                         <div class="row mt-3">
-                            <div class="col">
+                            <div class="col-md-6">
                                 <label for="" class="form-label">Proposed Exercise Date</label>
                                 <input type="date" class="form-control" name="proposed_date"
                                     value="{{ old('proposed_date') }}">
@@ -74,7 +125,7 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="col">
+                            <div class="col-md-6">
                                 <label for="" class="form-label">Proposed Exercise Time</label>
                                 <input type="time" class="form-control" name="proposed_time"
                                     value="{{ old('proposed_time') }}" oninput="this.value = this.value.toUpperCase()">
@@ -82,7 +133,10 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
+
                         </div>
+
+
                         <div class="mt-3">
                             <label for="" class="form-label">Application Date</label>
                             <input type="date" class="form-control" name="application_date"
@@ -93,8 +147,8 @@
                         </div>
 
 
-                        
-                  
+
+
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('dashboard.dashboard') }}" class="btn btn-danger">Back to Dashboard</a>
@@ -102,7 +156,7 @@
                         Submit Application
                     </button>
                 </div>
-            </form>
+                </form>
             </div>
         </div>
         <script src="https://unpkg.com/imask"></script>
@@ -116,6 +170,43 @@
 
             const mask1 = IMask(telephone, maskOptions2);
             const mask2 = IMask(fax_no, maskOptions2);
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const waiverEstablishmentDiv = document.getElementById('waiver_establishment');
+                const waiverEstablishmentSelect = document.getElementById('waiver_establishment_id');
+                const gridCheck = document.getElementById('gridCheck');
+                const establishmentNameInput = document.getElementById('establishment_name');
+
+                // Initially hide the waiver establishment div
+                waiverEstablishmentDiv.style.display = 'none';
+
+                gridCheck.addEventListener('change', function() {
+                    if (this.checked) {
+                        waiverEstablishmentDiv.style.display = 'block';
+                    } else {
+                        waiverEstablishmentDiv.style.display = 'none';
+                        // Clear the selected value when hiding
+                        document.getElementById('waiver_establishment_id').value = '';
+
+
+                    }
+                });
+
+                waiverEstablishmentSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (selectedOption.value) {
+                        establishmentNameInput.value = selectedOption.text;
+                        establishmentNameInput.readOnly = true;
+                    } else {
+                        establishmentNameInput.value = '';
+                        establishmentNameInput.readOnly = false;
+                    }
+                });
+
+
+            });
         </script>
         @include('partials.messages.loading_message')
     </div>

@@ -31,8 +31,17 @@ class PaymentRequest extends FormRequest
             'change_amt' => 'required|numeric|min:0',
             'manual_receipt_no' => 'required_if:is_backlog,1',
             'manual_receipt_date' => 'required_if:is_backlog,1',
-            'payment_type_id' => 'required',
-            'wire_transfer_date' => 'required_if:payment_type_id,4'
+            'payment_type_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($this->has_waiver && $value != 5) {
+                        $fail('Please select Waiver option since this is waiver');
+                    }
+                },
+            ],
+            'wire_transfer_date' => 'required_if:payment_type_id,4',
+            'waiver_id' => 'required_if:has_waiver,1',
+            'has_waiver' => 'nullable', 
         ];
     }
 }
