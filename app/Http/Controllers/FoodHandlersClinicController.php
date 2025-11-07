@@ -198,7 +198,7 @@ class FoodHandlersClinicController extends Controller
             'proposed_time' => 'required',
             'application_date' => 'required|date',
             'waiver_establishment_id' => 'nullable|exists:waiver_establishments,id',
-            'waiver_amount' => 'required_with:waiver_establishment_id|numeric|min:0',
+            'waiver_amount' => 'nullable|required_with:waiver_establishment_id|numeric|min:0',
         ]);
 
         $food_handlers_clinic['user_id'] = auth()->user()->id;

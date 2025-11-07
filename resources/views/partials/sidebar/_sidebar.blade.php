@@ -99,6 +99,16 @@
             </a>
         </li>
 
+        @if(in_array(auth()->user()->role_id,[1,8,10]))
+        <li class="sidebar-item">
+            <a href="{{ route('waivers.index') }}" class="sidebar-link">
+                <i class="bi bi-check2-circle"></i>
+                <span>Approve Waivers</span>
+            </a>
+        </li>
+
+        @endif
+
 
 
         @if (in_array(auth()->user()->role_id, [1, 3, 4, 8, 9]))
