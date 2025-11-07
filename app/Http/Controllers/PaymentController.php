@@ -758,7 +758,7 @@ class PaymentController extends Controller
                     if ($results->where('approval_status', 'approved')->isNotEmpty()) {
                         $output .= "<p class='text-success'>Waiver approved for this application.</p>";
                     }else{
-                         $output .= "<p class='text-danger'>Waiver was not approved for this application.</p>";
+                         $output .= "";
                     }
 
                     $output .= $this->paymentStatus($application_id, $application_type_id);
