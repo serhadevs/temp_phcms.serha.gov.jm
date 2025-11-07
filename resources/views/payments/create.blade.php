@@ -25,20 +25,13 @@
                                 @csrf
                                 @method('POST')
 
-                                @if (!empty($has_waiver) && !empty($has_waiver->waiver))
-                                    <div class="alert alert-success mb-3" role="alert">
-                                        This application has a waiver request of
-                                        <strong>${{ number_format($has_waiver->waiver->amount, 2) }}</strong>.
-                                    </div>
 
-                                    <input type="text" name="waiver_id"
-                                        value="{{ $approved_waiver?->waiverApproval?->id ?? '' }}">
+                                <input type="text" hidden name="waiver_id"
+                                    value="{{ $approved_waiver?->waiverApproval?->id ?? '' }}">
 
-                                    {{-- Only show this if waiver data truly exists --}}
-                                    @if (!empty($has_waiver->waiver->amount))
-                                        <input type="text" name="has_waiver" value="1">
-                                    @endif
-                                @endif
+                                <input type="text" hidden name="has_waiver"
+                                    value="{{ $approved_waiver?->waiverApproval?->id ? 1 : '' }}">
+
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
                                     <select name="price_id" class="form-select" id="prices"
@@ -118,6 +111,23 @@
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
+
+                                {{-- Payment Type Section --}}
+                                {{-- <div class="mt-3">
+                                    <label for="payment_type_id" class="form-label">Payment Type</label>
+                                    <select name="payment_type_id" id="payment_type_id" class="form-select">
+                                        @foreach ($payment_types as $payment_type)
+                                            <option value="{{ $payment_type->id }}"
+                                                {{ old('payment_type_id') == $payment_type->id ? 'selected' : '' }}>
+                                                {{ $payment_type->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('payment_type_id')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div> --}}
 
                                 @if (in_array(Auth::user()->id, [155, 156, 133, 180]))
                                     <div class="mt-3">
@@ -289,7 +299,7 @@
                             });
                         </script>
 
-                        <script>
+                        {{-- <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 const hasWaiver = document.querySelector('input[name="has_waiver"]');
                                 const paymentSelect = document.getElementById('payment_type_id');
@@ -312,7 +322,34 @@
                                     }
                                 }
                             });
-                        </script>
+                        </script> --}}
+
+                        {{-- <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const hasWaiver = document.querySelector('input[name="has_waiver"]');
+                                const paymentSelect = document.getElementById('payment_type_id');
+
+                                const hasWaiverValue = hasWaiver && hasWaiver.value === '1';
+
+                                for (let option of paymentSelect.options) {
+                                    if (hasWaiverValue) {
+                                        // Waiver exists → show ONLY "Waiver" (option 5)
+                                        option.style.display = option.value === '5' ? 'block' : 'none';
+                                    } else {
+                                        // No waiver → show all except "Waiver" (option 5)
+                                        option.style.display = option.value === '5' ? 'none' : 'block';
+                                    }
+                                }
+
+                                // Auto-select the correct visible option
+                                for (let option of paymentSelect.options) {
+                                    if (option.style.display !== 'none') {
+                                        paymentSelect.value = option.value;
+                                        break;
+                                    }
+                                }
+                            });
+                        </script> --}}
                     </div>
                 </div>
 
