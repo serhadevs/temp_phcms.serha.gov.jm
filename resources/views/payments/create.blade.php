@@ -25,15 +25,19 @@
                                 @csrf
                                 @method('POST')
 
-                                @if (!empty($has_waiver))
-                                    {{-- <div class="alert alert-success mb-3" role="alert">
+                                @if (!empty($has_waiver) && !empty($has_waiver->waiver))
+                                    <div class="alert alert-success mb-3" role="alert">
                                         This application has a waiver request of
-                                        <strong>${{ number_format($has_waiver->waiver?->amount ?? 0, 2) }}</strong>.
-                                    </div> --}}
+                                        <strong>${{ number_format($has_waiver->waiver->amount, 2) }}</strong>.
+                                    </div>
 
-                                    <input type="text" hidden name="waiver_id"
-                                        value="{{ $approved_waiver?->waiverApproval?->id }}">
-                                    <input type="text" hidden name="has_waiver" value="1">
+                                    <input type="text" name="waiver_id"
+                                        value="{{ $approved_waiver?->waiverApproval?->id ?? '' }}">
+
+                                    {{-- Only show this if waiver data truly exists --}}
+                                    @if (!empty($has_waiver->waiver->amount))
+                                        <input type="text" name="has_waiver" value="1">
+                                    @endif
                                 @endif
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
