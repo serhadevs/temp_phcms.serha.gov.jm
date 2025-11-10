@@ -29,7 +29,7 @@
                                 <input type="text" hidden name="waiver_id"
                                     value="{{ $approved_waiver?->waiverApproval?->id ?? '' }}">
 
-                                @if($approved_waiver)
+                                @if($approved_waiver->isEmpty())
                                 <input type="text" hidden name="has_waiver"
                                     value="{{ $approved_waiver?->waiverApproval?->id ? 1 : '' }}">
                                 @endif
