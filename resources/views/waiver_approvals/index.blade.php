@@ -15,8 +15,8 @@
                     <div class="row">
                         <div class="col">
                             <div class="card">
-                                <div class="card-header">
-                                    Waiver Approvals
+                                <div class="card-header text-muted">
+                                    <h2>Waiver Approvals</h2>
                                 </div>
                                 <div class="card-body">
                                     @include('waiver_approvals.partials.waiverTable')
