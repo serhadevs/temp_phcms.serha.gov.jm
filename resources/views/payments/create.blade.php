@@ -29,10 +29,10 @@
                                 <input type="text" hidden name="waiver_id"
                                     value="{{ $approved_waiver?->waiverApproval?->id ?? '' }}">
 
-                                @if($approved_waiver->isEmpty())
+                                {{-- @if($approved_waiver->isEmpty()) --}}
                                 <input type="text" hidden name="has_waiver"
                                     value="{{ $approved_waiver?->waiverApproval?->id ? 1 : '' }}">
-                                @endif
+                                {{-- @endif --}}
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
                                     <select name="price_id" class="form-select" id="prices"
