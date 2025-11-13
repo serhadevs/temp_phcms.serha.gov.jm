@@ -35,6 +35,12 @@ class ReadOnlyMiddleware
                 'reports.establishment.show',
                 'reports.inspections.show',
                 'collectedcards.store',
+                'reports.payment.index',
+                'reports.payment.show',
+                'report.summary.show',
+                'report.transaction.show',
+                'reports.printed-cards.show',
+                'reports.collected-cards.show',
                 'logout',
             ];
 
