@@ -25,6 +25,16 @@ class ReadOnlyMiddleware
                 'user.password.change',
                 'password.change',
                 'switch.update',
+                'reports.general.generate',
+                'reports.general.count',
+                'reports.appcount',
+                'reports.onsite.show',
+                'reports.signoffs.show',
+                'reports.productivity',
+                'reports.category.show',
+                'reports.establishment.show',
+                'reports.inspections.show',
+                'collectedcards.store',
                 'logout',
             ];
 
