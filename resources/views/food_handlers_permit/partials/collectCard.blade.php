@@ -1,41 +1,32 @@
 {{-- Card Pickup Section --}}
 <div class="card mt-3">
-    <h5 class="card-header text-muted">
-        Card Pickup Details
-    </h5>
+    <h5 class="card-header text-muted">Card Pickup Details</h5>
 
-    {{-- CASE 1: Card already collected --}}
-    @if ($permit_application->collected_cards)
+    {{-- Collected --}}
+    @if ($cardStatus['status'] === 'collected')
         <div class="card-body">
-            Card was collected by
-            
-            <strong>{{ $permit_application->collected_cards?->pick_up_id == 2 ? $permit_application->collected_cards?->bearer_firstname . ' ' .$permit_application->collected_cards?->bearer_lastname : $permit_application->collected_cards->collected_by }}</strong>
-            on
-            <strong>{{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}</strong>.
+            {{ $cardStatus['message'] }}
         </div>
 
-    {{-- CASE 2: Card ready for pickup (no record yet, not expired) --}}
-    @elseif ($permit_application->printedcard && $permit_application->signOffs?->expiry_date > \Carbon\Carbon::now())
+    {{-- Ready --}}
+    @elseif ($cardStatus['status'] === 'ready')
         <div class="card-body">
-            Card is ready for pickup.
+            {{ $cardStatus['message'] }}
         </div>
 
-        <div class="card-footer">
-            <a href="{{ route('collectedcards.create',['id' => $permit_application->id]) }}" class="btn btn-success mt-1">Enter Pickup Details</a>
-        </div>
+        @if ($cardStatus['show_button'])
+            <div class="card-footer">
+                <a href="{{ route('collectedcards.create', ['id' => $permit_application->id]) }}"
+                    class="btn btn-success mt-1">
+                    Enter Pickup Details
+                </a>
+            </div>
+        @endif
 
-        {{-- @include('partials.modals.addCardInfoModal') --}}
-
-    {{-- CASE 3: Card not ready OR expired --}}
+    {{-- Not Ready / Expired / Unknown --}}
     @else
         <div class="card-body text-muted">
-            @if (!$permit_application->printedcard)
-                The card has not been printed yet.
-            @elseif ($permit_application->signOffs?->expiry_date <= \Carbon\Carbon::now())
-                The card cannot be collected because the sign-off has expired.
-            @else
-                Card pickup details are not available at this time.
-            @endif
+            {{ $cardStatus['message'] }}
         </div>
     @endif
 </div>

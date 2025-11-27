@@ -103,11 +103,21 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults',
-         'healthInterviews.healthInterviewSymptom.symptoms', 
-         'appointment.editTransactions', 'messages',
-          'messages.user', 'printedcard', 'collected_cards',
-           'signOffs.user:id,firstname,lastname')
+        $permit_application = PermitApplication::with(
+            'permitCategory',
+            'payment',
+            'user',
+            'establishmentClinics',
+            'signOffs',
+            'testResults',
+            'healthInterviews.healthInterviewSymptom.symptoms',
+            'appointment.editTransactions',
+            'messages',
+            'messages.user',
+            'printedcard',
+            'collected_cards',
+            'signOffs.user:id,firstname,lastname'
+        )
             ->find($application_id);
         //dd($permit_application);
 
@@ -141,10 +151,58 @@ class PermitApplicationController extends Controller
         //     $tdbetwappandprint = 0;
         // }
 
+        $cardStatus = [
+            'status' => null,            // collected | ready | not_ready | expired
+            'message' => null,
+            'show_button' => false,
+            'collected_by' => null,
+            'collected_date' => null,
+        ];
+
+        // CASE 1: Card already collected
+        if ($permit_application->collected_cards) {
+
+            // Determine collector name
+            $collector = $permit_application->collected_cards?->pick_up_id == 2
+                ? ($permit_application->collected_cards?->bearer_firstname . ' ' . $permit_application->collected_cards?->bearer_lastname)
+                : $permit_application->collected_cards?->collected_by;
+
+            $cardStatus['status'] = 'collected';
+            $cardStatus['collected_by'] = $collector;
+            $cardStatus['collected_date'] = \Carbon\Carbon::parse(
+                $permit_application->collected_cards?->created_at
+            )->format('d F Y');
+            $cardStatus['message'] = "Card was collected by {$collector} on {$cardStatus['collected_date']}.";
+        }
+        // CASE 2: Printed & Sign-off not expired → Ready for pickup
+        elseif ($permit_application->printedcard && $permit_application->signOffs?->expiry_date > now()) {
+
+            $cardStatus['status'] = 'ready';
+            $cardStatus['message'] = 'Card is ready for pickup.';
+            $cardStatus['show_button'] = true;
+        }
+        // CASE 3: Not printed OR expired
+        else {
+
+            if (!$permit_application->printedcard) {
+                $cardStatus['status'] = 'not_ready';
+                $cardStatus['message'] = 'The card has not been printed yet.';
+            } elseif ($permit_application->signOffs?->expiry_date <= now()) {
+                $cardStatus['status'] = 'expired';
+                $cardStatus['message'] = 'The card cannot be collected because the sign-off has expired.';
+            } else {
+                $cardStatus['status'] = 'unknown';
+                $cardStatus['message'] = 'Card pickup details are not available at this time.';
+            }
+        }
+
+
 
         // dd($tdbetwappandprint);
         // $id_types = IdentificationTypes::all();
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
+        return view('food_handlers_permit.view', compact('permit_application', 
+        'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id',
+    'cardStatus'));
     }
 
     public function editView(Request $request)
@@ -331,12 +389,7 @@ class PermitApplicationController extends Controller
                                         'appointment_date' => $request->data["appointment_date"],
                                         'exam_date_id' => $request->data["exam_date_id"]
                                     ]
-                                ))
-
-                                
-
-
-                                {
+                                )) {
                                     //Change the date in the Test Results 
                                     //Find the results
                                     $test_result = TestResult::where('application_type_id', 1)
@@ -773,7 +826,7 @@ class PermitApplicationController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory','collected_cards')
+            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory', 'collected_cards')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->find($id)
             ) {
