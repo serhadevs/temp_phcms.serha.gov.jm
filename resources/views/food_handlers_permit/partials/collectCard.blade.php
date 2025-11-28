@@ -12,7 +12,7 @@
     @endif
 
     {{-- Card already picked up --}}
-    @if ($alreadyPickup)
+    {{-- @if ($alreadyPickup)
         <div class="card-footer">
             <p>
                 The card was picked up by
@@ -21,7 +21,7 @@
                 <strong>{{ \Carbon\Carbon::parse($pickup_details->created_at)->format('d F Y') }}</strong>.
             </p>
         </div>
-    @endif
+    @endif --}}
 
     {{-- Card expired --}}
     @if ($card_expired)
