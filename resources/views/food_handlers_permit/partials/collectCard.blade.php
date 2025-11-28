@@ -30,11 +30,6 @@
         </div>
     @endif
 
-    {{-- Fallback: card not printed or not signed off --}}
-    @if (!$collected_card && !$alreadyPickup && !$card_expired)
-        <div class="card-footer text-muted">
-            Either the card is not printed or the sign-off is not completed.
-        </div>
-    @endif
+    
 
 </div>
