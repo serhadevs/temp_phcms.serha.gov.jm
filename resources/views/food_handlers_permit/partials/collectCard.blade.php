@@ -2,7 +2,7 @@
     <h5 class="card-header text-muted">Card Pickup Details</h5>
 
     {{-- Card ready for pickup (not yet collected) --}}
-    @if ($collected_card && !$alreadyPickup && !$card_expired)
+    @if ($collected_card)
         <div class="card-footer">
             <a href="{{ route('collectedcards.create', ['id' => $permit_application->id]) }}"
                class="btn btn-success mt-1">
