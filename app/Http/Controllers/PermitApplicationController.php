@@ -170,7 +170,7 @@ class PermitApplicationController extends Controller
             $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
 
             // If you need both conditions
-            $collected_card = $downloaded;
+            $collected_card = true;
 
             // OR if you only need pickup status
             // $collected_card = $alreadyPickup;
