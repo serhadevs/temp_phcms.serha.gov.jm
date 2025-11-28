@@ -2,7 +2,7 @@
     <h5 class="card-header text-muted">Card Pickup Details</h5>
 
     {{-- Card ready for pickup (not yet collected) --}}
-    @if ($collected_card)
+    @if ($collected_card && !$alreadyPickup)
         <div class="card-footer">
             <a href="{{ route('collectedcards.create', ['id' => $permit_application->id]) }}"
                class="btn btn-success mt-1">
@@ -12,7 +12,7 @@
     @endif
 
     {{-- Card already picked up --}}
-    {{-- @if ($alreadyPickup)
+    @if ($alreadyPickup)
         <div class="card-footer">
             <p>
                 The card was picked up by
@@ -21,7 +21,7 @@
                 <strong>{{ \Carbon\Carbon::parse($pickup_details->created_at)->format('d F Y') }}</strong>.
             </p>
         </div>
-    @endif --}}
+    @endif
 
     {{-- Card expired --}}
     @if ($card_expired)
@@ -29,6 +29,8 @@
             The card was collected by {{ $permit_application }} be collected because it has expired.
         </div>
     @endif
+
+   
 
     
 

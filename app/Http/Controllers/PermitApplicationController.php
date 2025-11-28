@@ -167,7 +167,7 @@ class PermitApplicationController extends Controller
 
         if ($zipped) {
             $downloaded = Downloads::where('id', $zipped->id)->exists(); // Fix the column name
-            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
+            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists() ? true : false;
 
             // If you need both conditions
             $collected_card = true;
@@ -205,7 +205,7 @@ class PermitApplicationController extends Controller
             'collected_card',
             'card_expired',
             'pickup_details',
-            // 'alreadyPickup'
+            'alreadyPickup'
         ));
     }
 
