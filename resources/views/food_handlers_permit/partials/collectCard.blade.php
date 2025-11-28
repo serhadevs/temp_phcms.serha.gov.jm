@@ -4,10 +4,11 @@
     {{-- Card ready for pickup (not yet collected) --}}
     @if ($collected_card)
         <div class="card-footer">
-            <a href="{{ route('collectedcards.create', ['id' => $permit_application->id]) }}"
+            {{-- <a href="{{ route('collectedcards.create', ['id' => $permit_application->id]) }}"
                class="btn btn-success mt-1">
                 Enter Pickup Details
-            </a>
+            </a> --}}
+            <p>{{ $collected_card }}</p>
         </div>
     @endif
 
