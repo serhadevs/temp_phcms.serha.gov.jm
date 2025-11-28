@@ -26,7 +26,7 @@
     {{-- Card expired --}}
     @if ($card_expired)
         <div class="card-footer text-danger">
-            The card was collected by {{ $permit_application }} be collected because it has expired.
+            The card has expired.
         </div>
     @endif
 
