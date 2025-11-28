@@ -40,6 +40,8 @@ use Illuminate\Support\Facades\URL;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\IdentificationTypes;
 use App\Models\CollectedCards;
+use App\Models\Downloads;
+use App\Models\ZippedApplications;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -151,15 +153,60 @@ class PermitApplicationController extends Controller
         //     $tdbetwappandprint = 0;
         // }
 
+        //Check to see if the card was collected before
+
+        //dd($permit_application);
+
+
+        $collected_card = false;
+
+        $zipped = ZippedApplications::where([
+            'application_type_id' => 1,
+            'application_id'      => $permit_application->id,
+        ])->first();
+
+        if ($zipped) {
+            $downloaded = Downloads::where('id', $zipped->id)->exists(); // Fix the column name
+            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
+
+            // If you need both conditions
+            $collected_card = $downloaded;
+
+            // OR if you only need pickup status
+            // $collected_card = $alreadyPickup;
+        }
+
+        //dd($collected_card);
+
+        //Check if the card is expired
+        $card_expired = false;
+
+        $permit_expiry_date = $permit_application->signOffs?->expiry_date;
+
+        if ($permit_expiry_date && Carbon::now()->greaterThan(Carbon::parse($permit_expiry_date))) {
+            $card_expired = true;
+        }
+
+        $pickup_details = CollectedCards::where('app_id',$permit_application->id)->first();
+
         
 
 
 
         // dd($tdbetwappandprint);
         // $id_types = IdentificationTypes::all();
-        return view('food_handlers_permit.view', compact('permit_application', 
-        'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id',
-    ));
+        return view('food_handlers_permit.view', compact(
+            'permit_application',
+            'appointments',
+            'appointment_available',
+            'categories',
+            'app_type_id',
+            'system_operation_type_id',
+            'collected_card',
+            'card_expired',
+            'pickup_details',
+            'alreadyPickup'
+        ));
     }
 
     public function editView(Request $request)
