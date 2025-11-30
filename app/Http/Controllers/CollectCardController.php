@@ -88,12 +88,12 @@ class CollectCardController extends Controller
                     ->with('success', 'Pickup details saved successfully.');
             }
 
-            throw new \Exception('Failed to save pickup details');
+            // throw new \Exception('Failed to save pickup details');
         } catch (\Exception $e) {
             Log::error('Error storing card info: ' . $e->getMessage());
 
             return redirect()->back()->withInput()
-                ->with('error', 'An error occurred while saving pickup details. Please try again.');
+                ->with('error', 'An error occurred while saving pickup details. Please try again.' .$e->getMessage());
         }
     }
 
