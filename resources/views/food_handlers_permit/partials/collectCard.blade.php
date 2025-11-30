@@ -7,7 +7,7 @@
             <p>
                 @if($pickup_details->pick_up_id == '2')
                 The card was picked up by
-                <strong>{{ $pickup_details->bearer_firstname }} {{ $pickup_details->bearer_lastname }}</strong>
+                <strong>{{ $pickup_details->bearer_firstname }} {{ $pickup_details->bearer_lastname }}, an Authorized Bearer</strong>
                 on
                 <strong>{{ \Carbon\Carbon::parse($pickup_details->created_at)->format('d F Y') }}</strong>.
                 @else
