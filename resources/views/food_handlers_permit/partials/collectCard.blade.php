@@ -5,10 +5,18 @@
     @if ($alreadyPickup)
         <div class="card-footer">
             <p>
+                @if($pickup_details->pickup_id == '2')
                 The card was picked up by
-                <strong>{{ $pickup_details?->collected_by ?? $permit_application?->firstname }}</strong>
+                <strong>{{ $pickup_details->bearer_firstname }}</strong>
                 on
                 <strong>{{ \Carbon\Carbon::parse($pickup_details->created_at)->format('d F Y') }}</strong>.
+                @else
+                The card was picked up by
+                <strong>{{ $permit_application->firstname }} {{ $permit_application->lastname }}</strong>
+                on
+                <strong>{{ \Carbon\Carbon::parse($pickup_details->created_at)->format('d F Y') }}</strong>.
+
+                @endif
             </p>
         </div>
 
