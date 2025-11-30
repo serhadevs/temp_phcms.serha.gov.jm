@@ -5,7 +5,7 @@
     @if ($alreadyPickup)
         <div class="card-footer">
             <p>
-                @if($pickup_details->pickup_id == '2')
+                @if($pickup_details->pick_up_id == '2')
                 The card was picked up by
                 <strong>{{ $pickup_details->bearer_firstname }}</strong>
                 on
