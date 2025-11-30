@@ -33,7 +33,7 @@ class CollectCardController extends Controller
         $validator = Validator::make($request->all(), [
             'app_id' => 'required',
             'collected_by' => 'required|string|max:255',
-            'occupation' => 'required|string|max:255',
+            'occupation' => 'nullable|string|max:255',
             'application_type' => 'required',
             'identification_type_id' => 'required|exists:identification_types,id',
             'pick_up_id' => 'required|in:1,2',
