@@ -847,7 +847,7 @@
 
 
                     </form>
-                    @include('food_handlers_permit.partials.collectCard')
+                    {{-- @include('food_handlers_permit.partials.collectCard') --}}
                 </div>
             </div>
 
