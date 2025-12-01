@@ -205,7 +205,7 @@ class PermitApplicationController extends Controller
             'collected_card',
             'card_expired',
             'pickup_details',
-            'alreadyPickup'
+            // 'alreadyPickup'
         ));
     }
 

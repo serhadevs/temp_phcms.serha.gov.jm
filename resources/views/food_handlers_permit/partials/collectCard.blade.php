@@ -27,7 +27,7 @@
         </div>
 
     {{-- CASE 3: Card ready for pickup (printed + signed-off + not expired + not collected) --}}
-    @elseif ($collected_card && !$alreadyPickup && !$card_expired)
+    @elseif ($collected_card)
         <div class="card-footer">
             <a href="{{ route('collectedcards.create', ['id' => $permit_application->id]) }}"
                class="btn btn-success mt-1">
