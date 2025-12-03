@@ -233,7 +233,39 @@ class PermitApplicationController extends Controller
 
         $edit_mode = 1;
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id'));
+        $isAvailable = false;
+        $alreadyPickup = false;
+        $downloaded = false;
+        $pickup_details = null;
+
+        $zipped = ZippedApplications::where([
+            'application_type_id' => 1,
+            'application_id'      => $permit_application->id,
+        ])->first();
+
+        if ($zipped) {
+            // Fix: Check Downloads using the correct foreign key
+            $downloaded = Downloads::where('id', $zipped->id)->exists();
+
+            // Simplified: exists() already returns boolean
+            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
+            $isAvailable = true;
+        }
+
+        // Check if the card is expired
+        $card_expired = false;
+        $permit_expiry_date = $permit_application->signOffs?->expiry_date;
+
+        if ($permit_expiry_date && Carbon::now()->greaterThan(Carbon::parse($permit_expiry_date))) {
+            $card_expired = true;
+        }
+
+        // Get pickup details
+        $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
+
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id','card_expired',
+            'pickup_details',
+            'alreadyPickup'));
     }
 
     public function updateApplication(Request $request, $id)
