@@ -199,7 +199,7 @@ class PermitApplicationController extends Controller
             'isAvailable',
             'card_expired',
             'pickup_details',
-            'alreadyPickup'
+            
         ));
     }
 
@@ -265,7 +265,7 @@ class PermitApplicationController extends Controller
 
         return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id','card_expired',
             'pickup_details',
-            'alreadyPickup'));
+            'isAvailable'));
     }
 
     public function updateApplication(Request $request, $id)
