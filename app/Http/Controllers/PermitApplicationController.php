@@ -157,8 +157,10 @@ class PermitApplicationController extends Controller
 
         //dd($permit_application);
 
-
-        $collected_card = false;
+        $isAvailable = false;
+        $alreadyPickup = false;
+        $downloaded = false;
+        $pickup_details = null;
 
         $zipped = ZippedApplications::where([
             'application_type_id' => 1,
@@ -166,32 +168,24 @@ class PermitApplicationController extends Controller
         ])->first();
 
         if ($zipped) {
-            $downloaded = Downloads::where('id', $zipped->id)->exists(); // Fix the column name
-            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists() ? true : false;
+            // Fix: Check Downloads using the correct foreign key
+            $downloaded = Downloads::where('id', $zipped->id)->exists();
 
-            // If you need both conditions
-            $collected_card = true;
-
-            // OR if you only need pickup status
-            // $collected_card = $alreadyPickup;
+            // Simplified: exists() already returns boolean
+            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
+            $isAvailable = true;
         }
 
-        //dd($collected_card);
-
-        //Check if the card is expired
+        // Check if the card is expired
         $card_expired = false;
-
         $permit_expiry_date = $permit_application->signOffs?->expiry_date;
 
         if ($permit_expiry_date && Carbon::now()->greaterThan(Carbon::parse($permit_expiry_date))) {
             $card_expired = true;
         }
 
-        $pickup_details = CollectedCards::where('app_id',$permit_application->id)->first();
-
-        
-
-
+        // Get pickup details
+        $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
 
         // dd($tdbetwappandprint);
         // $id_types = IdentificationTypes::all();
@@ -202,10 +196,10 @@ class PermitApplicationController extends Controller
             'categories',
             'app_type_id',
             'system_operation_type_id',
-            'collected_card',
+            'isAvailable',
             'card_expired',
             'pickup_details',
-            // 'alreadyPickup'
+            'alreadyPickup'
         ));
     }
 
