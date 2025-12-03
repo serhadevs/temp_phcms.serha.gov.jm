@@ -200,7 +200,6 @@ class PermitApplicationController extends Controller
             'card_expired',
             'pickup_details',
             'alreadyPickup'
-            
         ));
     }
 
@@ -264,8 +263,7 @@ class PermitApplicationController extends Controller
         // Get pickup details
         $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id','card_expired','alreadyPickup',
-            'pickup_details','isAvailable'));
+        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function updateApplication(Request $request, $id)
