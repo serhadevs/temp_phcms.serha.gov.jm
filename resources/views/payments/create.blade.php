@@ -136,7 +136,7 @@
                                     @enderror
                                 </div> --}}
 
-                                @if (in_array(Auth::user()->id, [155, 156, 133, 180]))
+                                @if (in_array(Auth::user()->id, [155, 156, 133, 180,167,123]))
                                     <div class="mt-3">
                                         <div class="" style="display:none" id="backlog_1">
                                             <label for="" class="form-label">Receipt No of manual receipt</label>
