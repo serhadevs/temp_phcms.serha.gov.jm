@@ -42,6 +42,10 @@ class ReadOnlyMiddleware
                 'reports.printed-cards.show',
                 'reports.collected-cards.show',
                 'logout',
+                'users',
+                'users.online',
+                'user.create',
+                'users.add'
             ];
 
             // Get the current route name
