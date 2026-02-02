@@ -61,7 +61,8 @@ class UserController extends Controller
     public function index()
     {
 
-        if (Auth::user()->role_id == 1) {
+        $roles = [1,8];
+        if (in_array(Auth::user()->role_id,$roles)) {
 
             $users = $this->getUsers();
 
