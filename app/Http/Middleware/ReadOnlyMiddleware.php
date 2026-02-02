@@ -45,8 +45,7 @@ class ReadOnlyMiddleware
                 'users',
                 'users.online',
                 'user.create',
-                'users.add',
-                'settings/users'
+                'users.add'
             ];
 
             // Get the current route name
