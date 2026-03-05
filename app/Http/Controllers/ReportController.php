@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Models\ZippedApplications;
 use Carbon\Carbon;
 use Exception;
+use Faker\Provider\Payment;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -547,5 +548,62 @@ class ReportController extends Controller
         // dd($downloads);
 
         return view('reports.download_test.index', compact('downloads'));
+    }
+
+    public function generateMorningReport()
+    {
+        $users = User::where('last_seen', '>', \Carbon\Carbon::today()->setHour(0))
+            ->get();
+        $roles = DB::table('roles')->pluck('name', 'id');
+
+        $database_status = User::first() ? true : false;
+
+        return view('emails.reports.morning_daily_report', compact('users', 'roles', 'database_status'));
+    }
+
+    public function generateAfternoonReport()
+    {
+        $users = User::where('last_seen', '>', \Carbon\Carbon::today()->setHour(0))
+            ->get();
+        $roles = DB::table('roles')->pluck('name', 'id');
+
+        $database_status = User::first() ? true : false;
+
+        $permit_applications = PermitApplication::with('permitCategory')
+            ->where('created_at', '>', '2025-05-01')
+            ->get();
+
+        $establishment_applications_count = EstablishmentApplications::with('establishmentCategory')
+            ->where('created_at', '>', '2025-05-01')
+            ->count();
+
+        $swimming_pool_count = SwimmingPoolsApplications::where('created_at', '>', '2025-05-01')
+            ->count();
+
+        $establishment_clinics_count = EstablishmentClinics::where('created_at', '>', '2025-05-01')
+            ->count();
+
+        $tourist_application_count = TouristEstablishments::where('created_at', '>', '2025-05-01')
+            ->count();
+
+        $test_results_count = TestResult::where('created_at', '>', '2025-05-01')
+            ->count();
+
+        $sign_off_count = SignOff::where('created_at', '>', '2025-05-01')
+            ->count();
+
+        $total_sth_payments = Payments::where('facility_id', 1)
+            ->where('created_at', '>', '2025-05-01')
+            ->sum('total_cost');
+
+        $total_stt_payments = Payments::where('facility_id', 2)
+            ->where('created_at', '>', '2025-05-01')
+            ->sum('total_cost');
+
+        $total_ksa_payments = Payments::where('facility_id', 3)
+            ->where('created_at', '>', '2025-05-01')
+            ->sum('total_cost');
+
+        return view('emails.reports.afternoon_daily_report', compact('users', 'roles', 'database_status', 'permit_applications', 'establishment_applications_count', 'swimming_pool_count', 'establishment_clinics_count', 'tourist_application_count', 'test_results_count', 'sign_off_count', 'total_sth_payments', 'total_stt_payments', 'total_ksa_payments'));
     }
 }

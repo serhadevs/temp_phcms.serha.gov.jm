@@ -79,6 +79,15 @@
                                     </div>
                                 </a>
                             </div>
+                            <div class="card my-2">
+                                <a href="/mailing-list">
+                                    <div class="card-header">
+                                        <h5 class="fw-bold">
+                                            Mailing List Settings
+                                        </h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                         <div class="col-12 col-md">
                             <div class="card shadow">
