@@ -24,6 +24,21 @@
                             <form action="{{ route('payments.create.store') }}" method="POST">
                                 @csrf
                                 @method('POST')
+
+
+                                <input type="text" hidden name="waiver_id"
+                                    value="{{ $approved_waiver?->waiverApproval?->id ?? '' }}">
+
+                                {{-- @if ($approved_waiver->isEmpty()) --}}
+                                {{-- <input type="text" hidden name="has_waiver"
+                                    value="{{ $approved_waiver?->waiverApproval?->id ? 1 : '' }}"> --}}
+                                {{-- @endif --}}
+
+                                @isset($approved_waiver)
+                                    <input type="text" hidden name="has_waiver"
+                                        value="{{ $approved_waiver?->waiverApproval?->id ? 1 : '' }}">
+                                @endisset
+
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Type</label>
                                     <select name="price_id" class="form-select" id="prices"
@@ -48,6 +63,7 @@
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
+
                                 <div class="mt-3">
                                     <label for="" class="form-label">Application Number</label>
                                     <input type="text" class="form-control" name="application_id" {{-- value="{{ $app_id_1 != '' ? $app_id_1 : (old('application_id') == '' ? '' : old('application_id')) }}" --}}
@@ -59,13 +75,17 @@
                                 </div>
                                 <div class="mt-3">
                                     <label for="" class="form-label">Total Cost</label>
+
                                     <input type="number" class="form-control" id="total_cost" name="total_cost"
-                                        value = "{{ old('total_cost') == '' ? '' : old('total_cost') }}" readonly
-                                        onkeyup="calcChange()" oninput="calcChange()">
+                                        value="{{ old('total_cost', '') }}" readonly onkeyup="calcChange()"
+                                        oninput="calcChange()">
+
+
                                     @error('total_cost')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
+                                {{-- <input type="text" value=""> --}}
                                 <div class="mt-3">
                                     <label for="" class="form-label">Amount Paid</label>
                                     <input type="number" class="form-control" id="amount_paid" name="amount_paid"
@@ -89,14 +109,34 @@
                                         @foreach ($payment_types as $payment_type)
                                             <option value="{{ $payment_type->id }}"
                                                 {{ old('payment_type_id') == $payment_type->id ? 'selected' : '' }}>
-                                                {{ $payment_type->name }}</option>
+                                                {{ $payment_type->name }}
+                                            </option>
                                         @endforeach
                                     </select>
+
                                     @error('payment_type_id')
-                                        <p class="text-danger">This is a required field</p>
+                                        <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
-                                @if (in_array(Auth::user()->id, [155, 156, 133, 180]))
+
+                                {{-- Payment Type Section --}}
+                                {{-- <div class="mt-3">
+                                    <label for="payment_type_id" class="form-label">Payment Type</label>
+                                    <select name="payment_type_id" id="payment_type_id" class="form-select">
+                                        @foreach ($payment_types as $payment_type)
+                                            <option value="{{ $payment_type->id }}"
+                                                {{ old('payment_type_id') == $payment_type->id ? 'selected' : '' }}>
+                                                {{ $payment_type->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('payment_type_id')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div> --}}
+
+                                @if (in_array(Auth::user()->id, [155, 156, 133, 180,167,123]))
                                     <div class="mt-3">
                                         <div class="" style="display:none" id="backlog_1">
                                             <label for="" class="form-label">Receipt No of manual receipt</label>
@@ -265,6 +305,58 @@
                                 });
                             });
                         </script>
+
+                        {{-- <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const hasWaiver = document.querySelector('input[name="has_waiver"]');
+                                const paymentSelect = document.getElementById('payment_type_id');
+
+                                for (let option of paymentSelect.options) {
+                                    if (!hasWaiver || !hasWaiver.value) {
+                                        // has_waiver is null → hide option 5
+                                        option.style.display = option.value == '5' ? 'none' : 'block';
+                                    } else {
+                                        // has_waiver is not null → show only option 5
+                                        option.style.display = option.value == '5' ? 'block' : 'none';
+                                    }
+                                }
+
+                                // Optionally, select the first visible option automatically
+                                for (let option of paymentSelect.options) {
+                                    if (option.style.display !== 'none') {
+                                        paymentSelect.value = option.value;
+                                        break;
+                                    }
+                                }
+                            });
+                        </script> --}}
+
+                        {{-- <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const hasWaiver = document.querySelector('input[name="has_waiver"]');
+                                const paymentSelect = document.getElementById('payment_type_id');
+
+                                const hasWaiverValue = hasWaiver && hasWaiver.value === '1';
+
+                                for (let option of paymentSelect.options) {
+                                    if (hasWaiverValue) {
+                                        // Waiver exists → show ONLY "Waiver" (option 5)
+                                        option.style.display = option.value === '5' ? 'block' : 'none';
+                                    } else {
+                                        // No waiver → show all except "Waiver" (option 5)
+                                        option.style.display = option.value === '5' ? 'none' : 'block';
+                                    }
+                                }
+
+                                // Auto-select the correct visible option
+                                for (let option of paymentSelect.options) {
+                                    if (option.style.display !== 'none') {
+                                        paymentSelect.value = option.value;
+                                        break;
+                                    }
+                                }
+                            });
+                        </script> --}}
                     </div>
                 </div>
 

@@ -43,6 +43,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnswersController;
 use App\Http\Controllers\MailingListController;
 use App\Http\Middleware\printerAuthAttempt;
+use App\Http\Controllers\WaiverApprovalController;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
@@ -95,7 +96,7 @@ Route::get('/permit/online/application/complete/{id}', [OnlineApplicationControl
 Route::post('/coupon/redeem', [CouponController::class, 'redeem'])->name('coupons.redeem');
 
 
-Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
+Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.password','check.password.expiry']], function () {
 
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
@@ -163,6 +164,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   Route::get("/advance-search/create", [AdvanceSearchController::class, 'create'])->name('advance-search');
   Route::post("/advance-search/show", [AdvanceSearchController::class, 'show'])->name('advance.search.show');
+  Route::get('/permit/search', [AdvanceSearchController::class, 'search'])->name('permit.search');
+
 
   //Food Clinics Routes
   Route::get('/food-handlers-clinics/create', [FoodHandlersClinicController::class, 'create'])->name('food-handlers-clinic.create');
@@ -296,6 +299,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/reports/printed-cards', [ReportController::class, 'printedCardsIndex'])->name('reports.printed-cards.index');
   Route::post('/reports/printed-cards/show', [ReportController::class, 'generatePrintedCards'])->name('reports.printed-cards.show');
 
+  Route::get('/reports/collected-cards', [ReportController::class, 'collectedCardsIndex'])->name('reports.collected-cards.index');
+  Route::post('/reports/collected-cards/show', [ReportController::class, 'collectedCardsReport'])->name('reports.collected-cards.show');
+
   Route::get('/aireport', [ReportController::class, 'generateReport']);
 
   //Renewals
@@ -325,10 +331,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     Route::post('/settings/user/update/{id}', [UserController::class, 'editUser'])->name('users.update');
     Route::put('/settings/user/deactivate/{id}', [UserController::class, 'deactivateUser'])->name('users.destroy');
     Route::post('settings/user/filter', [UserController::class, 'filterUsers'])->name('users.filter');
+    Route::post('settings/reset-password/all', [UserController::class, 'resetAllPasswords'])->name('users.reset.all');
   });
 
   Route::get('/change-password', [UserController::class, 'changepasswordMe'])->name('user.changepassword');
-  Route::post('/password-change', [UserController::class, 'store']);
+  Route::post('/password-change', [UserController::class, 'store'])->name('user.password.change');
 
 
 
@@ -482,14 +489,18 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
 
   //Collected Cards 
   Route::controller(CollectCardController::class)->group(function () {
-    Route::get('/collected-card/create', 'create')->name('collectedcards.create');
+    Route::get('/collected-card/create/{id}', 'create')->name('collectedcards.create');
     Route::post('/collected-card/store', 'store')->name('collectedcards.store');
+    // Route::get('/collected-card/report', 'collectedCardReport')->name('collectedcards.report');
   });
 
   //Coupons
   Route::resource('coupons', CouponController::class);
 
-
+  //Waiver Routes
+  Route::get('/waivers', [WaiverApprovalController::class, 'index'])->name('waivers.index');
+  Route::post('/waivers/approve/{id}', [WaiverApprovalController::class, 'approve'])->name('waivers.approve');
+  Route::post('/waivers/store', [WaiverApprovalController::class, 'store'])->name('waivers.store');
 
 
   //Student Exam Routes
@@ -514,7 +525,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
   Route::get('/questions/take-exam/exam', [ExamController::class, 'exams'])->name('questions.exam');
 
 
-  //$2y$10$183YCnkw5PrxkctzaOYuX.qIHg5G9tR5IMYaokCMIndazv.NN0X.y
   //Answers Routes
   Route::get('/answers', [AnswersController::class, 'index'])->name('answers.index');
   Route::get('/answers/create/{id}/{exam_id}', [AnswersController::class, 'create'])->name('answers.create');

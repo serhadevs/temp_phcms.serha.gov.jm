@@ -38,6 +38,10 @@ use Illuminate\Support\Facades\Notification;
 use App\Models\Messages;
 use Illuminate\Support\Facades\URL;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\IdentificationTypes;
+use App\Models\CollectedCards;
+use App\Models\Downloads;
+use App\Models\ZippedApplications;
 
 // use Faker\Provider\ar_EG\Payment;
 
@@ -101,7 +105,21 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages', 'messages.user', 'printedcard', 'collected_cards', 'signOffs.user:id,firstname,lastname')
+        $permit_application = PermitApplication::with(
+            'permitCategory',
+            'payment',
+            'user',
+            'establishmentClinics',
+            'signOffs',
+            'testResults',
+            'healthInterviews.healthInterviewSymptom.symptoms',
+            'appointment.editTransactions',
+            'messages',
+            'messages.user',
+            'printedcard',
+            'collected_cards',
+            'signOffs.user:id,firstname,lastname'
+        )
             ->find($application_id);
         //dd($permit_application);
 
@@ -135,10 +153,54 @@ class PermitApplicationController extends Controller
         //     $tdbetwappandprint = 0;
         // }
 
+        //Check to see if the card was collected before
+
+        //dd($permit_application);
+
+        $isAvailable = false;
+        $alreadyPickup = false;
+        $downloaded = false;
+        $pickup_details = null;
+
+        $zipped = ZippedApplications::where([
+            'application_type_id' => 1,
+            'application_id'      => $permit_application->id,
+        ])->first();
+
+        if ($zipped) {
+            // Fix: Check Downloads using the correct foreign key
+            $downloaded = Downloads::where('id', $zipped->id)->exists();
+
+            // Simplified: exists() already returns boolean
+            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
+            $isAvailable = true;
+        }
+
+        // Check if the card is expired
+        $card_expired = false;
+        $permit_expiry_date = $permit_application->signOffs?->expiry_date;
+
+        if ($permit_expiry_date && Carbon::now()->greaterThan(Carbon::parse($permit_expiry_date))) {
+            $card_expired = true;
+        }
+
+        // Get pickup details
+        $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
 
         // dd($tdbetwappandprint);
-
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'categories', 'app_type_id', 'system_operation_type_id'));
+        // $id_types = IdentificationTypes::all();
+        return view('food_handlers_permit.view', compact(
+            'permit_application',
+            'appointments',
+            'appointment_available',
+            'categories',
+            'app_type_id',
+            'system_operation_type_id',
+            'isAvailable',
+            'card_expired',
+            'pickup_details',
+            'alreadyPickup'
+        ));
     }
 
     public function editView(Request $request)
@@ -170,6 +232,36 @@ class PermitApplicationController extends Controller
         }
 
         $edit_mode = 1;
+
+        $isAvailable = false;
+        $alreadyPickup = false;
+        $downloaded = false;
+        $pickup_details = null;
+
+        $zipped = ZippedApplications::where([
+            'application_type_id' => 1,
+            'application_id'      => $permit_application->id,
+        ])->first();
+
+        if ($zipped) {
+            // Fix: Check Downloads using the correct foreign key
+            $downloaded = Downloads::where('id', $zipped->id)->exists();
+
+            // Simplified: exists() already returns boolean
+            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
+            $isAvailable = true;
+        }
+
+        // Check if the card is expired
+        $card_expired = false;
+        $permit_expiry_date = $permit_application->signOffs?->expiry_date;
+
+        if ($permit_expiry_date && Carbon::now()->greaterThan(Carbon::parse($permit_expiry_date))) {
+            $card_expired = true;
+        }
+
+        // Get pickup details
+        $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
 
         return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
@@ -326,6 +418,19 @@ class PermitApplicationController extends Controller
                                         'exam_date_id' => $request->data["exam_date_id"]
                                     ]
                                 )) {
+                                    //Change the date in the Test Results 
+                                    //Find the results
+                                    $test_result = TestResult::where('application_type_id', 1)
+                                        ->where('application_id', $application->id)
+                                        ->first();
+
+                                    //If the application has a test result, update the test date to match the new appointment date
+
+                                    if ($test_result) {
+                                        $test_result->update([
+                                            'test_date' => $request->data["appointment_date"]
+                                        ]);
+                                    }
                                     DB::commit();
                                     return [
                                         'success',
@@ -432,7 +537,7 @@ class PermitApplicationController extends Controller
 
         return view('food_handlers_permit.create_with_appointment_sch', compact('categories', 'appointments_available'));
     }
-    
+
     public function renewal(Request $request)
     {
         $categories = PermitCategory::all();
@@ -749,7 +854,7 @@ class PermitApplicationController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory')
+            if ($permit = PermitApplication::with('payment', 'appointment', 'testResults', 'healthInterviews.healthInterviewSymptom', 'travelHistory', 'collected_cards')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->find($id)
             ) {
@@ -791,6 +896,14 @@ class PermitApplicationController extends Controller
                                 }
                             }
                         }
+
+                        // if(!empty($permit->collected_cards)){
+                        //     foreach($permit->collected_cards as $card){
+                        //         if(!CollectedCards::find($card->id)->update(['deleted_at' => date('Y-m-d H:i:s')])){
+                        //             throw new Exception('Delete operation failed. Unable to delete collected cards');
+                        //         }
+                        //     }
+                        // }
                         //Add delete for messages
                         if ($permit->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();

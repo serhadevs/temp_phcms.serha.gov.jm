@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -35,7 +36,8 @@ class EstablishmentClinics extends Model implements Auditable
         'updated_at',
         'deleted_at',
         'due_payments',
-        'submitted_by_id'
+        'submitted_by_id',
+        'waiver_establishment_id'
     ];
 
     public $timestamps = true;
@@ -65,5 +67,19 @@ class EstablishmentClinics extends Model implements Auditable
         return $this->hasMany(EditTransactions::class, 'table_id', 'id')
             ->where('application_type_id', 4)
             ->where('system_operation_type_id', 1);
+    }
+
+    public function printedcards(){
+        return $this->hasMany(PrintedPermitCards::class, 'application_id', 'id')->where('application_type_id', 4);
+    }
+
+    public function waiver(): HasOne
+    {
+        return $this->hasOne(Waivers::class, 'application_id', 'id');
+    }
+
+    public function waiverApproval():HasOne
+    {
+        return $this->hasOne(WaiverApprovals::class, 'establishment_id','id');
     }
 }

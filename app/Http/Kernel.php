@@ -38,6 +38,8 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\UserActivity::class,
+             \App\Http\Middleware\ReadOnlyMiddleware::class,
+              \App\Http\Middleware\CheckDefaultPassword::class,
         ],
 
         'api' => [
@@ -67,5 +69,7 @@ class Kernel extends HttpKernel
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'checkRole' => \App\Http\Middleware\CheckUserRole::class,
         'verify.signature' => \App\Http\Middleware\ValidateSignature::class,
+        'check.default.password' => \App\Http\Middleware\CheckDefaultPassword::class,
+        'check.password.expiry' => \App\Http\Middleware\CheckPasswordExpiry::class,
     ];
 }

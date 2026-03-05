@@ -56,6 +56,10 @@ class PermitApplication extends Model implements Auditable
         'submitted_by_id'
     ];
 
+    protected $attributes = [
+    'occupation' => 'Unemployed',
+];
+
     public $timestamp = true;
 
     public function permitCategory(): HasOne
@@ -134,7 +138,12 @@ class PermitApplication extends Model implements Auditable
 
     public function printedcard(): HasOne
     {
-        return $this->hasOne(PrintedPermitCards::class, 'application_id', 'id');
+        // return $this->hasOne(PrintedPermitCards::class, 'application_id', 'id');
+
+        return $this->hasOne(PrintedPermitCards::class, 'application_id', 'id')
+        ->whereHas('download', function ($query) {
+            $query->whereNotNull('download_date');
+        });
     }
 
     public function collected_cards(): HasOne

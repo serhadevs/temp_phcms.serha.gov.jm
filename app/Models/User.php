@@ -21,7 +21,7 @@ use Yungts97\LaravelUserActivityLog\Traits\Loggable;
 class User extends Authenticatable implements Auditable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-     use \OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'id',
@@ -39,7 +39,8 @@ class User extends Authenticatable implements Auditable
         'deleted_at',
         'status',
         'last_seen',
-        'default_filter_id'
+        'default_filter_id',
+        'password_changed_at',
     ];
 
     /**
@@ -85,7 +86,7 @@ class User extends Authenticatable implements Auditable
         if (auth()->check()) {
             return User::where('facility_id', auth()->user()->facility_id)->get();
         }
-    
+
         // Return an empty collection or null if no authenticated user is found
         return collect();
     }
@@ -95,11 +96,13 @@ class User extends Authenticatable implements Auditable
         return $this->hasOne(Facility::class, 'id', 'facility_id');
     }
 
-    public function examSite(): HasOne{
-        return $this->hasOne(ExamSites::class,'facility_id','facility_id');
+    public function examSite(): HasOne
+    {
+        return $this->hasOne(ExamSites::class, 'facility_id', 'facility_id');
     }
 
-    public function OnlineUser(){
+    public function OnlineUser()
+    {
         return Cache::has('user-is-online-' . $this->id);
     }
 
@@ -107,7 +110,21 @@ class User extends Authenticatable implements Auditable
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
-   
+
+    public function isAuditor(): bool
+    {
+        return $this->role_id === 8;
+    }
+
+    public function passwordExpiryDate(): ?\Carbon\Carbon
+{
+    if ($this->password_changed_at) {
+        return \Carbon\Carbon::parse($this->password_changed_at)->copy()->addDays(90);
+    }
+
+    return null;
+}
+
 
     public $timestamps = true;
 }

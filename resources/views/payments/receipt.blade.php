@@ -78,6 +78,12 @@
                             Cashier : {{ $receipt_info['cashier'] }}
                         </h5>
                     @endif
+                    @if(!empty($receipt_info['has_waiver']))
+                        <h5 class="mt-3">
+                             Note: This application had a waiver approved. No payment was required.
+                        </h5>
+                           
+                    @endif
                     <button class="btn btn-success mt-4" onClick="printReceipt({{ json_encode($receipt_info) }})">
                         Print Receipt
                     </button>
@@ -130,6 +136,7 @@
             mywindow.document.write('Amount Paid      : ' + "$" + receipt_info['amount_paid'] + "<br>");
             mywindow.document.write('Change     : ' + "$" + receipt_info['change_amt'] + "<br><br>");
             mywindow.document.write('Cashier    : ' + receipt_info['cashier'] + "<br><br>");
+             mywindow.document.write('Note    : ' + receipt_info['has_waiver'] + "<br><br>");
 
             mywindow.document.write('REMINDER: TAKE ALONG THIS RECEIPT' + "<br>" + 'WITH YOU ON THE APPOINTMENT DATE.' +
                 "<br>" + '***DO NOT LOSE THIS RECEIPT!***' + '<br>');

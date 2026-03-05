@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NumberApplicationsByCategory;
 use App\Models\ApplicationType;
+use App\Models\CollectedCards;
 use App\Models\Downloads;
 use App\Models\EditTransactions;
 use App\Models\EstablishmentApplications;
@@ -26,6 +27,7 @@ use Faker\Provider\Payment;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -550,6 +552,7 @@ class ReportController extends Controller
         return view('reports.download_test.index', compact('downloads'));
     }
 
+<<<<<<< HEAD
     public function generateMorningReport()
     {
         $users = User::where('last_seen', '>', \Carbon\Carbon::today()->setHour(0))
@@ -606,4 +609,44 @@ class ReportController extends Controller
 
         return view('emails.reports.afternoon_daily_report', compact('users', 'roles', 'database_status', 'permit_applications', 'establishment_applications_count', 'swimming_pool_count', 'establishment_clinics_count', 'tourist_application_count', 'test_results_count', 'sign_off_count', 'total_sth_payments', 'total_stt_payments', 'total_ksa_payments'));
     }
+=======
+    public function collectedCardsIndex()
+    {
+        return view('reports.collectedcards.index');
+    }
+
+    public function collectedCardsReport(Request $request)
+{
+    $validatedData = $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+    ]);
+
+    $start_date = $validatedData['start_date'];
+    $end_date = $validatedData['end_date'];
+
+    $query = CollectedCards::with('permit_application', 'identificationType:id,name', 'user:id,firstname,lastname,facility_id')
+        ->whereBetween('created_at', [
+            $start_date . ' 00:00:00',
+            $end_date . ' 23:59:59'
+        ])
+        ->orderBy('created_at', 'desc');
+
+    // Apply facility filter only if user is not admin (role_id != 1)
+    if (Auth::user()->role_id != 1) {
+        $query->whereRelation('user', 'facility_id', Auth::user()->facility_id);
+    }
+    
+   $collected_cards = $query
+    ->when($request->filled('start_date'), function ($q) use ($request) {
+        $q->whereDate('created_at', '>=', $request->start_date);
+    })
+    ->when($request->filled('end_date'), function ($q) use ($request) {
+        $q->whereDate('created_at', '<=', $request->end_date);
+    })
+    ->get();
+
+    return view('reports.collectedcards.show', compact('collected_cards', 'start_date', 'end_date'));
+}
+>>>>>>> eed94629adc1dc086d204a443750d9b03016fcf3
 }

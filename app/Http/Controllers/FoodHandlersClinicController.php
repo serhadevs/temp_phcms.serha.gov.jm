@@ -12,6 +12,9 @@ use App\Models\Renewals;
 use App\Models\SignOff;
 use App\Models\TestResult;
 use App\Models\User;
+use App\Models\WaiverApprovals;
+use App\Models\WaiverEstablishments;
+use App\Models\Waivers;
 use Illuminate\Http\Request;
 use DateTime;
 use Exception;
@@ -88,7 +91,8 @@ class FoodHandlersClinicController extends Controller
      */
     public function create()
     {
-        return view('food_handlers_clinic.create');
+        $waivers = WaiverEstablishments::all();
+        return view('food_handlers_clinic.create', compact('waivers'));
     }
 
     public function renewal($id)
@@ -192,12 +196,28 @@ class FoodHandlersClinicController extends Controller
             'no_of_employees' => 'numeric|required',
             'proposed_date' => 'required',
             'proposed_time' => 'required',
-            'application_date' => 'required|date'
+            'application_date' => 'required|date',
+            'waiver_establishment_id' => 'nullable|exists:waiver_establishments,id',
+            'waiver_amount' => 'nullable|required_with:waiver_establishment_id|numeric|min:0',
         ]);
 
         $food_handlers_clinic['user_id'] = auth()->user()->id;
 
         $app_id = EstablishmentClinics::create($food_handlers_clinic)->id;
+
+        //Add to Waiver Establishment Applications if waiver_establishment_id is present
+        if (isset($food_handlers_clinic['waiver_establishment_id'])) {
+            Waivers::insert([
+                'waiver_establishment_id' => $food_handlers_clinic['waiver_establishment_id'],
+                'application_id' => $app_id,
+                'user_id' => auth()->user()->id,
+                'application_type_id' => 4,
+                'waiver_reason' => 'Est has applied for Food Handlers Clinic Waiver',
+                'amount' => $food_handlers_clinic['waiver_amount'],
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+        }
 
         if ($app_id) {
             return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Food Handlers Clinic application was created successfully. The application number is: ' . $app_id);
@@ -214,16 +234,33 @@ class FoodHandlersClinicController extends Controller
      */
     public function show(Request $request)
     {
-        $application = EstablishmentClinics::with('editTransactions')
+        //check to see if the establishment name is in the waiver establishments table
+    
+
+        $application = EstablishmentClinics::with('editTransactions', 'printedcards')
             ->with('permits.payment')
+
             ->withCount('permits')
             ->find($request->route('id'));
+
+        //dd($application);
+        // $has_waiver = false;
+        if($application->name != null){
+           $waiver_check = WaiverEstablishments::where('establishment_name', 'like', '%' . $application->name . '%')->get();
+        //    $has_waiver = true;
+
+        } else {
+            $waiver_check = null;
+            // $has_waiver = false;
+        }
+
+        //dd($waiver_check);
 
         $applications_signed_off = PermitApplication::where('establishment_clinic_id', $request->route('id'))
             ->where('sign_off_status', 1)
             ->count();
 
-        return view('food_handlers_clinic.view', compact('application', 'applications_signed_off'));
+        return view('food_handlers_clinic.view', compact('application', 'applications_signed_off','waiver_check'));
     }
 
     /**
@@ -236,14 +273,17 @@ class FoodHandlersClinicController extends Controller
     {
         $application = EstablishmentClinics::with('editTransactions')->find($request->route('id'));
 
+       
         $edit_mode = 1;
 
         $applications_signed_off = PermitApplication::where('establishment_clinic_id', $request->route('id'))
             ->where('sign_off_status', 1)
             ->count();
 
+            $waiver_check = $application->waiver;
 
-        return view('food_handlers_clinic.view', compact('application', 'edit_mode', 'applications_signed_off'));
+
+        return view('food_handlers_clinic.view', compact('application', 'edit_mode', 'applications_signed_off','waiver_check'));
     }
 
     /**

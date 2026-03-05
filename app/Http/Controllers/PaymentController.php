@@ -27,6 +27,7 @@ use App\Models\Renewals;
 use App\Models\SwimmingPoolsApplications;
 use App\Models\TouristEstablishments;
 use App\Models\User;
+use App\Models\Waivers;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -138,7 +139,7 @@ class PaymentController extends Controller
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereBetween('created_at', [$filterTimeline, $today]);
 
-            $clinic_application = EstablishmentClinics::with('payment', 'user')
+            $clinic_application = EstablishmentClinics::with('payment', 'user', 'waiver')
                 ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
                 ->doesntHave('payment')
                 ->doesntHave('payment')
@@ -263,7 +264,7 @@ class PaymentController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date']]);
 
-        $clinic_application = EstablishmentClinics::with('payment', 'user')
+        $clinic_application = EstablishmentClinics::with('payment', 'user', 'waiver')
             ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
             ->doesntHave('payment')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
@@ -295,13 +296,17 @@ class PaymentController extends Controller
     public function create()
     {
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
-            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')
+            ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", 
+            (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) 
+            as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
         $payment_types = PaymentTypes::with('paymentTypeFacilities')
             ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
             // ->whereRelation('paymentTypeFacilities', 'status', "<>", "0")
             ->get();
+
+
         // $payment_types = PaymentTypeFacilities::with('paymentType')
         //     ->where('facility_id', auth()->user()->facility_id)
         //     ->where('status', "<>", "0")
@@ -339,7 +344,18 @@ class PaymentController extends Controller
             ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) as app_type_name, prices.application_type_id, prices.price, prices.id')
             ->get();
 
-        return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id', 'payment_types'));
+        $has_waiver = null;
+        $approved_waiver = null;
+
+        if ($app_type == 4) {
+            $has_waiver = EstablishmentClinics::with('waiver')->find($app_id);
+            $approved_waiver = EstablishmentClinics::with('waiverApproval')->find($app_id);
+        }
+
+
+
+        //dd($approved_waiver_id->waiverApproval->id);
+        return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id', 'payment_types', 'has_waiver', 'approved_waiver'));
     }
 
     public function applyClinicPermitPayment($clinic_id)
@@ -443,6 +459,8 @@ class PaymentController extends Controller
             $receipt_info['applicant_name'] = EstablishmentApplications::find($payment->application_id)?->establishment_name;
         } else if ($payment->application_type_id == 4) {
             $receipt_info['applicant_name'] = EstablishmentClinics::find($payment->application_id)?->name;
+            $receipt_info['has_waiver'] = EstablishmentClinics::with('waiverApproval')->find($payment->application_id)?->waiverApproval ? true : false;
+            //dd($receipt_info);
         } else if ($payment->application_type_id == 2) {
             $health_certif = HealthCertApplications::find($payment->application_id);
             $receipt_info['applicant_name'] = $health_certif->firstname . " " . $health_certif->lastname;
@@ -525,6 +543,16 @@ class PaymentController extends Controller
         // $new_payment['wire_transfer_date'] = date($new_payment['wire_transfer_date']);
 
         // dd($new_payment);
+        if ($request->has_waiver == 1) {
+
+           
+            $validated['total_cost'] = 0;
+            $validated['amount_paid'] = 0;
+            $validated['change_amt'] = 0;
+        }
+
+
+
         $register_new_payment = Payments::create($new_payment);
 
         $applicant = PermitApplication::where('id', $app_id)->first();
@@ -695,29 +723,47 @@ class PaymentController extends Controller
                 echo $output;
             }
         } else if ($application_type_id == 4) {
-            $output = "";
             $results = DB::table('establishment_clinics')
                 ->join('users', 'establishment_clinics.user_id', '=', 'users.id')
-                ->where('establishment_clinics.id', '=', $application_id)
+                ->leftJoin('waiver_approvals', function ($join) {
+                    $join->on('waiver_approvals.establishment_id', '=', 'establishment_clinics.id')
+                        ->whereNull('waiver_approvals.deleted_at'); // preserve left join
+                })
+                ->where('establishment_clinics.id', $application_id)
                 ->where('users.facility_id', auth()->user()->facility_id)
-                ->where('establishment_clinics.deleted_at', '=', NULL)
-                ->select('establishment_clinics.*')
+                ->whereNull('establishment_clinics.deleted_at')
+                ->select(
+                    'establishment_clinics.name',
+                    'establishment_clinics.address',
+                    'establishment_clinics.contact_person',
+                    'establishment_clinics.no_of_employees',
+                    'establishment_clinics.proposed_date',
+                    'establishment_clinics.proposed_time',
+                    'waiver_approvals.approval_status as approval_status'
+                )
                 ->get();
 
             if ($results->isEmpty()) {
-                $output = '<h4>Application Information</h4><p class="text-danger">Data Not found</p>';
-                echo $output;
+                echo '<h4>Application Information</h4><p class="text-danger">Data Not Found</p>';
             } else {
-                $output = $output = "<h4>Application Info</h4>";
+                $output = "<h4>Application Info</h4>";
+
                 foreach ($results as $result) {
                     $output .= "<p>Application Type: Food Handler Clinic</p>";
-                    $output .= "<p>Name: $result->name</p>";
-                    $output .= "<p>Address: $result->address</p>";
-                    $output .= "<p>Contact Person: $result->contact_person</p>";
-                    $output .= "<p>Number of Employees: $result->no_of_employees</p>";
-                    $output .= "<p>Proposed Date & Time: $result->proposed_date $result->proposed_time</p>";
+                    $output .= "<p>Name: {$result->name}</p>";
+                    $output .= "<p>Address: {$result->address}</p>";
+                    $output .= "<p>Contact Person: {$result->contact_person}</p>";
+                    $output .= "<p>Number of Employees: {$result->no_of_employees}</p>";
+                    $output .= "<p>Proposed Date & Time: {$result->proposed_date} {$result->proposed_time}</p>";
+                    if ($results->where('approval_status', 'approved')->isNotEmpty()) {
+                        $output .= "<p class='text-success'>Waiver approved for this application.</p>";
+                    }else{
+                         $output .= "";
+                    }
+
                     $output .= $this->paymentStatus($application_id, $application_type_id);
                 }
+
                 echo $output;
             }
         } else if ($application_type_id == 5) {

@@ -254,4 +254,26 @@ class AdvanceSearchController extends Controller
             return $e->getMessage();
         }
     }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'q' => 'required|min:1',
+        ]);
+
+        $query = $request->input('q');
+        $module = $request->input('module');
+
+        $permit_applications = PermitApplication::with('user', 'establishmentClinics')
+            ->where('id', $query)
+            ->orWhere('firstname', 'like', "%{$query}%")
+            ->orWhere('lastname', 'like', "%{$query}%")
+            ->orWhereHas('establishmentClinics', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
+            ->get();
+
+        return view('advancesearch.view', compact('permit_applications','module'));
+    }
 }

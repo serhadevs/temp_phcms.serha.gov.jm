@@ -454,7 +454,7 @@
                                     @method('PUT') --}}
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="text-muted mb-0">Application Information</h4>
+                                        <h4 class="text-muted mb-0">Applicant Information</h4>
                                         {{-- <a href = "{{ route('printed.applications',['id'=>$permit_application->id]) }}" class="btn btn-danger btn-sm">Print Application</a> --}}
                                     </div>
                                     <input type="text" name="previous_url" value={{ url()->previous() }} hidden>
@@ -650,7 +650,7 @@
 
                                 <div class="card mt-3">
                                     <h4 class="text-muted card-header">
-                                        Application Information
+                                        Permit Application Information
                                     </h4>
                                     <div class="card-body">
                                         {{-- <div class="mt-3"> --}}
@@ -805,7 +805,7 @@
                                         <div class="card-header">
                                             <h4 class="text-muted row justify-content-between">
                                                 <div class="col">
-                                                    Appointment Info
+                                                    Appointment Information
                                                 </div>
                                                 <div class="col-auto">
                                                     @if ($permit_application->establishment_clinic_id == '' && count($appointments) == 0)
@@ -847,44 +847,15 @@
 
 
                     </form>
-                    {{-- Card Collected --}}
-
-                    <div class="card mt-3">
-                        <h5 class="card-header text-muted">
-                            Card Pickup Details
-                        </h5>
-
-                        @if ($permit_application->printedcard && $permit_application->signOffs?->expiry_date > \Carbon\Carbon::now())
-                            <div class="card-body">
-                                Card is ready for pickup
-                            </div>
-
-                            <div class="card-footer">
-                                <button type="button" class="btn btn-success mt-1"
-                                    data-bs-toggle="modal"onclick="populateCardPickUpModal({{ json_encode($permit_application->id) }}, {{ json_encode($permit_application->payment) }})"
-                                    data-bs-target="#cardModal">Enter Pickup Details</button>
-                            </div>
-                            @include('partials.modals.addCardInfoModal')
-                        @elseif($permit_application->collected_cards)
-                            <div class="card-body">
-                                Card was collected by
-                                {{ $permit_application->collected_cards?->collected_by }} on
-                                {{ \Carbon\Carbon::parse($permit_application->collected_cards?->created_at)->format('d F Y') }}
-                            </div>
-                        @elseif(!$permit_application->collected_card)
-                            <div class="card-body">
-
-                            </div>
-                        @endif
-
-                    </div>
-                    {{-- Card Collected --}}
+                    {{-- @include('food_handlers_permit.partials.collectCard') --}}
                 </div>
             </div>
+
+
         </div>
 
 
-    </div>
+        </div>
     </div>
 
     {{-- Payment Modal --}}
@@ -1192,6 +1163,7 @@
         function populateCardPickUpModal(appid, payment) {
             document.getElementById('card_app_id').value = appid
             document.getElementById('application_type_id').value = payment.application_type_id
+            
         }
     </script>
 
