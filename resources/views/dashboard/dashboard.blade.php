@@ -150,7 +150,7 @@
                             @endif
                         </div>
                         <div class="card-body py-3">
-                            @if (in_array(auth()->user()->role_id, [1, 3, 10]))
+                            @if (in_array(auth()->user()->role_id, [1, 3, 10, 7, 8]))
                                 {{-- <div class="row">
                                     <!-- Food Establishments that are expiring -->
                                     <div class="col mb-3">
