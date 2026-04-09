@@ -551,7 +551,7 @@ class ReportController extends Controller
 
         return view('reports.download_test.index', compact('downloads'));
     }
-Z
+
     public function generateMorningReport()
     {
         $users = User::where('last_seen', '>', \Carbon\Carbon::today()->setHour(0))
