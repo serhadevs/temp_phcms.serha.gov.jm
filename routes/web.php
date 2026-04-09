@@ -318,7 +318,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.pas
   Route::get('/food-handlers-clinics/renewal/{id}', [FoodHandlersClinicController::class, 'renewal'])->name('food-handlers-clinics.renewal');
   Route::post('/food-handlers-clinics/renew/{id}', [FoodHandlersClinicController::class, 'renew'])->name('food-handlers-clinics.renew');
 
-  Route::middleware(['checkRole:1'])->group(function () {
+  Route::middleware(['checkRole:1,8'])->group(function () {
     Route::get('/settings/users', [UserController::class, 'index'])->name('users');
     Route::get('/settings/users/reset-password/{id}', [UserController::class, 'resetpassword']);
     Route::get('/settings/users/restore/{id}', [UserController::class, 'restore']);
