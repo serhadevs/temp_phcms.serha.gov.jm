@@ -551,8 +551,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.pas
   Route::get('/admin/payment/type/facilities', [SettingsController::class, 'allPaymentMethods'])->name('payment.type.facility');
   Route::get('/admin/payment/type/facilities/{payment_type_id}/{facility_id}', [SettingsController::class, 'changePMethodActiveStatus'])->name('change.active.stat.payment.type');
 
-  Route::resource('mailing-list', MailingListController::class);
-  Route::delete("/mailing-list/active/{mailingList}", [MailingListController::class, 'changeActiveStatus'])->name('update.activation.status');
-  Route::get("/morning-report", [ReportController::class, 'generateMorningReport']);
-  Route::get("/afternoon-report", [ReportController::class, 'generateAfternoonReport']);
+  // Route::resource('mailing-list', MailingListController::class);
+  // Route::delete("/mailing-list/active/{mailingList}", [MailingListController::class, 'changeActiveStatus'])->name('update.activation.status');
+  // Route::get("/morning-report", [ReportController::class, 'generateMorningReport']);
+  // Route::get("/afternoon-report", [ReportController::class, 'generateAfternoonReport']);
 });

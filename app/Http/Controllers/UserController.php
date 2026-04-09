@@ -307,7 +307,7 @@ class UserController extends Controller
             'lastname' => 'required',
             'facility_id' => 'required',
             'telephone' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users|ends_with:@serha.gov.jm',
             'role_id' => 'required',
         ]);
 
