@@ -16,12 +16,12 @@ class VerificationController extends Controller
         )->where('permit_no', $permit_no)->first();
 
         if (!$applicant) {
-            return view('verify', [
+            return view('verify.verify', [
                 'found' => false
             ]);
         }
 
-        return view('verify', [
+        return view('verify.verify', [
             'found' => true,
             'applicant' => $applicant
         ]);
