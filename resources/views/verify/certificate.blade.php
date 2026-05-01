@@ -151,6 +151,24 @@
             margin: 0 auto;
             /* THIS CENTERS EVERYTHING */
         }
+
+        .photo-box {
+            width: 120px;
+            height: 120px;
+            border: 1px solid #999;
+            background: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 </head>
 
