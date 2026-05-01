@@ -81,7 +81,7 @@
 
             <!-- PHOTO -->
             <div class="col-md-2 text-center">
-                <div class="border bg-light d-flex align-items-center justify-content-center rounded-0"
+                <div class="border bg-light d-flex align-items-center justify-content-center rounded"
                     style="width:120px;height:120px;overflow:hidden;margin:auto;">
                     @if ($applicant->photo_upload)
                         <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
