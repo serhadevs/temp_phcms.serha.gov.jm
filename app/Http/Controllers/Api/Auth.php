@@ -31,16 +31,22 @@ class Auth extends Controller
         //Create Token 
 
         $token = $user->createToken('PHCMS')->plainTextToken;
+        // $access_token = $user->createToken('ACCESS_TOKEN')->plainTextToken;
         
         // Return the response
         return response()->json([
             'status' => 'success',
             'message' => 'Login successful',
             'user' => $user,
-            'access_token' => $token,
+            'token' => $token,
+            // 'access_token' => $access_token,
             'token_type'    => 'Bearer'
             
-        ], 201);
+        ], 200);
+
+    // return response()->json([
+    //         "message" => "API reached successfully"
+    //     ]);
 
     }
 
