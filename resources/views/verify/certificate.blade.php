@@ -170,7 +170,7 @@
 
         <!-- WARNING -->
         <div class="text-center fw-bold border-top border-bottom py-2 my-4">
-            @if ($applicant->signOffs && $applicant->signOffs->is_granted)
+            @if ($applicant->signOffs)
                 THIS IS NOT A VALID FOOD HANDLERS PERMIT.
             @else
                 THIS IS AN OFFICAL FOOD HANDLERS E-CARD
