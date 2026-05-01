@@ -181,16 +181,31 @@
 
 
 
-        <!-- NOTES -->
-        <div class="small mb-2">
-            Electronically submitting your application is the first step in the process. You may be required to attend a
-            clinic appointment or screening.
+
+        <div class="mt-2">
+            @if (empty($applicant->signOffs))
+                To finalize this application, the applicant must complete the Food Handlers examination and attend the
+                Medical Interview.
+                The appointment date is
+                <strong>{{ optional($applicant->appointment[0])->appointment_date ? \Carbon\Carbon::parse($applicant->appointment[0]->appointment_date)->format('d F Y') : 'No Date Scheduled' }}</strong>.
+                After successful completion, the Medical Officer of Health will review the results and, if approved,
+                officially sign off on the application.
+                Once signed, the permit becomes an Official Food Handlers Permit in accordance with the requirements of
+                the Food Safety Act (1998),
+                which mandates medical clearance and certification for all persons involved in the handling and
+                preparation of food.
+            @else
+                The application has now been reviewed and approved by the <strong>Medical Officer of Health(MOH)</strong>.
+                In accordance with the <strong>Food Safety Act (1998)</strong>, individuals who handle, prepare, or come into contact
+                with food for public consumption must be medically examined, certified, and officially authorized before
+                engaging in food-handling activities.
+                With the successful completion of the required examination and medical interview, and the formal
+                sign-off granted, this applicant is now legally recognized as certified to handle food and may operate
+                in compliance with national public health regulations.
+            @endif
         </div>
 
-        <div class="small">
-            <span class="text-danger fw-bold">YOU MUST BRING:</span>
-            Valid Government ID at all stages of processing.
-        </div>
+
 
     </div>
 
