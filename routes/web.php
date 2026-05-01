@@ -44,6 +44,7 @@ use App\Http\Controllers\AnswersController;
 use App\Http\Controllers\MailingListController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Http\Controllers\WaiverApprovalController;
+use App\Http\Controllers\VerificationController;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
