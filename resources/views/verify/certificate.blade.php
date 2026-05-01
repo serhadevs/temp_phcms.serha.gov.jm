@@ -177,12 +177,16 @@
     <div class="page">
 
         <div class="header-banner">
-            MINISTRY OF HEALTH & WELLNESS
-            <span>Public Health Electronic Application Center</span>
+            SOUTH EAST REGIONAL HEALTH AUTHORITY
+            <span>Public Health Certificate Management System - Verification by IDPro</span>
         </div>
 
         <div class="sub-header">
-            Official Food Handlers Permit Certificate
+            @if ($applicant->signOffs && $applicant->signOffs->is_granted)
+                Official Food Handlers Permit Certificate
+            @else
+                Confirmation of Application for Food Handlers Permit
+            @endif
         </div>
 
         <div class="barcode-box">
