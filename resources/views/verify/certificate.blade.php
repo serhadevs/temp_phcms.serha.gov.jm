@@ -1,187 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Permit Confirmation</title>
 
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Title -->
+    <title>Food Handlers Permit Confirmation</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Optional: Better font rendering -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Print / PDF Optimization -->
     <style>
+        @page {
+            margin: 15mm;
+        }
+
         body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
-            color: #000;
-            margin: 0;
-            padding: 25px;
-        }
-
-        /* HEADER */
-        .header-banner {
-            background: linear-gradient(to right, #003366, #b30000);
-            color: white;
-            padding: 18px;
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .header-banner span {
-            font-size: 13px;
-            display: block;
-            margin-top: 5px;
-            font-weight: normal;
-        }
-
-        .sub-header {
-            color: #b30000;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            font-size: 26px;
-            margin: 10px 0 15px;
-        }
-
-        .intro-text {
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-
-        /* BARCODE */
-        .barcode-box {
-            text-align: right;
-            margin-bottom: 15px;
-        }
-
-        .barcode-lines {
-            font-family: 'Courier New', monospace;
-            font-size: 20px;
-            letter-spacing: -1px;
-            font-weight: bold;
-        }
-
-        .barcode-text {
-            font-size: 12px;
-            letter-spacing: 3px;
-            margin-top: 3px;
-        }
-
-        /* MAIN LAYOUT (FIXED GRID STYLE TABLE) */
-        .main-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 25px;
-        }
-
-        .main-table td {
-            vertical-align: top;
-            padding: 10px;
-        }
-
-        .photo-box {
-            width: 120px;
-            height: 120px;
-            border: 1px solid #999;
-            background: #f4f4f4;
-            text-align: center;
-            line-height: 120px;
-            color: #666;
-        }
-
-        .label {
-            width: 140px;
-            color: #333;
-        }
-
-        .value {
-            font-weight: bold;
-        }
-
-        .section-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        /* RIGHT COLUMN */
-        .location-box {
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .location-box strong {
-            display: block;
-            margin: 6px 0;
-        }
-
-        /* WARNINGS */
-        .warning-banner {
-            font-weight: bold;
-            text-transform: uppercase;
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            padding: 8px 0;
-            margin: 20px 0 10px;
-            text-align: center;
-        }
-
-        .notes {
-            font-size: 12px;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-
-        .must-bring {
-            color: #b30000;
-            font-weight: bold;
-        }
-
-        /* SIMPLE INFO TABLE */
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .info-table td {
-            padding: 4px 0;
-        }
-
-        .page {
-            width: 900px;
-            margin: 0 auto;
-            /* THIS CENTERS EVERYTHING */
-        }
-
-        .photo-box {
-            width: 120px;
-            height: 120px;
-            border: 1px solid #999;
-            background: #f4f4f4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            margin: 0 auto;
-        }
-
-        .photo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-light">
 
-    <div class="page">
+    <div class="container py-4" style="max-width: 900px;">
 
-        <div class="header-banner">
-            SOUTH EAST REGIONAL HEALTH AUTHORITY
-            <span>Public Health Certificate Management System - Verification by IDPro</span>
+        <!-- HEADER -->
+        <div class="bg-primary text-white p-3 rounded mb-2"
+            style="background: linear-gradient(to right, #003366, #b30000) !important;">
+            <div class="fw-bold fs-5">
+                SOUTH EAST REGIONAL HEALTH AUTHORITY
+            </div>
+            <div class="small">
+                Public Health Certificate Management System - Verification by IDPro
+            </div>
         </div>
 
-        <div class="sub-header">
+        <!-- SUB HEADER -->
+        <div class="text-danger fw-bold mb-2">
             @if ($applicant->signOffs && $applicant->signOffs->is_granted)
                 Official Food Handlers Permit Certificate
             @else
@@ -189,112 +55,132 @@
             @endif
         </div>
 
-        <div class="barcode-box">
-            <div class="barcode-lines">||| | ||||| || ||| ||||</div>
-            <div class="barcode-text">{{ $applicant->permit_no }}</div>
+        <!-- BARCODE -->
+        {{-- <div class="text-end mb-3">
+            <div class="fw-bold fs-5" style="letter-spacing:2px;">
+                ||| | ||||| || ||| ||||
+            </div>
+            <div class="small">
+                {{ $applicant->permit_no }}
+            </div>
+        </div> --}}
+
+        <!-- TITLE -->
+        <h3 class="fw-bold">Verification</h3>
+
+        <div class="fw-bold mb-3">
+            @if ($applicant->signOffs && $applicant->signOffs->is_granted)
+                This confirms the issuance of the Food Handlers Permit for:
+            @else
+                This confirms the application for a Food Handlers Permit for:
+            @endif
         </div>
 
-        <h1>Confirmation</h1>
+        <!-- MAIN CONTENT -->
+        <div class="row g-3 align-items-start">
 
-        <div class="intro-text">
-            This confirms the issuance of the Food Handlers Permit for:
+            <!-- PHOTO -->
+            <div class="col-md-2 text-center">
+                <div class="border bg-light d-flex align-items-center justify-content-center"
+                    style="width:120px;height:120px;overflow:hidden;margin:auto;">
+                    @if ($applicant->photo_upload)
+                        <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
+                            style="width:100%;height:100%;object-fit:cover;">
+                    @else
+                        Photo Not Available
+                    @endif
+                </div>
+            </div>
+
+            <!-- COLUMN 1 -->
+            <div class="col-md-3">
+                <div class="border p-2 rounded bg-white small">
+
+                    <div class="fw-bold mb-1">Applicant Details</div>
+
+                    <div>Name: {{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</div>
+                    <div>DOB: {{ \Carbon\Carbon::parse($applicant->date_of_birth)->format('d M Y') }}</div>
+                    <div>Permit: {{ $applicant->permit_no }}</div>
+                    <div>Category: {{ $applicant->permitCategory->name ?? 'N/A' }}</div>
+
+                    <div>Issued:
+                        {{ optional($applicant->signOffs)->sign_off_date
+                            ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
+                            : 'Pending' }}
+                    </div>
+
+                    <div>Expiry:
+                        {{ optional($applicant->signOffs)->expiry_date
+                            ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
+                            : 'Pending' }}
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- COLUMN 2 -->
+            <div class="col-md-3">
+                <div class="border p-2 rounded bg-white small">
+
+                    <div class="fw-bold mb-1">Personal Info</div>
+
+                    <div>Address: {{ strtoupper($applicant->address) ?? 'No Address' }}</div>
+                    <div>Gender: {{ Str::ucfirst($applicant->gender) ?? 'No Gender' }}</div>
+                    <div>Occupation: {{ $applicant->occupation ?? 'No Occupation Given' }}</div>
+
+                </div>
+            </div>
+
+            @if ($applicant->testResults)
+                <div class="col-md-3">
+                    <div class="border p-2 rounded bg-white small">
+
+                        <div class="fw-bold mb-1">Test Results</div>
+
+                        <div>Location: {{ $applicant->testResults->test_location ?? 'N/A' }}</div>
+                        <div>Contact: {{ $applicant->testResults->staff_contact ?? 'N/A' }}</div>
+
+                        <div>
+                            Date:
+                            {{ $applicant->testResults->test_date
+                                ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d M Y')
+                                : 'N/A' }}
+                        </div>
+
+                        <div
+                            class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-2 bg-light">
+
+                            <div class="fw-bold small text-muted">
+                                Score
+                            </div>
+
+                            <div class="px-2 py-1 rounded text-white fw-bold bg-success">
+                                {{ $applicant->testResults->overall_score ?? 'N/A' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="col-md-3">
+                    No Test Results are available
+                </div>
+            @endif
+
         </div>
 
-        <!-- CENTER WRAPPER TABLE -->
-        <table class="main-table">
-            <tr>
-
-                <!-- PHOTO -->
-                <td style="width: 20%; text-align:center; vertical-align: top;">
-                    <div class="photo-box">
-                        @if ($applicant->photo_upload)
-                            <img src="{{ asset('storage/' . $applicant->photo_upload) }}" alt="Applicant Photo">
-                        @else
-                            Photo Not Available
-                        @endif
-                    </div>
-                </td>
-
-                <!-- DETAILS (FIXED WIDTH) -->
-                <td style="width: 45%;">
-                    <table class="info-table">
-                        <tr>
-                            <td class="label">Name:</td>
-                            <td class="value">{{ strtoupper($applicant->lastname) }},
-                                {{ strtoupper($applicant->firstname) }}</td>
-                        </tr>
-
-                        <tr>
-                            <td class="label">Date of Birth:</td>
-                            <td class="value">{{ \Carbon\Carbon::parse($applicant->date_of_birth)->format('d M Y') }}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="label">Permit No:</td>
-                            <td class="value">{{ $applicant->permit_no }}</td>
-                        </tr>
-
-                        <tr>
-                            <td class="label">Category:</td>
-                            <td class="value">{{ $applicant->permitCategory->name ?? 'N/A' }}</td>
-                        </tr>
-
-                        <tr>
-                            <td class="label">Issued:</td>
-                            <td class="value">
-                                {{ optional($applicant->signOffs)->sign_off_date
-                                    ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
-                                    : 'Pending' }}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="label">Expiry:</td>
-                            <td class="value">
-                                {{ optional($applicant->signOffs)->expiry_date
-                                    ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
-                                    : 'Pending' }}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="label">Ref No:</td>
-                            <td class="value" style="color:#b30000;">
-                                {{ strtoupper(uniqid()) }}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-
-                <!-- LOCATION -->
-                <td style="width: 35%;">
-                    <div class="location-box">
-                        <div class="section-title">Location Selected</div>
-
-                        <strong>{{ optional($applicant->establishmentClinics)->name ?? 'MOHW Head Office' }}</strong>
-
-                        Please report to this clinic for screening or renewals.
-
-                        <br><br>
-                        Version 01.08.08
-                    </div>
-                </td>
-
-            </tr>
-        </table>
-
-        <div class="warning-banner">
+        <!-- WARNING -->
+        <div class="text-center fw-bold border-top border-bottom py-2 my-4">
             THIS IS NOT A MEDICAL CLEARANCE
         </div>
 
-        <div class="notes">
+        <!-- NOTES -->
+        <div class="small mb-2">
             Electronically submitting your application is the first step in the process. You may be required to attend a
             clinic appointment or screening.
         </div>
 
-        <div class="notes">
-            <span class="must-bring">YOU MUST BRING:</span>
+        <div class="small">
+            <span class="text-danger fw-bold">YOU MUST BRING:</span>
             Valid Government ID at all stages of processing.
         </div>
 
