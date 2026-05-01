@@ -74,6 +74,9 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/check/establishment/job/{id}', [TestDownloads::class, 'checkFoodEstDownloads']);
 Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::class, 'sanitizeAppointmentsParams']);
 
+//Verification of Permits via QR Code
+Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
+    ->name('verify.permit');
 //Users routes for users not logged in
 
 Route::get('/forget-password', [UserController::class, 'forgetPasswordPage'])->name('forget-password');
