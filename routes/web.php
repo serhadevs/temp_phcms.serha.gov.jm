@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdvanceSearchController;
 use App\Http\Controllers\AIReportGeneratorController;
+use App\Http\Controllers\AnswersController;
+use App\Http\Controllers\Api\PermitApplicationApi;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarberCosmetApplicationsController;
@@ -11,12 +13,15 @@ use App\Http\Controllers\CollectCardController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DownloadsController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExamDateController;
 use App\Http\Controllers\ExamSitesController;
+use App\Http\Controllers\ExamStepController;
 use App\Http\Controllers\FoodEstablishmentController;
 use App\Http\Controllers\FoodEstTestResultController;
 use App\Http\Controllers\FoodHandlersClinicController;
 use App\Http\Controllers\HealthInterviewController;
+use App\Http\Controllers\MailingListController;
 use App\Http\Controllers\Messaging;
 use App\Http\Controllers\OnlineApplicationController;
 use App\Http\Controllers\OutstandingCardPrintController;
@@ -24,6 +29,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentReportController;
 use App\Http\Controllers\PermitApplicationController;
 use App\Http\Controllers\PermitTestResultsController;
+use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SignOffController;
@@ -36,20 +42,16 @@ use App\Http\Controllers\TestNewJobs;
 use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
-use App\Http\Controllers\ExamStepController;
-use App\Http\Controllers\ExamController;
-use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AnswersController;
-use App\Http\Controllers\MailingListController;
-use App\Http\Middleware\printerAuthAttempt;
-use App\Http\Controllers\WaiverApprovalController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\WaiverApprovalController;
+use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
+
 
 
 
@@ -78,6 +80,7 @@ Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::cl
 //Verification of Permits via QR Code
 Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
     ->name('verify.permit');
+Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
 //Users routes for users not logged in
 
 Route::get('/forget-password', [UserController::class, 'forgetPasswordPage'])->name('forget-password');

@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Storage;
 
 class PermitApplicationApi extends Controller
 {
+
+public function index(){
+    return view('verify.index');
+}
     public function fetchApplications($permit_no)
     {
         try {

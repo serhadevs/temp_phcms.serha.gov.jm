@@ -21,6 +21,7 @@ Route::post('/login/user', [Auth::class, 'loginuser']);
 Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit']);
 
 
+
 // Routes that require authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
