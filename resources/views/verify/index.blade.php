@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Public Health and Certificate Management System - PHCMS</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
@@ -387,63 +388,67 @@
                 <!-- RIGHT SIDE: Form -->
                 <div class="col-lg-6 form-panel">
 
-                    <form action="">
-                         <div class="form-card">
-                        <div class="form-header">
-                            <div class="form-icon">
-                                <i class="bi bi-file-earmark-person"></i>
+                    <form action="{{ route('verify.retrieval') }}" method="post">
+                        @csrf
+                        @method('post')
+                        <div class="form-card">
+                            <div class="form-header">
+                                <div class="form-icon">
+                                    <i class="bi bi-file-earmark-person"></i>
+                                </div>
+                                <h2 class="h4 fw-bold">Food Handlers Permit Retrieval Form</h2>
+                                <p class="text-muted small mb-0">Please provide the required information to generate &
+                                    retrieve your certificate.</p>
                             </div>
-                            <h2 class="h4 fw-bold">Food Handlers Permit Retrieval Form</h2>
-                            <p class="text-muted small mb-0">Please provide the required information to generate &
-                                retrieve your certificate.</p>
+
+                            <form>
+                                <!-- First & Last Name Row -->
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">First Name</label>
+                                        <input type="text" class="form-control" placeholder="Enter First Name"
+                                            name="firstname" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" placeholder="Enter Last Name"
+                                            name ="lastname" required>
+                                    </div>
+                                </div>
+
+                                <!-- Date of Birth -->
+                                <div class="mb-3">
+                                    <label class="form-label">Date of Birth</label>
+                                    <span class="form-text">As it appears on your official ID</span>
+                                    <input type="date" class="form-control" name = "date_of_birth" required>
+                                </div>
+
+                                <!-- Permit Number -->
+                                <div class="mb-4">
+                                    <label class="form-label">Permit Number</label>
+                                    <span class="form-text">Found on your receipt or previous permit document (e.g.,
+                                        KSA1234567)</span>
+                                    <input type="text" class="form-control" placeholder="Enter your Permit Number"
+                                        name="permit_no" required>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="row g-3 mt-2">
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-cancel w-100">
+                                            <i class="bi bi-x"></i> Cancel
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-retrieve w-100">
+                                            <i class="bi bi-search"></i> Retrieve
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-
-                        <form>
-                            <!-- First & Last Name Row -->
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" placeholder="Enter First Name" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" placeholder="Enter Last Name" required>
-                                </div>
-                            </div>
-
-                            <!-- Date of Birth -->
-                            <div class="mb-3">
-                                <label class="form-label">Date of Birth</label>
-                                <span class="form-text">As it appears on your official ID</span>
-                                <input type="date" class="form-control" required>
-                            </div>
-
-                            <!-- Permit Number -->
-                            <div class="mb-4">
-                                <label class="form-label">Permit Number</label>
-                                <span class="form-text">Found on your receipt or previous permit document (e.g.,
-                                    KSA1234567)</span>
-                                <input type="text" class="form-control" placeholder="Enter your Permit Number"
-                                    required>
-                            </div>
-
-                            <!-- Buttons -->
-                            <div class="row g-3 mt-2">
-                                <div class="col-6">
-                                    <button type="button" class="btn btn-cancel w-100">
-                                        <i class="bi bi-x"></i> Cancel
-                                    </button>
-                                </div>
-                                <div class="col-6">
-                                    <button type="submit" class="btn btn-retrieve w-100">
-                                        <i class="bi bi-search"></i> Retrieve
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                     </form>
-                   
+
 
                     <div class="secure-connection-badge">
                         <span class="dot"
@@ -500,7 +505,8 @@
             </div>
 
             <div class="footer-bottom">
-                &copy; 2026 South East Regional Health Authority. All Rights Reserved. The verification process in this application is powered by IDPro. A Duromics Product.
+                &copy; 2026 South East Regional Health Authority. All Rights Reserved. The verification process in this
+                application is powered by IDPro. A Duromics Product.
             </div>
         </div>
     </footer>
@@ -508,5 +514,79 @@
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script>
+    document.getElementById('retrievalForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Stop standard form submission
+
+        const form = this;
+        const submitBtn = document.getElementById('submitBtn');
+        const responseMessage = document.getElementById('responseMessage');
+
+        // Reset UI state to "loading"
+        submitBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+        submitBtn.disabled = true;
+        responseMessage.className = 'alert d-none mb-4';
+        responseMessage.innerHTML = '';
+
+        try {
+            // Send the POST request to the route defined in the form's action attribute
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(
+                    form
+                ), // Automatically grabs all inputs with a 'name' attribute + the CSRF token
+                headers: {
+                    'Accept': 'application/json' // Tells Laravel to return JSON
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+
+                // SUCCESS (200 status code)
+                console.log("Applicant Data:", result.applicant);
+
+                // Change button text to show it's transitioning
+                submitBtn.innerHTML =
+                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Redirecting...';
+
+                responseMessage.className = 'alert alert-success mb-4 text-center';
+                responseMessage.innerHTML =
+                    `<h5 class="mb-0"><i class="bi bi-check-circle-fill"></i> Permit Found! Redirecting...</h5>`;
+
+                // 🟢 NEW: Redirect the browser directly to the certificate display page
+                window.location.href = `/verify-permit/certificate/${result.applicant.id}`;
+
+            } else {
+                // ERRORS (404 Not Found, 422 Validation Error)
+                responseMessage.className = 'alert alert-danger mb-4';
+
+                if (result.status === 'validation_error') {
+                    // Loop through validation errors and display them as a list
+                    let errorsHtml = '<ul class="mb-0 ps-3">';
+                    for (const key in result.errors) {
+                        errorsHtml += `<li>${result.errors[key][0]}</li>`;
+                    }
+                    errorsHtml += '</ul>';
+                    responseMessage.innerHTML = errorsHtml;
+                } else {
+                    // Display general errors like "No application found"
+                    responseMessage.innerHTML = result.message ||
+                        'An error occurred while retrieving the permit.';
+                }
+            }
+        } catch (error) {
+            responseMessage.className = 'alert alert-danger mb-4';
+            responseMessage.innerHTML = 'A network error occurred. Please try again.';
+            console.error('Error:', error);
+        } finally {
+            // Restore the submit button
+            submitBtn.innerHTML = '<i class="bi bi-search"></i> Retrieve';
+            submitBtn.disabled = false;
+        }
+    });
+</script>
 
 </html>
