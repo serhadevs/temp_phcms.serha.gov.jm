@@ -108,13 +108,14 @@
 
                     <div class="fw-bold fs-5">
                         SOUTH EAST REGIONAL HEALTH AUTHORITY
+                        <div class="small mt-1">
+                            Public Health Certificate Management System - Verification by IDPro
+                        </div>
                     </div>
 
                 </div>
 
-                <div class="small mt-1">
-                    Public Health Certificate Management System - Verification by IDPro
-                </div>
+
             </div>
 
             <div class="text-danger fw-bold mb-2">
