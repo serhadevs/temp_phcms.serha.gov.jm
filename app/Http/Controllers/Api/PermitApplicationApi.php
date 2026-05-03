@@ -253,7 +253,7 @@ class PermitApplicationApi extends Controller
     // ])->findOrFail($record->applicant_id);
 
     $applicant = PermitApplication::with('permitCategory', 'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages')
-                ->findOrFail($record->applicant_id);
+                ->findOrFail($record->permit_application_id);
 
     $expiry = optional($applicant->signOffs)->expiry_date;
     $isExpiry = $expiry ? now()->gt($expiry) : false;
