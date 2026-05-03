@@ -149,60 +149,47 @@
                 </div>
 
                 <!-- TEST RESULTS -->
-                <div> Date:
-                    {{ $applicant->testResults->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d M Y') : 'N/A' }}
-                </div>
-                <div class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-2 bg-light">
-                    <div class="fw-bold small text-muted"> Score </div>
-                    <div class="px-2 py-1 rounded text-white fw-bold bg-success">
-                        {{ $applicant->testResults->overall_score ?? 'N/A' }} </div>
-                </div>
+               @if ($applicant->testResults) <div class="col-md-3"> <div class="border p-2 rounded bg-white small"> <div class="fw-bold mb-1">Test Results</div> <div>Location: {{ $applicant->testResults->test_location ?? 'N/A' }}</div> <div>Contact: {{ $applicant->testResults->staff_contact ?? 'N/A' }}</div> <div> Date: {{ $applicant->testResults->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d M Y') : 'N/A' }} </div> <div class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-2 bg-light"> <div class="fw-bold small text-muted"> Score </div> <div class="px-2 py-1 rounded text-white fw-bold bg-success"> {{ $applicant->testResults->overall_score ?? 'N/A' }} </div> </div> </div> </div> @else <div class="col-md-3"> No Test Results are available </div> @endif </div>
+
             </div>
+
+            <!-- VALIDITY MESSAGE -->
+            <div class="text-center fw-bold border-top border-bottom py-2 my-4">
+                @if (empty($applicant->signOffs))
+                    THIS IS NOT A VALID FOOD HANDLERS PERMIT.
+                @else
+                    THIS IS AN OFFICIAL FOOD HANDLERS E-CARD.
+                @endif
+            </div>
+
+            <!-- EXPIRED MESSAGE -->
+            @if ($isExpired)
+                <div class="text-center fw-bold border-top border-bottom py-2 my-4 text-danger">
+                    YOUR FOOD HANDLERS PERMIT HAS EXPIRED.
+                </div>
+            @endif
+
+            <div class="mt-2">
+                @if (empty($applicant->signOffs))
+                    To finalize this application, the applicant must complete the Food Handlers examination and attend
+                    the Medical Interview. The appointment date is
+                    <strong>{{ optional($applicant->appointment[0])->appointment_date ? \Carbon\Carbon::parse($applicant->appointment[0]->appointment_date)->format('d F Y') : 'No Date Scheduled' }}</strong>.
+                    After successful completion, the Medical Officer of Health will review the results and, if approved,
+                    officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
+                    Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
+                    clearance and certification for all persons involved in the handling and preparation of food.
+                @else
+                    The application has now been reviewed and approved by the <strong>Medical Officer of
+                        Health(MOH)</strong>. In accordance with the <strong>Food Safety Act (1998)</strong>,
+                    individuals who handle, prepare, or come into contact with food for public consumption must be
+                    medically examined, certified, and officially authorized before engaging in food-handling
+                    activities. With the successful completion of the required examination and medical interview, and
+                    the formal sign-off granted, this applicant is now legally recognized as certified to handle food
+                    and may operate in compliance with national public health regulations.
+                @endif
+            </div>
+
         </div>
-    @else
-        <div class="col-md-3"> No Test Results are available </div>
-        @endif
-    </div>
-
-    </div>
-
-    <!-- VALIDITY MESSAGE -->
-    <div class="text-center fw-bold border-top border-bottom py-2 my-4">
-        @if (empty($applicant->signOffs))
-            THIS IS NOT A VALID FOOD HANDLERS PERMIT.
-        @else
-            THIS IS AN OFFICIAL FOOD HANDLERS E-CARD.
-        @endif
-    </div>
-
-    <!-- EXPIRED MESSAGE -->
-    @if ($isExpired)
-        <div class="text-center fw-bold border-top border-bottom py-2 my-4 text-danger">
-            YOUR FOOD HANDLERS PERMIT HAS EXPIRED.
-        </div>
-    @endif
-
-    <div class="mt-2">
-        @if (empty($applicant->signOffs))
-            To finalize this application, the applicant must complete the Food Handlers examination and attend
-            the Medical Interview. The appointment date is
-            <strong>{{ optional($applicant->appointment[0])->appointment_date ? \Carbon\Carbon::parse($applicant->appointment[0]->appointment_date)->format('d F Y') : 'No Date Scheduled' }}</strong>.
-            After successful completion, the Medical Officer of Health will review the results and, if approved,
-            officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
-            Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
-            clearance and certification for all persons involved in the handling and preparation of food.
-        @else
-            The application has now been reviewed and approved by the <strong>Medical Officer of
-                Health(MOH)</strong>. In accordance with the <strong>Food Safety Act (1998)</strong>,
-            individuals who handle, prepare, or come into contact with food for public consumption must be
-            medically examined, certified, and officially authorized before engaging in food-handling
-            activities. With the successful completion of the required examination and medical interview, and
-            the formal sign-off granted, this applicant is now legally recognized as certified to handle food
-            and may operate in compliance with national public health regulations.
-        @endif
-    </div>
-
-    </div>
     </div>
 
 </body>
