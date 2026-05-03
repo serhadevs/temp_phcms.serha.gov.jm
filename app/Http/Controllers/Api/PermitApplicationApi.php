@@ -122,10 +122,11 @@ class PermitApplicationApi extends Controller
                 'appointment.editTransactions',
                 'messages'
             ])
-                ->where('firstname', $validated['firstname'])
-                ->where('lastname', $validated['lastname'])
-                ->whereDate('date_of_birth', $validated['date_of_birth'])
-                ->where('permit_no', $validated['permit_no'])
+                // ->where('firstname', $validated['firstname'])
+                // ->where('lastname', $validated['lastname'])
+                // ->whereDate('date_of_birth', $validated['date_of_birth'])
+                // ->where('permit_no', $validated['permit_no'])
+                 ->where($validated)
                 ->first();
 
             
