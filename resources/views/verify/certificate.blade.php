@@ -155,21 +155,19 @@
                             <div class="fw-bold mb-1">Test Results</div>
                             <div>Location: {{ $applicant->testResults->test_location ?? 'N/A' }}</div>
                             <div>Contact: {{ $applicant->testResults->staff_contact ?? 'N/A' }}</div>
-                            <div>Date:
-                                {{ $applicant->testResults->test_date
-                                    ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d M Y')
-                                    : 'N/A' }}
+                            <div> Date:
+                                {{ $applicant->testResults->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d M Y') : 'N/A' }}
                             </div>
-
                             <div
                                 class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-2 bg-light">
-                                <div class="fw-bold small text-muted">Score</div>
+                                <div class="fw-bold small text-muted"> Score </div>
                                 <div class="px-2 py-1 rounded text-white fw-bold bg-success">
-                                    {{ $applicant->testResults->overall_score ?? 'N/A' }}
-                                </div>
+                                    {{ $applicant->testResults->overall_score ?? 'N/A' }} </div>
                             </div>
                         </div>
                     </div>
+                @else
+                    <div class="col-md-3"> No Test Results are available </div>
                 @endif
 
             </div>
