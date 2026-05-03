@@ -402,9 +402,9 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <form action="{{ route('verify.retrieval') }}" method="post">
-                        @csrf
-                        @method('post')
+                    <form action="{{ route('verify.retrieval') }}" method="get">
+                        {{-- @csrf
+                        @method('post') --}}
                         <div class="form-card">
                             <div class="form-header">
                                 <div class="form-icon">
@@ -546,7 +546,7 @@
         try {
             // Send the POST request to the route defined in the form's action attribute
             const response = await fetch(form.action, {
-                method: 'POST',
+                method: 'GET',
                 body: new FormData(
                     form
                 ), // Automatically grabs all inputs with a 'name' attribute + the CSRF token
