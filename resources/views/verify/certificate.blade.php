@@ -257,6 +257,20 @@
                     and may operate in compliance with national public health regulations.
                 @endif
             </div>
+            <!-- ACTION BUTTONS (NON-PRINTABLE) -->
+            <div class="text-center mt-4 no-print">
+                <button onclick="window.print()" class="btn btn-primary me-2">
+                    🖨️ Print Confirmation
+                </button>
+
+                <button onclick="emailConfirmation()" class="btn btn-success me-2">
+                    📧 Email Confirmation
+                </button>
+
+                <a href="{{ url('/verify-permit') }}" class="btn btn-outline-secondary">
+                    🔎 Verify Another Permit
+                </a>
+            </div>
 
         </div>
     </div>
