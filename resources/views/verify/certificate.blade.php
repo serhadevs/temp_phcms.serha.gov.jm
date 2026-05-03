@@ -50,7 +50,7 @@
 <div class="permit-wrapper">
 
     {{-- WATERMARK --}}
-    @if($isExpiry)
+    @if($isExpired)
         <div class="expired-watermark">EXPIRED</div>
     @endif
 
