@@ -213,7 +213,7 @@ class PermitApplicationApi extends Controller
 
     public function showCertificate(Request $request, $token)
 {
-    // 1️⃣ Find token
+   
     $record = DB::table('verification_tokens')
         ->where('token', $token)
         ->first();
@@ -222,25 +222,25 @@ class PermitApplicationApi extends Controller
         abort(403, 'Invalid verification link.');
     }
 
-    // 2️⃣ Expiry check
+   
     if (now()->gt($record->expires_at)) {
         abort(403, 'Verification link expired.');
     }
 
-    // 3️⃣ One-time use check
+    
     if ($record->used_at !== null) {
         abort(403, 'This link was already used.');
     }
 
-    // 4️⃣ IP binding check
-    if ($record->ip_address !== $request->ip()) {
-        abort(403, 'Device/IP mismatch.');
-    }
+   
+    // if ($record->ip_address !== $request->ip()) {
+    //     abort(403, 'Device/IP mismatch.');
+    // }
 
-    // 5️⃣ Device binding check
-    if ($record->user_agent !== $request->userAgent()) {
-        abort(403, 'Device mismatch.');
-    }
+   
+    // if ($record->user_agent !== $request->userAgent()) {
+    //     abort(403, 'Device mismatch.');
+    // }
 
     // 6️⃣ Mark token as USED immediately
     DB::table('verification_tokens')
