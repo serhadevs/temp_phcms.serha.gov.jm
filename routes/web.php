@@ -82,11 +82,11 @@ Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
     ->name('verify.permit');
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
 Route::post('/verify-permit/retrieve',
-    [PermitControllerApi::class, 'retrievePermit']
+    [[PermitApplicationApi::class, 'retrievePermit']
 )->middleware('throttle:5,1') // 5 attempts per minute
  ->name('verify.retrieval');
 Route::get('/verify-permit/certificate/{token}',
-    [PermitControllerApi::class, 'showCertificate']
+    [PermitApplicationApi::class, 'showCertificate']
 )->name('verify.certificate')->middleware('signed');
 Route::get('/verify-permit/download/{id}', [PermitApplicationApi::class, 'downloadCertificate'])->name('verify.download');
 //Users routes for users not logged in
