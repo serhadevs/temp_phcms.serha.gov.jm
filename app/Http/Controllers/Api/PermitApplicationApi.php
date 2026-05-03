@@ -103,132 +103,63 @@ class PermitApplicationApi extends Controller
         }
     }
 
-    // public function permitRetrieval(Request $request)
-    // {
-    //     try {
 
-    //         //Validate
-    //         $validated = $request->validate([
-    //             'firstname'      => 'required|string',
-    //             'lastname'       => 'required|string',
-    //             'date_of_birth'  => 'required|date',
-    //             'permit_no'      => 'required|string',
-    //         ]);
-
-    //         //Find applicant
-    //         $applicant = PermitApplication::with([
-    //             'permitCategory',
-    //             'payment',
-    //             'establishmentClinics',
-    //             'signOffs',
-    //             'testResults',
-    //             'healthInterviews.healthInterviewSymptom.symptoms',
-    //             'appointment.editTransactions',
-    //             'messages'
-    //         ])
-    //             // ->where('firstname', $validated['firstname'])
-    //             // ->where('lastname', $validated['lastname'])
-    //             // ->whereDate('date_of_birth', $validated['date_of_birth'])
-    //             // ->where('permit_no', $validated['permit_no'])
-    //              ->where($validated)
-    //             ->first();
-
-
-    //         if (!$applicant) {
-    //             return back()
-    //                 ->withInput()
-    //                 ->withErrors([
-    //                     'not_found' => 'No application found with the provided details.'
-    //                 ]);
-    //         }
-
-
-    //         $expiry = optional($applicant->signOffs)->expiry_date;
-    //         $isExpired = $expiry ? Carbon::now()->gt(Carbon::parse($expiry)) : false;
-
-
-    //         return view('verify.certificate', compact('applicant', 'isExpired'));
-    //     } catch (ValidationException $e) {
-
-    //         // Validation automatically redirects back, but we log it too
-    //         Log::warning('Permit Retrieval Validation Failed', [
-    //             'errors' => $e->errors(),
-    //             'input'  => $request->all()
-    //         ]);
-
-    //         throw $e; // important: let Laravel handle redirect
-
-    //     } catch (Exception $e) {
-
-    //         // Log full error for debugging
-    //         Log::error('Permit Retrieval Failed', [
-    //             'message' => $e->getMessage(),
-    //             'trace'   => $e->getTraceAsString(),
-    //             'input'   => $request->all()
-    //         ]);
-
-    //         return back()
-    //             ->withInput()
-    //             ->with('error', 'An unexpected error occurred. Please try again.');
-    //     }
-    // }
-   public function retrievePermit(Request $request)
-{
-    $validated = $request->validate([
-        'firstname'      => 'required|string',
-        'lastname'       => 'required|string',
-        'date_of_birth'  => 'required|date',
-        'permit_no'      => 'required|string',
-    ]);
-
-    $applicant = PermitApplication::where($validated)->first();
-
-    if (!$applicant) {
-        return back()->withErrors([
-            'not_found' => 'No application found.'
+    public function retrievePermit(Request $request)
+    {
+        $validated = $request->validate([
+            'firstname'      => 'required|string',
+            'lastname'       => 'required|string',
+            'date_of_birth'  => 'required|date',
+            'permit_no'      => 'required|string',
         ]);
+
+        $applicant = PermitApplication::where($validated)->first();
+
+        if (!$applicant) {
+            return back()->withErrors([
+                'not_found' => 'No application found.'
+            ]);
+        }
+
+        $token = hash('sha256', Str::random(120));
+
+        DB::table('verification_tokens')->insert([
+            'permit_application_id' => $applicant->id,
+            'token'        => $token,
+            'ip_address'   => request()->ip(),
+            'user_agent'   => request()->userAgent(),
+            'expires_at'   => now()->addMinutes(5),
+            'created_at'   => now(),
+            'updated_at'   => now(),
+        ]);
+
+        $url = URL::temporarySignedRoute(
+            'verify.certificate',
+            now()->addMinutes(5),
+            ['token' => $token]
+        );
+
+        $expiry = optional($applicant->signOffs)->expiry_date;
+
+        $isExpired = $expiry
+            ? Carbon::now()->gt(Carbon::parse($expiry))
+            : false;
+
+        session([
+            'verified_permit_id' => $applicant->id,
+            'verified_permit_hash' => hash_hmac(
+                'sha256',
+                $applicant->permit_no . $applicant->date_of_birth,
+                config('app.key')
+            ),
+            'permit_is_expired' => $isExpired,
+        ]);
+
+        return redirect($url);
     }
-
-    $token = hash('sha256', Str::random(120));
-
-    DB::table('verification_tokens')->insert([
-        'permit_application_id' => $applicant->id,
-        'token'        => $token,
-        'ip_address'   => request()->ip(),
-        'user_agent'   => request()->userAgent(),
-        'expires_at'   => now()->addMinutes(5),
-        'created_at'   => now(),
-        'updated_at'   => now(),
-    ]);
-
-    $url = URL::temporarySignedRoute(
-        'verify.certificate',
-        now()->addMinutes(5),
-        ['token' => $token]
-    );
-
-    $expiry = optional($applicant->signOffs)->expiry_date;
-
-    $isExpired = $expiry
-        ? Carbon::now()->gt(Carbon::parse($expiry))
-        : false;
-
-    session([
-        'verified_permit_id' => $applicant->id,
-        'verified_permit_hash' => hash_hmac(
-            'sha256',
-            $applicant->permit_no . $applicant->date_of_birth,
-            config('app.key')
-        ),
-        'permit_is_expired' => $isExpired, 
-    ]);
-
-    return redirect($url);
-}
 
     public function showCertificate(Request $request, $token)
     {
-
         $record = DB::table('verification_tokens')
             ->where('token', $token)
             ->first();
@@ -237,41 +168,47 @@ class PermitApplicationApi extends Controller
             abort(403, 'Invalid verification link.');
         }
 
-
-        if (now()->gt($record->expires_at)) {
+        // 🔐 Check expiry
+        if (now()->gt(Carbon::parse($record->expires_at))) {
             abort(403, 'Verification link expired.');
         }
 
-
-        if ($record->used_at !== null) {
-            abort(403, 'This link was already used.');
-        }
-
-
-        // if ($record->ip_address !== $request->ip()) {
-        //     abort(403, 'Device/IP mismatch.');
+        // 🚫 REMOVED: used_at check (this was breaking refresh)
+        // if ($record->used_at !== null) {
+        //     abort(403, 'This link was already used.');
         // }
 
+        // Optional security checks (keep if needed)
+        /*
+    if ($record->ip_address !== $request->ip()) {
+        abort(403, 'Device/IP mismatch.');
+    }
 
-        // if ($record->user_agent !== $request->userAgent()) {
-        //     abort(403, 'Device mismatch.');
-        // }
-
-        // 6️⃣ Mark token as USED immediately
-        DB::table('verification_tokens')
-            ->where('id', $record->id)
-            ->update(['used_at' => now()]);
+    if ($record->user_agent !== $request->userAgent()) {
+        abort(403, 'Device mismatch.');
+    }
+    */
 
         // 7️⃣ Load applicant
-        // $applicant = PermitApplication::with([
-        //     'permitCategory','signOffs','testResults'
-        // ])->findOrFail($record->applicant_id);
+        $applicant = PermitApplication::with(
+            'permitCategory',
+            'payment',
+            'establishmentClinics',
+            'signOffs',
+            'testResults',
+            'healthInterviews.healthInterviewSymptom.symptoms',
+            'appointment.editTransactions',
+            'messages'
+        )->findOrFail($record->permit_application_id);
 
-        $applicant = PermitApplication::with('permitCategory', 'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages')
-            ->findOrFail($record->permit_application_id);
-
+        // 🔎 Determine expiry status
         $expiry = optional($applicant->signOffs)->expiry_date;
-        $isExpired = $expiry ? now()->gt($expiry) : false;
+
+        $isExpired = $expiry
+            ? now()->gt(Carbon::parse($expiry))
+            : false;
+
+
 
         // 8️⃣ Prevent caching completely
         return response()
@@ -283,17 +220,17 @@ class PermitApplicationApi extends Controller
 
     public function downloadCertificate($id)
     {
-       
+
         if (!session()->has('verified_permit_id') || !session()->has('verified_permit_hash')) {
             abort(403, 'Session not verified.');
         }
 
-       
+
         if (session('verified_permit_id') != $id) {
             abort(403, 'Permit mismatch.');
         }
 
-       
+
         $applicant = PermitApplication::with([
             'permitCategory',
             'establishmentClinics',
@@ -301,7 +238,7 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->findOrFail($id);
 
-        
+
         $expectedHash = hash_hmac(
             'sha256',
             $applicant->permit_no . $applicant->date_of_birth,
@@ -312,7 +249,7 @@ class PermitApplicationApi extends Controller
             abort(403, 'Security validation failed.');
         }
 
-       
+
         if ($applicant->signOffs && now()->gt($applicant->signOffs->expiry_date)) {
             abort(403, 'Expired permits cannot be downloaded.');
         }
