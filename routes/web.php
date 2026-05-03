@@ -82,7 +82,7 @@ Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
     ->name('verify.permit');
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
 Route::post('/verify-permit/retrieve',
-    [[PermitApplicationApi::class, 'retrievePermit']
+    [PermitApplicationApi::class, 'retrievePermit']
 )->middleware('throttle:5,1') // 5 attempts per minute
  ->name('verify.retrieval');
 Route::get('/verify-permit/certificate/{token}',
