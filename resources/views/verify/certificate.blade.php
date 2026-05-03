@@ -205,6 +205,8 @@
                     activities. With the successful completion of the required examination and medical interview, and
                     the formal sign-off granted, this applicant is now legally recognized as certified to handle food
                     and may operate in compliance with national public health regulations.
+                @elseif ($isExipred)
+                        You need to make an appointment at your health department to renew your permit.
                 @endif
             </div>
 
