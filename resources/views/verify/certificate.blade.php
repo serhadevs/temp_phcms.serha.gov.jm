@@ -102,6 +102,7 @@
                     <div>DOB: {{ \Carbon\Carbon::parse($applicant->date_of_birth)->format('d M Y') }}</div>
                     <div>Permit: {{ $applicant->permit_no }}</div>
                     <div>Category: {{ $applicant->permitCategory->name ?? 'N/A' }}</div>
+                    <div>Applicant Date: {{ \Carbon\Carbon::parse($applicant->application_date)->format('d M Y') ?? 'No Application Date' }}</div>
 
                     <div>Issued:
                         {{ optional($applicant->signOffs)->sign_off_date
