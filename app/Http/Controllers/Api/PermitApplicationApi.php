@@ -100,15 +100,16 @@ class PermitApplicationApi extends Controller
     public function permitRetrieval(Request $request)
     {
         try {
-            // 1. Validate all required fields at once
+
+            //Validate
             $validated = $request->validate([
-                'firstname' => 'required|string',
-                'lastname'  => 'required|string',
-                'date_of_birth'   => 'required|date',
-                'permit_no' => 'required|string',
+                'firstname'      => 'required|string',
+                'lastname'       => 'required|string',
+                'date_of_birth'  => 'required|date',
+                'permit_no'      => 'required|string',
             ]);
 
-            // 2. Query the database matching ALL four fields
+            //Find applicant
             $applicant = PermitApplication::with([
                 'permitCategory',
                 'payment',
@@ -121,37 +122,47 @@ class PermitApplicationApi extends Controller
             ])
                 ->where('firstname', $validated['firstname'])
                 ->where('lastname', $validated['lastname'])
-                ->where('date_of_birth', $validated['date_of_birth'])
+                ->whereDate('date_of_birth', $validated['date_of_birth'])
                 ->where('permit_no', $validated['permit_no'])
                 ->first();
 
-            // 3. Handle Not Found
-            // if (!$applicant) {
-            //     return response()->json([
-            //         'message' => 'No application found for the provided details.',
-            //         'status'  => 'not_found'
-            //     ], 404);
-            // }
+            
+            if (!$applicant) {
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'not_found' => 'No application found with the provided details.'
+                    ]);
+            }
 
-            return view('verify.certificate', compact('applicant'));
+           
+            $expiry = optional($applicant->signOffs)->expiry_date;
+            $isExpired = $expiry ? Carbon::now()->gt(Carbon::parse($expiry)) : false;
 
-            // 4. Handle Success
-            // return response()->json([
-            //     'status'    => 'success',
-            //     'applicant' => $applicant,
-            // ], 200);
+          
+            return view('verify.certificate', compact('applicant', 'isExpired'));
         } catch (ValidationException $e) {
-            // return response()->json([
-            //     'message' => 'Validation failed',
-            //     'errors'  => $e->errors(),
-            //     'status'  => 'validation_error'
-            // ], 422);
+
+            // Validation automatically redirects back, but we log it too
+            Log::warning('Permit Retrieval Validation Failed', [
+                'errors' => $e->errors(),
+                'input'  => $request->all()
+            ]);
+
+            throw $e; // important: let Laravel handle redirect
+
         } catch (Exception $e) {
-            // return response()->json([
-            //     'message' => 'An error occurred during permit retrieval.',
-            //     'error'   => $e->getMessage(),
-            //     'status'  => 'error'
-            // ], 500);
+
+            // Log full error for debugging
+            Log::error('Permit Retrieval Failed', [
+                'message' => $e->getMessage(),
+                'trace'   => $e->getTraceAsString(),
+                'input'   => $request->all()
+            ]);
+
+            return back()
+                ->withInput()
+                ->with('error', 'An unexpected error occurred. Please try again.');
         }
     }
 
