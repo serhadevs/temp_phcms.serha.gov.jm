@@ -83,11 +83,14 @@
 
 <body class="bg-light">
 
+    @php
+        $isExpired = (session('permit_is_expired'));
+    @endphp
     {{-- <div class="watermark"></div> --}}
     <div class="permit-wrapper">
 
         {{-- WATERMARK --}}
-        @if ($isExpired)
+        @if($isExpired)
             <div class="expired-watermark">EXPIRED</div>
         @endif
 
