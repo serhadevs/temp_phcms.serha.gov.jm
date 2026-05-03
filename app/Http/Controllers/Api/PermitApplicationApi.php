@@ -172,52 +172,59 @@ class PermitApplicationApi extends Controller
     //             ->with('error', 'An unexpected error occurred. Please try again.');
     //     }
     // }
-    public function retrievePermit(Request $request)
-    {
-        $validated = $request->validate([
-            'firstname'      => 'required|string',
-            'lastname'       => 'required|string',
-            'date_of_birth'  => 'required|date',
-            'permit_no'      => 'required|string',
+   public function retrievePermit(Request $request)
+{
+    $validated = $request->validate([
+        'firstname'      => 'required|string',
+        'lastname'       => 'required|string',
+        'date_of_birth'  => 'required|date',
+        'permit_no'      => 'required|string',
+    ]);
+
+    $applicant = PermitApplication::where($validated)->first();
+
+    if (!$applicant) {
+        return back()->withErrors([
+            'not_found' => 'No application found.'
         ]);
-
-        $applicant = PermitApplication::where($validated)->first();
-
-        if (!$applicant) {
-            return back()->withErrors([
-                'not_found' => 'No application found.'
-            ]);
-        }
-
-        $token = hash('sha256', Str::random(120));
-
-        DB::table('verification_tokens')->insert([
-            'permit_application_id' => $applicant->id,
-            'token'        => $token,
-            'ip_address'   => request()->ip(),
-            'user_agent'   => request()->userAgent(),
-            'expires_at'   => now()->addMinutes(5), // VERY SHORT LIFE
-            'created_at'   => now(),
-            'updated_at'   => now(),
-        ]);
-
-        // 🔐 Create SIGNED URL
-        $url = URL::temporarySignedRoute(
-            'verify.certificate',
-            now()->addMinutes(5),
-            ['token' => $token]
-        );
-        session([
-            'verified_permit_id' => $applicant->id,
-            'verified_permit_hash' => hash_hmac(
-                'sha256',
-                $applicant->permit_no . $applicant->date_of_birth,
-                config('app.key')
-            )
-        ]);
-
-        return redirect($url);
     }
+
+    $token = hash('sha256', Str::random(120));
+
+    DB::table('verification_tokens')->insert([
+        'permit_application_id' => $applicant->id,
+        'token'        => $token,
+        'ip_address'   => request()->ip(),
+        'user_agent'   => request()->userAgent(),
+        'expires_at'   => now()->addMinutes(5),
+        'created_at'   => now(),
+        'updated_at'   => now(),
+    ]);
+
+    $url = URL::temporarySignedRoute(
+        'verify.certificate',
+        now()->addMinutes(5),
+        ['token' => $token]
+    );
+
+    $expiry = optional($applicant->signOffs)->expiry_date;
+
+    $isExpired = $expiry
+        ? Carbon::now()->gt(Carbon::parse($expiry))
+        : false;
+
+    session([
+        'verified_permit_id' => $applicant->id,
+        'verified_permit_hash' => hash_hmac(
+            'sha256',
+            $applicant->permit_no . $applicant->date_of_birth,
+            config('app.key')
+        ),
+        'permit_is_expired' => $isExpired, 
+    ]);
+
+    return redirect($url);
+}
 
     public function showCertificate(Request $request, $token)
     {
