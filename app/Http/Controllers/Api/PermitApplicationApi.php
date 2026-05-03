@@ -256,11 +256,11 @@ class PermitApplicationApi extends Controller
                 ->findOrFail($record->permit_application_id);
 
     $expiry = optional($applicant->signOffs)->expiry_date;
-    $isExpiry = $expiry ? now()->gt($expiry) : false;
+    $isExpired = $expiry ? now()->gt($expiry) : false;
 
     // 8️⃣ Prevent caching completely
     return response()
-        ->view('verify.certificate', compact('applicant','isExpiry'))
+        ->view('verify.certificate', compact('applicant','isExpired'))
         ->header('Cache-Control','no-store, no-cache, must-revalidate, max-age=0')
         ->header('Pragma','no-cache')
         ->header('Expires','Sat, 01 Jan 1990 00:00:00 GMT');
