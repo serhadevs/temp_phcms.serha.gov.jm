@@ -192,7 +192,7 @@ class PermitApplicationApi extends Controller
         $token = hash('sha256', Str::random(120));
 
         DB::table('verification_tokens')->insert([
-            'applicant_id' => $applicant->id,
+            'permit_application_id' => $applicant->id,
             'token'        => $token,
             'ip_address'   => request()->ip(),
             'user_agent'   => request()->userAgent(),
