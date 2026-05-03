@@ -94,7 +94,7 @@
                      style="width:120px;height:120px;overflow:hidden;margin:auto;">
                     @if ($applicant->photo_upload)
                         <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
-                             class="{{ $isExpiry ? 'expired-photo' : '' }}"
+                             class="{{ $isExpired ? 'expired-photo' : '' }}"
                              style="width:100%;height:100%;object-fit:cover;">
                     @else
                         Photo Not Available
