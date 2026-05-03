@@ -197,6 +197,9 @@
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
                     Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
                     clearance and certification for all persons involved in the handling and preparation of food.
+                @elseif (isset($isExpired) && $isExpired)
+                    
+                    You need to make an appointment at your health department to renew your permit.
                 @else
                     The application has now been reviewed and approved by the <strong>Medical Officer of
                         Health(MOH)</strong>. In accordance with the <strong>Food Safety Act (1998)</strong>,
@@ -205,8 +208,6 @@
                     activities. With the successful completion of the required examination and medical interview, and
                     the formal sign-off granted, this applicant is now legally recognized as certified to handle food
                     and may operate in compliance with national public health regulations.
-                @elseif ($isExipred)
-                        You need to make an appointment at your health department to renew your permit.
                 @endif
             </div>
 
