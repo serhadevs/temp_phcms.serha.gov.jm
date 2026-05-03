@@ -26,23 +26,31 @@
         }
 
         /* EXPIRED WATERMARK */
+        /* EXPIRED WATERMARK - FULL PAGE DIAGONAL */
         .expired-watermark {
-            position: absolute;
+            position: fixed;
+            /* covers entire page */
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: 120px;
+            transform: translate(-50%, -50%) rotate(-30deg);
+
+            font-size: 180px;
+            /* BIGGER */
             font-weight: 900;
-            color: rgba(220, 53, 69, 0.15);
-            letter-spacing: 10px;
+            letter-spacing: 20px;
             white-space: nowrap;
+
+            color: rgba(220, 53, 69, 0.12);
+            /* lighter red */
             pointer-events: none;
-            z-index: 10;
+            z-index: 0;
+            /* behind content */
         }
 
-        .permit-wrapper * {
+        /* Ensure certificate content sits above watermark */
+        .permit-wrapper {
             position: relative;
-            z-index: 2;
+            z-index: 1;
         }
 
         /* PHOTO GREYSCALE WHEN EXPIRED */
@@ -198,7 +206,6 @@
                     Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
                     clearance and certification for all persons involved in the handling and preparation of food.
                 @elseif (isset($isExpired) && $isExpired)
-                    
                     You need to make an appointment at your health department to renew your permit.
                 @else
                     The application has now been reviewed and approved by the <strong>Medical Officer of
