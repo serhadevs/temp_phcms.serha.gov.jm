@@ -82,7 +82,7 @@
          <div class="d-grid gap-2 mt-4">
         
 
-        <a href="{{ url('/verify-permit') }}" class="btn btn-outline-secondary">
+        <a href="{{ url('/verify-permit/home') }}" class="btn btn-primary">
              Go to Retrieval Page
         </a>
     </div>
