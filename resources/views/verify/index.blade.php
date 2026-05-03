@@ -402,9 +402,9 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <form action="{{ route('verify.retrieval') }}" method="get">
-                        {{-- @csrf
-                        @method('post') --}}
+                    <form action="{{ route('verify.retrieval') }}" method="post">
+                        @csrf
+                        
                         <div class="form-card">
                             <div class="form-header">
                                 <div class="form-icon">
