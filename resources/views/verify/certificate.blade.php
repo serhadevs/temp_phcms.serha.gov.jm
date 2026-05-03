@@ -57,11 +57,32 @@
         .expired-photo {
             filter: grayscale(100%);
         }
+
+         /* WATERMARK LAYER */
+    .watermark {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+        opacity: 0.06; /* faint */
+    }
+
+    .watermark::before {
+        content: "";
+        position: absolute;
+        inset: -50%;
+        background-image: url("{{ asset('images/serha_logo.png') }}");
+        background-repeat: repeat;
+        background-size: 180px;
+        transform: rotate(-35deg);
+    }
     </style>
 </head>
 
 <body class="bg-light">
 
+    <div class="watermark"></div>
     <div class="permit-wrapper">
 
         {{-- WATERMARK --}}
@@ -74,8 +95,12 @@
             <!-- HEADER -->
             <div class="bg-primary text-white p-3 rounded mb-2"
                 style="background: linear-gradient(to right, #003366, #b30000) !important;">
-                <div class="fw-bold fs-5">
-                    SOUTH EAST REGIONAL HEALTH AUTHORITY
+                <div class="d-flex align-items-center gap-2">
+                    <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo" style="height:40px; width:auto;">
+
+                    <div class="fw-bold fs-5">
+                        SOUTH EAST REGIONAL HEALTH AUTHORITY
+                    </div>
                 </div>
                 <div class="small">
                     Public Health Certificate Management System - Verification by IDPro
