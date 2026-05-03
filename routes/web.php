@@ -88,7 +88,11 @@ Route::post('/verify-permit/retrieve',
 Route::get('/verify-permit/certificate/{token}',
     [PermitApplicationApi::class, 'showCertificate']
 )->name('verify.certificate')->middleware('signed');
-Route::get('/verify-permit/download/{id}', [PermitApplicationApi::class, 'downloadCertificate'])->name('verify.download');
+Route::get('/verify-permit/download/{id}', 
+    [PermitApplicationApi::class, 'downloadCertificate']
+)->name('verify.download')
+ ->middleware(['signed','throttle:5,1']); 
+ 
 //Users routes for users not logged in
 
 Route::get('/forget-password', [UserController::class, 'forgetPasswordPage'])->name('forget-password');

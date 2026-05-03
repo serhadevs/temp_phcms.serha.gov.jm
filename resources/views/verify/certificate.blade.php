@@ -257,24 +257,31 @@
                     and may operate in compliance with national public health regulations.
                 @endif
             </div>
-            <!-- ACTION BUTTONS (NON-PRINTABLE) -->
-            <div class="text-center mt-4 no-print">
-                <button onclick="window.print()" class="btn btn-primary me-2">
-                    🖨️ Print Confirmation
-                </button>
 
-                <button onclick="emailConfirmation()" class="btn btn-success me-2">
-                    📧 Email Confirmation
-                </button>
+            @if ($isExpired)
+                <div class="text-center mt-4 no-print">
+                    <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
+                        class="btn btn-primary">
+                        Download PDF
+                    </a>
 
-                <a href="{{ url('/verify-permit') }}" class="btn btn-outline-secondary">
-                    🔎 Verify Another Permit
-                </a>
-            </div>
+                    <button onclick="emailConfirmation()" class="btn btn-success me-2">
+                        Email Confirmation
+                    </button>
+
+                </div>
+            @endif
 
         </div>
     </div>
 
 </body>
+<script>
+    function emailConfirmation() {
+        const subject = "Food Handlers Permit Confirmation";
+        const body = "Please find my verified Food Handlers Permit confirmation at:\n\n" + window.location.href;
+        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+</script>
 
 </html>

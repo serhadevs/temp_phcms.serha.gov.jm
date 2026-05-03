@@ -207,78 +207,116 @@ class PermitApplicationApi extends Controller
             now()->addMinutes(5),
             ['token' => $token]
         );
+        session([
+            'verified_permit_id' => $applicant->id,
+            'verified_permit_hash' => hash_hmac(
+                'sha256',
+                $applicant->permit_no . $applicant->date_of_birth,
+                config('app.key')
+            )
+        ]);
 
         return redirect($url);
     }
 
     public function showCertificate(Request $request, $token)
-{
-   
-    $record = DB::table('verification_tokens')
-        ->where('token', $token)
-        ->first();
+    {
 
-    if (!$record) {
-        abort(403, 'Invalid verification link.');
+        $record = DB::table('verification_tokens')
+            ->where('token', $token)
+            ->first();
+
+        if (!$record) {
+            abort(403, 'Invalid verification link.');
+        }
+
+
+        if (now()->gt($record->expires_at)) {
+            abort(403, 'Verification link expired.');
+        }
+
+
+        if ($record->used_at !== null) {
+            abort(403, 'This link was already used.');
+        }
+
+
+        // if ($record->ip_address !== $request->ip()) {
+        //     abort(403, 'Device/IP mismatch.');
+        // }
+
+
+        // if ($record->user_agent !== $request->userAgent()) {
+        //     abort(403, 'Device mismatch.');
+        // }
+
+        // 6️⃣ Mark token as USED immediately
+        DB::table('verification_tokens')
+            ->where('id', $record->id)
+            ->update(['used_at' => now()]);
+
+        // 7️⃣ Load applicant
+        // $applicant = PermitApplication::with([
+        //     'permitCategory','signOffs','testResults'
+        // ])->findOrFail($record->applicant_id);
+
+        $applicant = PermitApplication::with('permitCategory', 'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages')
+            ->findOrFail($record->permit_application_id);
+
+        $expiry = optional($applicant->signOffs)->expiry_date;
+        $isExpired = $expiry ? now()->gt($expiry) : false;
+
+        // 8️⃣ Prevent caching completely
+        return response()
+            ->view('verify.certificate', compact('applicant', 'isExpired'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
     }
-
-   
-    if (now()->gt($record->expires_at)) {
-        abort(403, 'Verification link expired.');
-    }
-
-    
-    if ($record->used_at !== null) {
-        abort(403, 'This link was already used.');
-    }
-
-   
-    // if ($record->ip_address !== $request->ip()) {
-    //     abort(403, 'Device/IP mismatch.');
-    // }
-
-   
-    // if ($record->user_agent !== $request->userAgent()) {
-    //     abort(403, 'Device mismatch.');
-    // }
-
-    // 6️⃣ Mark token as USED immediately
-    DB::table('verification_tokens')
-        ->where('id', $record->id)
-        ->update(['used_at' => now()]);
-
-    // 7️⃣ Load applicant
-    // $applicant = PermitApplication::with([
-    //     'permitCategory','signOffs','testResults'
-    // ])->findOrFail($record->applicant_id);
-
-    $applicant = PermitApplication::with('permitCategory', 'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages')
-                ->findOrFail($record->permit_application_id);
-
-    $expiry = optional($applicant->signOffs)->expiry_date;
-    $isExpired = $expiry ? now()->gt($expiry) : false;
-
-    // 8️⃣ Prevent caching completely
-    return response()
-        ->view('verify.certificate', compact('applicant','isExpired'))
-        ->header('Cache-Control','no-store, no-cache, must-revalidate, max-age=0')
-        ->header('Pragma','no-cache')
-        ->header('Expires','Sat, 01 Jan 1990 00:00:00 GMT');
-}
 
     public function downloadCertificate($id)
     {
-        // Find the applicant using the ID passed from the frontend
+       
+        if (!session()->has('verified_permit_id') || !session()->has('verified_permit_hash')) {
+            abort(403, 'Session not verified.');
+        }
+
+       
+        if (session('verified_permit_id') != $id) {
+            abort(403, 'Permit mismatch.');
+        }
+
+       
         $applicant = PermitApplication::with([
             'permitCategory',
             'establishmentClinics',
-            'signOffs'
+            'signOffs',
+            'testResults'
         ])->findOrFail($id);
 
-        // Generate the PDF from the blade view
-        $pdf = Pdf::loadView('verify.certificate', compact('applicant'));
+        
+        $expectedHash = hash_hmac(
+            'sha256',
+            $applicant->permit_no . $applicant->date_of_birth,
+            config('app.key')
+        );
 
-        // Download the file
-        return $pdf->download('Permit_Confirmation_' . $applicant->permit_no . '.pdf');
+        if (!hash_equals(session('verified_permit_hash'), $expectedHash)) {
+            abort(403, 'Security validation failed.');
+        }
+
+       
+        if ($applicant->signOffs && now()->gt($applicant->signOffs->expiry_date)) {
+            abort(403, 'Expired permits cannot be downloaded.');
+        }
+
+        // 6️⃣ Generate PDF
+        $pdf = Pdf::loadView('verify.certificate', compact('applicant'))
+            ->setPaper('A4', 'portrait');
+
+        // 7️⃣ Force download (no browser caching)
+        return $pdf->download(
+            'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf'
+        )->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     }
 }
