@@ -387,7 +387,21 @@
 
                 <!-- RIGHT SIDE: Form -->
                 <div class="col-lg-6 form-panel">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                     <form action="{{ route('verify.retrieval') }}" method="post">
                         @csrf
                         @method('post')
