@@ -15,6 +15,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class AdvanceSearchController extends Controller
 {
@@ -52,6 +53,8 @@ class AdvanceSearchController extends Controller
             ->orderBy('name_of_operator', 'asc')
             ->select('name_of_operator')
             ->get();
+
+        Log::channel('systemOperations')->info('Advanced Search create called: ', ['user_id' => auth()->user()->id]);
 
         return view('advancesearch.create', compact('establishment_clinics', 'food_establishments', 'operators', 'food_addresses', 'test_locations'));
     }
@@ -108,6 +111,7 @@ class AdvanceSearchController extends Controller
                     ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                     ->get();
                 $module = 1;
+                Log::channel('systemOperations')->info('Advanced Search used for permit applications:', ['user_id' => auth()->user()->id]);
 
                 return view('advancesearch.view', compact('permit_applications', 'module'));
             } else if ($module['module'] == '2') {
@@ -125,6 +129,7 @@ class AdvanceSearchController extends Controller
                     ->get();
                 $module = 2;
 
+                Log::channel('systemOperations')->info('Advanced Search used for est clinics:', ['user_id' => auth()->user()->id]);
                 return view('advancesearch.view', compact('food_clinics', 'module'));
             } else if ($module['module'] == '3') {
                 if ($request->app_type == "1") {
@@ -147,6 +152,7 @@ class AdvanceSearchController extends Controller
                             $query->where('id', $id);
                         })
                         ->get();
+                    Log::channel('systemOperations')->info('Advanced Search used for permit application test results:', ['user_id' => auth()->user()->id]);
 
                     return view('advancesearch.view', compact('test_results', 'module', 'app_type_id'));
                 } else if ($request->app_type == "2") {
@@ -166,6 +172,8 @@ class AdvanceSearchController extends Controller
                         })
                         ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                         ->get();
+
+                    Log::channel('systemOperations')->info('Advanced Search used for food establishment test results', ['user_id' => auth()->user()->id]);
 
                     return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 }
@@ -190,6 +198,7 @@ class AdvanceSearchController extends Controller
                             $query->where('id', $id);
                         })->orderBy('created_at', 'desc')
                         ->get();
+                    Log::channel('systemOperations')->info('Advanced Search used for health interviews for permit application:', ['user_id' => auth()->user()->id]);
                     return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 } else if ($request->app_type == 3) {
                     $app_type_id = 2;
@@ -204,6 +213,7 @@ class AdvanceSearchController extends Controller
                             $query->where('id', $id);
                         })->orderBy('created_at', 'desc')
                         ->get();
+                    Log::channel('systemOperations')->info('Advanced Search used for health interviews for barber and cosmo application:', ['user_id' => auth()->user()->id]);
                     return view('advancesearch.view', compact('applications', 'module', 'app_type_id'));
                 }
             } else if ($module['module'] == '5') {
@@ -224,6 +234,7 @@ class AdvanceSearchController extends Controller
                     ->get();
 
                 $module = 5;
+                Log::channel('systemOperations')->info('Advanced Search used for health interviews for payments:', ['user_id' => auth()->user()->id]);
                 return view('advancesearch.view', compact('payments_info', 'module'));
             } else if ($module['module'] == '6') {
                 if (!$request->application_number && !$request->food_est_name && !$request->operator_name && !$request->address && !$request->test_location) {
@@ -247,7 +258,7 @@ class AdvanceSearchController extends Controller
                     })
                     ->get();
                 $module = 6;
-
+                Log::channel('systemOperations')->info('Advanced Search used for health interviews for food establishments:', ['user_id' => auth()->user()->id]);
                 return view('advancesearch.view', compact('food_establishments', 'module'));
             }
         } catch (Exception $e) {
@@ -274,6 +285,6 @@ class AdvanceSearchController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->get();
 
-        return view('advancesearch.view', compact('permit_applications','module'));
+        return view('advancesearch.view', compact('permit_applications', 'module'));
     }
 }

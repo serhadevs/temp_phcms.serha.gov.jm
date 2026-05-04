@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SwimmingPoolsApplicationController extends Controller
 {
@@ -101,6 +102,7 @@ class SwimmingPoolsApplicationController extends Controller
         $swimming_pool['permit_no'] = $this->generateSwimmingPoolPermitNo();
 
         if ($created_pool = SwimmingPoolsApplications::create($swimming_pool)) {
+            Log::channel('systemOperations')->info('Swimming Pool Application renew called', ['user_id' => auth()->user()->id, 'application_id' => $created_pool->id]);
             return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('success', 'Swimming Pool has been entered successfully. The Application ID is ' . $created_pool->id);
         }
 
@@ -199,6 +201,7 @@ class SwimmingPoolsApplicationController extends Controller
                             }
                             if ($s_pool->update($update_pool)) {
                                 DB::commit();
+                                Log::channel('systemOperations')->info('Swimming Pool Application update called', ['user_id' => auth()->user()->id, 'application_id' => $id]);
                                 return redirect()->route('swimming-pools.view', ['id' => $s_pool->id])->with('success', 'Swimming Pool Application for ' . $s_pool->firstname . ' ' . $s_pool->lastname . ':' . $s_pool->id . ' has been updated successfully.');
                             } else {
                                 throw new Exception("Error updating swimming pool.");
@@ -252,7 +255,7 @@ class SwimmingPoolsApplicationController extends Controller
                 }
             }
         }
-
+        Log::channel('systemOperations')->info('Swimming Pool Application renew called', ['user_id' => auth()->user()->id, 'application_id' => $id]);
         return redirect()->route('swimming-pools.index.filter', ['id' => 0])->with('error', 'Error entering swimming pool application renewal.');
     }
 

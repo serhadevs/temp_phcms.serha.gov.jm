@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BarberCosmetApplicationsController extends Controller
 {
@@ -44,6 +45,7 @@ class BarberCosmetApplicationsController extends Controller
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->get();
+            Log::channel('systemOperations')->info('Barber and cosmo index called:', ['user_id' => auth()->user()->id]);
             return view('barbercosmet.index', compact('applications'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
@@ -59,6 +61,7 @@ class BarberCosmetApplicationsController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', $filterTimeline)
             ->get();
+        Log::channel('systemOperations')->info('Barber and cosmo index called:', ['user_id' => auth()->user()->id]);
 
         return view('barbercosmet.index', compact('applications'));
     }
@@ -75,6 +78,7 @@ class BarberCosmetApplicationsController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
             ->get();
+        Log::channel('systemOperations')->info('Barber and cosmo custom index called:', ['user_id' => auth()->user()->id]);
 
         return view('barbercosmet.index', compact('applications'));
     }
@@ -90,7 +94,8 @@ class BarberCosmetApplicationsController extends Controller
             ->where('application_type_id', 2)
             ->where('facility_id', auth()->user()->facility_id)
             ->get();
-            //dd($exam_sessions);
+        //dd($exam_sessions);
+        Log::channel('systemOperations')->info('Barber and cosmo create called:', ['user_id' => auth()->user()->id]);
         return view('barbercosmet.create', compact('exam_sessions'));
     }
 
@@ -116,6 +121,7 @@ class BarberCosmetApplicationsController extends Controller
                     'exam_date_id' => $health_cert_app['exam_date_id']
                 ]
             )) {
+                Log::channel('systemOperations')->info('Barber and cosmo store called:', ['user_id' => auth()->user()->id]);
                 return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Health Certificate Application has been processed successfully. The Application ID is: ' . $cert_created->id);
             }
         }
@@ -154,6 +160,7 @@ class BarberCosmetApplicationsController extends Controller
             ->get();
 
         $system_operation_type_id = 6;
+        Log::channel('systemOperations')->info('Barber and cosmo view called:', ['user_id' => auth()->user()->id]);
 
         return view('barbercosmet.view', compact('application', 'exam_sessions', 'system_operation_type_id'));
     }
@@ -209,6 +216,7 @@ class BarberCosmetApplicationsController extends Controller
                             }
                             if ($bar_application->update($applicant_info)) {
                                 DB::commit();
+                                Log::channel('systemOperations')->info('Barber and cosmo update called:', ['user_id' => auth()->user()->id]);
                                 return redirect()->route('barber-cosmet.view', ['id' => $id])->with('success', 'Applicant Information for ' . $bar_application->firstname . ' ' . $bar_application->lastname . ' has been updated successfully.');
                             } else {
                                 throw new Exception("Error updating application. Unable to update record.");
@@ -227,6 +235,7 @@ class BarberCosmetApplicationsController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Barber and cosmo update called:', ['user_id' => auth()->user()->id, 'message' => $e->getMessage()]);
             return redirect()->route('barber-cosmet.view', ['id' => $id])->with('error', $e->getMessage());
         }
     }
@@ -241,7 +250,7 @@ class BarberCosmetApplicationsController extends Controller
 
         $edit_mode = 1;
         $system_operation_type_id = 6;
-
+        Log::channel('systemOperations')->info('Barber and cosmo edit called:', ['user_id' => auth()->user()->id]);
         return view('barbercosmet.view', compact('application', 'exam_sessions', 'edit_mode', 'system_operation_type_id'));
     }
 
@@ -288,6 +297,7 @@ class BarberCosmetApplicationsController extends Controller
                             }
                             if ($bar_application->update($updated_info)) {
                                 DB::commit();
+                                Log::channel('systemOperations')->info('Barber and cosmo update called:', ['user_id' => auth()->user()->id]);
                                 return redirect()->route('barber-cosmet.view', ['id' => $id])->with('success', 'Employment and Application Information for ' . $bar_application->firstname . ' ' . $bar_application->lastname . ' has been updated successfully.');
                             } else {
                                 throw new Exception("Error updating application. Unable to update record.");
@@ -306,6 +316,7 @@ class BarberCosmetApplicationsController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Barber and cosmo index called:', ['user_id' => auth()->user()->id, 'message'=>$e->getMessage()]);
             return redirect()->route('barber-cosmet.view', ['id' => $id])->with('error', $e->getMessage());
         }
 
@@ -358,6 +369,7 @@ class BarberCosmetApplicationsController extends Controller
                                 }
                                 if ($appointment->update($appointment_info)) {
                                     DB::commit();
+                                    Log::channel('systemOperations')->info('Barber and cosmo update called:', ['user_id' => auth()->user()->id]);
                                     return redirect()->route('barber-cosmet.view', ['id' => $bar_application->id])->with('success', 'Appointment information for ' . $bar_application->firstname . ' ' . $bar_application->lastname . ' has been updated successfully.');
                                 }
                             } else {
@@ -377,6 +389,7 @@ class BarberCosmetApplicationsController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Barber and cosmo index called:', ['user_id' => auth()->user()->id, 'message'=>$e->getMessage()]);
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -456,6 +469,7 @@ class BarberCosmetApplicationsController extends Controller
                             if ($old_test_results = TestResult::where('application_id', $id)->where('application_type_id', 2)->first()) {
                                 $old_test_results->update(['deleted_at' => date('Y-m-d H:i:s')]);
                             }
+                            Log::channel('systemOperations')->info('Barber and cosmo renew called:', ['user_id' => auth()->user()->id]);
                             return redirect()->route('barber-cosmet.index', ['id' => 0])->with('success', 'Health Certificate Application has been renewed successfully. The New Application ID is: ' . $new_application->id);
                         }
                     }
@@ -522,6 +536,7 @@ class BarberCosmetApplicationsController extends Controller
                         }
                         if ($application->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
+                            Log::channel('systemOperations')->info('Barber and cosmo destroy called:', ['user_id' => auth()->user()->id]);
                             return [
                                 'success',
                                 "Barber/Cosmet application for " . $application->firstname . " " . $application->lastname . ":" . $application->id . " has been deleted successfully"
@@ -540,6 +555,7 @@ class BarberCosmetApplicationsController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Barber and cosmo index called:', ['user_id' => auth()->user()->id, 'message'=>$e->getMessage()]);
             return $e->getMessage();
         }
     }

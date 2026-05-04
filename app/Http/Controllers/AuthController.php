@@ -11,6 +11,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
@@ -76,6 +77,8 @@ class AuthController extends Controller
             if (!$location) {
                 return redirect('/')->with('error', 'Unable to store login information');
             }
+
+            Log::channel('logIn')->info('User logged in successfully', ['user_id'=>Auth::user()->id]);
 
             return redirect()->intended('/dashboard')->with('success', 'User logged in successfully!');
         } catch (\Exception $e) {

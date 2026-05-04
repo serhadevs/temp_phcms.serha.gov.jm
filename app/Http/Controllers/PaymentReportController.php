@@ -42,6 +42,7 @@ class PaymentReportController extends Controller
                 ->selectRaw("application_types.name as app_type, payments.application_id as app_number, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.created_at as payment_date, payments.manual_receipt_no")
                 ->whereBetween('payments.created_at', [$timeline['starting_date'], date_format(new DateTime($timeline['ending_date'] . " 23:59:59"), 'Y-m-d H:m:s')])
                 ->where('payments.facility_id', auth()->user()->facility_id)
+                ->whereNull('payments.manual_receipt_no')
                 ->when($request->payment_type_id == 1, function ($query, string $request) {
                     $query->where(function ($query2) use ($request) {
                         $query2->where('payment_type_id', 1)
@@ -58,6 +59,7 @@ class PaymentReportController extends Controller
                 ->selectRaw("application_types.name as app_type, payments.application_id as app_number, payments.receipt_no, payments.total_cost, payments.amount_paid, payments.change_amt, payments.created_at as payment_date, payments.manual_receipt_no")
                 ->whereBetween('payments.created_at', [$timeline['starting_date'], date_format(new DateTime($timeline['ending_date'] . " 23:59:59"), 'Y-m-d H:m:s')])
                 ->where('payments.facility_id', auth()->user()->facility_id)
+                ->whereNull('payments.manual_receipt_no')
                 ->when($request->payment_type_id == 1, function ($query, string $request) {
                     $query->where(function ($query2) use ($request) {
                         $query2->where('payment_type_id', 1)
