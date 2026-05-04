@@ -243,7 +243,13 @@
                 @if (empty($applicant->signOffs))
                     To finalize this application, the applicant must complete the Food Handlers examination and attend
                     the Medical Interview. The appointment date is
-                    <strong>{{ optional($applicant->appointment[0])->appointment_date ? \Carbon\Carbon::parse($applicant->appointment[0]->appointment_date)->format('d F Y') : 'No Date Scheduled' }}</strong>.
+                    <strong>
+    {{
+        optional(optional($applicant->appointment)->first())->appointment_date
+        ? \Carbon\Carbon::parse($applicant->appointment->first()->appointment_date)->format('d F Y')
+        : 'No Date Scheduled'
+    }}
+</strong>.
                     After successful completion, the Medical Officer of Health will review the results and, if approved,
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
                     Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
