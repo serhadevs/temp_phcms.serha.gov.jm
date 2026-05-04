@@ -64,6 +64,7 @@ class PermitApplicationController extends Controller
                 ->whereBetween('created_at', [$filterTimeline, $today])
                 ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
                 ->get();
+            Log::channel('systemOperations')->info('Permit Application index viewed', ['user_id' => auth()->user()->id]);
             return view('food_handlers_permit.index', compact('permit_applications'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
@@ -79,6 +80,8 @@ class PermitApplicationController extends Controller
             ->where('created_at', '>', $filterTimeline)
             ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
             ->get();
+
+        Log::channel('systemOperations')->info('Permit Application index viewed', ['user_id' => auth()->user()->id]);
         return view('food_handlers_permit.index', compact('permit_applications'));
     }
 
@@ -98,6 +101,7 @@ class PermitApplicationController extends Controller
             ->whereBetween('created_at', [$timeline['starting_date'], $timeline['ending_date'] . " 23:59:59"])
             ->whereRelation('user', 'facility_id', '=', Auth()->user()->facility_id)
             ->get();
+        Log::channel('systemOperations')->info('Permit Application custom index viewed', ['user_id' => auth()->user()->id]);
 
         return view('food_handlers_permit.index', compact('permit_applications'));
     }
@@ -189,6 +193,7 @@ class PermitApplicationController extends Controller
 
         // dd($tdbetwappandprint);
         // $id_types = IdentificationTypes::all();
+        Log::channel('systemOperations')->info('Permit Application view called', ['user_id' => auth()->user()->id]);
         return view('food_handlers_permit.view', compact(
             'permit_application',
             'appointments',
@@ -262,6 +267,7 @@ class PermitApplicationController extends Controller
 
         // Get pickup details
         $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
+        Log::channel('systemOperations')->info('Permit Application edit called', ['user_id' => auth()->user()->id, 'application_id' => $application_id]);
 
         return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id'));
     }
@@ -346,6 +352,7 @@ class PermitApplicationController extends Controller
                                 ]);
                             }
                             if ($permit->update($edits)) {
+                                Log::channel('systemOperations')->info('Permit Application update called', ['user_id' => auth()->user()->id, 'application_id' => $id]);
                                 DB::commit();
                                 if (str_contains($request->previous_url, 'food-handlers-clinics')) {
                                     return redirect()->route('food-handlers-clinics.view', ['id' => explode("view/", $request->previous_url)[1]])->with(['success' => 'Applicant ' . $edits["firstname"] . ' ' . $edits["lastname"] . ':' . $permit->id . ' has be updated successfully']);
@@ -368,6 +375,7 @@ class PermitApplicationController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Permit Application update called', ['user_id' => auth()->user()->id, 'application_id' => $id, 'message' => $e->getMessage()]);
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -431,6 +439,7 @@ class PermitApplicationController extends Controller
                                             'test_date' => $request->data["appointment_date"]
                                         ]);
                                     }
+                                    Log::channel('systemOperations')->info('Permit Application update appointment called', ['user_id' => auth()->user()->id, 'application_id' => $id]);
                                     DB::commit();
                                     return [
                                         'success',
@@ -456,6 +465,7 @@ class PermitApplicationController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Permit Application update called', ['user_id' => auth()->user()->id, 'application_id' => $id, 'message' => $e->getMessage()]);
             return $e->getMessage();
         }
         try {
@@ -503,6 +513,7 @@ class PermitApplicationController extends Controller
         // $exam_sites = ExamSites::where('facility_id', auth()->user()->facility_id)
         //     ->get();
         //dd($appointments_available[0]);
+        Log::channel('systemOperations')->info('Permit Application create called', ['user_id' => auth()->user()->id]);
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
     }
 
@@ -560,6 +571,7 @@ class PermitApplicationController extends Controller
             ->get();
 
         $application = PermitApplication::find($request->route('id'));
+        Log::channel('systemOperations')->info('Permit Application update called', ['user_id' => auth()->user()->id, 'application_id' => $request->route('id')]);
 
         return view('food_handlers_permit.renew', compact('categories', 'appointments_available', 'application'));
     }
@@ -674,7 +686,7 @@ class PermitApplicationController extends Controller
             //Appointment email function. 
             $sendAppointmentMail = new Services();
 
-
+            Log::channel('systemOperations')->info('Permit Application store called', ['user_id' => auth()->user()->id, 'application_id' => $new_permit_application->id]);
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
                 $sendAppointmentMail->sendAppointmentEmail($new_permit_application);
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
@@ -756,6 +768,7 @@ class PermitApplicationController extends Controller
                 ]);
             }
         }
+        Log::channel('systemOperations')->info('Permit Application renewal called', ['user_id' => auth()->user()->id, 'application_id' =>$new_application->id]);
         DB::commit();
         return redirect()->route('permit.index', ['id' => 0])->with('success', 'Renewal has been completed successfully. The Application Id is' . $new_application->id);
     }
@@ -907,6 +920,7 @@ class PermitApplicationController extends Controller
                         //Add delete for messages
                         if ($permit->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
+                            Log::channel('systemOperations')->info('Permit Application destroy called', ['user_id' => auth()->user()->id, 'application_id' =>$id]);
                             return [
                                 'success',
                                 'Permit Application for ' . $permit->firstname . ' ' . $permit->lastname . ':' . $permit->id . ' has been deleted successfully.'

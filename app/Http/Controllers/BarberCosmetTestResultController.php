@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BarberCosmetTestResultController extends Controller
 {
@@ -59,7 +60,7 @@ class BarberCosmetTestResultController extends Controller
             ->has('payment')
             ->whereRelation('testResults', 'created_at', '>', $filterTimeline)
             ->get();
-
+        Log::channel('systemOperations')->info('Barber and cosmo test results index called:', ['user_id' => auth()->user()->id]);
         return view('test_center.barber_cosmet.index', compact('test_results'));
     }
 
@@ -80,7 +81,7 @@ class BarberCosmetTestResultController extends Controller
             ->whereRelation('testResults', 'created_at', '>', $timeline['starting_date'])
             ->whereRelation('testResults', 'created_at', '<', $timeline['ending_date'] . " 23:59:59")
             ->get();
-
+        Log::channel('systemOperations')->info('Barber and cosmo test results custom index called:', ['user_id' => auth()->user()->id]);
         return view('test_center.barber_cosmet.index', compact('test_results'));
     }
 
@@ -105,6 +106,7 @@ class BarberCosmetTestResultController extends Controller
 
             $is_result = 1;
 
+            Log::channel('systemOperations')->info('Barber and cosmo test results outstanding called:', ['user_id' => auth()->user()->id]);
             return view('test_center.barber_cosmet.outstanding', compact('applications', 'is_result'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
@@ -125,6 +127,7 @@ class BarberCosmetTestResultController extends Controller
 
         $is_result = 1;
 
+        Log::channel('systemOperations')->info('Barber and cosmo test results outstanding called:', ['user_id' => auth()->user()->id]);
         return view('test_center.barber_cosmet.outstanding', compact('applications', 'is_result'));
     }
 
@@ -146,6 +149,7 @@ class BarberCosmetTestResultController extends Controller
 
         $is_result = 1;
 
+        Log::channel('systemOperations')->info('Barber and cosmo custom test results outstanding called:', ['user_id' => auth()->user()->id]);
         return view('test_center.barber_cosmet.outstanding', compact('applications', 'is_result'));
     }
 
@@ -186,6 +190,7 @@ class BarberCosmetTestResultController extends Controller
         $test_results['facility_id'] = auth()->user()->facility_id;
 
         if (TestResult::create($test_results)) {
+            Log::channel('systemOperations')->info('Barber and cosmo custom test results store called:', ['user_id' => auth()->user()->id]);
             return redirect()->route('test-results.barber-cosmet.processed', ['id' => 0])->with('success', 'Test Results for ' . $application->firstname . ' ' . $application->lastname . ' has been entered successfully');
         }
 
@@ -206,6 +211,7 @@ class BarberCosmetTestResultController extends Controller
         $is_view = 1;
         $system_operation_type_id = 3;
         $app_type_id = 6;
+        Log::channel('systemOperations')->info('Barber and cosmo custom test results view called:', ['user_id' => auth()->user()->id]);
 
         return view('test_center.barber_cosmet.edit', compact('application', 'is_view', 'system_operation_type_id', 'app_type_id'));
     }
@@ -223,6 +229,7 @@ class BarberCosmetTestResultController extends Controller
         $system_operation_type_id = 3;
         $app_type_id = 6;
 
+        Log::channel('systemOperations')->info('Barber and cosmo custom test results edit called:', ['user_id' => auth()->user()->id]);
         return view('test_center.barber_cosmet.edit', compact('application', 'system_operation_type_id', 'app_type_id'));
     }
 
@@ -275,6 +282,7 @@ class BarberCosmetTestResultController extends Controller
                                 }
                                 if ($results->update($test_results_updated)) {
                                     DB::commit();
+                                    Log::channel('systemOperations')->info('Barber and cosmo custom test results update called:', ['user_id' => auth()->user()->id]);
                                     return redirect()->route('test-results.barber-cosmet.view', ['id' => $results->healthCertApplication?->id])->with('success', 'Test Results for Barber/Cosmet Application' . $results->healthCertApplication?->firstname . ' ' . $results->healthCertApplication?->lastname . ':' . $results->healthCertApplication?->id . ' has been updated successfully.');
                                 }
                             } else {
@@ -294,6 +302,7 @@ class BarberCosmetTestResultController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Barber and cosmo custom test results update called:', ['user_id' => auth()->user()->id, 'message'=>$e->getMessage()]);
             return redirect()->back()->with('error', $e->getMessage());
         }
 
@@ -333,6 +342,7 @@ class BarberCosmetTestResultController extends Controller
                         ])) {
                             if ($results->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                                 DB::commit();
+                                Log::channel('systemOperations')->info('Barber and cosmo custom test results destroy successful:', ['user_id' => auth()->user()->id]);
                                 return [
                                     'success',
                                     'Test Results for ' . $results->healthCertApplication?->firstname . ' ' . $results->healthCertApplication?->lastname . ':' . $results->healthCertApplication?->id . ' has been deleted successfully.'
@@ -354,6 +364,7 @@ class BarberCosmetTestResultController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Barber and cosmo custom test results destroy successful:', ['user_id' => auth()->user()->id, 'message'=>$e->getMessage()]);
             return $e->getMessage();
         }
     }

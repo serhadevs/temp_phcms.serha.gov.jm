@@ -173,6 +173,7 @@ class SummaryReportController extends Controller
 
         if ($payment_type == 1) {
             $sum_foodHandlers = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 1)
                 ->where(function ($query3) {
@@ -183,6 +184,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else if ($payment_type != 1 && $payment_type != "") {
             $sum_foodHandlers = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 1)
                 ->where('payment_type_id', $payment_type)
@@ -190,6 +192,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else {
             $sum_foodHandlers = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 1)
                 ->select('total_cost')
@@ -301,6 +304,7 @@ class SummaryReportController extends Controller
         //     ->get();
         if ($payment_type == 1) {
             $sum_barberCosmet = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 2)
                 ->where(function ($query3) {
@@ -311,6 +315,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else if ($payment_type != 1 && $payment_type != "") {
             $sum_barberCosmet = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 2)
                 ->where('payment_type_id', $payment_type)
@@ -318,6 +323,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else {
             $sum_barberCosmet = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 2)
                 ->select('total_cost')
@@ -431,6 +437,7 @@ class SummaryReportController extends Controller
         //     ->get();
         if ($payment_type == 1) {
             $sum_foodEstablishment = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 3)
                 ->where(function ($query3) {
@@ -441,6 +448,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else if ($payment_type != 1 && $payment_type != "") {
             $sum_foodEstablishment = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 3)
                 ->where('payment_type_id', $payment_type)
@@ -448,6 +456,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else {
             $sum_foodEstablishment = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 3)
                 ->select('total_cost')
@@ -555,6 +564,7 @@ class SummaryReportController extends Controller
         //     ->get();
         if ($payment_type == 1) {
             $sum_swimmingPool = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 5)
                 ->where(function ($query3) {
@@ -565,6 +575,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else if ($payment_type != 1 && $payment_type != "") {
             $sum_swimmingPool = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 5)
                 ->where('payment_type_id', $payment_type)
@@ -572,6 +583,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else {
             $sum_swimmingPool = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 5)
                 ->select('total_cost')
@@ -663,6 +675,7 @@ class SummaryReportController extends Controller
         //     ->get();
         if ($payment_type == 1) {
             $sum_touristEstablishments = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 6)
                 ->where(function ($query3) {
@@ -673,6 +686,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else if ($payment_type != 1 && $payment_type != "") {
             $sum_touristEstablishments = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 6)
                 ->where('payment_type_id', $payment_type)
@@ -680,6 +694,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else {
             $sum_touristEstablishments = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 6)
                 ->select('total_cost')
@@ -782,6 +797,7 @@ class SummaryReportController extends Controller
         //     ->get();
         if ($payment_type == 1) {
             $sum_foodClinics = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 4)
                 ->where(function ($query3) {
@@ -792,6 +808,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else if ($payment_type != 1 && $payment_type != "") {
             $sum_foodClinics = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 4)
                 ->where('payment_type_id', $payment_type)
@@ -799,6 +816,7 @@ class SummaryReportController extends Controller
                 ->get();
         } else {
             $sum_foodClinics = Payments::whereBetween('created_at', [$starting_date, $ending_date . " 23:59:59"])
+                ->whereNull('manual_receipt_no')
                 ->where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 4)
                 ->select('total_cost')

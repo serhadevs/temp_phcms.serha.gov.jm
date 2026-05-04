@@ -20,6 +20,7 @@ use DateTime;
 use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FoodHandlersClinicController extends Controller
 {
@@ -61,7 +62,7 @@ class FoodHandlersClinicController extends Controller
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->where('created_at', '>', $filterTimeline)
             ->get();
-
+        Log::channel('systemOperations')->info('Food Est CLinic index called', ['user_id' => auth()->user()->id]);
         return view('food_handlers_clinic.index', compact('food_clinics'));
     }
 
@@ -170,6 +171,7 @@ class FoodHandlersClinicController extends Controller
                         $counter++;
                     }
                 }
+                Log::channel('systemOperations')->info('Est CLinic Application renew called', ['user_id' => auth()->user()->id, 'application_id'=> $new_clinic->id]);
                 DB::commit();
                 return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Food Handlers Clinic Renewal has been successfully processed for ' . $new_clinic->name . '. ' . $counter . ' Food Handlers Applications were also entered. The Clinic Application ID is: ' . $new_clinic->id);
             }
@@ -220,6 +222,7 @@ class FoodHandlersClinicController extends Controller
         }
 
         if ($app_id) {
+            Log::channel('systemOperations')->info('Est CLinic Application show called', ['user_id' => auth()->user()->id, 'application_id'=> $app_id]);
             return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('success', 'Food Handlers Clinic application was created successfully. The application number is: ' . $app_id);
         } else {
             return redirect()->route('food-handlers-clinic.index', ['id' => 0])->with('error', 'Error processing Food Handlers Clinic application.');
@@ -235,7 +238,7 @@ class FoodHandlersClinicController extends Controller
     public function show(Request $request)
     {
         //check to see if the establishment name is in the waiver establishments table
-    
+
 
         $application = EstablishmentClinics::with('editTransactions', 'printedcards')
             ->with('permits.payment')
@@ -245,9 +248,9 @@ class FoodHandlersClinicController extends Controller
 
         //dd($application);
         // $has_waiver = false;
-        if($application->name != null){
-           $waiver_check = WaiverEstablishments::where('establishment_name', 'like', '%' . $application->name . '%')->get();
-        //    $has_waiver = true;
+        if ($application->name != null) {
+            $waiver_check = WaiverEstablishments::where('establishment_name', 'like', '%' . $application->name . '%')->get();
+            //    $has_waiver = true;
 
         } else {
             $waiver_check = null;
@@ -260,7 +263,8 @@ class FoodHandlersClinicController extends Controller
             ->where('sign_off_status', 1)
             ->count();
 
-        return view('food_handlers_clinic.view', compact('application', 'applications_signed_off','waiver_check'));
+        Log::channel('systemOperations')->info('Est CLinic Application show called', ['user_id' => auth()->user()->id, 'application_id'=> $request->route('id')]);
+        return view('food_handlers_clinic.view', compact('application', 'applications_signed_off', 'waiver_check'));
     }
 
     /**
@@ -273,17 +277,17 @@ class FoodHandlersClinicController extends Controller
     {
         $application = EstablishmentClinics::with('editTransactions')->find($request->route('id'));
 
-       
+
         $edit_mode = 1;
 
         $applications_signed_off = PermitApplication::where('establishment_clinic_id', $request->route('id'))
             ->where('sign_off_status', 1)
             ->count();
 
-            $waiver_check = $application->waiver;
+        $waiver_check = $application->waiver;
 
-
-        return view('food_handlers_clinic.view', compact('application', 'edit_mode', 'applications_signed_off','waiver_check'));
+        Log::channel('systemOperations')->info('Est CLinic Application edit called', ['user_id' => auth()->user()->id]);
+        return view('food_handlers_clinic.view', compact('application', 'edit_mode', 'applications_signed_off', 'waiver_check'));
     }
 
     /**
@@ -341,6 +345,7 @@ class FoodHandlersClinicController extends Controller
                         }
                         if ($food_clinic->update($food_handlers_clinic)) {
                             DB::commit();
+                            Log::channel('systemOperations')->info('Est CLinic Application update called', ['user_id' => auth()->user()->id, 'application_id' => $id]);
                             return redirect()->route('food-handlers-clinics.view', ['id' => $food_clinic->id])->with('success', 'The Establishment Clinic Application for ' . $food_clinic->name . ':' . $food_clinic->id . ' has been updated successfully');
                         }
                     } else {
@@ -354,6 +359,7 @@ class FoodHandlersClinicController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Est CLinic Application destroy called', ['user_id' => auth()->user()->id, 'application_id' => $id, 'message' => $e->getMessage()]);
             return redirect()->back()->with('error', $e->getMessage());
         }
 
@@ -411,6 +417,7 @@ class FoodHandlersClinicController extends Controller
                                 'new_value' => $clinic->no_of_employees + $request->data['request_amt']
                             ])) {
                                 DB::commit();
+                                Log::channel('systemOperations')->info('Est CLinic Application edit called', ['user_id' => auth()->user()->id, 'application_id' => $id]);
                                 return "success";
                             } else {
                                 throw new Exception("Error requesting additional employees. Unable to record changed columns");
@@ -429,6 +436,7 @@ class FoodHandlersClinicController extends Controller
             }
         } catch (Exception $e) {
             return $e->getMessage();
+            Log::channel('systemOperations')->error('Est CLinic Application destroy called', ['user_id' => auth()->user()->id, 'application_id' => $id, 'message' => $e->getMessage()]);
         }
     }
 
@@ -501,6 +509,7 @@ class FoodHandlersClinicController extends Controller
                     ])) {
                         if ($food_clinic->update(['deleted_at' => date('Y-m-d H:i:s')])) {
                             DB::commit();
+                            Log::channel('systemOperations')->info('Est CLinic Application destroy called', ['user_id' => auth()->user()->id, 'application_id' => $id]);
                             return ['success', 'Food Establishment Clinic ' . $food_clinic->name . ' was deleted successfully'];
                         }
                     } else {
@@ -514,6 +523,7 @@ class FoodHandlersClinicController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Est CLinic Application destroy called', ['user_id' => auth()->user()->id, 'application_id' => $id, 'message' => $e->getMessage()]);
             return $e->getMessage();
         }
     }

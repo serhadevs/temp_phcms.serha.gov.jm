@@ -33,6 +33,7 @@ use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 // use Faker\Provider\ar_EG\Payment;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -173,6 +174,8 @@ class PaymentController extends Controller
                 ->union($tourist_est_applications)
                 ->get();
 
+            Log::channel('systemOperations')->info('Outstanding Payments viewed', ['user_id' => auth()->user()->id]);
+
             return view('payments.applications', compact('applications'));
         } else if ($id == "7") {
             $filterTimeline = date_format(date_modify(new DateTime(), "-7 days"), "Y-m-d");
@@ -227,6 +230,8 @@ class PaymentController extends Controller
             ->union($swim_pool_applications)
             ->union($tourist_est_applications)
             ->get();
+
+        Log::channel('systemOperations')->info('Outstanding Payments viewed', ['user_id' => auth()->user()->id]);
 
         return view('payments.applications', compact('applications'));
     }
@@ -351,8 +356,6 @@ class PaymentController extends Controller
             $has_waiver = EstablishmentClinics::with('waiver')->find($app_id);
             $approved_waiver = EstablishmentClinics::with('waiverApproval')->find($app_id);
         }
-
-
 
         //dd($approved_waiver_id->waiverApproval->id);
         return view('payments.create', compact('prices', 'app_id', 'app_type', 'price_id', 'payment_types', 'has_waiver', 'approved_waiver'));
@@ -545,7 +548,7 @@ class PaymentController extends Controller
         // dd($new_payment);
         if ($request->has_waiver == 1) {
 
-           
+
             $validated['total_cost'] = 0;
             $validated['amount_paid'] = 0;
             $validated['change_amt'] = 0;
@@ -586,6 +589,7 @@ class PaymentController extends Controller
 
         if (!$register_new_payment) {
         }
+        Log::channel('systemOperations')->info('Payment Created', ['user_id' => auth()->user()->id, 'application_type' => $app_type, 'application_id' => $register_new_payment->application_id, 'payment_id' => $register_new_payment->id]);
         return redirect()->route('payment.receipt.print', ['id' => $register_new_payment->getOriginal()["id"]])->with(['success' => 'Payment has been process successfully. The receipt number is ' . $new_payment["receipt_no"] . '']);
     }
 
@@ -757,8 +761,8 @@ class PaymentController extends Controller
                     $output .= "<p>Proposed Date & Time: {$result->proposed_date} {$result->proposed_time}</p>";
                     if ($results->where('approval_status', 'approved')->isNotEmpty()) {
                         $output .= "<p class='text-success'>Waiver approved for this application.</p>";
-                    }else{
-                         $output .= "";
+                    } else {
+                        $output .= "";
                     }
 
                     $output .= $this->paymentStatus($application_id, $application_type_id);
@@ -1374,6 +1378,7 @@ class PaymentController extends Controller
                     throw new Exception("You cannot approve the same request that you  entered.");
                 }
                 if ($request->data["approval_stat"] == "1") {
+                    Log::channel('systemOperations')->info('Payment Cancellation Approved', ['user_id' => auth()->user()->id, 'payment_id' => $request->data["cancellation_id"]]);
                     Payments::find(PaymentCancellationRequests::find($request->data["cancellation_id"])->payment_id)->update(["deleted_at" => date('Y-m-d H:i:s')]);
                 }
                 PaymentCancellationRequests::find($request->data["cancellation_id"])->update(["approved" => $request->data["approval_stat"], "approver_user_id" => auth()->user()->id]);
