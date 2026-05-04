@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SignOffEmail;
 use App\Models\Downloads;
 use App\Models\EstablishmentApplications;
 use App\Models\EstablishmentClinics;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use ZipArchive;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class TestNewJobs extends Controller
@@ -162,6 +164,9 @@ class TestNewJobs extends Controller
                                             'download_id' => $create_download->id
                                         ]);
                                         $counter++;
+                                        if ($index->email != null) {
+                                            Mail::to($index->email)->queue(new SignOffEmail());
+                                        }
                                     }
                                 }
                             }
@@ -235,6 +240,9 @@ class TestNewJobs extends Controller
                                             'download_id' => $create_download->id
                                         ]);
                                         $counter++;
+                                        if ($index->email != null) {
+                                            Mail::to($index->email)->queue(new SignOffEmail());
+                                        }
                                     }
                                 }
                             }
@@ -307,6 +315,9 @@ class TestNewJobs extends Controller
                                             'application_id' => $index->id,
                                             'download_id' => $create_download->id
                                         ]);
+                                        if ($index->email != null) {
+                                            Mail::to($index->email)->queue(new SignOffEmail());
+                                        }
                                         $counter++;
                                     }
                                 }
