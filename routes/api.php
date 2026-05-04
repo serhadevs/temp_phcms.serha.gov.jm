@@ -14,9 +14,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//  Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
 // Route for user login
-Route::post('/loginapi', [Auth::class, 'login']);
+Route::post('loginapi', [Auth::class, 'login']);
 Route::post('/login/user', [Auth::class, 'loginuser']);
+Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit']);
+// Route::post('/verify-permit/retrieve', [PermitApplicationApi::class, 'permitRetrieval'])->name('verify.retrieval');
+// Route::get('/verify-permit/download/{id}', [PermitApplicationApi::class, 'downloadCertificate'])->name('verify.download');
+
 
 
 // Routes that require authentication
