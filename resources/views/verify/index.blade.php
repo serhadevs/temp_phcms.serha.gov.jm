@@ -573,7 +573,7 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
     try {
 
         const response = await fetch(form.action, {
-            method: 'GET',
+            method: 'POST', // FIX: GET + FormData was unreliable
             body: new FormData(form),
             headers: {
                 'Accept': 'application/json'
@@ -597,7 +597,7 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
                 "Finalizing secure certificate validation..."
             ];
 
-            // Replace button with scan UI
+            // 🔥 SHOW SCAN UI
             submitBtn.innerHTML = `
                 <div style="width:100%;">
                     <div class="scan-text" id="scanText">Initializing scan...</div>
@@ -609,6 +609,9 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
             `;
 
             submitBtn.disabled = true;
+
+            // 🔥 FORCE RENDER (THIS FIXES "NOT SHOWING")
+            await new Promise(r => setTimeout(r, 80));
 
             const scanText = document.getElementById('scanText');
             const scanBar = document.getElementById('scanBar');
@@ -629,7 +632,7 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
                 }, 35);
             }
 
-            // SCAN SEQUENCE
+            // SCAN FLOW
             function runScan() {
 
                 if (stage >= stages.length) {
@@ -655,7 +658,8 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
                 });
             }
 
-            runScan();
+            // 🔥 ENSURE UI IS VISIBLE BEFORE START
+            setTimeout(runScan, 150);
 
         } else {
 
@@ -675,7 +679,6 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
                 responseMessage.innerHTML = result.message ||
                     'An error occurred while retrieving the permit.';
             }
-
         }
 
     } catch (error) {
