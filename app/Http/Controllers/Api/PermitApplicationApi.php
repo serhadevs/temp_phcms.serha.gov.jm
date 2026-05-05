@@ -106,12 +106,27 @@ class PermitApplicationApi extends Controller
 
     public function retrievePermit(Request $request)
     {
-        $validated = $request->validate([
-            'firstname'      => 'required|string',
-            'lastname'       => 'required|string',
-            'date_of_birth'  => 'required|date',
-            'permit_no'      => 'required|string',
-        ]);
+        $validated = $request->validate(
+            [
+                'firstname'     => 'required|string',
+                'lastname'      => 'required|string',
+                'date_of_birth' => 'required|date',
+                'permit_no'     => 'required|string',
+            ],
+            [
+                'firstname.required' => 'Please enter your first name.',
+                'lastname.required' => 'Please enter your last name.',
+                'date_of_birth.required' => 'Please select your date of birth.',
+                'date_of_birth.date' => 'Please enter a valid date of birth.',
+                'permit_no.required' => 'Please enter your permit number.',
+            ],
+            [
+                'firstname'     => 'First Name',
+                'lastname'      => 'Last Name',
+                'date_of_birth' => 'Date of Birth',
+                'permit_no'     => 'Permit Number',
+            ]
+        );
 
         $applicant = PermitApplication::where($validated)->first();
 
