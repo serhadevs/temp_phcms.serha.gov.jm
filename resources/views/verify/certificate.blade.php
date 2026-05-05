@@ -143,7 +143,7 @@
                 @endif
             </div>
 
-            <!-- MAIN CONTENT -->
+            {{-- <!-- MAIN CONTENT -->
             <div class="row g-3 align-items-start">
 
                 <!-- PHOTO -->
@@ -221,6 +221,50 @@
                     <div class="col-md-3"> No Test Results are available </div>
                 @endif
 
+            </div> --}}
+
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-7">
+
+                        <div class="card shadow-lg border-0 rounded-5 p-4" style="background:#f3f3f3;">
+
+                            <!-- Header Logos -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <img src="/images/jamaica-coat.png" width="70">
+
+                                <div class="text-center">
+                                    <h5 class="fw-bold mb-0">MIN. OF HEALTH AND WELLNESS</h5>
+                                </div>
+
+                                <img src="/images/health-wellness.png" width="90">
+                            </div>
+
+                            <div class="row align-items-center">
+
+                                <!-- LEFT SIDE DETAILS -->
+                                <div class="col-8">
+
+                                    <p class="mb-2"><strong>Category:</strong> Basic Foodhandlers</p>
+                                    <p class="mb-2"><strong>Name:</strong> MARGARET ALLEN</p>
+                                    <p class="mb-2"><strong>Permit#:</strong> KSA22350625</p>
+                                    <p class="mb-2"><strong>Issued:</strong> October 7, 2025</p>
+                                    <p class="mb-0"><strong>Expires:</strong> June 6, 2026</p>
+
+                                </div>
+
+                                <!-- RIGHT SIDE PHOTO -->
+                                <div class="col-4 text-end">
+                                    <img src="/images/photo.jpg" class="rounded-4"
+                                        style="width:140px; height:160px; object-fit:cover;">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
             <!-- VALIDITY MESSAGE -->
