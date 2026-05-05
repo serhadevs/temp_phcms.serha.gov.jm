@@ -224,8 +224,9 @@
             </div>
 
             <!-- VALIDITY MESSAGE -->
+            <!-- VALIDITY MESSAGE -->
             <div class="text-center fw-bold border-top border-bottom py-2 my-4">
-                @if ($applicant->signOffs->isEmpty() || $isExpired)
+                @if (!$applicant->signOffs || $isExpired)
                     THIS IS NOT A VALID FOOD HANDLERS PERMIT.
                 @else
                     THIS IS AN OFFICIAL FOOD HANDLERS E-CARD.
