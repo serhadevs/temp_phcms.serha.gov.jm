@@ -555,34 +555,40 @@
 </body>
 
 <script>
-document.getElementById('retrievalForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
 
-    const form = this;
+    const form = document.getElementById('retrievalForm');
     const submitBtn = document.getElementById('submitBtn');
     const responseMessage = document.getElementById('responseMessage');
 
-    // Reset UI state
-    submitBtn.innerHTML =
-        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
-    submitBtn.disabled = true;
+    if (!form || !submitBtn) {
+        console.error("Missing form or button IDs");
+        return;
+    }
 
-    responseMessage.className = 'alert d-none mb-4';
-    responseMessage.innerHTML = '';
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-    try {
+        // UI RESET
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Searching...';
 
-        const response = await fetch(form.action, {
-            method: 'POST', // FIX: GET + FormData was unreliable
-            body: new FormData(form),
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
+        responseMessage.className = 'alert d-none mb-4';
+        responseMessage.innerHTML = '';
 
-        const result = await response.json();
+        try {
 
-        if (response.ok) {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) throw result;
 
             const redirectUrl = result.certificate_url;
 
@@ -591,52 +597,45 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
 
             const stages = [
                 "Loading biometric data...",
-                "Connecting to IDPro Secure Network...",
+                "Connecting to IDPro Secure Platform...",
                 "Running identity verification scan...",
                 "Cross-checking national registry records...",
                 "Finalizing secure certificate validation..."
             ];
 
-            // 🔥 SHOW SCAN UI
+            // 🔥 FORCE UI RENDER BEFORE ANIMATION
             submitBtn.innerHTML = `
-                <div style="width:100%;">
-                    <div class="scan-text" id="scanText">Initializing scan...</div>
-                    <div class="progress mt-2" style="height: 6px;">
+                <div style="width:100%">
+                    <div id="scanText" class="scan-text">Initializing scan...</div>
+                    <div class="progress mt-2" style="height:6px;">
                         <div id="scanBar" class="progress-bar progress-bar-striped progress-bar-animated"
-                             style="width: 0%;"></div>
+                             style="width:0%"></div>
                     </div>
                 </div>
             `;
 
-            submitBtn.disabled = true;
-
-            // 🔥 FORCE RENDER (THIS FIXES "NOT SHOWING")
-            await new Promise(r => setTimeout(r, 80));
+            await new Promise(requestAnimationFrame);
 
             const scanText = document.getElementById('scanText');
             const scanBar = document.getElementById('scanBar');
 
-            // TYPEWRITER EFFECT
-            function typeText(text, callback) {
+            function typeText(text, cb) {
                 let i = 0;
                 scanText.innerHTML = "";
 
                 const typing = setInterval(() => {
                     scanText.innerHTML += text.charAt(i);
                     i++;
-
                     if (i === text.length) {
                         clearInterval(typing);
-                        if (callback) callback();
+                        cb?.();
                     }
-                }, 35);
+                }, 25);
             }
 
-            // SCAN FLOW
             function runScan() {
 
                 if (stage >= stages.length) {
-
                     scanBar.style.width = "100%";
                     scanText.innerHTML = "Verification complete. Redirecting...";
 
@@ -648,55 +647,28 @@ document.getElementById('retrievalForm').addEventListener('submit', async functi
                 }
 
                 typeText(stages[stage], () => {
-
                     progress += 20;
                     scanBar.style.width = progress + "%";
-
                     stage++;
 
                     setTimeout(runScan, 900);
                 });
             }
 
-            // 🔥 ENSURE UI IS VISIBLE BEFORE START
-            setTimeout(runScan, 150);
+            // START AFTER RENDER CYCLE
+            setTimeout(runScan, 200);
 
-        } else {
+        } catch (error) {
+
+            console.error(error);
 
             responseMessage.className = 'alert alert-danger mb-4';
-
-            if (result.status === 'validation_error') {
-
-                let errorsHtml = '<ul class="mb-0 ps-3">';
-                for (const key in result.errors) {
-                    errorsHtml += `<li>${result.errors[key][0]}</li>`;
-                }
-                errorsHtml += '</ul>';
-
-                responseMessage.innerHTML = errorsHtml;
-
-            } else {
-                responseMessage.innerHTML = result.message ||
-                    'An error occurred while retrieving the permit.';
-            }
+            responseMessage.innerHTML =
+                error.message || 'An error occurred while retrieving the permit.';
         }
 
-    } catch (error) {
+    });
 
-        responseMessage.className = 'alert alert-danger mb-4';
-        responseMessage.innerHTML = 'A network error occurred. Please try again.';
-        console.error('Error:', error);
-
-    } finally {
-
-        // restore button only if NOT redirecting
-        setTimeout(() => {
-            if (!submitBtn.disabled) return;
-
-            submitBtn.innerHTML = '<i class="bi bi-search"></i> Retrieve';
-            submitBtn.disabled = false;
-        }, 1000);
-    }
 });
 </script>
 
