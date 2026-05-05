@@ -145,6 +145,16 @@
                         </table>
                     </td>
 
+                    <td>
+                        The application has now been reviewed and approved by the Medical Officer of Health(MOH). In
+                        accordance with the Food Safety Act (1998), individuals who handle, prepare, or come into
+                        contact with food for public consumption must be medically examined, certified, and officially
+                        authorized before engaging in food-handling activities. With the successful completion of the
+                        required examination and medical interview, and the formal sign-off granted, this applicant is
+                        now legally recognized as certified to handle food and may operate in compliance with national
+                        public health regulations.
+                    </td>
+
                 </tr>
             </table>
 

@@ -251,7 +251,7 @@
             </div>
 
 
-            @if (!$isExpired)
+            @if (!$isExpired || !$applicant->signOffs)
                 <div class="text-center mt-4 no-print">
                     <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
                         class="btn btn-primary">
