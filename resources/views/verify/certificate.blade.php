@@ -225,9 +225,9 @@
 
             <!-- VALIDITY MESSAGE -->
             <div class="text-center fw-bold border-top border-bottom py-2 my-4">
-                @if (empty($applicant->signOffs) && $isExpired)
+                @if ($applicant->signOffs->isEmpty() || $isExpired)
                     THIS IS NOT A VALID FOOD HANDLERS PERMIT.
-                @else 
+                @else
                     THIS IS AN OFFICIAL FOOD HANDLERS E-CARD.
                 @endif
             </div>
@@ -266,17 +266,17 @@
             </div>
 
 
-            @if(!$isExpired)
-            <div class="text-center mt-4 no-print">
-                <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
-                    class="btn btn-primary">
-                    Download PDF
-                </a>
+            @if (!$isExpired)
+                <div class="text-center mt-4 no-print">
+                    <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
+                        class="btn btn-primary">
+                        Download PDF
+                    </a>
 
-                <button onclick="emailConfirmation()" class="btn btn-success me-2">
-                    Email Confirmation
-                </button>
-            </div>
+                    <button onclick="emailConfirmation()" class="btn btn-success me-2">
+                        Email Confirmation
+                    </button>
+                </div>
             @endif
 
 
