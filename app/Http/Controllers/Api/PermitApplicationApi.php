@@ -245,7 +245,7 @@ class PermitApplicationApi extends Controller
 
     public function generateLink($permitNo)
 {
-    $applicant = PermitApplication::$applicant = PermitApplication::with(
+    $applicant = PermitApplication::with(
             'permitCategory',
             'payment',
             'establishmentClinics',
