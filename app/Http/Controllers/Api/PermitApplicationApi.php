@@ -262,14 +262,15 @@ class PermitApplicationApi extends Controller
 
     $token = hash('sha256', Str::random(120));
 
-    DB::table('verification_tokens')->insert([
-        'permit_application_id' => $applicant->id,
-        'token' => $token,
-        'expires_at' => now()->addMinutes(10),
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-
+   DB::table('verification_tokens')->insert([
+    'permit_application_id' => $applicant->id,
+    'token'        => $token,
+    'ip_address'   => request()->ip(),        
+    'user_agent'   => request()->userAgent(), 
+    'expires_at'   => now()->addMinutes(5),
+    'created_at'   => now(),
+    'updated_at'   => now(),
+]);
     $url = URL::temporarySignedRoute(
         'verify.certificate',
         now()->addMinutes(10),
