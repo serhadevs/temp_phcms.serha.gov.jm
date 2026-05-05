@@ -231,13 +231,13 @@
 
                             <!-- Header Logos -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <img src="/images/jamaica-coat.png" width="70">
+                                <img src="{{ asset('images/coatofarms.png') }}" width="70">
 
                                 <div class="text-center">
                                     <h5 class="fw-bold mb-0">MIN. OF HEALTH AND WELLNESS</h5>
                                 </div>
 
-                                <img src="/images/health-wellness.png" width="90">
+                                <img src="/images/mohologo.png" width="90">
                             </div>
 
                             <div class="row align-items-center">
