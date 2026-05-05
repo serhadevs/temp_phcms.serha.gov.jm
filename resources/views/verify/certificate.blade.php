@@ -25,35 +25,30 @@
             position: relative;
         }
 
-        /* EXPIRED WATERMARK */
-        /* EXPIRED WATERMARK - FULL PAGE DIAGONAL */
-        .expired-watermark {
-            position: fixed;
-            /* covers entire page */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
+      
+       .expired-watermark {
+    position: fixed;
+    inset: 0;                     /* cover whole page */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-            font-size: 180px;
-            /* BIGGER */
-            font-weight: 900;
-            letter-spacing: 20px;
-            white-space: nowrap;
+    font-size: 180px;
+    font-weight: 900;
+    letter-spacing: 20px;
+    white-space: nowrap;
 
-            color: rgba(220, 53, 69, 0.12);
-            /* lighter red */
-            pointer-events: none;
-            z-index: 0;
-            /* behind content */
-        }
+    color: rgba(220, 53, 69, 0.20);  /* slightly stronger red */
 
-        /* Ensure certificate content sits above watermark */
-        .permit-wrapper {
-            position: relative;
-            z-index: 1;
-        }
+    transform: rotate(-30deg);
 
-        /* PHOTO GREYSCALE WHEN EXPIRED */
+    pointer-events: none;
+    z-index: 9999;              
+}
+
+       .permit-wrapper {
+    position: relative;
+}
         .expired-photo {
             filter: grayscale(100%);
         }
@@ -143,85 +138,7 @@
                 @endif
             </div>
 
-            {{-- <!-- MAIN CONTENT -->
-            <div class="row g-3 align-items-start">
-
-                <!-- PHOTO -->
-                <div class="col-md-2 text-center">
-                    <div class="border bg-light d-flex align-items-center justify-content-center rounded"
-                        style="width:120px;height:120px;overflow:hidden;margin:auto;">
-                        @if ($applicant->photo_upload)
-                            <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
-                                class="{{ $isExpired ? 'expired-photo' : '' }}"
-                                style="width:100%;height:100%;object-fit:cover;">
-                        @else
-                            Photo Not Available
-                        @endif
-                    </div>
-                </div>
-
-                <!-- COLUMN 1 -->
-                <div class="col-md-3">
-                    <div class="border p-2 rounded bg-white small">
-                        <div class="fw-bold mb-1">Applicant Details</div>
-
-                        <div><strong>Name:</strong> {{ strtoupper($applicant->lastname) }},
-                            {{ strtoupper($applicant->firstname) }}</div>
-                        <div><strong>DOB:</strong>
-                            {{ \Carbon\Carbon::parse($applicant->date_of_birth)->format('d M Y') }}</div>
-                        <div><strong>Permit #:</strong>{{ $applicant->permit_no }}</div>
-                        <div><strong>Category:</strong> {{ $applicant->permitCategory->name ?? 'N/A' }}</div>
-                        <div><strong>Application Date:</strong>
-                            {{ \Carbon\Carbon::parse($applicant->application_date)->format('d M Y') ?? 'No Application Date' }}
-                        </div>
-
-                        <div><strong>Issued:</strong>
-                            {{ optional($applicant->signOffs)->sign_off_date
-                                ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
-                                : 'Pending' }}
-                        </div>
-
-                        <div><strong>Expiry:</strong>
-                            {{ optional($applicant->signOffs)->expiry_date
-                                ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
-                                : 'Pending' }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- COLUMN 2 -->
-                <div class="col-md-3">
-                    <div class="border p-2 rounded bg-white small">
-                        <div class="fw-bold mb-1">Personal Info</div>
-                        <div><strong>Address:</strong> {{ strtoupper($applicant->address) ?? 'No Address' }}</div>
-                        <div><strong>Gender:</strong> {{ Str::ucfirst($applicant->gender) ?? 'No Gender' }}</div>
-                        <div><strong>Occupation:</strong> {{ $applicant->occupation ?? 'No Occupation Given' }}</div>
-                    </div>
-                </div>
-
-                <!-- TEST RESULTS -->
-                @if ($applicant->testResults)
-                    <div class="col-md-3">
-                        <div class="border p-2 rounded bg-white small">
-                            <div class="fw-bold mb-1">Test Results</div>
-                            <div>Location: {{ $applicant->testResults->test_location ?? 'N/A' }}</div>
-                            <div>Contact: {{ $applicant->testResults->staff_contact ?? 'N/A' }}</div>
-                            <div> Date:
-                                {{ $applicant->testResults->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d M Y') : 'N/A' }}
-                            </div>
-                            <div
-                                class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-2 bg-light">
-                                <div class="fw-bold small text-muted"> Score </div>
-                                <div class="px-2 py-1 rounded text-white fw-bold bg-success">
-                                    {{ $applicant->testResults->overall_score ?? 'N/A' }} </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="col-md-3"> No Test Results are available </div>
-                @endif
-
-            </div> --}}
+            
 
             <div class="container py-5">
                 <div class="row justify-content-center">
