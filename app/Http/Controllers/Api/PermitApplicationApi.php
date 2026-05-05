@@ -251,7 +251,7 @@ class PermitApplicationApi extends Controller
       
         $pdf = Pdf::loadView('verify.permitCardPdf', [
             'applicant' => $applicant,
-            'isExpired' => $isExpired
+            // 'isExpired' => $isExpired
         ])->setPaper('A4');
 
         // 7️⃣ Force download (no browser caching)
