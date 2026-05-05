@@ -248,9 +248,11 @@ class PermitApplicationApi extends Controller
             abort(403, 'Expired permits cannot be downloaded.');
         }
 
-        // 6️⃣ Generate PDF
-        $pdf = Pdf::loadView('verify.certificate', compact('applicant'))
-            ->setPaper('A4', 'portrait');
+      
+        $pdf = Pdf::loadView('verify.permitCardPdf', [
+            'applicant' => $applicant,
+            'isExpired' => $isExpired
+        ])->setPaper('A4');
 
         // 7️⃣ Force download (no browser caching)
         return $pdf->download(
