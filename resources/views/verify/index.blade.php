@@ -477,7 +477,7 @@
 
                                     <input type="date"
                                         class="form-control @error('date_of_birth') is-invalid @enderror"
-                                        name="date_of_birth" value="{{ old('date_of_birth') }}" required>
+                                        name="date_of_birth" value="{{ old('date_of_birth') }}">
 
                                     @error('date_of_birth')
                                         <div class="invalid-feedback">
