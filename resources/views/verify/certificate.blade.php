@@ -231,13 +231,13 @@
 
                             <!-- Header Logos -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <img src="{{ asset('images/coatofarms.png') }}" width="70">
+                                <img src="{{ asset('images/coatofarms.png') }}" width="50">
 
                                 <div class="text-center">
                                     <h5 class="fw-bold mb-0">MIN. OF HEALTH AND WELLNESS</h5>
                                 </div>
 
-                                <img src="{{ asset('images/mohologo.png') }}" width="90">
+                                <img src="{{ asset('images/mohlogo.png') }}" width="50">
                             </div>
 
                             <div class="row align-items-center">
