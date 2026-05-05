@@ -445,30 +445,63 @@
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">First Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter First Name"
-                                            name="firstname" required>
+
+                                        <input type="text"
+                                            class="form-control @error('firstname') is-invalid @enderror"
+                                            placeholder="Enter First Name" name="firstname"
+                                            value="{{ old('firstname') }}">
                                     </div>
+                                    @error('firstname')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
                                     <div class="col-md-6">
                                         <label class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter Last Name"
-                                            name ="lastname" required>
+
+                                        <input type="text"
+                                            class="form-control @error('lastname') is-invalid @enderror"
+                                            placeholder="Enter Last Name" name="lastname" value="{{ old('lastname') }}">
                                     </div>
+                                    @error('lastname')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
-                                <!-- Date of Birth -->
                                 <div class="mb-3">
                                     <label class="form-label">Date of Birth</label>
                                     <span class="form-text">As it appears on your official ID</span>
-                                    <input type="date" class="form-control" name = "date_of_birth" required>
+
+                                    <input type="date"
+                                        class="form-control @error('date_of_birth') is-invalid @enderror"
+                                        name="date_of_birth" value="{{ old('date_of_birth') }}" required>
+
+                                    @error('date_of_birth')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <!-- Permit Number -->
                                 <div class="mb-4">
                                     <label class="form-label">Permit Number</label>
-                                    <span class="form-text">Found on your receipt or previous permit document (e.g.,
-                                        KSA1234567)</span>
-                                    <input type="text" class="form-control" placeholder="Enter your Permit Number"
-                                        name="permit_no" required>
+                                    <span class="form-text">
+                                        Found on your payment receipt or previous permit document (e.g., KSA1234567)
+                                    </span>
+
+                                    <input type="text" class="form-control @error('permit_no') is-invalid @enderror"
+                                        placeholder="Enter your Permit Number" name="permit_no"
+                                        value="{{ old('permit_no') }}" required>
+
+                                    @error('permit_no')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <!-- Buttons -->
@@ -555,56 +588,57 @@
 </body>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
 
-    const form = document.getElementById('retrievalForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const responseMessage = document.getElementById('responseMessage');
+        const form = document.getElementById('retrievalForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const responseMessage = document.getElementById('responseMessage');
 
-    if (!form || !submitBtn) {
-        console.error("Missing form or button IDs");
-        return;
-    }
+        if (!form || !submitBtn) {
+            console.error("Missing form or button IDs");
+            return;
+        }
 
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-        // UI RESET
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Searching...';
+            // UI RESET
+            submitBtn.disabled = true;
+            submitBtn.innerHTML =
+                '<span class="spinner-border spinner-border-sm"></span> Searching...';
 
-        responseMessage.className = 'alert d-none mb-4';
-        responseMessage.innerHTML = '';
+            responseMessage.className = 'alert d-none mb-4';
+            responseMessage.innerHTML = '';
 
-        try {
+            try {
 
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
 
-            const result = await response.json();
+                const result = await response.json();
 
-            if (!response.ok) throw result;
+                if (!response.ok) throw result;
 
-            const redirectUrl = result.certificate_url;
+                const redirectUrl = result.certificate_url;
 
-            let progress = 0;
-            let stage = 0;
+                let progress = 0;
+                let stage = 0;
 
-            const stages = [
-                "Loading biometric data...",
-                "Connecting to IDPro Secure Platform...",
-                "Running identity verification scan...",
-                "Cross-checking national registry records...",
-                "Finalizing secure certificate validation..."
-            ];
+                const stages = [
+                    "Loading biometric data...",
+                    "Connecting to IDPro Secure Platform...",
+                    "Running identity verification scan...",
+                    "Cross-checking national registry records...",
+                    "Finalizing secure certificate validation..."
+                ];
 
-            // 🔥 FORCE UI RENDER BEFORE ANIMATION
-            submitBtn.innerHTML = `
+                // 🔥 FORCE UI RENDER BEFORE ANIMATION
+                submitBtn.innerHTML = `
                 <div style="width:100%">
                     <div id="scanText" class="scan-text">Initializing scan...</div>
                     <div class="progress mt-2" style="height:6px;">
@@ -614,62 +648,62 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
 
-            await new Promise(requestAnimationFrame);
+                await new Promise(requestAnimationFrame);
 
-            const scanText = document.getElementById('scanText');
-            const scanBar = document.getElementById('scanBar');
+                const scanText = document.getElementById('scanText');
+                const scanBar = document.getElementById('scanBar');
 
-            function typeText(text, cb) {
-                let i = 0;
-                scanText.innerHTML = "";
+                function typeText(text, cb) {
+                    let i = 0;
+                    scanText.innerHTML = "";
 
-                const typing = setInterval(() => {
-                    scanText.innerHTML += text.charAt(i);
-                    i++;
-                    if (i === text.length) {
-                        clearInterval(typing);
-                        cb?.();
-                    }
-                }, 25);
-            }
-
-            function runScan() {
-
-                if (stage >= stages.length) {
-                    scanBar.style.width = "100%";
-                    scanText.innerHTML = "Verification complete. Redirecting...";
-
-                    setTimeout(() => {
-                        window.location.href = redirectUrl;
-                    }, 800);
-
-                    return;
+                    const typing = setInterval(() => {
+                        scanText.innerHTML += text.charAt(i);
+                        i++;
+                        if (i === text.length) {
+                            clearInterval(typing);
+                            cb?.();
+                        }
+                    }, 25);
                 }
 
-                typeText(stages[stage], () => {
-                    progress += 20;
-                    scanBar.style.width = progress + "%";
-                    stage++;
+                function runScan() {
 
-                    setTimeout(runScan, 900);
-                });
+                    if (stage >= stages.length) {
+                        scanBar.style.width = "100%";
+                        scanText.innerHTML = "Verification complete. Redirecting...";
+
+                        setTimeout(() => {
+                            window.location.href = redirectUrl;
+                        }, 800);
+
+                        return;
+                    }
+
+                    typeText(stages[stage], () => {
+                        progress += 20;
+                        scanBar.style.width = progress + "%";
+                        stage++;
+
+                        setTimeout(runScan, 900);
+                    });
+                }
+
+                // START AFTER RENDER CYCLE
+                setTimeout(runScan, 200);
+
+            } catch (error) {
+
+                console.error(error);
+
+                responseMessage.className = 'alert alert-danger mb-4';
+                responseMessage.innerHTML =
+                    error.message || 'An error occurred while retrieving the permit.';
             }
 
-            // START AFTER RENDER CYCLE
-            setTimeout(runScan, 200);
-
-        } catch (error) {
-
-            console.error(error);
-
-            responseMessage.className = 'alert alert-danger mb-4';
-            responseMessage.innerHTML =
-                error.message || 'An error occurred while retrieving the permit.';
-        }
+        });
 
     });
-
-});
 </script>
 
 
