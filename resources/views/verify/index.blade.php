@@ -290,6 +290,31 @@
             font-size: 0.85rem;
         }
 
+        @keyframes scanPulse {
+            0% {
+                box-shadow: 0 0 0 rgba(0, 74, 153, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 18px rgba(0, 74, 153, 0.6);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(0, 74, 153, 0.3);
+            }
+        }
+
+        .btn-retrieve {
+            animation: scanPulse 1.5s infinite;
+        }
+
+        .scan-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #004a99;
+            min-height: 20px;
+        }
+
         @media (max-width: 991px) {
             .info-panel {
                 padding: 3rem 2rem;
@@ -404,7 +429,7 @@
                     @endif
                     <form action="{{ route('verify.retrieval') }}" method="post">
                         @csrf
-                        
+
                         <div class="form-card">
                             <div class="form-header">
                                 <div class="form-icon">
@@ -528,114 +553,150 @@
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 <script>
-    const certificateUrl = @json(
-        URL::signedRoute('verify.certificate', ['token' => $token])
-    );
-</script>
-<script>
-    document.getElementById('retrievalForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); 
+document.getElementById('retrievalForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-        const form = this;
-        const submitBtn = document.getElementById('submitBtn');
-        const responseMessage = document.getElementById('responseMessage');
+    const form = this;
+    const submitBtn = document.getElementById('submitBtn');
+    const responseMessage = document.getElementById('responseMessage');
 
+    // Reset UI state
+    submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+    submitBtn.disabled = true;
 
-        // Reset UI state to "loading"
-        submitBtn.innerHTML =
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
-        submitBtn.disabled = true;
-        responseMessage.className = 'alert d-none mb-4';
-        responseMessage.innerHTML = '';
-         showPermitLoadingAndRedirect();
+    responseMessage.className = 'alert d-none mb-4';
+    responseMessage.innerHTML = '';
 
-        try {
-            // Send the POST request to the route defined in the form's action attribute
-            const response = await fetch(form.action, {
-                method: 'GET',
-                body: new FormData(
-                    form
-                ), // Automatically grabs all inputs with a 'name' attribute + the CSRF token
-                headers: {
-                    'Accept': 'application/json' // Tells Laravel to return JSON
+    try {
+
+        const response = await fetch(form.action, {
+            method: 'GET',
+            body: new FormData(form),
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+
+            const redirectUrl = result.certificate_url;
+
+            let progress = 0;
+            let stage = 0;
+
+            const stages = [
+                "Loading biometric data...",
+                "Connecting to IDPro Secure Network...",
+                "Running identity verification scan...",
+                "Cross-checking national registry records...",
+                "Finalizing secure certificate validation..."
+            ];
+
+            // Replace button with scan UI
+            submitBtn.innerHTML = `
+                <div style="width:100%;">
+                    <div class="scan-text" id="scanText">Initializing scan...</div>
+                    <div class="progress mt-2" style="height: 6px;">
+                        <div id="scanBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                             style="width: 0%;"></div>
+                    </div>
+                </div>
+            `;
+
+            submitBtn.disabled = true;
+
+            const scanText = document.getElementById('scanText');
+            const scanBar = document.getElementById('scanBar');
+
+            // TYPEWRITER EFFECT
+            function typeText(text, callback) {
+                let i = 0;
+                scanText.innerHTML = "";
+
+                const typing = setInterval(() => {
+                    scanText.innerHTML += text.charAt(i);
+                    i++;
+
+                    if (i === text.length) {
+                        clearInterval(typing);
+                        if (callback) callback();
+                    }
+                }, 35);
+            }
+
+            // SCAN SEQUENCE
+            function runScan() {
+
+                if (stage >= stages.length) {
+
+                    scanBar.style.width = "100%";
+                    scanText.innerHTML = "Verification complete. Redirecting...";
+
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 800);
+
+                    return;
                 }
-            });
 
-            const result = await response.json();
+                typeText(stages[stage], () => {
 
-            if (response.ok) {
+                    progress += 20;
+                    scanBar.style.width = progress + "%";
 
-                // SUCCESS (200 status code)
-                console.log("Applicant Data:", result.applicant);
+                    stage++;
 
-                // Change button text to show it's transitioning
-                submitBtn.innerHTML =
-                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Redirecting...';
+                    setTimeout(runScan, 900);
+                });
+            }
 
-                responseMessage.className = 'alert alert-success mb-4 text-center';
-                responseMessage.innerHTML =
-                    `<h5 class="mb-0"><i class="bi bi-check-circle-fill"></i> Permit Found! Redirecting...</h5>`;
+            runScan();
 
-                // 🟢 NEW: Redirect the browser directly to the certificate display page
-                window.location.href = `/verify-permit/certificate/${result.applicant.id}`;
+        } else {
+
+            responseMessage.className = 'alert alert-danger mb-4';
+
+            if (result.status === 'validation_error') {
+
+                let errorsHtml = '<ul class="mb-0 ps-3">';
+                for (const key in result.errors) {
+                    errorsHtml += `<li>${result.errors[key][0]}</li>`;
+                }
+                errorsHtml += '</ul>';
+
+                responseMessage.innerHTML = errorsHtml;
 
             } else {
-                // ERRORS (404 Not Found, 422 Validation Error)
-                responseMessage.className = 'alert alert-danger mb-4';
-
-                if (result.status === 'validation_error') {
-                    // Loop through validation errors and display them as a list
-                    let errorsHtml = '<ul class="mb-0 ps-3">';
-                    for (const key in result.errors) {
-                        errorsHtml += `<li>${result.errors[key][0]}</li>`;
-                    }
-                    errorsHtml += '</ul>';
-                    responseMessage.innerHTML = errorsHtml;
-                } else {
-                    // Display general errors like "No application found"
-                    responseMessage.innerHTML = result.message ||
-                        'An error occurred while retrieving the permit.';
-                }
+                responseMessage.innerHTML = result.message ||
+                    'An error occurred while retrieving the permit.';
             }
-        } catch (error) {
-            responseMessage.className = 'alert alert-danger mb-4';
-            responseMessage.innerHTML = 'A network error occurred. Please try again.';
-            console.error('Error:', error);
-        } finally {
-            // Restore the submit button
+
+        }
+
+    } catch (error) {
+
+        responseMessage.className = 'alert alert-danger mb-4';
+        responseMessage.innerHTML = 'A network error occurred. Please try again.';
+        console.error('Error:', error);
+
+    } finally {
+
+        // restore button only if NOT redirecting
+        setTimeout(() => {
+            if (!submitBtn.disabled) return;
+
             submitBtn.innerHTML = '<i class="bi bi-search"></i> Retrieve';
             submitBtn.disabled = false;
-        }
-    });
+        }, 1000);
+    }
+});
 </script>
 
-<script>
-function showPermitLoadingAndRedirect() {
-    const modal = new bootstrap.Modal(document.getElementById('loadingModal'));
-    const text = document.getElementById('loadingText');
 
-    modal.show();
-
-    text.innerText = "Loading data...";
-
-    setTimeout(() => {
-        text.innerText = "Connecting to IDPro Secure Platform...";
-
-        setTimeout(() => {
-            text.innerText = "Verifying Data...";
-
-            setTimeout(() => {
-
-              
-                window.location.href = certificateUrl;
-
-            }, 1500);
-
-        }, 1500);
-
-    }, 1500);
-}
-</script>
 
 </html>

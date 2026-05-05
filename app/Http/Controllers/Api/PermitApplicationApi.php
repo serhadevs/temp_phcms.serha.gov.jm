@@ -168,11 +168,11 @@ class PermitApplicationApi extends Controller
             abort(403, 'Invalid verification link.');
         }
 
-       
+
         if (now()->gt(Carbon::parse($record->expires_at))) {
             abort(403, 'Verification link expired.');
         }
-        
+
         $applicant = PermitApplication::with(
             'permitCategory',
             'payment',
@@ -244,8 +244,8 @@ class PermitApplicationApi extends Controller
     }
 
     public function generateLink($permitNo)
-{
-    $applicant = PermitApplication::with(
+    {
+        $applicant = PermitApplication::with(
             'permitCategory',
             'payment',
             'establishmentClinics',
@@ -256,29 +256,29 @@ class PermitApplicationApi extends Controller
             'messages'
         )->where('permit_no', $permitNo)->first();
 
-    if (!$applicant) {
-        return response()->json(['message' => 'Permit not found'], 404);
+        if (!$applicant) {
+            return response()->json(['message' => 'Permit not found'], 404);
+        }
+
+        $token = hash('sha256', Str::random(120));
+
+        DB::table('verification_tokens')->insert([
+            'permit_application_id' => $applicant->id,
+            'token'        => $token,
+            'ip_address'   => request()->ip(),
+            'user_agent'   => request()->userAgent(),
+            'expires_at'   => now()->addMinutes(5),
+            'created_at'   => now(),
+            'updated_at'   => now(),
+        ]);
+        $url = URL::temporarySignedRoute(
+            'verify.certificate',
+            now()->addMinutes(10),
+            ['token' => $token]
+        );
+
+        return response()->json([
+            'verify_url' => $url
+        ]);
     }
-
-    $token = hash('sha256', Str::random(120));
-
-   DB::table('verification_tokens')->insert([
-    'permit_application_id' => $applicant->id,
-    'token'        => $token,
-    'ip_address'   => request()->ip(),        
-    'user_agent'   => request()->userAgent(), 
-    'expires_at'   => now()->addMinutes(5),
-    'created_at'   => now(),
-    'updated_at'   => now(),
-]);
-    $url = URL::temporarySignedRoute(
-        'verify.certificate',
-        now()->addMinutes(10),
-        ['token' => $token]
-    );
-
-    return response()->json([
-        'verify_url' => $url
-    ]);
-}
 }
