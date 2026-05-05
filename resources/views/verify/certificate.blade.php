@@ -237,7 +237,7 @@
                                     <h5 class="fw-bold mb-0">MIN. OF HEALTH AND WELLNESS</h5>
                                 </div>
 
-                                <img src="{{ asset('images/mohlogo.png') }}" width="50">
+                                <img src="{{ asset('images/mohlogo.png') }}" width="90">
                             </div>
 
                             <div class="row align-items-center">
