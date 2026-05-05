@@ -25,30 +25,33 @@
             position: relative;
         }
 
-      
-       .expired-watermark {
-    position: fixed;
-    inset: 0;                     /* cover whole page */
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
-    font-size: 180px;
-    font-weight: 900;
-    letter-spacing: 20px;
-    white-space: nowrap;
+        .expired-watermark {
+            position: fixed;
+            inset: 0;
+            /* cover whole page */
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    color: rgba(220, 53, 69, 0.20);  /* slightly stronger red */
+            font-size: 180px;
+            font-weight: 900;
+            letter-spacing: 20px;
+            white-space: nowrap;
 
-    transform: rotate(-30deg);
+            color: rgba(220, 53, 69, 0.20);
+            /* slightly stronger red */
 
-    pointer-events: none;
-    z-index: 9999;              
-}
+            transform: rotate(-30deg);
 
-       .permit-wrapper {
-    position: relative;
-}
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .permit-wrapper {
+            position: relative;
+        }
+
         .expired-photo {
             filter: grayscale(100%);
         }
@@ -138,7 +141,7 @@
                 @endif
             </div>
 
-            
+
 
             <div class="container py-5">
                 <div class="row justify-content-center">
@@ -251,7 +254,7 @@
             </div>
 
 
-            @if (!$isExpired || !$applicant->signOffs)
+            @if ($applicant->signOffs && !$isExpired)
                 <div class="text-center mt-4 no-print">
                     <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
                         class="btn btn-primary">
