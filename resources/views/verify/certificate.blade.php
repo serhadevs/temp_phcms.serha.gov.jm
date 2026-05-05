@@ -84,13 +84,13 @@
 <body class="bg-light">
 
     @php
-        $isExpired = (session('permit_is_expired'));
+        $isExpired = session('permit_is_expired');
     @endphp
     {{-- <div class="watermark"></div> --}}
     <div class="permit-wrapper">
 
         {{-- WATERMARK --}}
-        @if($isExpired)
+        @if ($isExpired)
             <div class="expired-watermark">EXPIRED</div>
         @endif
 
@@ -244,12 +244,10 @@
                     To finalize this application, the applicant must complete the Food Handlers examination and attend
                     the Medical Interview. The appointment date is
                     <strong>
-    {{
-        optional(optional($applicant->appointment)->first())->appointment_date
-        ? \Carbon\Carbon::parse($applicant->appointment->first()->appointment_date)->format('d F Y')
-        : 'No Date Scheduled'
-    }}
-</strong>.
+                        {{ optional(optional($applicant->appointment)->first())->appointment_date
+                            ? \Carbon\Carbon::parse($applicant->appointment->first()->appointment_date)->format('d F Y')
+                            : 'No Date Scheduled' }}
+                    </strong>.
                     After successful completion, the Medical Officer of Health will review the results and, if approved,
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
                     Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
@@ -267,19 +265,19 @@
                 @endif
             </div>
 
-           
-                <div class="text-center mt-4 no-print">
-                    <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
-                        class="btn btn-primary">
-                        Download PDF
-                    </a>
 
-                    <button onclick="emailConfirmation()" class="btn btn-success me-2">
-                        Email Confirmation
-                    </button>
+            @if(!$isExpired)
+            <div class="text-center mt-4 no-print">
+                <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
+                    class="btn btn-primary">
+                    Download PDF
+                </a>
 
-                </div>
-           
+                <button onclick="emailConfirmation()" class="btn btn-success me-2">
+                    Email Confirmation
+                </button>
+            </div>
+
 
         </div>
     </div>
