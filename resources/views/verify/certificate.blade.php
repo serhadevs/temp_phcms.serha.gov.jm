@@ -277,6 +277,7 @@
                     Email Confirmation
                 </button>
             </div>
+            @endif
 
 
         </div>
