@@ -81,7 +81,7 @@
              Reload Page
         </button>
 
-        <a href="{{ url('/verify-permit') }}" class="btn btn-outline-secondary">
+        <a href="{{ url('/verify-permit/home') }}" class="btn btn-outline-secondary">
             Go to Retrieval Page
         </a>
     </div>

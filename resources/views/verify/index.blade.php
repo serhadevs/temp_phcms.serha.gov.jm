@@ -529,12 +529,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 <script>
+    const certificateUrl = @json(
+        URL::signedRoute('verify.certificate', ['token' => $token])
+    );
+</script>
+<script>
     document.getElementById('retrievalForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); // Stop standard form submission
+        e.preventDefault(); 
 
         const form = this;
         const submitBtn = document.getElementById('submitBtn');
         const responseMessage = document.getElementById('responseMessage');
+
 
         // Reset UI state to "loading"
         submitBtn.innerHTML =
@@ -542,6 +548,7 @@
         submitBtn.disabled = true;
         responseMessage.className = 'alert d-none mb-4';
         responseMessage.innerHTML = '';
+         showPermitLoadingAndRedirect();
 
         try {
             // Send the POST request to the route defined in the form's action attribute
@@ -601,6 +608,34 @@
             submitBtn.disabled = false;
         }
     });
+</script>
+
+<script>
+function showPermitLoadingAndRedirect() {
+    const modal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    const text = document.getElementById('loadingText');
+
+    modal.show();
+
+    text.innerText = "Loading data...";
+
+    setTimeout(() => {
+        text.innerText = "Connecting to IDPro Secure Platform...";
+
+        setTimeout(() => {
+            text.innerText = "Verifying Data...";
+
+            setTimeout(() => {
+
+              
+                window.location.href = certificateUrl;
+
+            }, 1500);
+
+        }, 1500);
+
+    }, 1500);
+}
 </script>
 
 </html>
