@@ -227,7 +227,7 @@
                 <div class="row justify-content-center">
                     <div class="col-md-7">
 
-                        <div class="card shadow-lg border-0 rounded-5 p-4" style="background:#f3f3f3;">
+                        <div class="card shadow-lg border-0 rounded-5 p-4" style="background:#ffffff;">
 
                             <!-- Header Logos -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -246,17 +246,40 @@
                                 <div class="col-8">
 
                                     <p class="mb-2"><strong>Category:</strong> Basic Foodhandlers</p>
-                                    <p class="mb-2"><strong>Name:</strong> MARGARET ALLEN</p>
-                                    <p class="mb-2"><strong>Permit#:</strong> KSA22350625</p>
-                                    <p class="mb-2"><strong>Issued:</strong> October 7, 2025</p>
-                                    <p class="mb-0"><strong>Expires:</strong> June 6, 2026</p>
+                                    <p class="mb-2"><strong>Name:</strong> {{ strtoupper($applicant->lastname) }},
+                                        {{ strtoupper($applicant->firstname) }}</p>
+                                    <p class="mb-2"><strong>Permit#:</strong>
+                                        {{ $applicant->permit_no ?? 'No Permit Number' }}</p>
+                                    <p class="mb-2"><strong>Issued:</strong>
+                                        {{ optional($applicant->signOffs)->sign_off_date
+                                            ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
+                                            : 'Pending' }}
+                                    </p>
+                                    <p class="mb-0"><strong>Expires:</strong>
+                                        {{ optional($applicant->signOffs)->expiry_date
+                                            ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
+                                            : 'Pending' }}
+                                    </p>
 
                                 </div>
 
                                 <!-- RIGHT SIDE PHOTO -->
-                                <div class="col-4 text-end">
+                                {{-- <div class="col-4 text-end">
                                     <img src="/images/photo.jpg" class="rounded-4"
                                         style="width:140px; height:160px; object-fit:cover;">
+                                </div> --}}
+
+                                <div class="col-4 text-end">
+                                    <div class="border bg-light d-flex align-items-center justify-content-center rounded"
+                                        style="width:120px;height:120px;overflow:hidden;margin:auto;">
+                                        @if ($applicant->photo_upload)
+                                            <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
+                                                class="{{ $isExpired ? 'expired-photo' : '' }}"
+                                                style="width:100%;height:100%;object-fit:cover;">
+                                        @else
+                                            Photo Not Available
+                                        @endif
+                                    </div>
                                 </div>
 
                             </div>
