@@ -495,7 +495,7 @@
 
                                     <input type="text" class="form-control @error('permit_no') is-invalid @enderror"
                                         placeholder="Enter your Permit Number" name="permit_no"
-                                        value="{{ old('permit_no') }}" required>
+                                        value="{{ old('permit_no') }}">
 
                                     @error('permit_no')
                                         <div class="invalid-feedback">
