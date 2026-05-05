@@ -144,91 +144,93 @@
 
 
             <div class="container py-4 py-md-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-7">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-8 col-lg-7">
 
-            <div class="card shadow-lg border-0 rounded-5 p-3 p-md-4" style="background:#ffffff;">
+                        <div class="card shadow-lg border-0 rounded-5 p-3 p-md-4" style="background:#ffffff;">
 
-                <!-- Header Logos -->
-                <div class="row align-items-center text-center text-md-start mb-3">
+                            <!-- Header Logos -->
+                            <div class="row align-items-center text-center text-md-start mb-3">
 
-                    <div class="col-4 col-md-3">
-                        <img src="{{ asset('images/coatofarms.png') }}"
-                             class="img-fluid"
-                             style="max-width:45px;">
-                    </div>
+                                <div class="col-4 col-md-3">
+                                    <img src="{{ asset('images/coatofarms.png') }}" class="img-fluid"
+                                        style="max-width:45px;">
+                                </div>
 
-                    <div class="col-12 col-md-6 order-3 order-md-2 mt-2 mt-md-0">
-                        <h6 class="fw-bold mb-0 text-center text-md-center">
-                            MIN. OF HEALTH AND WELLNESS
-                        </h6>
-                    </div>
+                                <div class="col-12 col-md-6 order-3 order-md-2 mt-2 mt-md-0 text-center">
+                                    <h6 class="fw-bold mb-0">
+                                        MIN. OF HEALTH AND WELLNESS
+                                    </h6>
 
-                    <div class="col-4 col-md-3 order-2 order-md-3 text-end text-md-end">
-                        <img src="{{ asset('images/mohlogo.png') }}"
-                             class="img-fluid"
-                             style="max-width:80px;">
-                    </div>
+                                    <small class="text-muted d-block mt-1" style="font-size:11px;">
+                                        Public Health (Food Handling 1998) Regulations 26,27,28,29,30 & 31
+                                    </small>
+                                </div>
 
-                </div>
+                                <div class="col-4 col-md-3 order-2 order-md-3 text-end text-md-end">
+                                    <img src="{{ asset('images/mohlogo.png') }}" class="img-fluid"
+                                        style="max-width:80px;">
+                                </div>
 
-                <div class="row align-items-center">
+                            </div>
 
-                    <!-- DETAILS -->
-                    <div class="col-12 col-md-8 order-2 order-md-1">
+                            <div class="row align-items-center">
 
-                        <p class="mb-2"><strong>Category:</strong> Basic Foodhandlers</p>
+                                <!-- DETAILS -->
+                                <div class="col-12 col-md-8 order-2 order-md-1">
 
-                        <p class="mb-2">
-                            <strong>Name:</strong>
-                            {{ strtoupper($applicant->lastname) }},
-                            {{ strtoupper($applicant->firstname) }}
-                        </p>
+                                    <p class="mb-2"><strong>Category:</strong> Basic Foodhandlers</p>
 
-                        <p class="mb-2">
-                            <strong>Permit#:</strong>
-                            {{ $applicant->permit_no ?? 'No Permit Number' }}
-                        </p>
+                                    <p class="mb-2">
+                                        <strong>Name:</strong>
+                                        {{ strtoupper($applicant->lastname) }},
+                                        {{ strtoupper($applicant->firstname) }}
+                                    </p>
 
-                        <p class="mb-2">
-                            <strong>Issued:</strong>
-                            {{ optional($applicant->signOffs)->sign_off_date
-                                ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
-                                : 'Pending' }}
-                        </p>
+                                    <p class="mb-2">
+                                        <strong>Permit#:</strong>
+                                        {{ $applicant->permit_no ?? 'No Permit Number' }}
+                                    </p>
 
-                        <p class="mb-3 mb-md-0">
-                            <strong>Expires:</strong>
-                            {{ optional($applicant->signOffs)->expiry_date
-                                ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
-                                : 'Pending' }}
-                        </p>
+                                    <p class="mb-2">
+                                        <strong>Issued:</strong>
+                                        {{ optional($applicant->signOffs)->sign_off_date
+                                            ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
+                                            : 'Pending' }}
+                                    </p>
 
-                    </div>
+                                    <p class="mb-3 mb-md-0">
+                                        <strong>Expires:</strong>
+                                        {{ optional($applicant->signOffs)->expiry_date
+                                            ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
+                                            : 'Pending' }}
+                                    </p>
 
-                    <!-- PHOTO -->
-                    <div class="col-12 col-md-4 text-center text-md-end mb-3 mb-md-0 order-1 order-md-2">
-                        <div class="border bg-light d-inline-flex align-items-center justify-content-center rounded"
-                             style="width:120px;height:120px;overflow:hidden;">
+                                </div>
 
-                            @if ($applicant->photo_upload)
-                                <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
-                                     class="{{ $isExpired ? 'expired-photo' : '' }}"
-                                     style="width:100%;height:100%;object-fit:cover;">
-                            @else
-                                <small>Photo Not Available</small>
-                            @endif
+                                <!-- PHOTO -->
+                                <div class="col-12 col-md-4 text-center text-md-end mb-3 mb-md-0 order-1 order-md-2">
+                                    <div class="border bg-light d-inline-flex align-items-center justify-content-center rounded"
+                                        style="width:120px;height:120px;overflow:hidden;">
+
+                                        @if ($applicant->photo_upload)
+                                            <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
+                                                class="{{ $isExpired ? 'expired-photo' : '' }}"
+                                                style="width:100%;height:100%;object-fit:cover;">
+                                        @else
+                                            <small>Photo Not Available</small>
+                                        @endif
+
+                                    </div>
+                                </div>
+
+                            </div>
 
                         </div>
+
                     </div>
-
                 </div>
-
             </div>
-
-        </div>
-    </div>
-</div>
 
             <!-- VALIDITY MESSAGE -->
             <!-- VALIDITY MESSAGE -->
