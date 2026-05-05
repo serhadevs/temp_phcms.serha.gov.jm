@@ -93,7 +93,7 @@ Route::get('/verify-permit/download/{id}',
 )->name('verify.download')
  ->middleware(['signed','throttle:5,1']); 
 
- Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
+//  Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
 
 //Users routes for users not logged in
 

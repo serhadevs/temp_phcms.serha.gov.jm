@@ -21,7 +21,7 @@ Route::post('/login/user', [Auth::class, 'loginuser']);
 Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit']);
 // Route::post('/verify-permit/retrieve', [PermitApplicationApi::class, 'permitRetrieval'])->name('verify.retrieval');
 // Route::get('/verify-permit/download/{id}', [PermitApplicationApi::class, 'downloadCertificate'])->name('verify.download');
-
+ Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
 
 
 // Routes that require authentication
