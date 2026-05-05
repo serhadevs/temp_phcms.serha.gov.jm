@@ -11,15 +11,16 @@
         }
 
         .card {
-            width: 650px;
+            width: 560px;
+            /* 👈 narrower */
             border: 1px solid #ddd;
             border-radius: 20px;
-            padding: 25px;
+            padding: 22px;
         }
 
         .header-table {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .header-table td {
@@ -29,23 +30,26 @@
         .title {
             text-align: center;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 17px;
+            letter-spacing: .5px;
         }
 
         .details-table {
             width: 100%;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .details-left {
-            width: 70%;
-            font-size: 14px;
-            line-height: 1.8;
+            width: 68%;
+            /* 👈 adjusted */
+            font-size: 13px;
+            line-height: 1.7;
         }
 
         .photo-box {
-            width: 120px;
-            height: 120px;
+            width: 110px;
+            /* 👈 slightly smaller */
+            height: 110px;
             border: 1px solid #ccc;
             text-align: center;
             vertical-align: middle;
@@ -53,8 +57,8 @@
         }
 
         .photo {
-            width: 120px;
-            height: 120px;
+            width: 110px;
+            height: 110px;
             object-fit: cover;
         }
 
@@ -62,25 +66,18 @@
             font-weight: bold;
         }
 
-        /* EXPIRED watermark */
-        .expired-watermark {
-            position: fixed;
-            top: 40%;
-            left: 15%;
-            font-size: 90px;
-            color: red;
-            opacity: 0.15;
-            transform: rotate(-30deg);
-            font-weight: bold;
+        .regulation {
+            margin-top: 18px;
+            font-size: 10px;
+            text-align: center;
+            color: #555;
         }
     </style>
 </head>
 
 <body>
 
-    {{-- @if ($isExpired)
-<div class="expired-watermark">EXPIRED</div>
-@endif --}}
+
 
     <center>
         <div class="card">
@@ -94,6 +91,9 @@
 
                     <td width="60%" class="title">
                         MIN. OF HEALTH AND WELLNESS
+                        <div class="regulation">
+                            Public Health (Food Handling 1998) Regulations 26,27,28,29,30 & 31
+                        </div>
                     </td>
 
                     <td width="20%" align="right">
