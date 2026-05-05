@@ -152,12 +152,14 @@
                             <!-- Header Logos -->
                             <div class="row align-items-center text-center text-md-start mb-3">
 
-                                <div class="col-4 col-md-3">
+                                <!-- Left logo -->
+                                <div class="col-3 col-md-2">
                                     <img src="{{ asset('images/coatofarms.png') }}" class="img-fluid"
                                         style="max-width:45px;">
                                 </div>
 
-                                <div class="col-12 col-md-6 order-3 order-md-2 mt-2 mt-md-0 text-center">
+                                <!-- TEXT (now wider) -->
+                                <div class="col-6 col-md-8 text-center">
                                     <h6 class="fw-bold mb-0">
                                         MIN. OF HEALTH AND WELLNESS
                                     </h6>
@@ -167,7 +169,8 @@
                                     </small>
                                 </div>
 
-                                <div class="col-4 col-md-3 order-2 order-md-3 text-end text-md-end">
+                                <!-- Right logo -->
+                                <div class="col-3 col-md-2 text-end">
                                     <img src="{{ asset('images/mohlogo.png') }}" class="img-fluid"
                                         style="max-width:80px;">
                                 </div>
