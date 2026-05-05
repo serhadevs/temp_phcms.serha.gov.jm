@@ -168,28 +168,11 @@ class PermitApplicationApi extends Controller
             abort(403, 'Invalid verification link.');
         }
 
-        // 🔐 Check expiry
+       
         if (now()->gt(Carbon::parse($record->expires_at))) {
             abort(403, 'Verification link expired.');
         }
-
-        // 🚫 REMOVED: used_at check (this was breaking refresh)
-        // if ($record->used_at !== null) {
-        //     abort(403, 'This link was already used.');
-        // }
-
-        // Optional security checks (keep if needed)
-        /*
-    if ($record->ip_address !== $request->ip()) {
-        abort(403, 'Device/IP mismatch.');
-    }
-
-    if ($record->user_agent !== $request->userAgent()) {
-        abort(403, 'Device mismatch.');
-    }
-    */
-
-        // 7️⃣ Load applicant
+        
         $applicant = PermitApplication::with(
             'permitCategory',
             'payment',
@@ -201,16 +184,12 @@ class PermitApplicationApi extends Controller
             'messages'
         )->findOrFail($record->permit_application_id);
 
-        // 🔎 Determine expiry status
         $expiry = optional($applicant->signOffs)->expiry_date;
 
         $isExpired = $expiry
             ? now()->gt(Carbon::parse($expiry))
             : false;
 
-
-
-        // 8️⃣ Prevent caching completely
         return response()
             ->view('verify.certificate', compact('applicant', 'isExpired'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
@@ -263,4 +242,42 @@ class PermitApplicationApi extends Controller
             'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf'
         )->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     }
+
+    public function generateLink($permitNo)
+{
+    $applicant = PermitApplication::$applicant = PermitApplication::with(
+            'permitCategory',
+            'payment',
+            'establishmentClinics',
+            'signOffs',
+            'testResults',
+            'healthInterviews.healthInterviewSymptom.symptoms',
+            'appointment.editTransactions',
+            'messages'
+        )->where('permit_no', $permitNo)->first();
+
+    if (!$applicant) {
+        return response()->json(['message' => 'Permit not found'], 404);
+    }
+
+    $token = hash('sha256', Str::random(120));
+
+    DB::table('verification_tokens')->insert([
+        'permit_application_id' => $applicant->id,
+        'token' => $token,
+        'expires_at' => now()->addMinutes(10),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $url = URL::temporarySignedRoute(
+        'verify.certificate',
+        now()->addMinutes(10),
+        ['token' => $token]
+    );
+
+    return response()->json([
+        'verify_url' => $url
+    ]);
+}
 }

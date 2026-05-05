@@ -92,7 +92,9 @@ Route::get('/verify-permit/download/{id}',
     [PermitApplicationApi::class, 'downloadCertificate']
 )->name('verify.download')
  ->middleware(['signed','throttle:5,1']); 
- 
+
+ Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
+
 //Users routes for users not logged in
 
 Route::get('/forget-password', [UserController::class, 'forgetPasswordPage'])->name('forget-password');
