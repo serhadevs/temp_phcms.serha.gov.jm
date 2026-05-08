@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,8 +14,14 @@
             position: relative;
         }
 
-        table { width: 100%; border-collapse: collapse; }
-        td { vertical-align: top; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            vertical-align: top;
+        }
 
         /* ===== WATERMARK ===== */
         .watermark {
@@ -139,44 +143,51 @@
             display: table-cell;
             text-align: center;
         }
+
         .document-footer .footer-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-}
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
     </style>
 </head>
 
 <body>
 
-  <div class="bg-primary text-white p-3 rounded mb-2"
-                style="background: linear-gradient(to right, #003366, #b30000) !important;">
+    <!-- HEADER -->
+    <div
+        style="width:100%; padding:10px 15px; margin-bottom:10px; background: linear-gradient(to right, #003366, #b30000); color:#fff;">
 
-                <!-- flex-column on mobile, flex-md-row on desktop. Centered on mobile, left-aligned on desktop -->
-                <div class="d-flex flex-column flex-md-row align-items-center gap-3 text-center text-md-start">
+        <table width="100%" style="border-collapse:collapse;">
+            <tr>
 
-                    <!-- WHITE CIRCLE LOGO (Added flex-shrink-0 so it doesn't get squished) -->
-                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow flex-shrink-0"
-                        style="width:65px; height:65px;">
-                        <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo"
-                            style="height:45px; width:auto;">
+                <!-- LOGO -->
+                <td width="15%" align="center" style="vertical-align:middle;">
+                    <div
+                        style="width:65px; height:65px; background:#fff; border-radius:50%; display:inline-block; text-align:center; line-height:65px;">
+                        <img src="{{ public_path('images/serha_logo.png') }}"
+                            style="height:45px; vertical-align:middle;">
                     </div>
+                </td>
 
-                    <!-- TEXT WRAPPER -->
-                    <div>
-                        <!-- Added lh-sm for better line spacing when text wraps on small screens -->
-                        <div class="fw-bold fs-5 lh-sm mb-1">
-                            SOUTH EAST REGIONAL HEALTH AUTHORITY
-                        </div>
-                        <div class="small" style="opacity: 0.9;">
-                            Public Health Certificate Management System - Verification by IDPro
-                        </div>
+                <!-- TEXT -->
+                <td width="70%" align="center" style="vertical-align:middle; color:#fff;">
+                    <div style="font-weight:bold; font-size:16px; line-height:1.2;">
+                        SOUTH EAST REGIONAL HEALTH AUTHORITY
                     </div>
+                    <div style="font-size:11px; opacity:0.9; margin-top:3px;">
+                        Public Health Certificate Management System - Verification by IDPro
+                    </div>
+                </td>
 
-                </div>
+                <!-- RIGHT SPACING (keeps symmetry like original layout) -->
+                <td width="15%"></td>
 
-            </div>
+            </tr>
+        </table>
+
+    </div>
 
     <!-- ID CARD -->
     <div class="id-card">
@@ -216,11 +227,13 @@
                         </tr>
                         <tr>
                             <td class="card-label">Issued:</td>
-                            <td>{{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}</td>
+                            <td>{{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}
+                            </td>
                         </tr>
                         <tr>
                             <td class="card-label">Expires:</td>
-                            <td>{{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}</td>
+                            <td>{{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}
+                            </td>
                         </tr>
                     </table>
                 </td>
@@ -237,15 +250,18 @@
     <div class="extra-sections">
         <div class="section-title">TRAINING AND MEDICAL CLEARANCE RESULTS</div>
 
-        <div class="test"><b>Medical Clearance:</b> {{ $applicant->healthInterviews?->whitlow === "absent" ? 'Passed' : 'Failed' }}</div>
-        <div class="test"><b>Food Handling Training:</b> {{ $applicant->testResults?->overall_score > 75 ? "Passed" : "Failed"}}</div>
-       <div class="test">
-    <b>Test Date:</b>
-    {{ optional($applicant->testResults)->test_date
-        ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y')
-        : 'N/A' }}
-</div>
-        <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
+        <div class="test"><b>Medical Clearance:</b>
+            {{ $applicant->healthInterviews?->whitlow === 'absent' ? 'Passed' : 'Failed' }}</div>
+        <div class="test"><b>Food Handling Training:</b>
+            {{ $applicant->testResults?->overall_score > 75 ? 'Passed' : 'Failed' }}</div>
+        <div class="test">
+            <b>Test Date:</b>
+            {{ optional($applicant->testResults)->test_date
+                ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y')
+                : 'N/A' }}
+        </div>
+        <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}
+        </div>
 
         <div class="approval">
             <span class="badge">OFFICIALLY VERIFIED</span><br>
@@ -255,38 +271,41 @@
     </div>
 
     <div style="text-align:center; margin-top:20px;">
-    <img src="data:image/png;base64,{{ $qrImage }}" width="120">
+        <img src="data:image/png;base64,{{ $qrImage }}" width="120">
 
-    <div style="font-size:10px; margin-top:5px;">
-        Scan to verify permit
+        <div style="font-size:10px; margin-top:5px;">
+            Scan to verify permit
+        </div>
+
     </div>
-    
-</div>
-</div>
-
-  <!-- FOOTER -->
-<footer class="document-footer">
-
-    <div class="footer-item">
-        <img src="{{ public_path('images/serha_logo.png') }}" style="width:0.75rem">
-        South East Regional Health Authority
     </div>
 
-    <div class="footer-item">
-        Application #: {{ $applicant->id ?? 'N/A' }}
-    </div>
+    <!-- FOOTER -->
+    <footer class="document-footer">
 
-    <div class="footer-item">
-        {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
-    </div>
+        <div class="footer-item">
+            <img src="{{ public_path('images/serha_logo.png') }}" style="width:0.75rem">
+            South East Regional Health Authority
+        </div>
 
-    <div style="margin-top: 15px; font-size: 10px; color: #666; text-align: justify; line-height: 1.4; border-top: 1px solid #ddd; padding-top: 10px;">
-        <strong>Data Protection Notice:</strong>
-        This document complies with the Jamaica Data Protection Act (2020).
-        Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory requirements of the Food Safety Act (1998).
-    </div>
+        <div class="footer-item">
+            Application #: {{ $applicant->id ?? 'N/A' }}
+        </div>
 
-</footer>
+        <div class="footer-item">
+            {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
+        </div>
+
+        <div
+            style="margin-top: 15px; font-size: 10px; color: #666; text-align: justify; line-height: 1.4; border-top: 1px solid #ddd; padding-top: 10px;">
+            <strong>Data Protection Notice:</strong>
+            This document complies with the Jamaica Data Protection Act (2020).
+            Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory
+            requirements of the Food Safety Act (1998).
+        </div>
+
+    </footer>
 
 </body>
+
 </html>
