@@ -150,8 +150,33 @@
 
 <body>
 
-    <!-- WATERMARK -->
-    {{-- <img src="{{ public_path('images/serha_logo.png') }}" class="watermark"> --}}
+  <div class="bg-primary text-white p-3 rounded mb-2"
+                style="background: linear-gradient(to right, #003366, #b30000) !important;">
+
+                <!-- flex-column on mobile, flex-md-row on desktop. Centered on mobile, left-aligned on desktop -->
+                <div class="d-flex flex-column flex-md-row align-items-center gap-3 text-center text-md-start">
+
+                    <!-- WHITE CIRCLE LOGO (Added flex-shrink-0 so it doesn't get squished) -->
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow flex-shrink-0"
+                        style="width:65px; height:65px;">
+                        <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo"
+                            style="height:45px; width:auto;">
+                    </div>
+
+                    <!-- TEXT WRAPPER -->
+                    <div>
+                        <!-- Added lh-sm for better line spacing when text wraps on small screens -->
+                        <div class="fw-bold fs-5 lh-sm mb-1">
+                            SOUTH EAST REGIONAL HEALTH AUTHORITY
+                        </div>
+                        <div class="small" style="opacity: 0.9;">
+                            Public Health Certificate Management System - Verification by IDPro
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
 
     <!-- ID CARD -->
     <div class="id-card">
