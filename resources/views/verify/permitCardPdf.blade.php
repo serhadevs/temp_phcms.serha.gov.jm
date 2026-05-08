@@ -15,9 +15,26 @@
 
         body {
             font-family: DejaVu Sans, Arial, sans-serif;
-            background: #ffffff; /* Better for PDF rendering */
+            background: #ffffff;
             padding: 15px;
             color: #333;
+            /* Required for absolutely positioned watermark */
+            position: relative;
+        }
+
+        /* --- WATERMARK --- */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Adjust width as needed for the logo size */
+            width: 400px; 
+            /* Centers the absolutely positioned element */
+            transform: translate(-50%, -50%);
+            /* Makes it faded */
+            opacity: 0.1;
+            /* Pushes it behind all other content */
+            z-index: -1;
         }
 
         .card {
@@ -28,6 +45,8 @@
             padding: 10px 20px;
             border: 1px solid var(--border);
             page-break-inside: avoid;
+            /* Transparent background so watermark shows through */
+            background-color: transparent; 
         }
 
         /* --- PDF SAFE LAYOUT UTILS --- */
@@ -80,6 +99,7 @@
 
         .value {
             font-weight: 600;
+            font-family: DejaVu Sans, Arial, sans-serif;
         }
 
         /* PHOTO */
@@ -90,6 +110,7 @@
             border: 2px solid #cfcfcf;
             overflow: hidden;
             text-align: center;
+            background: #fff; /* Ensure photo background isn't transparent */
         }
 
         .photo-wrapper img {
@@ -111,18 +132,20 @@
 
         /* TEST RESULTS */
         .test {
-            background: #e9f1fb;
+            /* Make background slightly transparent so watermark shows */
+            background: rgba(233, 241, 251, 0.8);
             padding: 10px 14px;
             border-radius: 8px;
             border-left: 5px solid var(--primary);
             font-size: 13px;
-            margin-bottom: 8px; /* Replaces grid gap */
+            margin-bottom: 8px; 
         }
 
         /* APPROVAL */
         .approval {
             margin-top: 18px;
-            background: #f4f8fc;
+            /* Make background slightly transparent */
+            background: rgba(244, 248, 252, 0.85);
             border-left: 6px solid #1ea44c;
             padding: 16px;
             border-radius: 8px;
@@ -145,8 +168,9 @@
 </head>
 
 <body>
-    <div class="card">
+    <img src="{{ public_path('images/serha_logo.png') }}" class="watermark">
 
+    <div class="card">
         <table class="header-table">
             <tr>
                 <td width="20%" align="left">
@@ -168,26 +192,26 @@
                     <table class="details-table">
                         <tr>
                             <td class="label">Category:</td>
-                            <td class="value">{{ $applicant->permitCategory->name }}</td>
+                            <td class="value">{{ $applicant->permitCategory->name ?? '' }}</td>
                         </tr>
                         <tr>
                             <td class="label">Name:</td>
-                            <td class="value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
+                            <td class="value">{{ strtoupper($applicant->lastname ?? '') }}, {{ strtoupper($applicant->firstname ?? '') }}</td>
                         </tr>
                         <tr>
                             <td class="label">Permit #:</td>
-                            <td class="value">{{ $applicant->permit_no }}</td>
+                            <td class="value">{{ $applicant->permit_no ?? '' }}</td>
                         </tr>
                         <tr>
                             <td class="label">Issued:</td>
                             <td class="value">
-                                {{ \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') }}
+                                {{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}
                             </td>
                         </tr>
                         <tr>
                             <td class="label">Expires:</td>
                             <td class="value" style="color:#d9534f">
-                                {{ \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') }}
+                                {{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}
                             </td>
                         </tr>
                     </table>
@@ -197,7 +221,9 @@
 
                 <td width="20%" align="right">
                     <div class="photo-wrapper">
-                        <img src="{{ public_path('storage/' . $applicant->photo_upload) }}">
+                        @if ($applicant->photo_upload)
+                            <img src="{{ public_path('storage/' . $applicant->photo_upload) }}">
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -206,11 +232,10 @@
         <div class="section-title">MEDICAL TEST RESULTS</div>
 
         <div class="results">
-            <div class="test"><b>Medical Exam(Whitlow):</b> {{ $applicant->healthInterviews?->whitlow ?? "No Medical Informatio" }}</div>
+            <div class="test"><b>Medical Exam(Whitlow):</b> {{ $applicant->healthInterviews?->whitlow ?? "No Medical Information" }}</div>
             <div class="test"><b>Test Results:</b> {{ $applicant->testResults?->overall_score ?? "No Score" }}</div>
-            <div class="test"><b>Test Date:</b>{{ \Carbon\Carbon::parse($applicant->test_date)->format('d F Y') }}</div>
-            <div class="test"><b>Test Location:</b>{{ $application->test_location ?? "No Exam Location"}}</div>
-
+            <div class="test"><b>Test Date:</b> {{ $applicant->test_date ? \Carbon\Carbon::parse($applicant->test_date)->format('d F Y') : 'N/A' }}</div>
+            <div class="test"><b>Test Location:</b> {{ $application->test_location ?? "No Exam Location" }}</div>
         </div>
 
         <div class="approval">
@@ -219,7 +244,6 @@
             and has been approved by the Medical Officer of Health. The holder is legally
             certified to handle food in accordance with national public health regulations.
         </div>
-
     </div>
 </body>
 
