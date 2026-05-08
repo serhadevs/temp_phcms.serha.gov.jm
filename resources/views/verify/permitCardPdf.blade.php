@@ -235,6 +235,23 @@
     position: relative;
     z-index: 1;
 }
+
+.document-footer {
+    width: 100%;
+    margin-top: 30px;
+    padding-top: 10px;
+    border-top: 1px solid #d9dee7;
+    
+    display: table;          /* PDF-safe centering trick */
+    table-layout: fixed;
+    font-size: 10px;         /* smaller text */
+    color: #666;
+}
+
+.footer-item {
+    display: table-cell;
+    text-align: center;      /* evenly spaced */
+}
     </style>
 </head>
 
@@ -309,7 +326,7 @@
                 {{ Str::ucfirst($applicant->healthInterviews?->whitlow) ?? 'No Medical Information' }}</div>
             <div class="test"><b>Test Results:</b> {{ $applicant->testResults?->overall_score ?? 'No Score' }}</div>
             <div class="test"><b>Test Date:</b>
-                {{ $applicant->test_date ? \Carbon\Carbon::parse($applicant->testResults?->test_date)->format('d F Y') : 'N/A' }}
+                {{ \Carbon\Carbon::parse($applicant->testResults?->test_date)->format('d F Y') : 'N/A' }}
             </div>
             <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
         </div>
@@ -322,11 +339,19 @@
         </div>
     </div>
 
-   <footer class="footer">
-    <div>South East Regional Health Authority</div>
-    <div>Application Number# {{ $applicant->id ?? 'No Application Number' }}</div>
-    <div>{{ \Carbon\Carbon::now() }}</div>
-   </footer>
+   <footer class="document-footer">
+    <div class="footer-item">
+        South East Regional Health Authority
+    </div>
+
+    <div class="footer-item">
+        Application #: {{ $applicant->id ?? 'No Application Number' }}
+    </div>
+
+    <div class="footer-item">
+        {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
+    </div>
+</footer>
 </body>
 
 </html>
