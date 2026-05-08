@@ -221,10 +221,7 @@
     </h2>
 
     <p style="font-size: 16px; color: #0b4ea2; margin: 8px 0 0 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        Verification by
-        <img src="{{ public_path('images/idpro_logo.png') }}" width="40px"
-            style="display: inline-block; margin: 0;" />
-        IDPro
+        Verification by IDPro
     </p>
 
     <p style="font-size: 13px; color: #666; margin: 15px 0 0 0; line-height: 1.5;">
@@ -337,7 +334,7 @@
             <div class="footer-item">
                 {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
             </div>
-
+            <div>This document verification was provide by  <img src="{{ public_path('images/idpro_logo.png') }}" style="width:0.75rem"></div>
             <div class="notice-block">
                 <strong>Data Protection Notice:</strong>
                 This document complies with the Jamaica Data Protection Act (2020).
