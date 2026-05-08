@@ -1,254 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        :root {
-            --primary-color: #004a99; /* Ministry Blue */
-            --text-main: #333333;
-            --text-muted: #666666;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        body {
-            font-family: 'DejaVu Sans', Helvetica, Arial, sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+<style>
+:root{
+    --primary:#004a99;
+    --light-blue:#eef5ff;
+    --border:#e4e7ec;
+    --text:#333;
+    --muted:#666;
+}
 
-        .card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 600px; /* Allows it to shrink on mobile */
-            border: 1px solid #e0e0e0;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            box-sizing: border-box;
-        }
+body{
+    font-family: DejaVu Sans, Arial, sans-serif;
+    background:#f2f4f7;
+    padding:20px;
+}
 
-        /* --- HEADER --- */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
+.card{
+    max-width:650px;
+    margin:auto;
+    background:#fff;
+    border-radius:18px;
+    padding:26px;
+    border:1px solid var(--border);
+}
 
-        .header img {
-            max-height: 65px;
-            width: auto;
-            flex-shrink: 0;
-        }
+/* HEADER */
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:3px solid var(--primary);
+    padding-bottom:14px;
+    margin-bottom:18px;
+}
+.header img{height:70px;}
 
-        .header-title {
-            text-align: center;
-            flex-grow: 1;
-            padding: 0 15px;
-        }
+.title{
+    text-align:center;
+    flex:1;
+}
+.title h1{
+    font-size:18px;
+    margin:0;
+    color:var(--primary);
+    letter-spacing:.5px;
+}
+.title small{
+    font-size:10px;
+    color:var(--muted);
+}
 
-        .header-title h2 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            color: var(--primary-color);
-            letter-spacing: 0.5px;
-        }
+/* MAIN CONTENT */
+.main{
+    display:flex;
+    gap:18px;
+}
 
-        .header-title .regulation {
-            font-size: 10px;
-            color: var(--text-muted);
-            line-height: 1.3;
-        }
+.details{
+    flex:1;
+}
 
-        /* --- CONTENT SECTION --- */
-        .content {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
+.row{
+    display:flex;
+    padding:7px 0;
+    border-bottom:1px dashed #eee;
+}
+.label{
+    width:95px;
+    font-weight:bold;
+    color:var(--primary);
+}
+.value{
+    font-weight:600;
+}
 
-        .details {
-            flex-grow: 1;
-            font-size: 14px;
-            line-height: 1.6;
-        }
+.photo{
+    width:130px;
+    height:130px;
+    border:2px solid #ccc;
+    border-radius:14px;
+    overflow:hidden;
+}
+.photo img{width:100%;height:100%;object-fit:cover;}
 
-        .data-row {
-            display: flex;
-            padding: 6px 0;
-            border-bottom: 1px dashed #eeeeee;
-        }
+/* SECTION TITLES */
+.section-title{
+    margin-top:18px;
+    font-size:13px;
+    font-weight:bold;
+    color:var(--primary);
+    border-bottom:2px solid var(--primary);
+    padding-bottom:4px;
+}
 
-        .data-row:last-child {
-            border-bottom: none;
-        }
+/* TEST RESULTS GRID */
+.results-grid{
+    margin-top:10px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    font-size:12px;
+}
+.test{
+    background:var(--light-blue);
+    padding:10px;
+    border-radius:8px;
+    border-left:4px solid var(--primary);
+}
 
-        .data-label {
-            font-weight: bold;
-            color: var(--primary-color);
-            width: 90px;
-            flex-shrink: 0;
-        }
+/* APPROVAL BOX */
+.approval{
+    margin-top:15px;
+    background:#f7fbff;
+    border-left:5px solid #28a745;
+    padding:14px;
+    font-size:12px;
+    line-height:1.6;
+}
 
-        .data-value {
-            font-weight: 600;
-            color: var(--text-main);
-        }
+.badge{
+    background:#28a745;
+    color:#fff;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+}
 
-        /* --- PHOTO SECTION --- */
-        .photo-wrapper {
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+/* QR AREA */
+.qr{
+    text-align:center;
+    margin-top:18px;
+    border-top:1px dashed #ddd;
+    padding-top:12px;
+    font-size:11px;
+}
 
-        .photo-box {
-            width: 120px;
-            height: 120px;
-            border: 2px solid #cccccc;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
+.qr img{width:90px;}
 
-        .photo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* --- RESULTS/APPROVAL SECTION --- */
-        .results-box {
-            background-color: #f0f7ff;
-            border-left: 4px solid var(--primary-color);
-            padding: 15px;
-            border-radius: 4px;
-            font-size: 12px;
-            line-height: 1.6;
-            color: #444;
-            text-align: justify;
-        }
-
-        .badge-verified {
-            display: inline-block;
-            background-color: #28a745;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 4px 10px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 500px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .content {
-                flex-direction: column-reverse; /* Puts photo on top on mobile */
-                align-items: center;
-                text-align: center;
-            }
-            .data-row {
-                justify-content: center;
-                flex-direction: column;
-                border-bottom: none;
-                margin-bottom: 8px;
-            }
-            .data-label {
-                width: 100%;
-                margin-bottom: 2px;
-            }
-            .results-box {
-                text-align: left;
-            }
-        }
-    </style>
+</style>
 </head>
+
 <body>
+<div class="card">
 
-    <div class="card">
-        
-        <div class="header">
-            <img src="{{ public_path('images/coatofarms.png') }}" alt="Coat of Arms">
-            
-            <div class="header-title">
-                <h2>MIN. OF HEALTH AND WELLNESS</h2>
-                <div class="regulation">
-                    Public Health (Food Handling 1998)<br>Regulations 26, 27, 28, 29, 30 & 31
-                </div>
-            </div>
-
-            <img src="{{ public_path('images/mohlogo.png') }}" alt="MOH Logo">
+    <!-- HEADER -->
+    <div class="header">
+        <img src="{{ public_path('images/coatofarms.png') }}">
+        <div class="title">
+            <h1>MINISTRY OF HEALTH & WELLNESS</h1>
+            <small>Public Health (Food Handling 1998) Regulations 26–31</small>
         </div>
-
-        <div class="content">
-            <div class="details">
-                <div class="data-row">
-                    <span class="data-label">Category:</span>
-                    <span class="data-value">{{ $applicant->permitCategory->name ?? 'Basic Foodhandlers' }}</span>
-                </div>
-                <div class="data-row">
-                    <span class="data-label">Name:</span>
-                    <span class="data-value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</span>
-                </div>
-                <div class="data-row">
-                    <span class="data-label">Permit #:</span>
-                    <span class="data-value">{{ $applicant->permit_no ?? 'Pending Assignment' }}</span>
-                </div>
-                <div class="data-row">
-                    <span class="data-label">Issued:</span>
-                    <span class="data-value">
-                        {{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'Pending' }}
-                    </span>
-                </div>
-                <div class="data-row">
-                    <span class="data-label">Expires:</span>
-                    <span class="data-value" style="color: #d9534f;">
-                        {{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'Pending' }}
-                    </span>
-                </div>
-            </div>
-
-            <div class="photo-wrapper">
-                <div class="photo-box">
-                    @if ($applicant->photo_upload)
-                        <img src="{{ public_path('storage/' . $applicant->photo_upload) }}" alt="Applicant Photo">
-                    @else
-                        No Photo
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <div class="results-box">
-            <span class="badge-verified">✓ OFFICIALLY VERIFIED</span><br>
-            The application has now been reviewed and approved by the Medical Officer of Health (MOH). In
-            accordance with the Food Safety Act (1998), individuals who handle, prepare, or come into
-            contact with food for public consumption must be medically examined, certified, and officially
-            authorized before engaging in food-handling activities. With the successful completion of the
-            required examination and medical interview, and the formal sign-off granted, this applicant is
-            now legally recognized as certified to handle food and may operate in compliance with national
-            public health regulations.
-        </div>
-
+        <img src="{{ public_path('images/mohlogo.png') }}">
     </div>
 
+    <!-- BASIC DETAILS -->
+    <div class="main">
+        <div class="details">
+            <div class="row"><div class="label">Category:</div><div class="value">{{ $applicant->permitCategory->name ?? 'Basic Foodhandlers' }}</div></div>
+            <div class="row"><div class="label">Name:</div><div class="value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</div></div>
+            <div class="row"><div class="label">Permit #:</div><div class="value">{{ $applicant->permit_no ?? 'Pending' }}</div></div>
+            <div class="row"><div class="label">Issued:</div><div class="value">{{ \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') }}</div></div>
+            <div class="row"><div class="label">Expires:</div><div class="value" style="color:#d9534f">{{ \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') }}</div></div>
+        </div>
+
+        <div class="photo">
+            <img src="{{ public_path('storage/' . $applicant->photo_upload) }}">
+        </div>
+    </div>
+
+    <!-- TEST RESULTS -->
+    <div class="section-title">MEDICAL TEST RESULTS</div>
+    <div class="results-grid">
+        <div class="test"><b>Medical Exam:</b> Passed</div>
+        <div class="test"><b>Food Handler Training:</b> Completed</div>
+        <div class="test"><b>Interview:</b> Approved</div>
+        <div class="test"><b>Status:</b> Fit for Food Handling</div>
+    </div>
+
+    <!-- APPROVAL -->
+    <div class="approval">
+        <span class="badge">OFFICIALLY VERIFIED</span><br><br>
+        This applicant has successfully completed all required medical examinations
+        and has been approved by the Medical Officer of Health. The holder is legally
+        certified to handle food in accordance with national public health regulations.
+    </div>
+
+    {{-- <!-- QR CODE -->
+    <div class="qr">
+        <img src="{{ public_path('images/qrcode.png') }}">
+        <div>Scan to verify this permit</div>
+    </div> --}}
+
+</div>
 </body>
 </html>
