@@ -147,14 +147,16 @@ class PermitApplicationApi extends Controller
         ]);
 
          // Search for applicant
-        $applicant = PermitApplication::where(function ($query) use ($firstname, $lastname, $dob, $permitNo) {
-            $query->where('permit_no', $permitNo)
-                ->orWhere(function ($q) use ($firstname, $lastname, $dob) {
-                    $q->whereRaw('LOWER(firstname) = ?', [$firstname])
-                        ->whereRaw('LOWER(lastname) = ?', [$lastname])
-                        ->where('date_of_birth', $dob);
-                });
-        })->first();
+        // $applicant = PermitApplication::where(function ($query) use ($firstname, $lastname, $dob, $permitNo) {
+        //     $query->where('permit_no', $permitNo)
+        //         ->orWhere(function ($q) use ($firstname, $lastname, $dob) {
+        //             $q->whereRaw('LOWER(firstname) = ?', [$firstname])
+        //                 ->whereRaw('LOWER(lastname) = ?', [$lastname])
+        //                 ->where('date_of_birth', $dob);
+        //         });
+        // })->first();
+
+        $applicant = PermitApplication::where($validated)->first();
 
        if (!$applicant) {
             Log::warning('Permit retrieval failed - not found', [
