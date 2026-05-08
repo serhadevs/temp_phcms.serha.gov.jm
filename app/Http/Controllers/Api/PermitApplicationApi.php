@@ -327,7 +327,7 @@ class PermitApplicationApi extends Controller
         ]);
 
         // Call your existing POST API internally
-        $response = Http::post(url('/api/verify-permit/retrieve'), $data);
+        $response = Http::post(url('/verify-permit/retrieve'), $data);
 
         if (!$response->successful()) {
             abort(404, 'Permit not found');
