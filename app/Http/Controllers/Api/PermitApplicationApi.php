@@ -234,14 +234,12 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->findOrFail($id);
 
-        $payload = encrypt(json_encode([
+        $qrUrl = url('/verify-permit/qr?' . http_build_query([
             'firstname'     => $applicant->firstname,
             'lastname'      => $applicant->lastname,
             'date_of_birth' => $applicant->date_of_birth,
             'permit_no'     => $applicant->permit_no,
         ]));
-
-        $qrUrl = url('/verify-permit/qr?data=' . urlencode($payload));
 
         $qrImage = base64_encode(
             QrCode::format('png')
@@ -268,7 +266,7 @@ class PermitApplicationApi extends Controller
 
         $pdf = Pdf::loadView('verify.permitCardPdf', [
             'applicant' => $applicant,
-            'qrImage'   => $qrImage,
+             'qrImage'   => $qrImage,
         ])->setPaper('A4');
 
         // 7️⃣ Force download (no browser caching)
@@ -327,7 +325,7 @@ class PermitApplicationApi extends Controller
         ]);
 
         // Call your existing POST API internally
-        $response = Http::post(url('/verify-permit/retrieve'), $data);
+        $response = Http::post(url('/api/verify-permit/retrieve'), $data);
 
         if (!$response->successful()) {
             abort(404, 'Permit not found');
