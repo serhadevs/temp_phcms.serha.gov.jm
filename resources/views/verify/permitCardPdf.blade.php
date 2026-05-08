@@ -392,7 +392,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 16px;
             padding: 20px 25px;
-            max-width: 650px;
+            max-width: 400px;
             margin: 0 auto;
             border-bottom: 3px solid #ccc;
         }
