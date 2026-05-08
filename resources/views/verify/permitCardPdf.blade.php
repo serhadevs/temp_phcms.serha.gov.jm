@@ -57,8 +57,14 @@
             margin: 0;
         }
 
-        table { width: 100%; border-collapse: collapse; }
-        td { vertical-align: top; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            vertical-align: top;
+        }
 
         /* ===== WATERMARK ===== */
         .watermark {
@@ -125,6 +131,17 @@
             margin: 30px auto 0 auto;
         }
 
+        .notice-block {
+            max-width: 650px;
+            margin: 15px auto 0 auto;
+            font-size: 10px;
+            color: #666;
+            text-align: justify;
+            line-height: 1.4;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
         .section-title {
             font-size: 13px;
             font-weight: bold;
@@ -181,6 +198,7 @@
             display: table-cell;
             text-align: center;
         }
+
         .document-footer .footer-item {
             display: flex;
             align-items: center;
@@ -195,9 +213,11 @@
     <div class="page-wrapper">
         <!-- HEADER -->
         <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="font-size: 18px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">Official Food Handlers Permit Certificate</h2>
+            <h2 style="font-size: 18px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">Official
+                Food Handlers Permit Certificate</h2>
             <p style="font-size: 14px; color: #555; margin: 8px 0 0 0;">Verification</p>
-            <p style="font-size: 13px; color: #666; margin: 8px 0 0 0; line-height: 1.5;">This confirms the issuance of the Food Handlers Permit for:</p>
+            <p style="font-size: 13px; color: #666; margin: 8px 0 0 0; line-height: 1.5;">This confirms the issuance of
+                the Food Handlers Permit for:</p>
         </div>
 
         <!-- ID CARD -->
@@ -238,11 +258,13 @@
                             </tr>
                             <tr>
                                 <td class="card-label">Issued:</td>
-                                <td>{{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}</td>
+                                <td>{{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="card-label">Expires:</td>
-                                <td>{{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}</td>
+                                <td>{{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}
+                                </td>
                             </tr>
                         </table>
                     </td>
@@ -259,15 +281,18 @@
         <div class="extra-sections">
             <div class="section-title">TRAINING AND MEDICAL CLEARANCE RESULTS</div>
 
-            <div class="test"><b>Medical Clearance:</b> {{ $applicant->healthInterviews?->whitlow === "absent" ? 'Passed' : 'Failed' }}</div>
-            <div class="test"><b>Food Handling Training:</b> {{ $applicant->testResults?->overall_score > 75 ? "Passed" : "Failed"}}</div>
+            <div class="test"><b>Medical Clearance:</b>
+                {{ $applicant->healthInterviews?->whitlow === 'absent' ? 'Passed' : 'Failed' }}</div>
+            <div class="test"><b>Food Handling Training:</b>
+                {{ $applicant->testResults?->overall_score > 75 ? 'Passed' : 'Failed' }}</div>
             <div class="test">
                 <b>Test Date:</b>
                 {{ optional($applicant->testResults)->test_date
                     ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y')
                     : 'N/A' }}
             </div>
-            <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
+            <div class="test"><b>Test Location:</b>
+                {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
 
             <div class="approval">
                 <span class="badge">OFFICIALLY VERIFIED</span><br>
@@ -300,10 +325,11 @@
                 {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
             </div>
 
-            <div style="width: 650px;argin-top: 15px; font-size: 10px; color: #666; text-align: justify; line-height: 1.4; border-top: 1px solid #ddd; padding-top: 10px;">
+            <div class="notice-block">
                 <strong>Data Protection Notice:</strong>
                 This document complies with the Jamaica Data Protection Act (2020).
-                Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory requirements of the Food Safety Act (1998).
+                Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory
+                requirements of the Food Safety Act (1998).
             </div>
 
         </footer>
