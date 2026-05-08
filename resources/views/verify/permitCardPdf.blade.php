@@ -501,7 +501,7 @@
 <body>
 
     <!-- WATERMARK -->
-    <img src="{{ public_path('images/serha_logo.png') }}" class="watermark">
+    {{-- <img src="{{ public_path('images/serha_logo.png') }}" class="watermark"> --}}
 
     <!-- ID CARD -->
     <div class="id-card">
