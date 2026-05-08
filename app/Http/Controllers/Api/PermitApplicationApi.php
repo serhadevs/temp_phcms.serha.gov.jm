@@ -61,30 +61,63 @@ class PermitApplicationApi extends Controller
                 ->where('permit_no', $permit_no)
                 ->first();
 
-            $token = hash('sha256', Str::random(120));
+                if (!$applicant) {
+                Log::warning('Permit not found', [
+                    'permit_no' => $permit_no,
+                    'ip' => request()->ip(),
+                ]);
+ 
+                return response()->json([
+                    "success" => false,
+                    "message" => "Permit not found"
+                ], 404);
+            }
+ 
 
+            // Check if permit is expired
+            $expiry = optional($applicant->signOffs)->expiry_date;
+            $isExpired = $expiry
+                ? Carbon::now()->gt(Carbon::parse($expiry))
+                : false;
+ 
+            if ($isExpired) {
+                Log::info('Expired permit verification attempted', [
+                    'permit_no' => $permit_no,
+                    'expiry_date' => $expiry,
+                    'ip' => request()->ip(),
+                ]);
+ 
+                return response()->json([
+                    "success" => false,
+                    "message" => "This permit has expired",
+                    "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
+                ], 410);  // 410 Gone - resource is no longer available
+            }
+ 
+            // Generate secure token using cryptographically random bytes
+            $token = bin2hex(random_bytes(32));
+            $tokenHash = hash('sha256', $token);
+ 
+            // Insert token into database
             DB::table('verification_tokens')->insert([
                 'permit_application_id' => $applicant->id,
-                'token'        => $token,
-                'ip_address'   => request()->ip(),
-                'user_agent'   => request()->userAgent(),
-                'expires_at'   => now()->addMinutes(5),
-                'created_at'   => now(),
-                'updated_at'   => now(),
+                'token_hash'           => $tokenHash,  // Store hash, not plaintext
+                'ip_address'           => request()->ip(),
+                'user_agent'           => request()->userAgent(),
+                'expires_at'           => now()->addMinutes(5),
+                'used'                 => false,
+                'created_at'           => now(),
+                'updated_at'           => now(),
             ]);
-
+ 
+            // Create temporary signed URL with token (not hash)
             $url = URL::temporarySignedRoute(
                 'verify.certificate',
                 now()->addMinutes(5),
                 ['token' => $token]
             );
-
-            $expiry = optional($applicant->signOffs)->expiry_date;
-
-            $isExpired = $expiry
-                ? Carbon::now()->gt(Carbon::parse($expiry))
-                : false;
-
+ 
+            // Store verification in session
             session([
                 'verified_permit_id' => $applicant->id,
                 'verified_permit_hash' => hash_hmac(
@@ -93,6 +126,12 @@ class PermitApplicationApi extends Controller
                     config('app.key')
                 ),
                 'permit_is_expired' => $isExpired,
+            ]);
+ 
+            Log::info('Permit verified successfully', [
+                'permit_no' => $permit_no,
+                'permit_id' => $applicant->id,
+                'ip' => request()->ip(),
             ]);
 
             return redirect($url);
