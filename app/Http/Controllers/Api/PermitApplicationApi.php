@@ -234,10 +234,8 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->findOrFail($id);
 
-        $qrUrl = url('/verify-permit/qr?' . http_build_query([
-            'firstname'     => $applicant->firstname,
-            'lastname'      => $applicant->lastname,
-            'date_of_birth' => $applicant->date_of_birth,
+        $qrUrl = url('/verify-permit' . http_build_query([
+            
             'permit_no'     => $applicant->permit_no,
         ]));
 
