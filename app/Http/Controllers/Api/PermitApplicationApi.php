@@ -234,7 +234,7 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->findOrFail($id);
 
-        $qrUrl = url('/verify-permit/' . $applicant->permit_no);
+        $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
         //dd($qrUrl);
 
         $qrImage = base64_encode(
