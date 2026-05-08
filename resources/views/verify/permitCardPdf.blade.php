@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -354,4 +354,234 @@
 </footer>
 </body>
 
+</html> --}}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        /* --- GENERAL --- */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            padding: 15px;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            vertical-align: top;
+        }
+
+        /* --- ID CARD DESIGN --- */
+        .id-card {
+            background-color: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 20px 25px;
+            max-width: 650px;
+            margin: 0 auto;
+            /* Box shadow is limited in DOMPDF, using a thicker bottom border to simulate it */
+            border-bottom: 3px solid #ccc; 
+        }
+
+        .card-header td {
+            vertical-align: middle;
+            padding-bottom: 20px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #111;
+        }
+
+        .card-subtitle {
+            margin: 4px 0 0 0;
+            font-size: 10px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .card-details td {
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .card-label {
+            font-weight: bold;
+            width: 90px;
+            color: #111;
+        }
+
+        .card-value {
+            color: #333;
+        }
+
+        .card-photo-container {
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        .card-photo {
+            width: 120px;
+            height: 130px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* --- TEST RESULTS & APPROVAL --- */
+        .extra-sections {
+            max-width: 650px;
+            margin: 30px auto 0 auto;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0b4ea2;
+            border-bottom: 2px solid #0b4ea2;
+            padding-bottom: 5px;
+            margin-bottom: 12px;
+        }
+
+        .test {
+            background: #e9f1fb;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-left: 5px solid #0b4ea2;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .approval {
+            margin-top: 18px;
+            background: #f4f8fc;
+            border-left: 6px solid #1ea44c;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            page-break-inside: avoid;
+        }
+
+        .badge {
+            background: #1ea44c;
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id-card">
+        
+        <table class="card-header">
+            <tr>
+                <td width="15%" align="left">
+                    <img src="{{ public_path('images/coatofarms.png') }}" style="height: 55px;">
+                </td>
+                <td width="70%" align="center">
+                    <h1 class="card-title">MIN. OF HEALTH AND WELLNESS</h1>
+                    <p class="card-subtitle">
+                        Public Health (Food Handling 1998) Regulations<br>
+                        26,27,28,29,30 & 31
+                    </p>
+                </td>
+                <td width="15%" align="right">
+                    <img src="{{ public_path('images/mohlogo.png') }}" style="height: 45px;">
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <td width="65%" valign="middle">
+                    <table class="card-details">
+                        <tr>
+                            <td class="card-label">Category:</td>
+                            <td class="card-value">{{ $applicant->permitCategory->name ?? 'Basic Foodhandlers' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="card-label">Name:</td>
+                            <td class="card-value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="card-label">Permit#:</td>
+                            <td class="card-value">{{ $applicant->permit_no }}</td>
+                        </tr>
+                        <tr>
+                            <td class="card-label">Issued:</td>
+                            <td class="card-value">
+                                {{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="card-label">Expires:</td>
+                            <td class="card-value">
+                                {{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td width="35%" class="card-photo-container">
+                    @if ($applicant->photo_upload)
+                        <img src="{{ public_path('storage/' . $applicant->photo_upload) }}" class="card-photo">
+                    @else
+                        <div style="width: 120px; height: 130px; border: 1px solid #ccc; display:inline-block; border-radius: 8px; background:#f4f4f4; text-align:center; line-height: 130px; font-size:12px; color:#888;">
+                            No Photo
+                        </div>
+                    @endif
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="extra-sections">
+        <div class="section-title">MEDICAL TEST RESULTS</div>
+
+        <div class="results">
+            <div class="test">
+                <b>Medical Exam(Whitlow):</b> 
+                {{ Str::ucfirst($applicant->healthInterviews?->whitlow ?? 'No Medical Information') }}
+            </div>
+            <div class="test">
+                <b>Test Results:</b> 
+                {{ $applicant->testResults?->overall_score ?? 'No Score' }}
+            </div>
+            <div class="test">
+                <b>Test Date:</b> 
+                {{ $applicant->testResults?->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y') : 'N/A' }}
+            </div>
+            <div class="test">
+                <b>Test Location:</b> 
+                {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}
+            </div>
+        </div>
+
+        <div class="approval">
+            <span class="badge">OFFICIALLY VERIFIED</span><br>
+            This applicant has successfully completed all required medical examinations
+            and has been approved by the Medical Officer of Health. The holder is legally
+            certified to handle food in accordance with national public health regulations.
+        </div>
+    </div>
+
+</body>
 </html>
