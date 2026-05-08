@@ -364,24 +364,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
-        /* --- GENERAL --- */
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #ffffff;
             padding: 15px;
             color: #222;
+            position: relative;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        table { width: 100%; border-collapse: collapse; }
+        td { vertical-align: top; }
+
+        /* ===== WATERMARK ===== */
+        .watermark {
+            position: fixed;
+            top: 45%;
+            left: 50%;
+            width: 420px;
+            transform: translate(-50%, -50%);
+            opacity: 0.08;
+            z-index: -1;
         }
 
-        td {
-            vertical-align: top;
-        }
-
-        /* --- ID CARD DESIGN --- */
+        /* ===== ID CARD ===== */
         .id-card {
             background-color: #fdfdfd;
             border: 1px solid #e0e0e0;
@@ -389,8 +394,7 @@
             padding: 20px 25px;
             max-width: 650px;
             margin: 0 auto;
-            /* Box shadow is limited in DOMPDF, using a thicker bottom border to simulate it */
-            border-bottom: 3px solid #ccc; 
+            border-bottom: 3px solid #ccc;
         }
 
         .card-header td {
@@ -421,16 +425,6 @@
         .card-label {
             font-weight: bold;
             width: 90px;
-            color: #111;
-        }
-
-        .card-value {
-            color: #333;
-        }
-
-        .card-photo-container {
-            text-align: right;
-            vertical-align: middle;
         }
 
         .card-photo {
@@ -440,7 +434,7 @@
             border: 1px solid #ddd;
         }
 
-        /* --- TEST RESULTS & APPROVAL --- */
+        /* ===== EXTRA SECTIONS ===== */
         .extra-sections {
             max-width: 650px;
             margin: 30px auto 0 auto;
@@ -472,7 +466,6 @@
             border-radius: 8px;
             font-size: 13px;
             line-height: 1.5;
-            page-break-inside: avoid;
         }
 
         .badge {
@@ -485,17 +478,37 @@
             display: inline-block;
             margin-bottom: 8px;
         }
+
+        /* ===== FOOTER ===== */
+        .document-footer {
+            width: 100%;
+            margin-top: 35px;
+            padding-top: 10px;
+            border-top: 1px solid #d9dee7;
+            display: table;
+            table-layout: fixed;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .footer-item {
+            display: table-cell;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
 
+    <!-- WATERMARK -->
+    <img src="{{ public_path('images/serha_logo.png') }}" class="watermark">
+
+    <!-- ID CARD -->
     <div class="id-card">
-        
         <table class="card-header">
             <tr>
-                <td width="15%" align="left">
-                    <img src="{{ public_path('images/coatofarms.png') }}" style="height: 55px;">
+                <td width="15%">
+                    <img src="{{ public_path('images/coatofarms.png') }}" style="height:55px;">
                 </td>
                 <td width="70%" align="center">
                     <h1 class="card-title">MIN. OF HEALTH AND WELLNESS</h1>
@@ -505,83 +518,68 @@
                     </p>
                 </td>
                 <td width="15%" align="right">
-                    <img src="{{ public_path('images/mohlogo.png') }}" style="height: 45px;">
+                    <img src="{{ public_path('images/mohlogo.png') }}" style="height:45px;">
                 </td>
             </tr>
         </table>
 
         <table>
             <tr>
-                <td width="65%" valign="middle">
+                <td width="65%">
                     <table class="card-details">
                         <tr>
                             <td class="card-label">Category:</td>
-                            <td class="card-value">{{ $applicant->permitCategory->name ?? 'Basic Foodhandlers' }}</td>
+                            <td>{{ $applicant->permitCategory->name ?? 'Basic Foodhandlers' }}</td>
                         </tr>
                         <tr>
                             <td class="card-label">Name:</td>
-                            <td class="card-value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
+                            <td>{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
                         </tr>
                         <tr>
                             <td class="card-label">Permit#:</td>
-                            <td class="card-value">{{ $applicant->permit_no }}</td>
+                            <td>{{ $applicant->permit_no }}</td>
                         </tr>
                         <tr>
                             <td class="card-label">Issued:</td>
-                            <td class="card-value">
-                                {{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}
-                            </td>
+                            <td>{{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}</td>
                         </tr>
                         <tr>
                             <td class="card-label">Expires:</td>
-                            <td class="card-value">
-                                {{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}
-                            </td>
+                            <td>{{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}</td>
                         </tr>
                     </table>
                 </td>
-                <td width="35%" class="card-photo-container">
+                <td width="35%" align="right">
                     @if ($applicant->photo_upload)
                         <img src="{{ public_path('storage/' . $applicant->photo_upload) }}" class="card-photo">
-                    @else
-                        <div style="width: 120px; height: 130px; border: 1px solid #ccc; display:inline-block; border-radius: 8px; background:#f4f4f4; text-align:center; line-height: 130px; font-size:12px; color:#888;">
-                            No Photo
-                        </div>
                     @endif
                 </td>
             </tr>
         </table>
     </div>
 
+    <!-- MEDICAL RESULTS -->
     <div class="extra-sections">
         <div class="section-title">MEDICAL TEST RESULTS</div>
 
-        <div class="results">
-            <div class="test">
-                <b>Medical Exam(Whitlow):</b> 
-                {{ Str::ucfirst($applicant->healthInterviews?->whitlow ?? 'No Medical Information') }}
-            </div>
-            <div class="test">
-                <b>Test Results:</b> 
-                {{ $applicant->testResults?->overall_score ?? 'No Score' }}
-            </div>
-            <div class="test">
-                <b>Test Date:</b> 
-                {{ $applicant->testResults?->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y') : 'N/A' }}
-            </div>
-            <div class="test">
-                <b>Test Location:</b> 
-                {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}
-            </div>
-        </div>
+        <div class="test"><b>Medical Exam (Whitlow):</b> {{ Str::ucfirst($applicant->healthInterviews?->whitlow ?? 'No Medical Information') }}</div>
+        <div class="test"><b>Test Results:</b> {{ $applicant->testResults?->overall_score ?? 'No Score' }}</div>
+        <div class="test"><b>Test Date:</b> {{ $applicant->testResults?->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y') : 'N/A' }}</div>
+        <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
 
         <div class="approval">
             <span class="badge">OFFICIALLY VERIFIED</span><br>
             This applicant has successfully completed all required medical examinations
-            and has been approved by the Medical Officer of Health. The holder is legally
-            certified to handle food in accordance with national public health regulations.
+            and has been approved by the Medical Officer of Health.
         </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="document-footer">
+        <div class="footer-item">South East Regional Health Authority</div>
+        <div class="footer-item">Application #: {{ $applicant->id ?? 'N/A' }}</div>
+        <div class="footer-item">{{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}</div>
+    </footer>
 
 </body>
 </html>
