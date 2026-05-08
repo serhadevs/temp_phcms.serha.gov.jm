@@ -306,10 +306,10 @@
 
         <div class="results">
             <div class="test"><b>Medical Exam(Whitlow):</b>
-                {{ $applicant->healthInterviews?->whitlow ?? 'No Medical Information' }}</div>
+                {{ Str::ucfirst($applicant->healthInterviews?->whitlow) ?? 'No Medical Information' }}</div>
             <div class="test"><b>Test Results:</b> {{ $applicant->testResults?->overall_score ?? 'No Score' }}</div>
             <div class="test"><b>Test Date:</b>
-                {{ $applicant->test_date ? \Carbon\Carbon::parse($applicant->test_date)->format('d F Y') : 'N/A' }}
+                {{ $applicant->test_date ? \Carbon\Carbon::parse($applicant->testResults?->test_date)->format('d F Y') : 'N/A' }}
             </div>
             <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
         </div>
@@ -322,31 +322,11 @@
         </div>
     </div>
 
-    <div class="footer">
-        <div class="verify-grid">
-
-            <!-- QR CODE -->
-            {{-- <div class="qr-box">
-                <img src="{{ $qrCode }}">
-                Scan to verify
-            </div> --}}
-
-            <!-- SIGNATURE -->
-            <div class="signature">
-                <img src="{{ public_path('images/moh-signature.png') }}">
-                <div class="sig-line"></div>
-                <div class="sig-title">Medical Officer of Health</div>
-                <div class="sig-sub">Ministry of Health & Wellness</div>
-            </div>
-
-            {{-- <!-- OFFICIAL STAMP -->
-            <div class="stamp">
-                <img src="{{ public_path('images/moh-stamp.png') }}">
-                <small>Official Seal</small>
-            </div> --}}
-
-        </div>
-    </div>
+   <footer class="footer">
+    <div>South East Regional Health Authority</div>
+    <div>Application Number# {{ $applicant->id ?? 'No Application Number' }}</div>
+    <div>{{ \Carbon\Carbon::now() }}</div>
+   </footer>
 </body>
 
 </html>
