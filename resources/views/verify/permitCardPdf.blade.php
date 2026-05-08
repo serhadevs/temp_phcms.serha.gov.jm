@@ -394,7 +394,7 @@
             padding: 20px 25px;
             max-width: 400px;
             margin: 0 auto;
-            border-bottom: 3px solid #ccc;
+            /* border-bottom: 3px solid #ccc; */
         }
 
         .card-header td {
@@ -576,6 +576,7 @@
 
     <!-- FOOTER -->
     <footer class="document-footer">
+        <img src="{{ public_path('images/serha_logo.png') }}" style="width:0.5rem">
         <div class="footer-item">South East Regional Health Authority</div>
         <div class="footer-item">Application #: {{ $applicant->id ?? 'N/A' }}</div>
         <div class="footer-item">{{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}</div>
