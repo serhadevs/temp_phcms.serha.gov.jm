@@ -61,42 +61,41 @@ class PermitApplicationApi extends Controller
                 ->where('permit_no', $permit_no)
                 ->first();
 
-            if (!$applicant) {
-                return response()->json([
-                    "status" => "invalid",
-                    "message" => "Permit not found"
-                ], 404);
-            }
+            $token = hash('sha256', Str::random(120));
 
-            // If not signed off yet → not valid
-            if (!$applicant->signOffs) {
-                return response()->json([
-                    "status" => "pending",
-                    "message" => "Permit not yet approved"
-                ], 200);
-            }
+            DB::table('verification_tokens')->insert([
+                'permit_application_id' => $applicant->id,
+                'token'        => $token,
+                'ip_address'   => request()->ip(),
+                'user_agent'   => request()->userAgent(),
+                'expires_at'   => now()->addMinutes(5),
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ]);
 
-            $expiry = $applicant->signOffs->expiry_date;
-            $isExpired = now()->gt($expiry);
+            $url = URL::temporarySignedRoute(
+                'verify.certificate',
+                now()->addMinutes(5),
+                ['token' => $token]
+            );
 
-            return response()->json([
-                "status" => $isExpired ? "expired" : "valid",
+            $expiry = optional($applicant->signOffs)->expiry_date;
 
-                "permit_no" => $applicant->permit_no,
+            $isExpired = $expiry
+                ? Carbon::now()->gt(Carbon::parse($expiry))
+                : false;
 
-                "name" => trim(
-                    $applicant->firstname . " " . $applicant->lastname
+            session([
+                'verified_permit_id' => $applicant->id,
+                'verified_permit_hash' => hash_hmac(
+                    'sha256',
+                    $applicant->permit_no . $applicant->date_of_birth,
+                    config('app.key')
                 ),
+                'permit_is_expired' => $isExpired,
+            ]);
 
-                "category" => $applicant->permitCategory->name ?? "N/A",
-
-                "issued_date" => $applicant->signOffs->sign_off_date,
-                "expiry_date" => $expiry,
-
-                "photo" => $applicant->photo_upload
-                    ? asset("storage/" . $applicant->photo_upload)
-                    : null,
-            ], 200);
+            return redirect($url);
         } catch (\Throwable $e) {
             return response()->json([
                 "status" => "error",
@@ -262,10 +261,10 @@ class PermitApplicationApi extends Controller
 
         $pdf = Pdf::loadView('verify.permitCardPdf', [
             'applicant' => $applicant,
-             'qrImage'   => $qrImage,
+            'qrImage'   => $qrImage,
         ])->setPaper('A4');
 
-        
+
         return $pdf->download(
             'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf'
         )->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
