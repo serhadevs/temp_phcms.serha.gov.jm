@@ -334,7 +334,7 @@
             <div class="footer-item">
                 {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
             </div>
-            <div>This document verification was provide by  <img src="{{ public_path('images/idpro_logo.png') }}" style="width:0.75rem"></div>
+            <div class ="footer-item">This document verification was provide by  <img src="{{ public_path('images/idpro_logo.png') }}" style="width:1rem"></div>
             <div class="notice-block">
                 <strong>Data Protection Notice:</strong>
                 This document complies with the Jamaica Data Protection Act (2020).
