@@ -213,12 +213,22 @@
     <div class="page-wrapper">
         <!-- HEADER -->
         <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="font-size: 18px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">Official
-                Food Handlers Permit Certificate</h2>
-            <p style="font-size: 18px; color: #0b4ea2;; margin: 8px 0 0 0;">Verification by <img src="{{ public_path('images/idpro_logo.png') }}" width="50px"/> IDPro</p>
-            <p style="font-size: 13px; color: #666; margin: 8px 0 0 0; line-height: 1.5;">This confirms the issuance of
-                the Food Handlers Permit for:</p>
-        </div>
+    
+    <h2 style="font-size: 20px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">
+        Official Food Handlers Permit Certificate
+    </h2>
+    
+    <p style="font-size: 16px; color: #0b4ea2; margin: 8px 0 0 0;">
+        Verification by 
+        <img src="{{ public_path('images/idpro_logo.png') }}" width="40px" style="vertical-align: middle; margin: 0 6px;" /> 
+        IDPro
+    </p>
+
+    <p style="font-size: 13px; color: #666; margin: 15px 0 0 0; line-height: 1.5;">
+        This confirms the issuance of the Food Handlers Permit for:
+    </p>
+
+</div>
 
         <!-- ID CARD -->
         <div class="id-card">
