@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
 use App\Models\PermitApplication;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -9,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -232,6 +234,21 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->findOrFail($id);
 
+        $payload = encrypt(json_encode([
+            'firstname'     => $applicant->firstname,
+            'lastname'      => $applicant->lastname,
+            'date_of_birth' => $applicant->date_of_birth,
+            'permit_no'     => $applicant->permit_no,
+        ]));
+
+        $qrUrl = url('/verify-permit/qr?data=' . urlencode($payload));
+
+        $qrImage = base64_encode(
+            QrCode::format('png')
+                ->size(160)
+                ->margin(1)
+                ->generate($qrUrl)
+        );
 
         $expectedHash = hash_hmac(
             'sha256',
@@ -248,10 +265,10 @@ class PermitApplicationApi extends Controller
             abort(403, 'Expired permits cannot be downloaded.');
         }
 
-      
+
         $pdf = Pdf::loadView('verify.permitCardPdf', [
             'applicant' => $applicant,
-            // 'isExpired' => $isExpired
+            'qrImage'   => $qrImage,
         ])->setPaper('A4');
 
         // 7️⃣ Force download (no browser caching)
@@ -297,5 +314,27 @@ class PermitApplicationApi extends Controller
         return response()->json([
             'verify_url' => $url
         ]);
+    }
+
+    public function qrVerify(Request $request)
+    {
+        // Validate query string from QR
+        $data = $request->validate([
+            'firstname'     => 'required|string',
+            'lastname'      => 'required|string',
+            'date_of_birth' => 'required|date',
+            'permit_no'     => 'required|string',
+        ]);
+
+        // Call your existing POST API internally
+        $response = Http::post(url('/api/verify-permit/retrieve'), $data);
+
+        if (!$response->successful()) {
+            abort(404, 'Permit not found');
+        }
+
+        $token = $response->json()['token'];
+
+        return redirect("/verify-permit/certificate/$token");
     }
 }

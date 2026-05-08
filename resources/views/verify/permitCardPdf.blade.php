@@ -218,6 +218,14 @@
         </div>
     </div>
 
+    <div style="text-align:center; margin-top:20px;">
+    <img src="data:image/png;base64,{{ $qrImage }}" width="120">
+
+    <div style="font-size:10px; margin-top:5px;">
+        Scan to verify permit
+    </div>
+</div>
+
     <!-- FOOTER -->
     <footer class="document-footer">
         
