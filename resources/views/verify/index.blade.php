@@ -44,6 +44,11 @@
             font-size: 0.85rem;
         }
 
+        .logo {
+            width: 2rem;
+            height: 2rem;
+        }
+
         .navbar {
             background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -345,24 +350,29 @@
 
     <!-- Official Top Bar -->
     <div class="top-bar">
-        <div class="container d-flex justify-content-between align-items-center">
-            <span>Government of Jamaica</span>
-            <div class="d-none d-md-block">
-                <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
-                <a href="#" class="text-white text-decoration-none">Contact Us</a>
-            </div>
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="d-flex align-items-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag" style="height: 16px; width: auto;" class="me-2">
+            Government of Jamaica
+        </span>
+        
+        <div class="d-none d-md-block">
+            <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
+            <a href="#" class="text-white text-decoration-none">Contact Us</a>
         </div>
     </div>
+</div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                {{-- <i class="bi bi-shield-shaded fs-2"></i> --}}
-                <div class="d-flex flex-column" style="line-height: 1.2;">
-                    <span><img src="{{ asset('images/serha_logo.png') }}"/>South East Regional Health Authority</span>
+            <a class="navbar-brand d-flex align-items-center" href="https://www.serha.gov.jm" style="max-width: 75%;">
+                <img src="{{ asset('images/serha_logo.png') }}" class="logo me-2" alt="SERHA"
+                    style="height: 40px; width: auto; flex-shrink: 0;">
 
-                </div>
+                <span class="text-wrap fw-bold" style="line-height: 1.2; font-size: 1.1rem;">
+                    South East Regional Health Authority
+                </span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -395,7 +405,7 @@
                         1998. This system is powered by IDPro.</p>
 
                     <ul class="feature-list">
-                        <li><span class="custom-bullet"></span> Proof that you are valid to handle food prep</li>
+                        <li><span class="custom-bullet"></span> Proof that you are valid to handle food preparation</li>
                         <li><span class="custom-bullet"></span> Applicant identification information</li>
                         <li><span class="custom-bullet"></span> Active and expired permit lookup</li>
                     </ul>
@@ -493,7 +503,8 @@
                                         Found on your payment receipt or previous permit document (e.g., KSA1234567)
                                     </span>
 
-                                    <input type="text" class="form-control @error('permit_no') is-invalid @enderror"
+                                    <input type="text"
+                                        class="form-control @error('permit_no') is-invalid @enderror"
                                         placeholder="Enter your Permit Number" name="permit_no"
                                         value="{{ old('permit_no') }}">
 
@@ -540,9 +551,16 @@
             <div class="row gy-4">
                 <div class="col-lg-4">
                     <h5 class="text-white d-flex align-items-center gap-2">
-                        <i class="bi bi-shield-shaded"></i> South East Regional Health Authority
+                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm flex-shrink-0"
+                            style="width: 50px; height: 50px;">
+                            <img src="{{ asset('images/serha_logo.png') }}" class="logo" alt="SERHA"
+                                style="height: 35px; width: auto;">
+                        </div>
+
+                        <span class="lh-sm">South East Regional Health Authority</span>
                     </h5>
-                    <p class="text-white small pe-4">Dedicated to providing excellent service and maintaining the
+
+                    <p class="text-white small pe-4 mt-3">Dedicated to providing excellent service and maintaining the
                         highest standards for the citizens of Jamaica.</p>
                 </div>
 
@@ -570,8 +588,8 @@
                     <h5>Contact Us</h5>
                     <ul class="list-unstyled small">
                         <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Kingston, Jamaica</li>
-                        <li class="mb-2"><i class="bi bi-telephone me-2"></i> (876) 555-0100</li>
-                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> info@moh.gov.jm</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i> (876) 555-1000</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> info@serha.gov.jm</li>
                     </ul>
                 </div>
             </div>
