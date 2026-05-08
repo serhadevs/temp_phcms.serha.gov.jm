@@ -91,6 +91,7 @@
         .card-header td {
             vertical-align: middle;
             padding-bottom: 20px;
+             font-family: Arial, Helvetica, sans-serif;
         }
 
         .card-title {
@@ -99,6 +100,7 @@
             font-weight: 900;
             letter-spacing: 0.5px;
             color: #111;
+             font-family: Arial, Helvetica, sans-serif;
         }
 
         .card-subtitle {
@@ -213,14 +215,15 @@
     <div class="page-wrapper">
         <!-- HEADER -->
         <div style="text-align: center; margin-bottom: 30px;">
-    
+
     <h2 style="font-size: 20px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">
         Official Food Handlers Permit Certificate
     </h2>
-    
-    <p style="font-size: 16px; color: #0b4ea2; margin: 8px 0 0 0;">
-        Verification by 
-        <img src="{{ public_path('images/idpro_logo.png') }}" width="40px" style="vertical-align: middle; margin: 0 6px;" /> 
+
+    <p style="font-size: 16px; color: #0b4ea2; margin: 8px 0 0 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        Verification by
+        <img src="{{ public_path('images/idpro_logo.png') }}" width="40px"
+            style="display: inline-block; margin: 0;" />
         IDPro
     </p>
 
