@@ -576,8 +576,8 @@
 
     <!-- FOOTER -->
     <footer class="document-footer">
-        <img src="{{ public_path('images/serha_logo.png') }}" style="width:0.5rem">
-        <div class="footer-item">South East Regional Health Authority</div>
+        
+        <div class="footer-item"><img src="{{ public_path('images/serha_logo.png') }}" style="width:0.75rem"> South East Regional Health Authority</div>
         <div class="footer-item">Application #: {{ $applicant->id ?? 'N/A' }}</div>
         <div class="footer-item">{{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}</div>
     </footer>
