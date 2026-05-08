@@ -128,7 +128,7 @@
             width: 100%;
             margin-top: 35px;
             padding-top: 10px;
-            border-top: 1px solid #d9dee7;
+            /* border-top: 1px solid #d9dee7; */
             display: table;
             table-layout: fixed;
             font-size: 10px;
@@ -204,10 +204,10 @@
 
     <!-- MEDICAL RESULTS -->
     <div class="extra-sections">
-        <div class="section-title">MEDICAL TEST RESULTS</div>
+        <div class="section-title">TRAINING AND MEDICAL CLEARANCE RESULTS</div>
 
-        <div class="test"><b>Medical Exam (Whitlow):</b> {{ Str::ucfirst($applicant->healthInterviews?->whitlow ?? 'No Medical Information') }}</div>
-        <div class="test"><b>Test Results:</b> {{ $applicant->testResults?->overall_score ?? 'No Score' }}</div>
+        <div class="test"><b>Medical Clearance:</b> {{ $applicant->healthInterviews?->whitlow === "absent" ?? 'Passed' : 'Failed' }}</div>
+        <div class="test"><b>Food Handling Training:</b> {{ $applicant->testResults?->overall_score > 75 ?? "Passed" : "Failed"}}</div>
         <div class="test"><b>Test Date:</b> {{ $applicant->testResults?->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y') : 'N/A' }}</div>
         <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
 
@@ -224,6 +224,9 @@
     <div style="font-size:10px; margin-top:5px;">
         Scan to verify permit
     </div>
+    <div style="margin-top: 15px; font-size: 10px; color: #666; text-align: justify; line-height: 1.4; border-top: 1px solid #ddd; padding-top: 10px;">
+    <strong>Data Protection Notice:</strong> This document complies with the Jamaica Data Protection Act (2020). Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory requirements of the Food Safety Act (1998).
+</div>
 </div>
 
     <!-- FOOTER -->
