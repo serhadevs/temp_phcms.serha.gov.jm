@@ -13,96 +13,95 @@
             --text: #333;
         }
 
-        /* IMPORTANT FOR PDF */
         body {
             font-family: DejaVu Sans, Arial, sans-serif;
-            background: #eef1f5;
+            background: #ffffff; /* Better for PDF rendering */
             padding: 15px;
+            color: #333;
         }
 
         .card {
             width: 100%;
             max-width: 720px;
             margin: auto;
-            background: #fff;
             border-radius: 18px;
-            padding: 28px 32px;
+            padding: 10px 20px;
             border: 1px solid var(--border);
             page-break-inside: avoid;
         }
 
-        /* HEADER PERFECT ALIGNMENT */
-        .header {
-            display: grid;
-            grid-template-columns: 90px 1fr 120px;
-            align-items: center;
+        /* --- PDF SAFE LAYOUT UTILS --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            vertical-align: top;
+        }
+
+        /* HEADER */
+        .header-table {
             border-bottom: 3px solid var(--primary);
             padding-bottom: 15px;
+            margin-bottom: 20px;
         }
-
-        .header img {
+        
+        .header-img {
             height: 70px;
-        }
-
-        .title {
-            text-align: center;
         }
 
         .title h1 {
             margin: 0;
             color: var(--primary);
-            font-size: 20px;
+            font-size: 18px;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .title small {
             font-size: 11px;
             color: #666;
+            display: block;
+            text-align: center;
+            margin-top: 4px;
         }
 
-        /* MAIN TWO COLUMN LAYOUT */
-        .main {
-            display: grid;
-            grid-template-columns: 1fr 150px;
-            gap: 25px;
-            margin-top: 20px;
-        }
-
-        /* DETAILS */
-        .row {
-            display: grid;
-            grid-template-columns: 120px 1fr;
+        /* DETAILS TABLE */
+        .details-table td {
             padding: 10px 0;
             border-bottom: 1px dashed #e6e6e6;
         }
-
+        
         .label {
             font-weight: bold;
             color: var(--primary);
+            width: 120px;
         }
 
         .value {
             font-weight: 600;
         }
 
-        /* PHOTO FIX */
-        .photo {
+        /* PHOTO */
+        .photo-wrapper {
             width: 140px;
             height: 140px;
             border-radius: 14px;
             border: 2px solid #cfcfcf;
             overflow: hidden;
+            text-align: center;
         }
 
-        .photo img {
-            width: 100%;
-            height: 100%;
+        .photo-wrapper img {
+            width: 140px;
+            height: 140px;
             object-fit: cover;
         }
 
         /* SECTION TITLES */
         .section-title {
-            margin-top: 22px;
+            margin-top: 25px;
+            margin-bottom: 12px;
             font-size: 13px;
             font-weight: bold;
             color: var(--primary);
@@ -111,18 +110,13 @@
         }
 
         /* TEST RESULTS */
-        .results {
-            margin-top: 12px;
-            display: grid;
-            gap: 8px;
-        }
-
         .test {
             background: #e9f1fb;
             padding: 10px 14px;
             border-radius: 8px;
             border-left: 5px solid var(--primary);
             font-size: 13px;
+            margin-bottom: 8px; /* Replaces grid gap */
         }
 
         /* APPROVAL */
@@ -134,6 +128,7 @@
             border-radius: 8px;
             font-size: 13px;
             page-break-inside: avoid;
+            line-height: 1.5;
         }
 
         .badge {
@@ -152,51 +147,62 @@
 <body>
     <div class="card">
 
-        <div class="header">
-            <img src="{{ public_path('images/coatofarms.png') }}">
+        <table class="header-table">
+            <tr>
+                <td width="20%" align="left">
+                    <img src="{{ public_path('images/coatofarms.png') }}" class="header-img">
+                </td>
+                <td width="60%" class="title">
+                    <h1>MINISTRY OF HEALTH & WELLNESS</h1>
+                    <small>Public Health (Food Handling 1998) Regulations 26–31</small>
+                </td>
+                <td width="20%" align="right">
+                    <img src="{{ public_path('images/mohlogo.png') }}" class="header-img">
+                </td>
+            </tr>
+        </table>
 
-            <div class="title">
-                <h1>MINISTRY OF HEALTH & WELLNESS</h1>
-                <small>Public Health (Food Handling 1998) Regulations 26–31</small>
-            </div>
+        <table>
+            <tr>
+                <td width="75%">
+                    <table class="details-table">
+                        <tr>
+                            <td class="label">Category:</td>
+                            <td class="value">{{ $applicant->permitCategory->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Name:</td>
+                            <td class="value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Permit #:</td>
+                            <td class="value">{{ $applicant->permit_no }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Issued:</td>
+                            <td class="value">
+                                {{ \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Expires:</td>
+                            <td class="value" style="color:#d9534f">
+                                {{ \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
 
-            <img src="{{ public_path('images/mohlogo.png') }}">
-        </div>
+                <td width="5%"></td>
 
-        <!-- BASIC DETAILS -->
-        <div class="main">
-            <div>
-                <div class="row">
-                    <div class="label">Category:</div>
-                    <div class="value">{{ $applicant->permitCategory->name }}</div>
-                </div>
-                <div class="row">
-                    <div class="label">Name:</div>
-                    <div class="value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}
+                <td width="20%" align="right">
+                    <div class="photo-wrapper">
+                        <img src="{{ public_path('storage/' . $applicant->photo_upload) }}">
                     </div>
-                </div>
-                <div class="row">
-                    <div class="label">Permit #:</div>
-                    <div class="value">{{ $applicant->permit_no }}</div>
-                </div>
-                <div class="row">
-                    <div class="label">Issued:</div>
-                    <div class="value">
-                        {{ \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') }}</div>
-                </div>
-                <div class="row">
-                    <div class="label">Expires:</div>
-                    <div class="value" style="color:#d9534f">
-                        {{ \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') }}</div>
-                </div>
-            </div>
+                </td>
+            </tr>
+        </table>
 
-            <div class="photo">
-                <img src="{{ public_path('storage/' . $applicant->photo_upload) }}">
-            </div>
-        </div>
-
-        <!-- TEST RESULTS -->
         <div class="section-title">MEDICAL TEST RESULTS</div>
 
         <div class="results">
@@ -206,19 +212,12 @@
             <div class="test"><b>Status:</b> Fit for Food Handling</div>
         </div>
 
-        <!-- APPROVAL -->
         <div class="approval">
-            <span class="badge">OFFICIALLY VERIFIED</span>
+            <span class="badge">OFFICIALLY VERIFIED</span><br>
             This applicant has successfully completed all required medical examinations
             and has been approved by the Medical Officer of Health. The holder is legally
             certified to handle food in accordance with national public health regulations.
         </div>
-
-        {{-- <!-- QR CODE -->
-    <div class="qr">
-        <img src="{{ public_path('images/qrcode.png') }}">
-        <div>Scan to verify this permit</div>
-    </div> --}}
 
     </div>
 </body>
