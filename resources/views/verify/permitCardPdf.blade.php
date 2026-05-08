@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Food Handling Permit Certificate - PHCMS">
-    <meta name="author" content="South East Regional Health Authority - IDPro">
+    <meta name="description" content="Food Handling Permit Certificate - Ministry of Health and Wellness Jamaica">
+    <meta name="author" content="Ministry of Health and Wellness">
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="theme-color" content="#0b4ea2">
@@ -166,14 +166,15 @@
 
         /* ===== FOOTER ===== */
         .document-footer {
-            width: 100%;
-            margin-top: 35px;
+            max-width: 650px;
+            margin: 35px auto 0 auto;
             padding-top: 10px;
             /* border-top: 1px solid #d9dee7; */
             display: table;
             table-layout: fixed;
             font-size: 10px;
             color: #666;
+            width: 100%;
         }
 
         .footer-item {
@@ -192,6 +193,13 @@
 <body>
 
     <div class="page-wrapper">
+        <!-- HEADER -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="font-size: 18px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">Official Food Handlers Permit Certificate</h2>
+            <p style="font-size: 14px; color: #555; margin: 8px 0 0 0;">Verification</p>
+            <p style="font-size: 13px; color: #666; margin: 8px 0 0 0; line-height: 1.5;">This confirms the issuance of the Food Handlers Permit for:</p>
+        </div>
+
         <!-- ID CARD -->
         <div class="id-card">
             <table class="card-header">
