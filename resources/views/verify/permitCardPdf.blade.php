@@ -4,222 +4,122 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <title>Official Permit Certificate</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
+        /* A few custom tweaks to match the official Ministry blue */
         :root {
-            --primary: #0b4ea2;
-            --light: #f3f7fc;
-            --border: #d9dee7;
-            --text: #333;
+            --moh-blue: #0b4ea2;
         }
-
-        body {
-            font-family: DejaVu Sans, Arial, sans-serif;
-            background: #ffffff; /* Better for PDF rendering */
-            padding: 15px;
-            color: #333;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 720px;
-            margin: auto;
-            border-radius: 18px;
-            padding: 10px 20px;
-            border: 1px solid var(--border);
-            page-break-inside: avoid;
-        }
-
-        /* --- PDF SAFE LAYOUT UTILS --- */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        td {
-            vertical-align: top;
-        }
-
-        /* HEADER */
-        .header-table {
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
+        .text-moh-blue { color: var(--moh-blue); }
+        .border-moh-blue { border-bottom: 3px solid var(--moh-blue); }
+        .border-left-moh { border-left: 5px solid var(--moh-blue) !important; }
+        .bg-moh-light { background-color: #e9f1fb; }
         
-        .header-img {
-            height: 70px;
-        }
-
-        .title h1 {
-            margin: 0;
-            color: var(--primary);
-            font-size: 18px;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        .title small {
-            font-size: 11px;
-            color: #666;
-            display: block;
-            text-align: center;
-            margin-top: 4px;
-        }
-
-        /* DETAILS TABLE */
-        .details-table td {
-            padding: 10px 0;
-            border-bottom: 1px dashed #e6e6e6;
-        }
-        
-        .label {
-            font-weight: bold;
-            color: var(--primary);
-            width: 120px;
-        }
-
-        .value {
-            font-weight: 600;
-        }
-
-        /* PHOTO */
-        .photo-wrapper {
-            width: 140px;
-            height: 140px;
-            border-radius: 14px;
-            border: 2px solid #cfcfcf;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .photo-wrapper img {
+        /* Ensure the photo box stays square */
+        .photo-box {
             width: 140px;
             height: 140px;
             object-fit: cover;
         }
-
-        /* SECTION TITLES */
-        .section-title {
-            margin-top: 25px;
-            margin-bottom: 12px;
-            font-size: 13px;
-            font-weight: bold;
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 5px;
-        }
-
-        /* TEST RESULTS */
-        .test {
-            background: #e9f1fb;
-            padding: 10px 14px;
-            border-radius: 8px;
-            border-left: 5px solid var(--primary);
-            font-size: 13px;
-            margin-bottom: 8px; /* Replaces grid gap */
-        }
-
-        /* APPROVAL */
-        .approval {
-            margin-top: 18px;
-            background: #f4f8fc;
-            border-left: 6px solid #1ea44c;
-            padding: 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            page-break-inside: avoid;
-            line-height: 1.5;
-        }
-
-        .badge {
-            background: #1ea44c;
-            color: #fff;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
     </style>
 </head>
 
-<body>
-    <div class="card">
+<body class="bg-light py-4 py-md-5">
 
-        <table class="header-table">
-            <tr>
-                <td width="20%" align="left">
-                    <img src="{{ public_path('images/coatofarms.png') }}" class="header-img">
-                </td>
-                <td width="60%" class="title">
-                    <h1>MINISTRY OF HEALTH & WELLNESS</h1>
-                    <small>Public Health (Food Handling 1998) Regulations 26–31</small>
-                </td>
-                <td width="20%" align="right">
-                    <img src="{{ public_path('images/mohlogo.png') }}" class="header-img">
-                </td>
-            </tr>
-        </table>
+    <div class="container">
+        <div class="card shadow-lg border-0 rounded-4 mx-auto" style="max-width: 750px;">
+            <div class="card-body p-4 p-md-5">
 
-        <table>
-            <tr>
-                <td width="75%">
-                    <table class="details-table">
-                        <tr>
-                            <td class="label">Category:</td>
-                            <td class="value">{{ $applicant->permitCategory->name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Name:</td>
-                            <td class="value">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Permit #:</td>
-                            <td class="value">{{ $applicant->permit_no }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Issued:</td>
-                            <td class="value">
-                                {{ \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="label">Expires:</td>
-                            <td class="value" style="color:#d9534f">
-                                {{ \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') }}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-
-                <td width="5%"></td>
-
-                <td width="20%" align="right">
-                    <div class="photo-wrapper">
-                        <img src="{{ public_path('storage/' . $applicant->photo_upload) }}">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center border-moh-blue pb-3 mb-4 gap-3 text-center text-md-start">
+                    <img src="{{ asset('images/coatofarms.png') }}" alt="Coat of Arms" style="height: 70px;">
+                    
+                    <div class="text-center flex-grow-1 px-3">
+                        <h1 class="h5 fw-bold text-moh-blue mb-1" style="letter-spacing: 1px;">MINISTRY OF HEALTH & WELLNESS</h1>
+                        <small class="text-muted fw-semibold" style="font-size: 11px;">Public Health (Food Handling 1998) Regulations 26–31</small>
                     </div>
-                </td>
-            </tr>
-        </table>
 
-        <div class="section-title">MEDICAL TEST RESULTS</div>
+                    <img src="{{ asset('images/mohlogo.png') }}" alt="MOH Logo" style="height: 70px;">
+                </div>
 
-        <div class="results">
-            <div class="test"><b>Medical Exam:</b> Passed</div>
-            <div class="test"><b>Food Handler Training:</b> Completed</div>
-            <div class="test"><b>Interview:</b> Approved</div>
-            <div class="test"><b>Status:</b> Fit for Food Handling</div>
+                <div class="row g-4 mb-5">
+                    
+                    <div class="col-md-8 order-2 order-md-1">
+                        <div class="row mb-2 border-bottom border-light pb-2">
+                            <div class="col-4 fw-bold text-moh-blue">Category:</div>
+                            <div class="col-8 fw-semibold">{{ $applicant->permitCategory->name }}</div>
+                        </div>
+                        <div class="row mb-2 border-bottom border-light pb-2">
+                            <div class="col-4 fw-bold text-moh-blue">Name:</div>
+                            <div class="col-8 fw-semibold">{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</div>
+                        </div>
+                        <div class="row mb-2 border-bottom border-light pb-2">
+                            <div class="col-4 fw-bold text-moh-blue">Permit #:</div>
+                            <div class="col-8 fw-semibold">{{ $applicant->permit_no }}</div>
+                        </div>
+                        <div class="row mb-2 border-bottom border-light pb-2">
+                            <div class="col-4 fw-bold text-moh-blue">Issued:</div>
+                            <div class="col-8 fw-semibold">
+                                {{ \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') }}
+                            </div>
+                        </div>
+                        <div class="row mb-2 pb-2">
+                            <div class="col-4 fw-bold text-moh-blue">Expires:</div>
+                            <div class="col-8 fw-bold text-danger">
+                                {{ \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 order-1 order-md-2 d-flex justify-content-center justify-content-md-end">
+                        <div class="border border-2 border-secondary-subtle rounded-3 p-1">
+                            <img src="{{ asset('storage/' . $applicant->photo_upload) }}" class="photo-box rounded-2" alt="Applicant Photo">
+                        </div>
+                    </div>
+
+                </div>
+
+                <h6 class="fw-bold text-moh-blue border-bottom border-2 border-primary pb-2 mb-3">MEDICAL TEST RESULTS</h6>
+                
+                <div class="row g-2 mb-4">
+                    <div class="col-md-6">
+                        <div class="bg-moh-light p-2 rounded-2 border-left-moh small">
+                            <span class="fw-bold">Medical Exam:</span> Passed
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-moh-light p-2 rounded-2 border-left-moh small">
+                            <span class="fw-bold">Training:</span> Completed
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-moh-light p-2 rounded-2 border-left-moh small">
+                            <span class="fw-bold">Interview:</span> Approved
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-moh-light p-2 rounded-2 border-left-moh small">
+                            <span class="fw-bold">Status:</span> Fit for Food Handling
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-success border-0 border-start border-5 border-success rounded-3 shadow-sm">
+                    <span class="badge bg-success mb-2 px-3 py-2 rounded-pill shadow-sm" style="letter-spacing: 1px;">✓ OFFICIALLY VERIFIED</span>
+                    <p class="mb-0 small" style="line-height: 1.6;">
+                        This applicant has successfully completed all required medical examinations
+                        and has been approved by the Medical Officer of Health. The holder is legally
+                        certified to handle food in accordance with national public health regulations.
+                    </p>
+                </div>
+
+            </div>
         </div>
-
-        <div class="approval">
-            <span class="badge">OFFICIALLY VERIFIED</span><br>
-            This applicant has successfully completed all required medical examinations
-            and has been approved by the Medical Officer of Health. The holder is legally
-            certified to handle food in accordance with national public health regulations.
-        </div>
-
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
