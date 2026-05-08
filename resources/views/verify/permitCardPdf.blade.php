@@ -206,8 +206,8 @@
     <div class="extra-sections">
         <div class="section-title">TRAINING AND MEDICAL CLEARANCE RESULTS</div>
 
-        <div class="test"><b>Medical Clearance:</b> {{ $applicant->healthInterviews?->whitlow === "absent" ?? 'Passed' : 'Failed' }}</div>
-        <div class="test"><b>Food Handling Training:</b> {{ $applicant->testResults?->overall_score > 75 ?? "Passed" : "Failed"}}</div>
+        <div class="test"><b>Medical Clearance:</b> {{ $applicant->healthInterviews?->whitlow === "absent" ? 'Passed' : 'Failed' }}</div>
+        <div class="test"><b>Food Handling Training:</b> {{ $applicant->testResults?->overall_score > 75 ? "Passed" : "Failed"}}</div>
        <div class="test">
     <b>Test Date:</b>
     {{ optional($applicant->testResults)->test_date
