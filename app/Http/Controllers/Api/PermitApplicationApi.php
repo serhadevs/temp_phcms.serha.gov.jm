@@ -322,6 +322,47 @@ class PermitApplicationApi extends Controller
     //     )->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     // }
 
+    public function downloadCertificate($id)
+    {
+        $applicant = PermitApplication::with([
+            'permitCategory',
+            'signOffs',
+            'testResults'
+        ])->findOrFail($id);
+
+        // Check if expired
+        if ($applicant->signOffs && now()->gt($applicant->signOffs->expiry_date)) {
+            Log::warning('Expired permit download attempted', [
+                'permit_id' => $id,
+                'ip' => request()->ip(),
+            ]);
+            abort(403, 'Expired permits cannot be downloaded.');
+        }
+
+        // Generate QR code
+        $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
+        $qrImage = base64_encode(
+            QrCode::format('png')
+                ->size(160)
+                ->margin(1)
+                ->generate($qrUrl)
+        );
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('verify.permitCardPdf', [
+            'applicant' => $applicant,
+            'qrImage' => $qrImage,
+        ])->setPaper('A4');
+
+        Log::info('Certificate downloaded', [
+            'permit_id' => $applicant->id,
+            'permit_no' => $applicant->permit_no,
+            'ip' => request()->ip(),
+        ]);
+
+        return $pdf->download('Food_Handlers_Permit_' . $applicant->permit_no . '.pdf')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    }
+
     public function generateLink($permitNo)
     {
         $applicant = PermitApplication::with(
