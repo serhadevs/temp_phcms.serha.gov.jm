@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: DejaVu Sans, Arial, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
             background: #ffffff;
             padding: 15px;
             color: #333;
@@ -99,7 +99,7 @@
 
         .value {
             font-weight: 600;
-            font-family: DejaVu Sans, Arial, sans-serif;
+           
         }
 
         /* PHOTO */
