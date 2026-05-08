@@ -208,7 +208,7 @@
 
         <div class="test"><b>Medical Clearance:</b> {{ $applicant->healthInterviews?->whitlow === "absent" ?? 'Passed' : 'Failed' }}</div>
         <div class="test"><b>Food Handling Training:</b> {{ $applicant->testResults?->overall_score > 75 ?? "Passed" : "Failed"}}</div>
-        <div class="test"><b>Test Date:</b> {{ $applicant->testResults?->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y') : 'N/A' }}</div>
+        <div class="test"><b>Test Date:</b> {{ \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y') : 'N/A' }}</div>
         <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
 
         <div class="approval">
