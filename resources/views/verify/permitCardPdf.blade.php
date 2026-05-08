@@ -4,8 +4,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Food Handling Permit Certificate - PHCMS">
+    <meta name="author" content="South East Regional Health Authority - IDPro">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#0b4ea2">
+    <title>Food Handling Permit Certificate</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #ffffff;
@@ -14,14 +26,39 @@
             position: relative;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        /* ===== PAGE BORDER ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 3px solid #0b4ea2;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 1000;
         }
 
-        td {
-            vertical-align: top;
+        @media print {
+            body::before {
+                top: 8px;
+                left: 8px;
+                right: 8px;
+                bottom: 8px;
+                border-width: 2px;
+            }
         }
+
+        /* ===== CONTENT WRAPPER ===== */
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            margin: 0;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        td { vertical-align: top; }
 
         /* ===== WATERMARK ===== */
         .watermark {
@@ -143,7 +180,6 @@
             display: table-cell;
             text-align: center;
         }
-
         .document-footer .footer-item {
             display: flex;
             align-items: center;
@@ -155,156 +191,115 @@
 
 <body>
 
-    <!-- HEADER -->
-    <div
-        style="width:100%; padding:10px 15px; margin-bottom:10px; background: linear-gradient(to right, #003366, #b30000); color:#fff;">
+    <div class="page-wrapper">
+        <!-- ID CARD -->
+        <div class="id-card">
+            <table class="card-header">
+                <tr>
+                    <td width="15%">
+                        <img src="{{ public_path('images/coatofarms.png') }}" style="height:55px;">
+                    </td>
+                    <td width="70%" align="center">
+                        <h1 class="card-title">MIN. OF HEALTH AND WELLNESS</h1>
+                        <p class="card-subtitle">
+                            Public Health (Food Handling 1998) Regulations<br>
+                            26,27,28,29,30 & 31
+                        </p>
+                    </td>
+                    <td width="15%" align="right">
+                        <img src="{{ public_path('images/mohlogo.png') }}" style="height:45px;">
+                    </td>
+                </tr>
+            </table>
 
-        <table width="100%" style="border-collapse:collapse;">
-            <tr>
+            <table>
+                <tr>
+                    <td width="65%">
+                        <table class="card-details">
+                            <tr>
+                                <td class="card-label">Category:</td>
+                                <td>{{ $applicant->permitCategory->name ?? 'Basic Foodhandlers' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="card-label">Name:</td>
+                                <td>{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="card-label">Permit#:</td>
+                                <td>{{ $applicant->permit_no }}</td>
+                            </tr>
+                            <tr>
+                                <td class="card-label">Issued:</td>
+                                <td>{{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="card-label">Expires:</td>
+                                <td>{{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="35%" align="right">
+                        @if ($applicant->photo_upload)
+                            <img src="{{ public_path('storage/' . $applicant->photo_upload) }}" class="card-photo">
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-                <!-- LOGO -->
-                <td width="15%" align="center" style="vertical-align:middle;">
-                    <div
-                        style="width:65px; height:65px; background:#fff; border-radius:50%; display:inline-block; text-align:center; line-height:65px;">
-                        <img src="{{ public_path('images/serha_logo.png') }}"
-                            style="height:45px; vertical-align:middle;">
-                    </div>
-                </td>
+        <!-- MEDICAL RESULTS -->
+        <div class="extra-sections">
+            <div class="section-title">TRAINING AND MEDICAL CLEARANCE RESULTS</div>
 
-                <!-- TEXT -->
-                <td width="70%" align="center" style="vertical-align:middle; color:#fff;">
-                    <div style="font-weight:bold; font-size:16px; line-height:1.2;">
-                        SOUTH EAST REGIONAL HEALTH AUTHORITY
-                    </div>
-                    <div style="font-size:11px; opacity:0.9; margin-top:3px;">
-                        Public Health Certificate Management System - Verification by IDPro
-                    </div>
-                </td>
+            <div class="test"><b>Medical Clearance:</b> {{ $applicant->healthInterviews?->whitlow === "absent" ? 'Passed' : 'Failed' }}</div>
+            <div class="test"><b>Food Handling Training:</b> {{ $applicant->testResults?->overall_score > 75 ? "Passed" : "Failed"}}</div>
+            <div class="test">
+                <b>Test Date:</b>
+                {{ optional($applicant->testResults)->test_date
+                    ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y')
+                    : 'N/A' }}
+            </div>
+            <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}</div>
 
-                <!-- RIGHT SPACING (keeps symmetry like original layout) -->
-                <td width="15%"></td>
+            <div class="approval">
+                <span class="badge">OFFICIALLY VERIFIED</span><br>
+                This applicant has successfully completed all required medical examinations
+                and has been approved by the Medical Officer of Health.
+            </div>
+        </div>
 
-            </tr>
-        </table>
+        <div style="text-align:center; margin-top:20px;">
+            <img src="data:image/png;base64,{{ $qrImage }}" width="120">
 
+            <div style="font-size:10px; margin-top:5px;">
+                Scan to verify permit
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="document-footer">
+
+            <div class="footer-item">
+                <img src="{{ public_path('images/serha_logo.png') }}" style="width:0.75rem">
+                South East Regional Health Authority
+            </div>
+
+            <div class="footer-item">
+                Application #: {{ $applicant->id ?? 'N/A' }}
+            </div>
+
+            <div class="footer-item">
+                {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
+            </div>
+
+            <div style="margin-top: 15px; font-size: 10px; color: #666; text-align: justify; line-height: 1.4; border-top: 1px solid #ddd; padding-top: 10px;">
+                <strong>Data Protection Notice:</strong>
+                This document complies with the Jamaica Data Protection Act (2020).
+                Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory requirements of the Food Safety Act (1998).
+            </div>
+
+        </footer>
     </div>
-
-    <!-- ID CARD -->
-    <div class="id-card">
-        <table class="card-header">
-            <tr>
-                <td width="15%">
-                    <img src="{{ public_path('images/coatofarms.png') }}" style="height:55px;">
-                </td>
-                <td width="70%" align="center">
-                    <h1 class="card-title">MIN. OF HEALTH AND WELLNESS</h1>
-                    <p class="card-subtitle">
-                        Public Health (Food Handling 1998) Regulations<br>
-                        26,27,28,29,30 & 31
-                    </p>
-                </td>
-                <td width="15%" align="right">
-                    <img src="{{ public_path('images/mohlogo.png') }}" style="height:45px;">
-                </td>
-            </tr>
-        </table>
-
-        <table>
-            <tr>
-                <td width="65%">
-                    <table class="card-details">
-                        <tr>
-                            <td class="card-label">Category:</td>
-                            <td>{{ $applicant->permitCategory->name ?? 'Basic Foodhandlers' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="card-label">Name:</td>
-                            <td>{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="card-label">Permit#:</td>
-                            <td>{{ $applicant->permit_no }}</td>
-                        </tr>
-                        <tr>
-                            <td class="card-label">Issued:</td>
-                            <td>{{ optional($applicant->signOffs)->sign_off_date ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y') : 'N/A' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="card-label">Expires:</td>
-                            <td>{{ optional($applicant->signOffs)->expiry_date ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y') : 'N/A' }}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td width="35%" align="right">
-                    @if ($applicant->photo_upload)
-                        <img src="{{ public_path('storage/' . $applicant->photo_upload) }}" class="card-photo">
-                    @endif
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- MEDICAL RESULTS -->
-    <div class="extra-sections">
-        <div class="section-title">TRAINING AND MEDICAL CLEARANCE RESULTS</div>
-
-        <div class="test"><b>Medical Clearance:</b>
-            {{ $applicant->healthInterviews?->whitlow === 'absent' ? 'Passed' : 'Failed' }}</div>
-        <div class="test"><b>Food Handling Training:</b>
-            {{ $applicant->testResults?->overall_score > 75 ? 'Passed' : 'Failed' }}</div>
-        <div class="test">
-            <b>Test Date:</b>
-            {{ optional($applicant->testResults)->test_date
-                ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d F Y')
-                : 'N/A' }}
-        </div>
-        <div class="test"><b>Test Location:</b> {{ $applicant->testResults?->test_location ?? 'No Exam Location' }}
-        </div>
-
-        <div class="approval">
-            <span class="badge">OFFICIALLY VERIFIED</span><br>
-            This applicant has successfully completed all required medical examinations
-            and has been approved by the Medical Officer of Health.
-        </div>
-    </div>
-
-    <div style="text-align:center; margin-top:20px;">
-        <img src="data:image/png;base64,{{ $qrImage }}" width="120">
-
-        <div style="font-size:10px; margin-top:5px;">
-            Scan to verify permit
-        </div>
-
-    </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="document-footer">
-
-        <div class="footer-item">
-            <img src="{{ public_path('images/serha_logo.png') }}" style="width:0.75rem">
-            South East Regional Health Authority
-        </div>
-
-        <div class="footer-item">
-            Application #: {{ $applicant->id ?? 'N/A' }}
-        </div>
-
-        <div class="footer-item">
-            {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
-        </div>
-
-        <div
-            style="margin-top: 15px; font-size: 10px; color: #666; text-align: justify; line-height: 1.4; border-top: 1px solid #ddd; padding-top: 10px;">
-            <strong>Data Protection Notice:</strong>
-            This document complies with the Jamaica Data Protection Act (2020).
-            Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory
-            requirements of the Food Safety Act (1998).
-        </div>
-
-    </footer>
 
 </body>
 
