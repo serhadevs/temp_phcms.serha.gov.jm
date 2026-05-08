@@ -235,6 +235,7 @@ class PermitApplicationApi extends Controller
         ])->findOrFail($id);
 
         $qrUrl = url('/verify-permit/' . $applicant->permit_no);
+        dd($qrUrl);
 
         $qrImage = base64_encode(
             QrCode::format('png')
@@ -264,7 +265,7 @@ class PermitApplicationApi extends Controller
              'qrImage'   => $qrImage,
         ])->setPaper('A4');
 
-        // 7️⃣ Force download (no browser caching)
+        
         return $pdf->download(
             'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf'
         )->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
