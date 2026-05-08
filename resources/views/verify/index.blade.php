@@ -360,7 +360,7 @@
             <a class="navbar-brand" href="#">
                 {{-- <i class="bi bi-shield-shaded fs-2"></i> --}}
                 <div class="d-flex flex-column" style="line-height: 1.2;">
-                    <span>South East Regional Health Authority</span>
+                    <span><img src="{{ asset('images/serha_logo.png') }}"/>South East Regional Health Authority</span>
 
                 </div>
             </a>
