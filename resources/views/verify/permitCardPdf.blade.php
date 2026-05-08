@@ -215,7 +215,7 @@
         <div style="text-align: center; margin-bottom: 30px;">
             <h2 style="font-size: 18px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">Official
                 Food Handlers Permit Certificate</h2>
-            <p style="font-size: 14px; color: #555; margin: 8px 0 0 0;">Verification</p>
+            <p style="font-size: 18px; color: #0b4ea2;; margin: 8px 0 0 0;">Verification by <img src="{{ public_path('images/idpro_logo.png') }}" width="2rem"/> IDPro</p>
             <p style="font-size: 13px; color: #666; margin: 8px 0 0 0; line-height: 1.5;">This confirms the issuance of
                 the Food Handlers Permit for:</p>
         </div>
