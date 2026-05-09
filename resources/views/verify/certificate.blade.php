@@ -293,7 +293,7 @@
                 <div class="text-center mt-4 no-print">
                     <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
                         class="btn btn-primary">
-                        Download PDF
+                        Download E-Card
                     </a>
 
                     <button onclick="emailConfirmation()" class="btn btn-success me-2">

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Mail\PermitReadyMail;
 use App\Models\ApplicationType;
 use App\Models\Downloads;
 use App\Models\EditTransactions;
@@ -23,6 +25,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -184,6 +188,7 @@ class SignOffController extends Controller
                     //     }
                     // }
 
+                    //dd($item);
                     $application->update(['sign_off_status' => TRUE]);
 
                     // $sign_off_exists = SignOff::where('application_id', $item)->where('application_type_id', $app_type_id)->first();
@@ -218,6 +223,10 @@ class SignOffController extends Controller
                             'expiry_date' => $expiry_date
                         ]);
                     }
+
+                    //If sign off is complete send the email to say that they have been signed off
+                    $sendPermitReadyEmail = new Services();
+                    $sendPermitReadyEmail->sendPermitReadyEmail($application);
                     $counter++;
                 }
             }
