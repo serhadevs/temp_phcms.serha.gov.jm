@@ -383,6 +383,15 @@ class PermitApplicationApi extends Controller
             abort(403, 'Expired permits cannot be downloaded.');
         }
 
+        $signOff = $applicant->signOffs;
+
+        // Track download
+        $signOff->trackAccess(
+            'downloaded',
+            'web_portal_download',
+            request()
+        );
+
         // Generate QR code
         $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
         $qrImage = base64_encode(
