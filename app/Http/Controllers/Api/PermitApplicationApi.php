@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
 use App\Models\PermitApplication;
+use App\Models\SignOff;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PermitApplicationApi extends Controller
 {
@@ -61,43 +62,43 @@ class PermitApplicationApi extends Controller
                 ->where('permit_no', $permit_no)
                 ->first();
 
-                if (!$applicant) {
+            if (!$applicant) {
                 Log::warning('Permit not found', [
                     'permit_no' => $permit_no,
                     'ip' => request()->ip(),
                 ]);
- 
+
                 return response()->json([
                     "success" => false,
                     "message" => "Permit not found"
                 ], 404);
             }
- 
+
 
             // Check if permit is expired
             $expiry = optional($applicant->signOffs)->expiry_date;
             $isExpired = $expiry
                 ? Carbon::now()->gt(Carbon::parse($expiry))
                 : false;
- 
+
             if ($isExpired) {
                 Log::info('Expired permit verification attempted', [
                     'permit_no' => $permit_no,
                     'expiry_date' => $expiry,
                     'ip' => request()->ip(),
                 ]);
- 
+
                 return response()->json([
                     "success" => false,
                     "message" => "This permit has expired",
                     "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
                 ], 410);  // 410 Gone - resource is no longer available
             }
- 
+
             // Generate secure token using cryptographically random bytes
             $token = bin2hex(random_bytes(32));
             $tokenHash = hash('sha256', $token);
- 
+
             // Insert token into database
             DB::table('verification_tokens')->insert([
                 'permit_application_id' => $applicant->id,
@@ -109,14 +110,14 @@ class PermitApplicationApi extends Controller
                 'created_at'           => now(),
                 'updated_at'           => now(),
             ]);
- 
+
             // Create temporary signed URL with token (not hash)
             $url = URL::temporarySignedRoute(
                 'verify.certificate',
                 now()->addMinutes(5),
                 ['token' => $token]
             );
- 
+
             // Store verification in session
             session([
                 'verified_permit_id' => $applicant->id,
@@ -127,12 +128,14 @@ class PermitApplicationApi extends Controller
                 ),
                 'permit_is_expired' => $isExpired,
             ]);
- 
+
             Log::info('Permit verified successfully', [
                 'permit_no' => $permit_no,
                 'permit_id' => $applicant->id,
                 'ip' => request()->ip(),
             ]);
+
+
 
             return redirect($url);
         } catch (\Throwable $e) {
@@ -168,7 +171,7 @@ class PermitApplicationApi extends Controller
             ]
         );
 
-         $firstname = strtolower(trim($validated['firstname']));
+        $firstname = strtolower(trim($validated['firstname']));
         $lastname = strtolower(trim($validated['lastname']));
         $dob = $validated['date_of_birth'];
         $permitNo = strtoupper(trim($validated['permit_no']));
@@ -180,24 +183,16 @@ class PermitApplicationApi extends Controller
             'permit_no' => $permitNo,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
-            'success' => false,  
+            'success' => false,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-         // Search for applicant
-        // $applicant = PermitApplication::where(function ($query) use ($firstname, $lastname, $dob, $permitNo) {
-        //     $query->where('permit_no', $permitNo)
-        //         ->orWhere(function ($q) use ($firstname, $lastname, $dob) {
-        //             $q->whereRaw('LOWER(firstname) = ?', [$firstname])
-        //                 ->whereRaw('LOWER(lastname) = ?', [$lastname])
-        //                 ->where('date_of_birth', $dob);
-        //         });
-        // })->first();
+
 
         $applicant = PermitApplication::where($validated)->first();
 
-       if (!$applicant) {
+        if (!$applicant) {
             Log::warning('Permit retrieval failed - not found', [
                 'permit_no' => $permitNo,
                 'ip' => $request->ip(),
@@ -208,7 +203,17 @@ class PermitApplicationApi extends Controller
                 'not_found' => 'No application found. Please check your details and try again.'
             ]);
         }
-        
+
+        $signOff = SignOff::where('application_id', $applicant->id)
+            ->where('is_granted', 1)
+            ->firstOrFail();
+
+        // Track form verification access
+        $signOff->trackAccess(
+            'viewed',
+            'web_portal_form',
+            $request
+        );
 
         DB::table('retrieval_attempts')
             ->where('ip_address', $request->ip())
@@ -235,7 +240,7 @@ class PermitApplicationApi extends Controller
             ['token' => $token]
         );
 
-         Log::info('Permit retrieved successfully', [
+        Log::info('Permit retrieved successfully', [
             'permit_id' => $applicant->id,
             'permit_no' => $applicant->permit_no,
             'ip' => $request->ip(),
@@ -276,7 +281,7 @@ class PermitApplicationApi extends Controller
             abort(403, 'Verification link expired.');
         }
 
-          DB::table('verification_tokens')
+        DB::table('verification_tokens')
             ->where('token_hash', $tokenHash)
             ->update(['used' => true, 'used_at' => now()]);
 

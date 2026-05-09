@@ -22,15 +22,17 @@ class SignOff extends Model implements Auditable
         'id',
         'is_granted',
         'permit_no',
-        'refusal_reason',
+        'ecard_id',
         'sign_off_date',
         'expiry_date',
         'user_id',
         'application_type_id',
         'application_id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+    ];
+
+     protected $dates = [
+        'sign_off_date',
+        'expiry_date',
     ];
 
     public $timestamps = true;
@@ -81,5 +83,63 @@ class SignOff extends Model implements Auditable
         return $query->when($this->application_type_id == '1', function ($q) {
             return $q->permitApplication;
         });
+    }
+
+    // Relationship to access history
+    public function accessHistory()
+    {
+        return $this->hasMany(EcardAccessHistory::class);
+    }
+
+    // Track a new access
+    public function trackAccess($accessType, $accessMethod, $request)
+    {
+        return EcardAccessHistory::create([
+            'sign_off_id' => $this->id,
+            'ecard_id' => $this->ecard_id,
+            'access_type' => $accessType, // 'viewed' or 'downloaded'
+            'access_method' => $accessMethod,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'accessed_at' => now()
+        ]);
+    }
+
+    // Get first access
+    public function getFirstAccess()
+    {
+        return $this->accessHistory()
+            ->where('access_type', 'viewed')
+            ->orderBy('accessed_at')
+            ->first();
+    }
+
+    // Get all downloads
+    public function getDownloads()
+    {
+        return $this->accessHistory()
+            ->where('access_type', 'downloaded')
+            ->orderBy('accessed_at', 'desc')
+            ->get();
+    }
+
+    // Get download count
+    public function getDownloadCount()
+    {
+        return $this->accessHistory()
+            ->where('access_type', 'downloaded')
+            ->count();
+    }
+
+    // Get card status
+    public function getCardStatus()
+    {
+        if ($this->getDownloadCount() > 0) {
+            return 'downloaded';
+        } elseif ($this->getFirstAccess()) {
+            return 'accessed';
+        } else {
+            return 'issued';
+        }
     }
 }
