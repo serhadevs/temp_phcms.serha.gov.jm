@@ -95,6 +95,15 @@ class PermitApplicationApi extends Controller
                 ], 410);  // 410 Gone - resource is no longer available
             }
 
+            $signOff = $applicant->signOffs;
+
+            // Track API verification access
+            $signOff->trackAccess(
+                'viewed',
+                'api_qr_scan',
+                request()
+            );
+
             // Generate secure token using cryptographically random bytes
             $token = bin2hex(random_bytes(32));
             $tokenHash = hash('sha256', $token);
