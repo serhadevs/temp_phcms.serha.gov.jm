@@ -33,9 +33,9 @@ class ValidateApiClient
             ->where('is_active', true)
             ->first();
 
-        Log::info('Client lookup result', [
-            'found' => $client ? 'yes' : 'no'
-        ]);
+        // Log::info('Client lookup result', [
+        //     'found' => $client ? 'yes' : 'no'
+        // ]);
 
         if (!$client) {
             Log::warning('Invalid API credentials', [
