@@ -16,11 +16,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //  Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
 // Route for user login
-Route::middleware(['api.client','auth:sanctum'])->group(function () {
+Route::middleware(['api.client'])->group(function () {
     Route::post('loginapi', [Auth::class, 'login']);
     Route::post('/login/user', [Auth::class, 'loginuser']);
-     Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
-    Route::post('/logout', [Auth::class, 'logout']);
+    //  Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
+    // Route::post('/logout', [Auth::class, 'logout']);
 });
 
 Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit']);
@@ -29,7 +29,7 @@ Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::cla
 
 
 // Routes that require authentication
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
-//     Route::post('/logout', [Auth::class, 'logout']);
-// });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
+    Route::post('/logout', [Auth::class, 'logout']);
+});
