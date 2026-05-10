@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\ApiClient;
 use Illuminate\Support\Facades\Log;
 
 class ValidateApiClient
@@ -17,7 +16,6 @@ class ValidateApiClient
         Log::info('API Client Validation', [
             'received_client_id' => $clientId,
             'received_client_secret' => $clientSecret ? 'provided' : 'missing',
-            'headers' => $request->headers->all()
         ]);
 
         if (!$clientId || !$clientSecret) {
@@ -28,16 +26,12 @@ class ValidateApiClient
             ], 401);
         }
 
-        $client = ApiClient::where('client_id', $clientId)
-            ->where('client_secret', $clientSecret)
-            ->where('is_active', true)
-            ->first();
+        // Get credentials from .env
+        $validClientId = env('MOBILE_APP_CLIENT_ID');
+        $validClientSecret = env('MOBILE_APP_CLIENT_SECRET');
 
-        // Log::info('Client lookup result', [
-        //     'found' => $client ? 'yes' : 'no'
-        // ]);
-
-        if (!$client) {
+        // Validate against .env values
+        if ($clientId !== $validClientId || $clientSecret !== $validClientSecret) {
             Log::warning('Invalid API credentials', [
                 'client_id' => $clientId
             ]);
