@@ -26,14 +26,21 @@ class ValidateApiClient
             ], 401);
         }
 
-        // Get credentials from .env
-        $validClientId = env('MOBILE_APP_CLIENT_ID');
-        $validClientSecret = env('MOBILE_APP_CLIENT_SECRET');
+        // Get credentials from config
+        $validClientId = config('api.mobile.client_id');
+        $validClientSecret = config('api.mobile.client_secret');
 
-        // Validate against .env values
+        Log::info('Comparing credentials', [
+            'received_id' => $clientId,
+            'valid_id' => $validClientId,
+            'match' => $clientId === $validClientId
+        ]);
+
+        // Validate against config values
         if ($clientId !== $validClientId || $clientSecret !== $validClientSecret) {
             Log::warning('Invalid API credentials', [
-                'client_id' => $clientId
+                'received_client_id' => $clientId,
+                'expected_client_id' => $validClientId
             ]);
             return response()->json([
                 'status' => 'failed',
