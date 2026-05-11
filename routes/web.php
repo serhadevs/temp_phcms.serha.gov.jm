@@ -83,7 +83,7 @@ Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
 Route::post('/verify-permit/retrieve',
     [PermitApplicationApi::class, 'retrievePermit']
-)->middleware('throttle:3,1') 
+)
  ->name('verify.retrieval');
 Route::get('/verify-permit/certificate/{token}',
     [PermitApplicationApi::class, 'showCertificate']
