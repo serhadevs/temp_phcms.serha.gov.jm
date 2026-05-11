@@ -136,35 +136,34 @@
                                     @enderror
                                 </div> --}}
 
-                                @if (in_array(Auth::user()->id, [155, 156, 133, 180,167,123]))
-                                    <div class="mt-3">
-                                        <div class="" style="display:none" id="backlog_1">
-                                            <label for="" class="form-label">Receipt No of manual receipt</label>
-                                            <input type="text" class="form-control" name="manual_receipt_no"
-                                                value="{{ old('manual_receipt_no') }}">
-                                            @error('manual_receipt_no')
-                                                <p class="text-danger">This is required if this payment is a part of backlog.
-                                                </p>
-                                            @enderror
-                                        </div>
-                                        <div class="mt-3" style="display:none" id="backlog_2">
-                                            <label for="" class="form-label">Manual Receipt Date</label>
-                                            <input type="date" class="form-control" name="manual_receipt_date"
-                                                value="{{ old('manual_receipt_date') }}">
-                                            @error('manual_receipt_date')
-                                                <p class="text-danger">This is required if this payment is a part of backlog.
-                                                </p>
-                                            @enderror
-                                        </div>
-                                        <div class="form-check form-switch mt-3">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                                                onchange="backlog(this.checked)" value="1" name="is_backlog"
-                                                {{ old('is_backlog') == '1' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="flexSwitchCheckDefault">Backlog
-                                                Payment</label>
-                                        </div>
+                                <div class="mt-3">
+                                    <div class="" style="display:none" id="backlog_1">
+                                        <label for="" class="form-label">Receipt No of manual receipt</label>
+                                        <input type="text" class="form-control" name="manual_receipt_no"
+                                            value="{{ old('manual_receipt_no') }}">
+                                        @error('manual_receipt_no')
+                                            <p class="text-danger">This is required if this payment is a part of backlog.
+                                            </p>
+                                        @enderror
                                     </div>
-                                @endif
+                                    <div class="mt-3" style="display:none" id="backlog_2">
+                                        <label for="" class="form-label">Manual Receipt Date</label>
+                                        <input type="date" class="form-control" name="manual_receipt_date"
+                                            value="{{ old('manual_receipt_date') }}">
+                                        @error('manual_receipt_date')
+                                            <p class="text-danger">This is required if this payment is a part of backlog.
+                                            </p>
+                                        @enderror
+                                    </div>
+                                    <div class="form-check form-switch mt-3">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                            onchange="backlog(this.checked)" value="1" name="is_backlog"
+                                            {{ old('is_backlog') == '1' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Backlog
+                                            Payment</label>
+                                    </div>
+                                </div>
+
                                 <div class="mt-3" style="display:none" id="wire_transfer_date_container">
                                     <label for="" class="form-label">Date of Wire Transfer</label>
                                     <input type="date" class="form-control" name="wire_transfer_date">
