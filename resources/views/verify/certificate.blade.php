@@ -270,8 +270,8 @@
                     <strong>
                         @if ($appointmentDate)
                             {{ \Carbon\Carbon::parse($appointmentDate)->format('d F Y') }}
-                        @elseif($application->establishmentClinics?->proposed_date)
-                            {{ \Carbon\Carbon::parse($application->establishmentClinics->proposed_date)->format('d F Y') }}
+                        @elseif($applicant->establishmentClinics?->proposed_date)
+                            {{ \Carbon\Carbon::parse($applicant->establishmentClinics->proposed_date)->format('d F Y') }}
                         @else
                             No Date Scheduled
                         @endif
