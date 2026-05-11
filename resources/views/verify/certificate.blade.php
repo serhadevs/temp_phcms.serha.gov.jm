@@ -252,7 +252,7 @@
                 </div>
             @endif
 
-            {{-- <div class="mt-2">
+            <div class="mt-2">
                 @if (empty($applicant->signOffs))
                     @php
 
@@ -287,9 +287,9 @@
                     the formal sign-off granted, this applicant is now legally recognized as certified to handle food
                     and may operate in compliance with national public health regulations.
                 @endif
-            </div> --}}
+            </div>
 
-            <div class="mt-2">
+            {{-- <div class="mt-2">
                 @if ($applicant->signOffs->isEmpty())
                     @php
                         $appointment = optional($applicant->appointment)->first();
@@ -326,7 +326,7 @@
                     recognized
                     as certified to handle food and may operate in compliance with national public health regulations.
                 @endif
-            </div>
+            </div> --}}
 
 
             @if ($applicant->signOffs && !$isExpired)
