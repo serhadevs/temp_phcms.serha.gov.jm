@@ -333,7 +333,7 @@ class PermitApplicationApi extends Controller
 
 
         return response()
-            ->view('verify.certificate', compact('applicant', 'isExpired'))
+            ->view('verify.certificate', compact('applicant', 'isExpired','token'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');

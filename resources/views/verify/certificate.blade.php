@@ -349,6 +349,39 @@
 
         </div>
     </div>
+    <!-- FOOTER -->
+            <div class="mt-5 pt-4 border-top text-center text-muted small">
+                <div class="mb-2">
+                    <strong>South East Regional Health Authority</strong><br>
+                    Public Health Certificate Management System. Verification of E-Card was completed by IDPro.
+                </div>
+                
+                <div class="mb-2">
+                    For verification or inquiries, contact: <strong>permits@serha.gov.jm</strong>
+                </div>
+
+                <div class="mb-3">
+                    <small>
+                        Document Generated: {{ now()->format('d F Y \a\t H:i') }}<br>
+                        Reference ID: {{ $applicant->permit_no ?? $applicant->id }}
+                        IDPro Verification ID: {{ $token }}
+                    </small>
+                </div>
+
+                <div style="font-size: 10px; opacity: 0.7;">
+                    This is an @if ($applicant->signOffs && $applicant->signOffs->is_granted)
+                    Official Food Handlers Permit Certificate issued under the Food Safety Act (1998).<br>
+                    Unauthorized reproduction or alteration is prohibited.
+                @else
+                    Confirmation of Application for Food Handlers Permit that is awaiting training and medical review by the Medical Officer of Health MO(H).
+                @endif 
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
 
 </body>
 <script>
