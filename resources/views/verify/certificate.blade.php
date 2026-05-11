@@ -257,11 +257,7 @@
                     @php
 
                         $appointment = optional($applicant->appointment)->first();
-                        $proposed_clinic_date = optional($applicant->establishmentClinics)->first();
                         $appointmentDate = $appointment ? $appointment->appointment_date : null;
-
-                        
-                        $proposedDate = $proposed_clinic_date ? $proposed_clinic_date->proposed_date : null;
 
                         $verb =
                             $appointmentDate && \Carbon\Carbon::parse($appointmentDate)->isBefore(today())
@@ -272,7 +268,13 @@
                     To finalize this application, the applicant must complete the Food Handlers examination and attend
                     the Medical Interview. The appointment date {{ $verb }}
                     <strong>
-                        {{ $appointmentDate ? \Carbon\Carbon::parse($appointmentDate)->format('d F Y') : $proposedDate }}
+                        @if ($appointmentDate)
+                            {{ \Carbon\Carbon::parse($appointmentDate)->format('d F Y') }}
+                        @elseif($application->establishmentClinics?->proposed_date)
+                            {{ \Carbon\Carbon::parse($application->establishmentClinics->proposed_date)->format('d F Y') }}
+                        @else
+                            No Date Scheduled
+                        @endif
                     </strong>.
                     After successful completion, the Medical Officer of Health will review the results and, if approved,
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
