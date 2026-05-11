@@ -252,14 +252,15 @@
                 </div>
             @endif
 
-            <div class="mt-2">
+            {{-- <div class="mt-2">
                 @if (empty($applicant->signOffs))
                     @php
-                      
-                        $appointment = optional($applicant->appointment)->first();
-                        $appointmentDate = $appointment ? $appointment->appointment_date : null;
 
-                       
+                        $appointment = optional($applicant->appointment)->first();
+                        $proposed_clinic_date = optional($applicant->establishmentClinics)->first();
+                        $appointmentDate = $appointment ? $appointment->appointment_date : null;
+                        $propesedDate = $proposed_clinic_date ? $proposed_clinic_date->proposed_date : null;
+
                         $verb =
                             $appointmentDate && \Carbon\Carbon::parse($appointmentDate)->isBefore(today())
                                 ? 'was'
@@ -269,7 +270,7 @@
                     To finalize this application, the applicant must complete the Food Handlers examination and attend
                     the Medical Interview. The appointment date {{ $verb }}
                     <strong>
-                        {{ $appointmentDate ? \Carbon\Carbon::parse($appointmentDate)->format('d F Y') : 'No Date Scheduled' }}
+                        {{ $appointmentDate ? \Carbon\Carbon::parse($appointmentDate)->format('d F Y') :  }}
                     </strong>.
                     After successful completion, the Medical Officer of Health will review the results and, if approved,
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
@@ -285,6 +286,45 @@
                     activities. With the successful completion of the required examination and medical interview, and
                     the formal sign-off granted, this applicant is now legally recognized as certified to handle food
                     and may operate in compliance with national public health regulations.
+                @endif
+            </div> --}}
+
+            <div class="mt-2">
+                @if ($applicant->signOffs->isEmpty())
+                    @php
+                        $appointment = optional($applicant->appointment)->first();
+                        $proposedClinic = optional($applicant->establishmentClinics)->first();
+
+                        $appointmentDate = $appointment?->appointment_date;
+                        $proposedDate = $proposedClinic?->proposed_date;
+
+                        $dateToShow = $appointmentDate ?? $proposedDate;
+
+                        $verb = $dateToShow && \Carbon\Carbon::parse($dateToShow)->isBefore(today()) ? 'was' : 'is';
+                    @endphp
+
+                    To finalize this application, the applicant must complete the Food Handlers examination and attend
+                    the Medical Interview. The appointment date {{ $verb }}
+                    <strong>
+                        {{ $dateToShow ? \Carbon\Carbon::parse($dateToShow)->format('d F Y') : 'has not yet been scheduled' }}
+                    </strong>.
+                    After successful completion, the Medical Officer of Health will review the results and, if approved,
+                    officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
+                    Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
+                    clearance and certification for all persons involved in the handling and preparation of food.
+                @elseif ($isExpired ?? false)
+                    You need to make an appointment at your health department to renew your permit.
+                @else
+                    The application has now been reviewed and approved by the <strong>Medical Officer of Health
+                        (MOH)</strong>.
+                    In accordance with the <strong>Food Safety Act (1998)</strong>, individuals who handle, prepare, or
+                    come
+                    into contact with food for public consumption must be medically examined, certified, and officially
+                    authorized before engaging in food-handling activities. With the successful completion of the
+                    required
+                    examination and medical interview, and the formal sign-off granted, this applicant is now legally
+                    recognized
+                    as certified to handle food and may operate in compliance with national public health regulations.
                 @endif
             </div>
 

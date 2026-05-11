@@ -318,7 +318,7 @@ class PermitApplicationApi extends Controller
             'permitCategory',
             'payment',
             'establishmentClinics',
-            // 'signOffs',
+            'signOffs',
             'testResults',
             'healthInterviews.healthInterviewSymptom.symptoms',
             'appointment.editTransactions',
