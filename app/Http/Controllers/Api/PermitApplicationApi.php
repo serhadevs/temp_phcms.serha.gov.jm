@@ -111,7 +111,7 @@ class PermitApplicationApi extends Controller
             // Insert token into database
             DB::table('verification_tokens')->insert([
                 'permit_application_id' => $applicant->id,
-                'token_hash'           => $tokenHash,  
+                'token_hash'           => $tokenHash,
                 'ip_address'           => request()->ip(),
                 'user_agent'           => request()->userAgent(),
                 'expires_at'           => now()->addMinutes(5),
@@ -198,7 +198,13 @@ class PermitApplicationApi extends Controller
         ]);
 
 
-        $applicant = PermitApplication::where($validated)->first();
+        // $applicant = PermitApplication::where($validated)->first();
+
+        $applicant = PermitApplication::whereRaw('LOWER(firstname) = ?', [$firstname])
+            ->whereRaw('LOWER(lastname) = ?', [$lastname])
+            ->whereDate('date_of_birth', $dob)
+            ->whereRaw('UPPER(permit_no) = ?', [$permitNo])
+            ->first();
 
         if (!$applicant) {
             Log::warning('Permit retrieval failed - not found', [
@@ -212,16 +218,16 @@ class PermitApplicationApi extends Controller
             ]);
         }
 
-        $signOff = SignOff::where('application_id', $applicant->id)
-            ->where('is_granted', 1)
-            ->firstOrFail();
+        // $signOff = SignOff::where('application_id', $applicant->id)
+        //     ->where('is_granted', 1)
+        //     ->firstOrFail();
 
-        // Track form verification access
-        $signOff->trackAccess(
-            'viewed',
-            'web_portal_form',
-            $request
-        );
+        // // Track form verification access
+        // $signOff->trackAccess(
+        //     'viewed',
+        //     'web_portal_form',
+        //     $request
+        // );
 
         DB::table('retrieval_attempts')
             ->where('ip_address', $request->ip())
