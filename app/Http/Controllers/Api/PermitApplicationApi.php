@@ -331,7 +331,7 @@ class PermitApplicationApi extends Controller
             ? now()->gt(Carbon::parse($expiry))
             : false;
 
-            dd($applicant);
+            dd($applicant->establishmentClinics->proposed_date);
 
         return response()
             ->view('verify.certificate', compact('applicant', 'isExpired'))

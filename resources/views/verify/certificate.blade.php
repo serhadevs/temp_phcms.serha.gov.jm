@@ -259,6 +259,8 @@
                         $appointment = optional($applicant->appointment)->first();
                         $proposed_clinic_date = optional($applicant->establishmentClinics)->first();
                         $appointmentDate = $appointment ? $appointment->appointment_date : null;
+
+                        
                         $proposedDate = $proposed_clinic_date ? $proposed_clinic_date->proposed_date : null;
 
                         $verb =
