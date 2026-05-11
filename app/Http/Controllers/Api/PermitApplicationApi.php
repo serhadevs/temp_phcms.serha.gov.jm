@@ -218,16 +218,29 @@ class PermitApplicationApi extends Controller
             ]);
         }
 
-        // $signOff = SignOff::where('application_id', $applicant->id)
-        //     ->where('is_granted', 1)
-        //     ->firstOrFail();
+        $signOff = SignOff::where('application_id', $applicant->id)
+            ->where('is_granted', 1)
+            ->latest()
+            ->first();
 
-        // // Track form verification access
-        // $signOff->trackAccess(
-        //     'viewed',
-        //     'web_portal_form',
-        //     $request
-        // );
+        $permitStatus = 'not_signed_off';
+        $expiry = null;
+        $isExpired = false;
+
+        if ($signOff) {
+            $expiry = $signOff->expiry_date;
+            $isExpired = $expiry
+                ? now()->gt(Carbon::parse($expiry))
+                : false;
+
+            $permitStatus = $isExpired ? 'expired' : 'valid';
+
+            $signOff->trackAccess(
+                'viewed',
+                'web_portal_form',
+                $request
+            );
+        }
 
         DB::table('retrieval_attempts')
             ->where('ip_address', $request->ip())
@@ -272,6 +285,7 @@ class PermitApplicationApi extends Controller
                 $applicant->permit_no . $applicant->date_of_birth,
                 config('app.key')
             ),
+            'permit_status' => $permitStatus,
             'permit_is_expired' => $isExpired,
         ]);
 
