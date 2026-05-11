@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\SendOnlineUserVerifyEmail;
 use App\Jobs\SendPaymentReceiptEmail;
 use App\Jobs\SendPermitApplicationEmailJob;
+use App\Mail\PermitReadyMail;
 use App\Models\Messages;
 use App\Models\PermitApplication;
 use Exception;
@@ -13,6 +14,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class Services extends Controller
 {
@@ -119,5 +121,19 @@ class Services extends Controller
             'user_id' => auth()->id(),
             'sent_at' => now()
         ]);
+    }
+
+    public function sendPermitReadyEmail($application)
+    {
+        if (!empty($application->email)) {
+            try {
+
+                Mail::to($application->email)->queue(new PermitReadyMail($application));
+                Log::channel('systemOperations')->info('E-Card Email Sent', ['user_id' => auth()->user()->id, 'application_id' => $application->permit_no]);
+            } catch (\Exception $e) {
+
+                Log::error('Failed to send sign-off email to ' . $application->email . ': ' . $e->getMessage());
+            }
+        }
     }
 }

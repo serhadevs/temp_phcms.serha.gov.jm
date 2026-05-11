@@ -83,7 +83,7 @@ Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
 Route::post('/verify-permit/retrieve',
     [PermitApplicationApi::class, 'retrievePermit']
-)->middleware('throttle:5,1') // 5 attempts per minute
+)->middleware('throttle:3,1') 
  ->name('verify.retrieval');
 Route::get('/verify-permit/certificate/{token}',
     [PermitApplicationApi::class, 'showCertificate']
@@ -91,8 +91,11 @@ Route::get('/verify-permit/certificate/{token}',
 Route::get('/verify-permit/download/{id}', 
     [PermitApplicationApi::class, 'downloadCertificate']
 )->name('verify.download')
- ->middleware(['signed','throttle:5,1']); 
- 
+ ->middleware(['signed','throttle:3,1']); 
+ Route::get('/verify-permit/qr', [PermitApplicationApi::class, 'qrVerify']);
+
+//  Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
+
 //Users routes for users not logged in
 
 Route::get('/forget-password', [UserController::class, 'forgetPasswordPage'])->name('forget-password');

@@ -25,35 +25,33 @@
             position: relative;
         }
 
-        /* EXPIRED WATERMARK */
-        /* EXPIRED WATERMARK - FULL PAGE DIAGONAL */
+
         .expired-watermark {
             position: fixed;
-            /* covers entire page */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
+            inset: 0;
+            /* cover whole page */
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             font-size: 180px;
-            /* BIGGER */
             font-weight: 900;
             letter-spacing: 20px;
             white-space: nowrap;
 
-            color: rgba(220, 53, 69, 0.12);
-            /* lighter red */
+            color: rgba(220, 53, 69, 0.20);
+            /* slightly stronger red */
+
+            transform: rotate(-30deg);
+
             pointer-events: none;
-            z-index: 0;
-            /* behind content */
+            z-index: 9999;
         }
 
-        /* Ensure certificate content sits above watermark */
         .permit-wrapper {
             position: relative;
-            z-index: 1;
         }
 
-        /* PHOTO GREYSCALE WHEN EXPIRED */
         .expired-photo {
             filter: grayscale(100%);
         }
@@ -84,13 +82,13 @@
 <body class="bg-light">
 
     @php
-        $isExpired = (session('permit_is_expired'));
+        $isExpired = session('permit_is_expired');
     @endphp
     {{-- <div class="watermark"></div> --}}
     <div class="permit-wrapper">
 
         {{-- WATERMARK --}}
-        @if($isExpired)
+        @if ($isExpired)
             <div class="expired-watermark">EXPIRED</div>
         @endif
 
@@ -143,89 +141,104 @@
                 @endif
             </div>
 
-            <!-- MAIN CONTENT -->
-            <div class="row g-3 align-items-start">
 
-                <!-- PHOTO -->
-                <div class="col-md-2 text-center">
-                    <div class="border bg-light d-flex align-items-center justify-content-center rounded"
-                        style="width:120px;height:120px;overflow:hidden;margin:auto;">
-                        @if ($applicant->photo_upload)
-                            <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
-                                class="{{ $isExpired ? 'expired-photo' : '' }}"
-                                style="width:100%;height:100%;object-fit:cover;">
-                        @else
-                            Photo Not Available
-                        @endif
-                    </div>
-                </div>
 
-                <!-- COLUMN 1 -->
-                <div class="col-md-3">
-                    <div class="border p-2 rounded bg-white small">
-                        <div class="fw-bold mb-1">Applicant Details</div>
+            <div class="container py-4 py-md-5">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-8 col-lg-7">
 
-                        <div><strong>Name:</strong> {{ strtoupper($applicant->lastname) }},
-                            {{ strtoupper($applicant->firstname) }}</div>
-                        <div><strong>DOB:</strong>
-                            {{ \Carbon\Carbon::parse($applicant->date_of_birth)->format('d M Y') }}</div>
-                        <div><strong>Permit #:</strong>{{ $applicant->permit_no }}</div>
-                        <div><strong>Category:</strong> {{ $applicant->permitCategory->name ?? 'N/A' }}</div>
-                        <div><strong>Application Date:</strong>
-                            {{ \Carbon\Carbon::parse($applicant->application_date)->format('d M Y') ?? 'No Application Date' }}
-                        </div>
+                        <div class="card shadow-lg border-0 rounded-5 p-3 p-md-4" style="background:#ffffff;">
 
-                        <div><strong>Issued:</strong>
-                            {{ optional($applicant->signOffs)->sign_off_date
-                                ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
-                                : 'Pending' }}
-                        </div>
+                            <!-- Header Logos -->
+                            <div class="row align-items-center text-center text-md-start mb-3">
 
-                        <div><strong>Expiry:</strong>
-                            {{ optional($applicant->signOffs)->expiry_date
-                                ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
-                                : 'Pending' }}
-                        </div>
-                    </div>
-                </div>
+                                <!-- Left logo -->
+                                <div class="col-3 col-md-2">
+                                    <img src="{{ asset('images/coatofarms.png') }}" class="img-fluid"
+                                        style="max-width:45px;">
+                                </div>
 
-                <!-- COLUMN 2 -->
-                <div class="col-md-3">
-                    <div class="border p-2 rounded bg-white small">
-                        <div class="fw-bold mb-1">Personal Info</div>
-                        <div><strong>Address:</strong> {{ strtoupper($applicant->address) ?? 'No Address' }}</div>
-                        <div><strong>Gender:</strong> {{ Str::ucfirst($applicant->gender) ?? 'No Gender' }}</div>
-                        <div><strong>Occupation:</strong> {{ $applicant->occupation ?? 'No Occupation Given' }}</div>
-                    </div>
-                </div>
+                                <!-- TEXT (now wider) -->
+                                <div class="col-6 col-md-8 text-center">
+                                    <h6 class="fw-bold mb-0">
+                                        MIN. OF HEALTH AND WELLNESS
+                                    </h6>
 
-                <!-- TEST RESULTS -->
-                @if ($applicant->testResults)
-                    <div class="col-md-3">
-                        <div class="border p-2 rounded bg-white small">
-                            <div class="fw-bold mb-1">Test Results</div>
-                            <div>Location: {{ $applicant->testResults->test_location ?? 'N/A' }}</div>
-                            <div>Contact: {{ $applicant->testResults->staff_contact ?? 'N/A' }}</div>
-                            <div> Date:
-                                {{ $applicant->testResults->test_date ? \Carbon\Carbon::parse($applicant->testResults->test_date)->format('d M Y') : 'N/A' }}
+                                    <small class="text-muted d-block mt-1" style="font-size:11px;">
+                                        Public Health (Food Handling 1998) Regulations 26,27,28,29,30 & 31
+                                    </small>
+                                </div>
+
+                                <!-- Right logo -->
+                                <div class="col-3 col-md-2 text-end">
+                                    <img src="{{ asset('images/mohlogo.png') }}" class="img-fluid"
+                                        style="max-width:80px;">
+                                </div>
+
                             </div>
-                            <div
-                                class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-2 bg-light">
-                                <div class="fw-bold small text-muted"> Score </div>
-                                <div class="px-2 py-1 rounded text-white fw-bold bg-success">
-                                    {{ $applicant->testResults->overall_score ?? 'N/A' }} </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="col-md-3"> No Test Results are available </div>
-                @endif
 
+                            <div class="row align-items-center">
+
+                                <!-- DETAILS -->
+                                <div class="col-12 col-md-8 order-2 order-md-1">
+
+                                    <p class="mb-2"><strong>Category:</strong> Basic Foodhandlers</p>
+
+                                    <p class="mb-2">
+                                        <strong>Name:</strong>
+                                        {{ strtoupper($applicant->lastname) }},
+                                        {{ strtoupper($applicant->firstname) }}
+                                    </p>
+
+                                    <p class="mb-2">
+                                        <strong>Permit#:</strong>
+                                        {{ $applicant->permit_no ?? 'No Permit Number' }}
+                                    </p>
+
+                                    <p class="mb-2">
+                                        <strong>Issued:</strong>
+                                        {{ optional($applicant->signOffs)->sign_off_date
+                                            ? \Carbon\Carbon::parse($applicant->signOffs->sign_off_date)->format('d M Y')
+                                            : 'Pending' }}
+                                    </p>
+
+                                    <p class="mb-3 mb-md-0">
+                                        <strong>Expires:</strong>
+                                        {{ optional($applicant->signOffs)->expiry_date
+                                            ? \Carbon\Carbon::parse($applicant->signOffs->expiry_date)->format('d M Y')
+                                            : 'Pending' }}
+                                    </p>
+
+                                </div>
+
+                                <!-- PHOTO -->
+                                <div class="col-12 col-md-4 text-center text-md-end mb-3 mb-md-0 order-1 order-md-2">
+                                    <div class="border bg-light d-inline-flex align-items-center justify-content-center rounded"
+                                        style="width:120px;height:120px;overflow:hidden;">
+
+                                        @if ($applicant->photo_upload)
+                                            <img src="{{ asset('storage/' . $applicant->photo_upload) }}"
+                                                class="{{ $isExpired ? 'expired-photo' : '' }}"
+                                                style="width:100%;height:100%;object-fit:cover;">
+                                        @else
+                                            <small>Photo Not Available</small>
+                                        @endif
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
             <!-- VALIDITY MESSAGE -->
+            <!-- VALIDITY MESSAGE -->
             <div class="text-center fw-bold border-top border-bottom py-2 my-4">
-                @if (empty($applicant->signOffs))
+                @if (!$applicant->signOffs || $isExpired)
                     THIS IS NOT A VALID FOOD HANDLERS PERMIT.
                 @else
                     THIS IS AN OFFICIAL FOOD HANDLERS E-CARD.
@@ -241,9 +254,23 @@
 
             <div class="mt-2">
                 @if (empty($applicant->signOffs))
+                    @php
+                      
+                        $appointment = optional($applicant->appointment)->first();
+                        $appointmentDate = $appointment ? $appointment->appointment_date : null;
+
+                       
+                        $verb =
+                            $appointmentDate && \Carbon\Carbon::parse($appointmentDate)->isBefore(today())
+                                ? 'was'
+                                : 'is';
+                    @endphp
+
                     To finalize this application, the applicant must complete the Food Handlers examination and attend
-                    the Medical Interview. The appointment date is
-                    <strong>{{ optional($applicant->appointment[0])->appointment_date ? \Carbon\Carbon::parse($applicant->appointment[0]->appointment_date)->format('d F Y') : 'No Date Scheduled' }}</strong>.
+                    the Medical Interview. The appointment date {{ $verb }}
+                    <strong>
+                        {{ $appointmentDate ? \Carbon\Carbon::parse($appointmentDate)->format('d F Y') : 'No Date Scheduled' }}
+                    </strong>.
                     After successful completion, the Medical Officer of Health will review the results and, if approved,
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
                     Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
@@ -261,19 +288,20 @@
                 @endif
             </div>
 
-           
+
+            @if ($applicant->signOffs && !$isExpired)
                 <div class="text-center mt-4 no-print">
                     <a href="{{ URL::temporarySignedRoute('verify.download', now()->addMinutes(5), ['id' => $applicant->id]) }}"
                         class="btn btn-primary">
-                        Download PDF
+                        Download E-Card
                     </a>
 
                     <button onclick="emailConfirmation()" class="btn btn-success me-2">
                         Email Confirmation
                     </button>
-
                 </div>
-           
+            @endif
+
 
         </div>
     </div>

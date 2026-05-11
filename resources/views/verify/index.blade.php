@@ -44,6 +44,11 @@
             font-size: 0.85rem;
         }
 
+        .logo {
+            width: 2rem;
+            height: 2rem;
+        }
+
         .navbar {
             background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -290,6 +295,31 @@
             font-size: 0.85rem;
         }
 
+        @keyframes scanPulse {
+            0% {
+                box-shadow: 0 0 0 rgba(0, 74, 153, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 18px rgba(0, 74, 153, 0.6);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(0, 74, 153, 0.3);
+            }
+        }
+
+        .btn-retrieve {
+            animation: scanPulse 1.5s infinite;
+        }
+
+        .scan-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #004a99;
+            min-height: 20px;
+        }
+
         @media (max-width: 991px) {
             .info-panel {
                 padding: 3rem 2rem;
@@ -320,24 +350,29 @@
 
     <!-- Official Top Bar -->
     <div class="top-bar">
-        <div class="container d-flex justify-content-between align-items-center">
-            <span>Government of Jamaica</span>
-            <div class="d-none d-md-block">
-                <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
-                <a href="#" class="text-white text-decoration-none">Contact Us</a>
-            </div>
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="d-flex align-items-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag" style="height: 16px; width: auto;" class="me-2">
+            Government of Jamaica
+        </span>
+        
+        <div class="d-none d-md-block">
+            <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
+            <a href="#" class="text-white text-decoration-none">Contact Us</a>
         </div>
     </div>
+</div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                {{-- <i class="bi bi-shield-shaded fs-2"></i> --}}
-                <div class="d-flex flex-column" style="line-height: 1.2;">
-                    <span>South East Regional Health Authority</span>
+            <a class="navbar-brand d-flex align-items-center" href="https://www.serha.gov.jm" style="max-width: 75%;">
+                <img src="{{ asset('images/serha_logo.png') }}" class="logo me-2" alt="SERHA"
+                    style="height: 40px; width: auto; flex-shrink: 0;">
 
-                </div>
+                <span class="text-wrap fw-bold" style="line-height: 1.2; font-size: 1.1rem;">
+                    South East Regional Health Authority
+                </span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -370,7 +405,7 @@
                         1998. This system is powered by IDPro.</p>
 
                     <ul class="feature-list">
-                        <li><span class="custom-bullet"></span> Proof that you are valid to handle food prep</li>
+                        <li><span class="custom-bullet"></span> Proof that you are valid to handle food preparation</li>
                         <li><span class="custom-bullet"></span> Applicant identification information</li>
                         <li><span class="custom-bullet"></span> Active and expired permit lookup</li>
                     </ul>
@@ -404,7 +439,7 @@
                     @endif
                     <form action="{{ route('verify.retrieval') }}" method="post">
                         @csrf
-                        
+
                         <div class="form-card">
                             <div class="form-header">
                                 <div class="form-icon">
@@ -420,30 +455,64 @@
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">First Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter First Name"
-                                            name="firstname" required>
+
+                                        <input type="text"
+                                            class="form-control @error('firstname') is-invalid @enderror"
+                                            placeholder="Enter First Name" name="firstname"
+                                            value="{{ old('firstname') }}">
                                     </div>
+                                    @error('firstname')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
                                     <div class="col-md-6">
                                         <label class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter Last Name"
-                                            name ="lastname" required>
+
+                                        <input type="text"
+                                            class="form-control @error('lastname') is-invalid @enderror"
+                                            placeholder="Enter Last Name" name="lastname" value="{{ old('lastname') }}">
                                     </div>
+                                    @error('lastname')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
-                                <!-- Date of Birth -->
                                 <div class="mb-3">
                                     <label class="form-label">Date of Birth</label>
                                     <span class="form-text">As it appears on your official ID</span>
-                                    <input type="date" class="form-control" name = "date_of_birth" required>
+
+                                    <input type="date"
+                                        class="form-control @error('date_of_birth') is-invalid @enderror"
+                                        name="date_of_birth" value="{{ old('date_of_birth') }}">
+
+                                    @error('date_of_birth')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <!-- Permit Number -->
                                 <div class="mb-4">
                                     <label class="form-label">Permit Number</label>
-                                    <span class="form-text">Found on your receipt or previous permit document (e.g.,
-                                        KSA1234567)</span>
-                                    <input type="text" class="form-control" placeholder="Enter your Permit Number"
-                                        name="permit_no" required>
+                                    <span class="form-text">
+                                        Found on your payment receipt or previous permit document (e.g., KSA1234567)
+                                    </span>
+
+                                    <input type="text"
+                                        class="form-control @error('permit_no') is-invalid @enderror"
+                                        placeholder="Enter your Permit Number" name="permit_no"
+                                        value="{{ old('permit_no') }}">
+
+                                    @error('permit_no')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <!-- Buttons -->
@@ -482,9 +551,16 @@
             <div class="row gy-4">
                 <div class="col-lg-4">
                     <h5 class="text-white d-flex align-items-center gap-2">
-                        <i class="bi bi-shield-shaded"></i> South East Regional Health Authority
+                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm flex-shrink-0"
+                            style="width: 50px; height: 50px;">
+                            <img src="{{ asset('images/serha_logo.png') }}" class="logo" alt="SERHA"
+                                style="height: 35px; width: auto;">
+                        </div>
+
+                        <span class="lh-sm">South East Regional Health Authority</span>
                     </h5>
-                    <p class="text-white small pe-4">Dedicated to providing excellent service and maintaining the
+
+                    <p class="text-white small pe-4 mt-3">Dedicated to providing excellent service and maintaining the
                         highest standards for the citizens of Jamaica.</p>
                 </div>
 
@@ -512,8 +588,8 @@
                     <h5>Contact Us</h5>
                     <ul class="list-unstyled small">
                         <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Kingston, Jamaica</li>
-                        <li class="mb-2"><i class="bi bi-telephone me-2"></i> (876) 555-0100</li>
-                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> info@moh.gov.jm</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i> (876) 555-1000</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> info@serha.gov.jm</li>
                     </ul>
                 </div>
             </div>
@@ -528,79 +604,126 @@
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<script>
-    document.getElementById('retrievalForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); // Stop standard form submission
 
-        const form = this;
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const form = document.getElementById('retrievalForm');
         const submitBtn = document.getElementById('submitBtn');
         const responseMessage = document.getElementById('responseMessage');
 
-        // Reset UI state to "loading"
-        submitBtn.innerHTML =
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
-        submitBtn.disabled = true;
-        responseMessage.className = 'alert d-none mb-4';
-        responseMessage.innerHTML = '';
-
-        try {
-            // Send the POST request to the route defined in the form's action attribute
-            const response = await fetch(form.action, {
-                method: 'GET',
-                body: new FormData(
-                    form
-                ), // Automatically grabs all inputs with a 'name' attribute + the CSRF token
-                headers: {
-                    'Accept': 'application/json' // Tells Laravel to return JSON
-                }
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-
-                // SUCCESS (200 status code)
-                console.log("Applicant Data:", result.applicant);
-
-                // Change button text to show it's transitioning
-                submitBtn.innerHTML =
-                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Redirecting...';
-
-                responseMessage.className = 'alert alert-success mb-4 text-center';
-                responseMessage.innerHTML =
-                    `<h5 class="mb-0"><i class="bi bi-check-circle-fill"></i> Permit Found! Redirecting...</h5>`;
-
-                // 🟢 NEW: Redirect the browser directly to the certificate display page
-                window.location.href = `/verify-permit/certificate/${result.applicant.id}`;
-
-            } else {
-                // ERRORS (404 Not Found, 422 Validation Error)
-                responseMessage.className = 'alert alert-danger mb-4';
-
-                if (result.status === 'validation_error') {
-                    // Loop through validation errors and display them as a list
-                    let errorsHtml = '<ul class="mb-0 ps-3">';
-                    for (const key in result.errors) {
-                        errorsHtml += `<li>${result.errors[key][0]}</li>`;
-                    }
-                    errorsHtml += '</ul>';
-                    responseMessage.innerHTML = errorsHtml;
-                } else {
-                    // Display general errors like "No application found"
-                    responseMessage.innerHTML = result.message ||
-                        'An error occurred while retrieving the permit.';
-                }
-            }
-        } catch (error) {
-            responseMessage.className = 'alert alert-danger mb-4';
-            responseMessage.innerHTML = 'A network error occurred. Please try again.';
-            console.error('Error:', error);
-        } finally {
-            // Restore the submit button
-            submitBtn.innerHTML = '<i class="bi bi-search"></i> Retrieve';
-            submitBtn.disabled = false;
+        if (!form || !submitBtn) {
+            console.error("Missing form or button IDs");
+            return;
         }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // UI RESET
+            submitBtn.disabled = true;
+            submitBtn.innerHTML =
+                '<span class="spinner-border spinner-border-sm"></span> Searching...';
+
+            responseMessage.className = 'alert d-none mb-4';
+            responseMessage.innerHTML = '';
+
+            try {
+
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) throw result;
+
+                const redirectUrl = result.certificate_url;
+
+                let progress = 0;
+                let stage = 0;
+
+                const stages = [
+                    "Loading biometric data...",
+                    "Connecting to IDPro Secure Platform...",
+                    "Running identity verification scan...",
+                    "Cross-checking national registry records...",
+                    "Finalizing secure certificate validation..."
+                ];
+
+                // 🔥 FORCE UI RENDER BEFORE ANIMATION
+                submitBtn.innerHTML = `
+                <div style="width:100%">
+                    <div id="scanText" class="scan-text">Initializing scan...</div>
+                    <div class="progress mt-2" style="height:6px;">
+                        <div id="scanBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                             style="width:0%"></div>
+                    </div>
+                </div>
+            `;
+
+                await new Promise(requestAnimationFrame);
+
+                const scanText = document.getElementById('scanText');
+                const scanBar = document.getElementById('scanBar');
+
+                function typeText(text, cb) {
+                    let i = 0;
+                    scanText.innerHTML = "";
+
+                    const typing = setInterval(() => {
+                        scanText.innerHTML += text.charAt(i);
+                        i++;
+                        if (i === text.length) {
+                            clearInterval(typing);
+                            cb?.();
+                        }
+                    }, 25);
+                }
+
+                function runScan() {
+
+                    if (stage >= stages.length) {
+                        scanBar.style.width = "100%";
+                        scanText.innerHTML = "Verification complete. Redirecting...";
+
+                        setTimeout(() => {
+                            window.location.href = redirectUrl;
+                        }, 800);
+
+                        return;
+                    }
+
+                    typeText(stages[stage], () => {
+                        progress += 20;
+                        scanBar.style.width = progress + "%";
+                        stage++;
+
+                        setTimeout(runScan, 900);
+                    });
+                }
+
+                // START AFTER RENDER CYCLE
+                setTimeout(runScan, 200);
+
+            } catch (error) {
+
+                console.error(error);
+
+                responseMessage.className = 'alert alert-danger mb-4';
+                responseMessage.innerHTML =
+                    error.message || 'An error occurred while retrieving the permit.';
+            }
+
+        });
+
     });
 </script>
+
+
 
 </html>

@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'verify.signature' => \App\Http\Middleware\ValidateSignature::class,
         'check.default.password' => \App\Http\Middleware\CheckDefaultPassword::class,
         'check.password.expiry' => \App\Http\Middleware\CheckPasswordExpiry::class,
+        'api.client' => \App\Http\Middleware\ValidateApiClient::class,
     ];
 }
