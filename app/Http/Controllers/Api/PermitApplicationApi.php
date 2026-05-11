@@ -331,6 +331,8 @@ class PermitApplicationApi extends Controller
             ? now()->gt(Carbon::parse($expiry))
             : false;
 
+            dd($applicant);
+
         return response()
             ->view('verify.certificate', compact('applicant', 'isExpired'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
