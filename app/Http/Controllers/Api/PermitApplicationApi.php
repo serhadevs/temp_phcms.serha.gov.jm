@@ -218,16 +218,16 @@ class PermitApplicationApi extends Controller
             ]);
         }
 
-        $signOff = SignOff::where('application_id', $applicant->id)
-            ->where('is_granted', 1)
-            ->firstOrFail();
+        // $signOff = SignOff::where('application_id', $applicant->id)
+        //     ->where('is_granted', 1)
+        //     ->firstOrFail();
 
-        // Track form verification access
-        $signOff->trackAccess(
-            'viewed',
-            'web_portal_form',
-            $request
-        );
+        // // Track form verification access
+        // $signOff->trackAccess(
+        //     'viewed',
+        //     'web_portal_form',
+        //     $request
+        // );
 
         DB::table('retrieval_attempts')
             ->where('ip_address', $request->ip())
