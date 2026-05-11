@@ -111,7 +111,7 @@ class PermitApplicationApi extends Controller
             // Insert token into database
             DB::table('verification_tokens')->insert([
                 'permit_application_id' => $applicant->id,
-                'token_hash'           => $tokenHash,  // Store hash, not plaintext
+                'token_hash'           => $tokenHash,  
                 'ip_address'           => request()->ip(),
                 'user_agent'           => request()->userAgent(),
                 'expires_at'           => now()->addMinutes(5),
@@ -196,7 +196,6 @@ class PermitApplicationApi extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
 
 
         $applicant = PermitApplication::where($validated)->first();
@@ -298,7 +297,7 @@ class PermitApplicationApi extends Controller
             'permitCategory',
             'payment',
             'establishmentClinics',
-            'signOffs',
+            // 'signOffs',
             'testResults',
             'healthInterviews.healthInterviewSymptom.symptoms',
             'appointment.editTransactions',
