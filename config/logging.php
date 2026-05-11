@@ -126,6 +126,11 @@ return [
             'level' => 'info',
             'driver' => 'single'
         ],
+        'systemOperations' => [
+            'path' => storage_path("logs/activities.log"),
+            'level' => 'info',
+            'driver' => 'single'
+        ]
     ],
 
 ];
