@@ -235,7 +235,6 @@ class PermitApplicationApi extends Controller
 
             $permitStatus = $isExpired ? 'expired' : 'valid';
 
-            // Track access ONLY if signed off
             $signOff->trackAccess(
                 'viewed',
                 'web_portal_form',
