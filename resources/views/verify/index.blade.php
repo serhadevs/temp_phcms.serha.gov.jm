@@ -26,6 +26,19 @@
             /* Light Gray background */
         }
 
+
+        #date_of_birth {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            font-size: 16px;
+        }
+
+        #date_of_birth.is-invalid {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+
+
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -350,18 +363,19 @@
 
     <!-- Official Top Bar -->
     <div class="top-bar">
-    <div class="container d-flex justify-content-between align-items-center">
-        <span class="d-flex align-items-center">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag" style="height: 16px; width: auto;" class="me-2">
-            Government of Jamaica
-        </span>
-        
-        <div class="d-none d-md-block">
-            <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
-            <a href="#" class="text-white text-decoration-none">Contact Us</a>
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="d-flex align-items-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag"
+                    style="height: 16px; width: auto;" class="me-2">
+                Government of Jamaica
+            </span>
+
+            <div class="d-none d-md-block">
+                <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
+                <a href="#" class="text-white text-decoration-none">Contact Us</a>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg sticky-top">
@@ -483,11 +497,12 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Date of Birth</label>
-                                    <span class="form-text">As it appears on your official ID</span>
+                                    <span class="form-text">As it appears on your official ID (dd/mm/yyyy)</span>
 
-                                    <input type="date"
+                                    <input type="text"
                                         class="form-control @error('date_of_birth') is-invalid @enderror"
-                                        name="date_of_birth" value="{{ old('date_of_birth') }}">
+                                        name="date_of_birth" id="date_of_birth" placeholder="dd/mm/yyyy"
+                                        value="{{ old('date_of_birth') }}" autocomplete="off">
 
                                     @error('date_of_birth')
                                         <div class="invalid-feedback">
@@ -611,14 +626,91 @@
         const form = document.getElementById('retrievalForm');
         const submitBtn = document.getElementById('submitBtn');
         const responseMessage = document.getElementById('responseMessage');
+        const dateInput = document.getElementById('date_of_birth');
 
         if (!form || !submitBtn) {
             console.error("Missing form or button IDs");
             return;
         }
 
+        // DATE INPUT FORMATTING
+        if (dateInput) {
+            dateInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^\d]/g, '');
+
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2);
+                }
+                if (value.length >= 5) {
+                    value = value.substring(0, 5) + '/' + value.substring(5, 9);
+                }
+
+                e.target.value = value;
+            });
+
+            dateInput.addEventListener('blur', function(e) {
+                const value = e.target.value;
+                const parts = value.split('/');
+
+                if (parts.length === 3) {
+                    const day = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10);
+                    const year = parseInt(parts[2], 10);
+
+                    // Validate date
+                    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year >
+                        new Date().getFullYear()) {
+                        e.target.classList.add('is-invalid');
+                        e.target.removeAttribute('data-iso-date');
+                    } else {
+                        e.target.classList.remove('is-invalid');
+                        // Store ISO format for server
+                        const formattedDate = String(year).padStart(4, '0') + '-' +
+                            String(month).padStart(2, '0') + '-' +
+                            String(day).padStart(2, '0');
+                        e.target.dataset.isoDate = formattedDate;
+                    }
+                }
+            });
+        }
+
+        // FORM SUBMISSION
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Validate date format before submission
+            if (dateInput) {
+                const dateValue = dateInput.value.trim();
+                if (!dateValue) {
+                    responseMessage.className = 'alert alert-danger mb-4';
+                    responseMessage.innerHTML = 'Please enter your date of birth.';
+                    return;
+                }
+
+                const parts = dateValue.split('/');
+                if (parts.length !== 3) {
+                    responseMessage.className = 'alert alert-danger mb-4';
+                    responseMessage.innerHTML = 'Please enter date in dd/mm/yyyy format.';
+                    return;
+                }
+
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10);
+                const year = parseInt(parts[2], 10);
+
+                if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year >
+                    new Date().getFullYear()) {
+                    responseMessage.className = 'alert alert-danger mb-4';
+                    responseMessage.innerHTML = 'Please enter a valid date of birth.';
+                    return;
+                }
+
+                // Convert to yyyy-mm-dd for server
+                const formattedDate = String(year).padStart(4, '0') + '-' +
+                    String(month).padStart(2, '0') + '-' +
+                    String(day).padStart(2, '0');
+                dateInput.value = formattedDate;
+            }
 
             // UI RESET
             submitBtn.disabled = true;
@@ -714,6 +806,9 @@
 
                 console.error(error);
 
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Search for Permit';
+
                 responseMessage.className = 'alert alert-danger mb-4';
                 responseMessage.innerHTML =
                     error.message || 'An error occurred while retrieving the permit.';
@@ -723,6 +818,8 @@
 
     });
 </script>
+
+
 
 
 
