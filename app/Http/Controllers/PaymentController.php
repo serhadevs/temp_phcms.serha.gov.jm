@@ -431,7 +431,7 @@ class PaymentController extends Controller
     {
         $payment_id = $request->route('id');
         $payment = Payments::with('paymentType')->find($payment_id);
-
+        $receipt_info['has_waiver'] = false;
         // dd($payment);
         if ($payment->application_type_id == 1) {
             $application = PermitApplication::with('permitCategory')->find($payment->application_id);
@@ -485,6 +485,7 @@ class PaymentController extends Controller
         $receipt_info['payment_type'] = $payment->paymentType?->name;
         $cashier = User::find($payment->cashier_user_id);
         $receipt_info['cashier'] = $cashier->firstname[0] . ". " . $cashier->lastname;
+        $receipt_info['permit_no'] = $application?->permit_no ?? "No Permit Number";
 
         return view('payments.receipt', compact('receipt_info'));
     }

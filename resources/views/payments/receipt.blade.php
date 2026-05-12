@@ -78,11 +78,10 @@
                             Cashier : {{ $receipt_info['cashier'] }}
                         </h5>
                     @endif
-                    @if(!empty($receipt_info['has_waiver']))
+                    @if($receipt_info['has_waiver'])
                         <h5 class="mt-3">
                              Note: This application had a waiver approved. No payment was required.
                         </h5>
-                           
                     @endif
                     <button class="btn btn-success mt-4" onClick="printReceipt({{ json_encode($receipt_info) }})">
                         Print Receipt
@@ -107,7 +106,7 @@
             var serha = `<h2>SOUTH EAST REGIONAL HEALTH AUTHORITY</h2>`;
 
             mywindow.document.write(serha + "<br>");
-
+            mywindow.document.write('Permit#   : '+ receipt_info['permit_no'] + "<br><br>" );
             mywindow.document.write('Application No.     : ' + receipt_info['application_no'] + "<br>");
             mywindow.document.write('Item     : ' + receipt_info['app_type'] + "<br>");
             if (typeof receipt_info['permit_category'] != 'undefined') {
@@ -136,16 +135,14 @@
             mywindow.document.write('Amount Paid      : ' + "$" + receipt_info['amount_paid'] + "<br>");
             mywindow.document.write('Change     : ' + "$" + receipt_info['change_amt'] + "<br><br>");
             mywindow.document.write('Cashier    : ' + receipt_info['cashier'] + "<br><br>");
-             mywindow.document.write('Note    : ' + receipt_info['has_waiver'] + "<br><br>");
-
+            if(receipt_info['has_waiver']){
+                 mywindow.document.write('Note    : ' + receipt_info['has_waiver'] + "<br><br>");
+            }
+          
             mywindow.document.write('REMINDER: TAKE ALONG THIS RECEIPT' + "<br>" + 'WITH YOU ON THE APPOINTMENT DATE.' +
                 "<br>" + '***DO NOT LOSE THIS RECEIPT!***' + '<br>');
-            mywindow.document.write('***YOU CAN RESCHEDULE YOUR' + "<br>" + 'APPOINTMENT DATE ONCE.****');
-
-            // mywindow.document.write('</head><body >');
-            // mywindow.document.write('<h1>' + document.title  + '</h1>');
-            // mywindow.document.write(document.getElementById(elem).innerHTML);
-            // mywindow.document.write('</body></html>');
+            mywindow.document.write('***YOU CAN RESCHEDULE YOUR' + "<br>" + 'APPOINTMENT DATE ONCE.****' + "<br><br>");
+            // mywindow.document.write('Verify your permit at https://phcms.serha.gov.jm/verify-permit/' + receipt_info['permit_no']);
 
             mywindow.document.close(); // necessary for IE >= 10
             mywindow.focus(); // necessary for IE >= 10*/
