@@ -375,7 +375,7 @@
                 <div class="col-12 col-md-4 text-center mb-3 mb-md-0"
                     style="border-left: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0;">
                     <div style="padding: 10px;">
-                        <small style="color: #666; display: block; margin-bottom: 5px; font-weight: 600;">ISSUED</small>
+                        <small style="color: #666; display: block; margin-bottom: 5px; font-weight: 600;">RETRIEVAL DATE:</small>
                         <span style="color: #333; font-weight: 600; font-size: 13px;">
                             {{ now()->format('d F Y') }}
                         </span>
@@ -426,9 +426,8 @@
 
             <!-- BOTTOM DECORATION -->
             <div style="margin-top: 15px; text-align: center;">
-                <span style="color: #b30000; font-size: 20px;">✓</span>
                 <p style="font-size: 10px; color: #999; margin-top: 5px; margin-bottom: 0;">
-                    Verified by IDPro &nbsp;•&nbsp; {{ now()->format('d/m/Y H:i') }}
+                    Verified by IDPro &nbsp;•&nbsp; {{ now()->format('d/m/Y H:i') }} &nbsp;•&nbsp; {{ $token }}
                 </p>
             </div>
 
