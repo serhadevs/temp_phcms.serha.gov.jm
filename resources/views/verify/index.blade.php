@@ -27,11 +27,11 @@
         }
 
 
-        #date_of_birth {
+        /* #date_of_birth {
             font-family: 'Courier New', monospace;
             letter-spacing: 2px;
             font-size: 16px;
-        }
+        } */
 
         #date_of_birth.is-invalid {
             border-color: #dc3545;
