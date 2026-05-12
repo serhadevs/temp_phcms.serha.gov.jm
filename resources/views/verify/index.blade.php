@@ -350,19 +350,18 @@
 
     <!-- Official Top Bar -->
     <div class="top-bar">
-        <div class="container d-flex justify-content-between align-items-center">
-            <span class="d-flex align-items-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag"
-                    style="height: 16px; width: auto;" class="me-2">
-                Government of Jamaica
-            </span>
-
-            <div class="d-none d-md-block">
-                <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
-                <a href="#" class="text-white text-decoration-none">Contact Us</a>
-            </div>
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="d-flex align-items-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag" style="height: 16px; width: auto;" class="me-2">
+            Government of Jamaica
+        </span>
+        
+        <div class="d-none d-md-block">
+            <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
+            <a href="#" class="text-white text-decoration-none">Contact Us</a>
         </div>
     </div>
+</div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg sticky-top">
@@ -484,12 +483,11 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Date of Birth</label>
-                                    <span class="form-text">As it appears on your official ID (dd/mm/yyyy)</span>
+                                    <span class="form-text">As it appears on your official ID</span>
 
-                                    <input type="text"
+                                    <input type="date"
                                         class="form-control @error('date_of_birth') is-invalid @enderror"
-                                        name="date_of_birth" placeholder="dd/mm/yyyy"
-                                        value="{{ old('date_of_birth') }}" autocomplete="off">
+                                        name="date_of_birth" value="{{ old('date_of_birth') }}">
 
                                     @error('date_of_birth')
                                         <div class="invalid-feedback">
