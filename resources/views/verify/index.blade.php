@@ -488,7 +488,7 @@
 
                                     <input type="text"
                                         class="form-control @error('date_of_birth') is-invalid @enderror"
-                                        name="date_of_birth" id="date_of_birth" placeholder="dd/mm/yyyy"
+                                        name="date_of_birth" placeholder="dd/mm/yyyy"
                                         value="{{ old('date_of_birth') }}" autocomplete="off">
 
                                     @error('date_of_birth')
