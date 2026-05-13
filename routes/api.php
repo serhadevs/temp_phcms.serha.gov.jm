@@ -23,7 +23,7 @@ Route::middleware(['api.client'])->group(function () {
     // Route::post('/logout', [Auth::class, 'logout']);
 });
 
-Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit']);
+Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit'])->name('permit.verify');
 
 Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
 
