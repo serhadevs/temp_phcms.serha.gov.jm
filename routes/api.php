@@ -31,9 +31,6 @@ Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::cla
 // Routes that require authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
-    Route::get(
-        '/verify-permit/download/{id}',
-        [PermitApplicationApi::class, 'downloadCertificate']
-    )->name('api.download');
+    Route::get('/verify-permit/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('api.download');
     Route::post('/logout', [Auth::class, 'logout']);
 });
