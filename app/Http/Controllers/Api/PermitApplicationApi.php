@@ -162,7 +162,7 @@ class PermitApplicationApi extends Controller
     //     }
     // }
 
-    public function verifyPermit($permit_no)
+        public function verifyPermit($permit_no)
 {
     try {
         // 1. Fetch data with all necessary relationships
@@ -190,19 +190,19 @@ class PermitApplicationApi extends Controller
             ], 404);
         }
 
-        // 3. CRITICAL: Handle missing sign_offs to avoid method-on-null crashes
-        // if (!$applicant->signOffs) {
-        //     Log::warning('Permit verification rejected: Awaiting medical sign-off', [
-        //         'permit_no' => $permit_no,
-        //         'applicant_id' => $applicant->id,
-        //         'ip' => request()->ip(),
-        //     ]);
+        // 3. Handle missing sign_offs to avoid method-on-null crashes
+        if (!$applicant->signOffs) {
+            Log::warning('Permit verification rejected: Awaiting medical sign-off', [
+                'permit_no' => $permit_no,
+                'applicant_id' => $applicant->id,
+                'ip' => request()->ip(),
+            ]);
 
-        //     return response()->json([
-        //         "success" => false,
-        //         "message" => "This application has not been officially approved or signed off yet."
-        //     ], 403);
-        // }
+            return response()->json([
+                "success" => false,
+                "message" => "This application has not been officially approved or signed off yet."
+            ], 403);
+        }
 
         $signOff = $applicant->signOffs;
         $expiry = $signOff->expiry_date;
@@ -210,19 +210,19 @@ class PermitApplicationApi extends Controller
         // 4. Evaluate time expiration checks safely
         $isExpired = $expiry ? Carbon::now()->gt(Carbon::parse($expiry)) : false;
 
-        // if ($isExpired) {
-        //     Log::info('Expired permit verification attempted', [
-        //         'permit_no' => $permit_no,
-        //         'expiry_date' => $expiry,
-        //         'ip' => request()->ip(),
-        //     ]);
+        if ($isExpired) {
+            Log::info('Expired permit verification attempted', [
+                'permit_no' => $permit_no,
+                'expiry_date' => $expiry,
+                'ip' => request()->ip(),
+            ]);
 
-        //     return response()->json([
-        //         "success" => false,
-        //         "message" => "This permit has expired",
-        //         "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
-        //     ], 410);  
-        // }
+            return response()->json([
+                "success" => false,
+                "message" => "This permit has expired",
+                "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
+            ], 410);  
+        }
 
         // 5. Track QR scan analytics securely
         $signOff->trackAccess(
@@ -247,33 +247,36 @@ class PermitApplicationApi extends Controller
             'updated_at'           => now(),
         ]);
 
-      $url = URL::temporarySignedRoute(
+        // 7. Generate temporary signed URL with token
+        $url = URL::temporarySignedRoute(
             'verify.certificate',
             now()->addMinutes(5),
             ['token' => $token]
         );
 
-        Log::info('Permit verified successfully, redirecting to signed route', [
+        Log::info('Permit verified successfully, returning payload metadata to API client', [
             'permit_no' => $permit_no,
             'permit_id' => $applicant->id,
             'ip' => request()->ip(),
         ]);
 
-        return redirect($url);
+        // ✅ FIXED FOR API: Return the URL to Flutter instead of using redirect()
+        return response()->json([
+            "success" => true,
+            "message" => "Permit verified successfully",
+            "verification_url" => $url
+        ], 200);
 
     } catch (\Throwable $e) {
-        // ── ERROR FORENSICS BLOCK ──────────────────────────────────────────
-        // This log keeps track of exactly what line and file broke down on your server
         Log::error('Critical verification workflow failure breakdown', [
             'error_message' => $e->getMessage(),
             'file'          => $e->getFile(),
-            'line'          => $e->getLine(),
-            'trace'         => $e->getTraceAsString()
+            'line'          => $e->getLine()
         ]);
 
         return response()->json([
             "status" => "error",
-            "message" => "Verification processing failed. (See log error forensics)"
+            "message" => "Verification processing failed."
         ], 500);
     }
 }
