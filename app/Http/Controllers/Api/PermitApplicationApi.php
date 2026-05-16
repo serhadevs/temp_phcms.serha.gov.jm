@@ -27,7 +27,7 @@ class PermitApplicationApi extends Controller
     public function fetchApplications($permit_no)
     {
         try {
-            $applicant = PermitApplication::with('permitCategory:name',
+            $applicant = PermitApplication::with('permitCategory:id,name',
              'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment', 'messages')
                 ->where('permit_no', $permit_no)->first();
 
