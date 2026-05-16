@@ -191,18 +191,18 @@ class PermitApplicationApi extends Controller
         }
 
         // 3. CRITICAL: Handle missing sign_offs to avoid method-on-null crashes
-        if (!$applicant->signOffs) {
-            Log::warning('Permit verification rejected: Awaiting medical sign-off', [
-                'permit_no' => $permit_no,
-                'applicant_id' => $applicant->id,
-                'ip' => request()->ip(),
-            ]);
+        // if (!$applicant->signOffs) {
+        //     Log::warning('Permit verification rejected: Awaiting medical sign-off', [
+        //         'permit_no' => $permit_no,
+        //         'applicant_id' => $applicant->id,
+        //         'ip' => request()->ip(),
+        //     ]);
 
-            return response()->json([
-                "success" => false,
-                "message" => "This application has not been officially approved or signed off yet."
-            ], 403);
-        }
+        //     return response()->json([
+        //         "success" => false,
+        //         "message" => "This application has not been officially approved or signed off yet."
+        //     ], 403);
+        // }
 
         $signOff = $applicant->signOffs;
         $expiry = $signOff->expiry_date;
@@ -210,19 +210,19 @@ class PermitApplicationApi extends Controller
         // 4. Evaluate time expiration checks safely
         $isExpired = $expiry ? Carbon::now()->gt(Carbon::parse($expiry)) : false;
 
-        if ($isExpired) {
-            Log::info('Expired permit verification attempted', [
-                'permit_no' => $permit_no,
-                'expiry_date' => $expiry,
-                'ip' => request()->ip(),
-            ]);
+        // if ($isExpired) {
+        //     Log::info('Expired permit verification attempted', [
+        //         'permit_no' => $permit_no,
+        //         'expiry_date' => $expiry,
+        //         'ip' => request()->ip(),
+        //     ]);
 
-            return response()->json([
-                "success" => false,
-                "message" => "This permit has expired",
-                "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
-            ], 410);  
-        }
+        //     return response()->json([
+        //         "success" => false,
+        //         "message" => "This permit has expired",
+        //         "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
+        //     ], 410);  
+        // }
 
         // 5. Track QR scan analytics securely
         $signOff->trackAccess(
