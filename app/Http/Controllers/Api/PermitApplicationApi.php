@@ -31,11 +31,6 @@ class PermitApplicationApi extends Controller
              'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment', 'messages')
                 ->where('permit_no', $permit_no)->first();
 
-            //    $filePath = 'public/' . $applicant['permit_no'];
-
-            //    $fileContent = Storage::get($filePath);
-            //    $mimeType = Storage::mimeType($filePath);
-
             if (!$applicant) {
                 return response()->json(
                     ['message' => 'No applications found.'],
@@ -59,9 +54,20 @@ class PermitApplicationApi extends Controller
     {
         try {
 
-            $applicant = PermitApplication::with('permitCategory', 'signOffs')
-                ->where('permit_no', $permit_no)
-                ->first();
+            // $applicant = PermitApplication::with('permitCategory', 'signOffs')
+            //     ->where('permit_no', $permit_no)
+            //     ->first();
+
+            $applicant = PermitApplication::with(
+            'permitCategory',
+            'payment',
+            'establishmentClinics',
+            'signOffs',
+            'testResults',
+            'healthInterviews.healthInterviewSymptom.symptoms',
+            'appointment.editTransactions',
+            'messages'
+        )->where('permit_no', $permit_no)->first();
 
             if (!$applicant) {
                 Log::warning('Permit not found', [
@@ -340,62 +346,7 @@ class PermitApplicationApi extends Controller
             ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
     }
 
-    // public function downloadCertificate($id)
-    // {
-
-    //     if (!session()->has('verified_permit_id') || !session()->has('verified_permit_hash')) {
-    //         abort(403, 'Session not verified.');
-    //     }
-
-
-    //     if (session('verified_permit_id') != $id) {
-    //         abort(403, 'Permit mismatch.');
-    //     }
-
-
-    //     $applicant = PermitApplication::with([
-    //         'permitCategory',
-    //         'establishmentClinics',
-    //         'signOffs',
-    //         'testResults'
-    //     ])->findOrFail($id);
-
-    //     $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
-    //     //dd($qrUrl);
-
-    //     $qrImage = base64_encode(
-    //         QrCode::format('png')
-    //             ->size(160)
-    //             ->margin(1)
-    //             ->generate($qrUrl)
-    //     );
-
-    //     $expectedHash = hash_hmac(
-    //         'sha256',
-    //         $applicant->permit_no . $applicant->date_of_birth,
-    //         config('app.key')
-    //     );
-
-    //     if (!hash_equals(session('verified_permit_hash'), $expectedHash)) {
-    //         abort(403, 'Security validation failed.');
-    //     }
-
-
-    //     if ($applicant->signOffs && now()->gt($applicant->signOffs->expiry_date)) {
-    //         abort(403, 'Expired permits cannot be downloaded.');
-    //     }
-
-
-    //     $pdf = Pdf::loadView('verify.permitCardPdf', [
-    //         'applicant' => $applicant,
-    //         'qrImage'   => $qrImage,
-    //     ])->setPaper('A4');
-
-
-    //     return $pdf->download(
-    //         'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf'
-    //     )->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-    // }
+    
 
     public function downloadCertificate($id)
     {
