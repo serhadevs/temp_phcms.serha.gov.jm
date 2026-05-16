@@ -27,7 +27,8 @@ class PermitApplicationApi extends Controller
     public function fetchApplications($permit_no)
     {
         try {
-            $applicant = PermitApplication::with('permitCategory', 'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions', 'messages')
+            $applicant = PermitApplication::with('permitCategory:name',
+             'payment', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment', 'messages')
                 ->where('permit_no', $permit_no)->first();
 
             //    $filePath = 'public/' . $applicant['permit_no'];
@@ -333,7 +334,7 @@ class PermitApplicationApi extends Controller
 
 
         return response()
-            ->view('verify.certificate', compact('applicant', 'isExpired','token'))
+            ->view('verify.certificate', compact('applicant', 'isExpired', 'token'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
