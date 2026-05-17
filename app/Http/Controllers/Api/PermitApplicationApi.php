@@ -742,17 +742,22 @@ class PermitApplicationApi extends Controller
             'messages'
         )->findOrFail($record->permit_application_id);
 
-        // $expiry = optional($applicant->signOffs)->expiry_date;
+        $signOff = $applicant->signOffs?->first();
 
-        // $isExpired = $expiry
-        //     ? now()->gt(Carbon::parse($expiry))
-        //     : false;
+        // Get expiry date from sign-off
+        $expiry = $signOff?->expiry_date;
+
+        // Determine if permit is expired
+        $isExpired = false;
+        if ($expiry) {
+            $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
+        }
 
         $isExpired = session('permit_is_expired', false);
 
 
         return response()
-            ->view('verify.certificate', compact('applicant', 'isExpired', 'token'))
+            ->view('verify.certificate', compact('applicant', 'signOff', 'expiry', 'isExpired', 'token'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');

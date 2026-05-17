@@ -81,9 +81,7 @@
 
 <body class="bg-light">
 
-    @php
-        $isExpired = session('permit_is_expired');
-    @endphp
+  
 
     <div class="permit-wrapper">
 
