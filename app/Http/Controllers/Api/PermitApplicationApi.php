@@ -1084,26 +1084,96 @@ public function verifyPermit($permit_no)
 //         ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
 // }
 
+// public function showCertificate(Request $request, $token)
+// {
+//     $tokenHash = hash('sha256', $token);
+ 
+//     $record = DB::table('verification_tokens')
+//         ->where('token_hash', $tokenHash)
+//         ->first();
+ 
+//     if (!$record) {
+//         abort(403, 'Invalid verification link.');
+//     }
+ 
+//     if (now()->gt(Carbon::parse($record->expires_at))) {
+//         abort(403, 'Verification link expired.');
+//     }
+ 
+//     DB::table('verification_tokens')
+//         ->where('token_hash', $tokenHash)
+//         ->update(['used' => true, 'used_at' => now()]);
+ 
+//     $applicant = PermitApplication::with(
+//         'permitCategory',
+//         'payment',
+//         'establishmentClinics',
+//         'signOffs',
+//         'testResults',
+//         'healthInterviews.healthInterviewSymptom.symptoms',
+//         'appointment.editTransactions',
+//         'messages'
+//     )->findOrFail($record->permit_application_id);
+ 
+//     // 🔥 ROBUST EXPIRY CALCULATION
+//     $isExpired = false;
+//     $signOff = null;
+//     $expiry = null;
+ 
+//     // Handle both single model and collection
+//     if ($applicant->signOffs) {
+//         if (is_collection($applicant->signOffs)) {
+//             $signOff = $applicant->signOffs->first();
+//         } else {
+//             $signOff = $applicant->signOffs;
+//         }
+//     }
+ 
+//     // Only mark as expired if we have a sign-off AND it's actually granted AND has expiry date
+//     if ($signOff && $signOff->is_granted && $signOff->expiry_date) {
+//         $expiry = \Carbon\Carbon::parse($signOff->expiry_date);
+//         $isExpired = $expiry->isPast();
+//     }
+ 
+//     // Debug log (remove after testing)
+//     Log::info('Certificate display expiry check', [
+//         'permit_no' => $applicant->permit_no,
+//         'has_signoff' => $signOff ? true : false,
+//         'is_granted' => $signOff?->is_granted ?? false,
+//         'expiry_date' => $signOff?->expiry_date ?? null,
+//         'is_expired' => $isExpired,
+//         'today' => now()->toDateString(),
+//     ]);
+ 
+//     return response()
+//         ->view('verify.certificate', compact('applicant', 'signOff', 'expiry', 'isExpired', 'token'))
+//         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+//         ->header('Pragma', 'no-cache')
+//         ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+// }
+
+
+
 public function showCertificate(Request $request, $token)
 {
     $tokenHash = hash('sha256', $token);
- 
+
     $record = DB::table('verification_tokens')
         ->where('token_hash', $tokenHash)
         ->first();
- 
+
     if (!$record) {
         abort(403, 'Invalid verification link.');
     }
- 
+
     if (now()->gt(Carbon::parse($record->expires_at))) {
         abort(403, 'Verification link expired.');
     }
- 
+
     DB::table('verification_tokens')
         ->where('token_hash', $tokenHash)
         ->update(['used' => true, 'used_at' => now()]);
- 
+
     $applicant = PermitApplication::with(
         'permitCategory',
         'payment',
@@ -1114,29 +1184,31 @@ public function showCertificate(Request $request, $token)
         'appointment.editTransactions',
         'messages'
     )->findOrFail($record->permit_application_id);
- 
+
     // 🔥 ROBUST EXPIRY CALCULATION
     $isExpired = false;
     $signOff = null;
     $expiry = null;
- 
-    // Handle both single model and collection
+
+    // Handle both single model and collection using Laravel helpers
     if ($applicant->signOffs) {
-        if (is_collection($applicant->signOffs)) {
+        // Check if it's a collection using instanceof
+        if ($applicant->signOffs instanceof \Illuminate\Database\Eloquent\Collection) {
             $signOff = $applicant->signOffs->first();
         } else {
+            // It's a single model
             $signOff = $applicant->signOffs;
         }
     }
- 
+
     // Only mark as expired if we have a sign-off AND it's actually granted AND has expiry date
     if ($signOff && $signOff->is_granted && $signOff->expiry_date) {
         $expiry = \Carbon\Carbon::parse($signOff->expiry_date);
         $isExpired = $expiry->isPast();
     }
- 
+
     // Debug log (remove after testing)
-    Log::info('Certificate display expiry check', [
+    \Log::info('Certificate display expiry check', [
         'permit_no' => $applicant->permit_no,
         'has_signoff' => $signOff ? true : false,
         'is_granted' => $signOff?->is_granted ?? false,
@@ -1144,7 +1216,7 @@ public function showCertificate(Request $request, $token)
         'is_expired' => $isExpired,
         'today' => now()->toDateString(),
     ]);
- 
+
     return response()
         ->view('verify.certificate', compact('applicant', 'signOff', 'expiry', 'isExpired', 'token'))
         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
