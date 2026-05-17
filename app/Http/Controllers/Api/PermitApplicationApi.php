@@ -339,7 +339,8 @@ class PermitApplicationApi extends Controller
     {
         try {
 
-            $applicant = PermitApplication::where('permit_no', $permit_no)->first();
+            // $applicant = PermitApplication::where('permit_no', $permit_no)->first();
+            $applicant = PermitApplication::with('signOffs')->where('permit_no', $permit_no)->first();
 
             if (!$applicant) {
                 Log::warning('Permit not found', [
