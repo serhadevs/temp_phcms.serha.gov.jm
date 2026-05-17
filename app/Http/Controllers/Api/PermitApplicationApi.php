@@ -160,110 +160,115 @@ class PermitApplicationApi extends Controller
     // }
 
     public function verifyPermit($permit_no)
-{
-    try {
+    {
+        try {
 
-        $applicant = PermitApplication::with(
-            'permitCategory',
-            'payment',
-            'establishmentClinics',
-            'signOffs',
-            'testResults',
-            'healthInterviews.healthInterviewSymptom.symptoms',
-            'appointment.editTransactions',
-            'messages'
-        )->where('permit_no', $permit_no)->first();
+            $applicant = PermitApplication::with(
+                'permitCategory',
+                'payment',
+                'establishmentClinics',
+                'signOffs',
+                'testResults',
+                'healthInterviews.healthInterviewSymptom.symptoms',
+                'appointment.editTransactions',
+                'messages'
+            )->where('permit_no', $permit_no)->first();
 
-        if (!$applicant) {
-            Log::warning('Permit not found', [
+            if (!$applicant) {
+                Log::warning('Permit not found', [
+                    'permit_no' => $permit_no,
+                    'ip' => request()->ip(),
+                ]);
+
+                return response()->json([
+                    "success" => false,
+                    "message" => "Permit not found"
+                ], 404);
+            }
+
+            // ✅ FIXED: safely handle signOffs (could be null or collection)
+            $signOff = $applicant->signOffs?->first();
+
+            $expiry = $signOff?->expiry_date;
+
+            // ✅ FIXED: consistent expiry logic
+            $isExpired = false;
+
+            if ($expiry) {
+                $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
+            }
+
+            if ($signOff) {
+
+                // ONLY log if ecard exists
+                if (!empty($signOff->ecard_id)) {
+                    $signOff->trackAccess(
+                        'viewed',
+                        'api_qr_scan',
+                        request()
+                    );
+                } else {
+                    Log::warning('Skipped ecard access logging - missing ecard_id', [
+                        'sign_off_id' => $signOff->id,
+                        'permit_no' => $permit_no
+                    ]);
+                }
+            }
+
+            // Generate secure token using cryptographically random bytes
+            $token = bin2hex(random_bytes(32));
+            $tokenHash = hash('sha256', $token);
+
+            // Store token
+            DB::table('verification_tokens')->insert([
+                'permit_application_id' => $applicant->id,
+                'token_hash'           => $tokenHash,
+                'ip_address'           => request()->ip(),
+                'user_agent'           => request()->userAgent(),
+                'expires_at'           => now()->addMinutes(5),
+                'used'                 => false,
+                'created_at'           => now(),
+                'updated_at'           => now(),
+            ]);
+
+            // Create signed URL
+            $url = URL::temporarySignedRoute(
+                'verify.certificate',
+                now()->addMinutes(5),
+                ['token' => $token]
+            );
+
+            // Store verification in session (consistent + safe boolean)
+            session([
+                'verified_permit_id' => $applicant->id,
+                'verified_permit_hash' => hash_hmac(
+                    'sha256',
+                    $applicant->permit_no . $applicant->date_of_birth,
+                    config('app.key')
+                ),
+                'permit_is_expired' => (bool) $isExpired,
+            ]);
+
+            Log::info('Permit verified successfully', [
                 'permit_no' => $permit_no,
+                'permit_id' => $applicant->id,
                 'ip' => request()->ip(),
             ]);
 
+            return redirect($url);
+        } catch (\Throwable $e) {
+
+            Log::error('Permit verification failed', [
+                'error' => $e->getMessage(),
+                'permit_no' => $permit_no,
+            ]);
+
             return response()->json([
-                "success" => false,
-                "message" => "Permit not found"
-            ], 404);
+                "status" => "error",
+                "message" => "Verification failed"
+            ], 500);
         }
-
-        // ✅ FIXED: safely handle signOffs (could be null or collection)
-        $signOff = $applicant->signOffs?->first();
-
-        $expiry = $signOff?->expiry_date;
-
-        // ✅ FIXED: consistent expiry logic
-        $isExpired = false;
-
-        if ($expiry) {
-            $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
-        }
-
-        // ❌ REMOVED: dd($isExpired);
-
-        // ✅ SAFE tracking (prevents crash if no signOff yet)
-        if ($signOff) {
-            $signOff->trackAccess(
-                'viewed',
-                'api_qr_scan',
-                request()
-            );
-        }
-
-        // Generate secure token using cryptographically random bytes
-        $token = bin2hex(random_bytes(32));
-        $tokenHash = hash('sha256', $token);
-
-        // Store token
-        DB::table('verification_tokens')->insert([
-            'permit_application_id' => $applicant->id,
-            'token_hash'           => $tokenHash,
-            'ip_address'           => request()->ip(),
-            'user_agent'           => request()->userAgent(),
-            'expires_at'           => now()->addMinutes(5),
-            'used'                 => false,
-            'created_at'           => now(),
-            'updated_at'           => now(),
-        ]);
-
-        // Create signed URL
-        $url = URL::temporarySignedRoute(
-            'verify.certificate',
-            now()->addMinutes(5),
-            ['token' => $token]
-        );
-
-        // Store verification in session (consistent + safe boolean)
-        session([
-            'verified_permit_id' => $applicant->id,
-            'verified_permit_hash' => hash_hmac(
-                'sha256',
-                $applicant->permit_no . $applicant->date_of_birth,
-                config('app.key')
-            ),
-            'permit_is_expired' => (bool) $isExpired,
-        ]);
-
-        Log::info('Permit verified successfully', [
-            'permit_no' => $permit_no,
-            'permit_id' => $applicant->id,
-            'ip' => request()->ip(),
-        ]);
-
-        return redirect($url);
-
-    } catch (\Throwable $e) {
-
-        Log::error('Permit verification failed', [
-            'error' => $e->getMessage(),
-            'permit_no' => $permit_no,
-        ]);
-
-        return response()->json([
-            "status" => "error",
-            "message" => "Verification failed"
-        ], 500);
     }
-}
 
 
     // public function retrievePermit(Request $request)
@@ -440,7 +445,7 @@ class PermitApplicationApi extends Controller
             'updated_at' => now(),
         ]);
 
-  
+
         $state = $this->resolvePermitState($applicant);
 
         // optional tracking
