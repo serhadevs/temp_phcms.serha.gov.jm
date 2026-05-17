@@ -96,19 +96,19 @@ class PermitApplicationApi extends Controller
                 ? Carbon::now()->gt(Carbon::parse($expiry))
                 : false;
 
-            if ($isExpired) {
-                Log::info('Expired permit verification attempted', [
-                    'permit_no' => $permit_no,
-                    'expiry_date' => $expiry,
-                    'ip' => request()->ip(),
-                ]);
+            // if ($isExpired) {
+            //     Log::info('Expired permit verification attempted', [
+            //         'permit_no' => $permit_no,
+            //         'expiry_date' => $expiry,
+            //         'ip' => request()->ip(),
+            //     ]);
 
-                return response()->json([
-                    "success" => false,
-                    "message" => "This permit has expired",
-                    "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
-                ], 410);  
-            }
+            //     return response()->json([
+            //         "success" => false,
+            //         "message" => "This permit has expired",
+            //         "expiry_date" => Carbon::parse($expiry)->format('d M Y'),
+            //     ], 410);  
+            // }
 
             $signOff = $applicant->signOffs;
 
