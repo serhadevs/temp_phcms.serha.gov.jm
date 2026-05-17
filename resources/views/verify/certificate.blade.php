@@ -81,9 +81,21 @@
 
 <body class="bg-light">
 
-    @php
+    {{-- @php
         $isExpired = session('permit_is_expired');
-    @endphp
+    @endphp --}}
+
+    @php
+    $signOff = $applicant->signOffs?->first();
+
+    $expiry = $signOff?->expiry_date;
+
+    $isExpired = false;
+
+    if ($expiry) {
+        $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
+    }
+@endphp
 
     <div class="permit-wrapper">
 
