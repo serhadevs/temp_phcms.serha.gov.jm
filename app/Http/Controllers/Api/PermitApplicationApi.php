@@ -632,141 +632,94 @@ class PermitApplicationApi extends Controller
     // }
 
     public function retrievePermit(Request $request)
-{
-    // Allow QR access OR form access
-    $permitNo = $request->input('permit_no');
+    {
+        // Allow QR access OR form access
+        $permitNo = $request->input('permit_no');
 
-    if (!$permitNo) {
-        return back()->withErrors([
-            'not_found' => 'Permit number is required.'
+        if (!$permitNo) {
+            return back()->withErrors([
+                'not_found' => 'Permit number is required.'
+            ]);
+        }
+
+        $firstname = strtolower(trim($request->input('firstname', '')));
+        $lastname  = strtolower(trim($request->input('lastname', '')));
+        $dob       = $request->input('date_of_birth');
+
+        $query = PermitApplication::query()
+            ->whereRaw('UPPER(permit_no) = ?', [strtoupper(trim($permitNo))]);
+
+        // only apply identity checks if provided (QR may not have them)
+        if ($firstname && $lastname && $dob) {
+            $query->whereRaw('LOWER(firstname) = ?', [$firstname])
+                ->whereRaw('LOWER(lastname) = ?', [$lastname])
+                ->whereDate('date_of_birth', $dob);
+        }
+
+        $applicant = $query->first();
+
+        if (!$applicant) {
+            return back()->withErrors([
+                'not_found' => 'No application found. Please check your details.'
+            ]);
+        }
+
+        DB::table('retrieval_attempts')->insert([
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'date_of_birth' => $dob,
+            'permit_no' => strtoupper($permitNo),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'success' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
-    }
 
-    $firstname = strtolower(trim($request->input('firstname', '')));
-    $lastname  = strtolower(trim($request->input('lastname', '')));
-    $dob       = $request->input('date_of_birth');
+        $state = $this->resolvePermitStateUnified($applicant);
 
-    $query = PermitApplication::query()
-        ->whereRaw('UPPER(permit_no) = ?', [strtoupper(trim($permitNo))]);
+        // ONLY track if signoff exists (prevents null issues)
+        if (!empty($state['signOff'])) {
+            $state['signOff']->trackAccess(
+                'viewed',
+                'web_portal_form',
+                $request
+            );
+        }
 
-    // only apply identity checks if provided (QR may not have them)
-    if ($firstname && $lastname && $dob) {
-        $query->whereRaw('LOWER(firstname) = ?', [$firstname])
-              ->whereRaw('LOWER(lastname) = ?', [$lastname])
-              ->whereDate('date_of_birth', $dob);
-    }
+        $token = bin2hex(random_bytes(32));
 
-    $applicant = $query->first();
-
-    if (!$applicant) {
-        return back()->withErrors([
-            'not_found' => 'No application found. Please check your details.'
+        DB::table('verification_tokens')->insert([
+            'permit_application_id' => $applicant->id,
+            'token_hash'            => hash('sha256', $token),
+            'ip_address'            => $request->ip(),
+            'user_agent'            => $request->userAgent(),
+            'expires_at'            => now()->addMinutes(5),
+            'used'                  => false,
+            'created_at'            => now(),
+            'updated_at'            => now(),
         ]);
-    }
 
-    DB::table('retrieval_attempts')->insert([
-        'firstname' => $firstname,
-        'lastname' => $lastname,
-        'date_of_birth' => $dob,
-        'permit_no' => strtoupper($permitNo),
-        'ip_address' => $request->ip(),
-        'user_agent' => $request->userAgent(),
-        'success' => true,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-
-    $state = $this->resolvePermitStateUnified($applicant);
-
-    // ONLY track if signoff exists (prevents null issues)
-    if (!empty($state['signOff'])) {
-        $state['signOff']->trackAccess(
-            'viewed',
-            'web_portal_form',
-            $request
+        $url = URL::temporarySignedRoute(
+            'verify.certificate',
+            now()->addMinutes(5),
+            ['token' => $token]
         );
+
+        session([
+            'verified_permit_id' => $applicant->id,
+            'verified_permit_hash' => hash_hmac(
+                'sha256',
+                $applicant->permit_no . $applicant->date_of_birth,
+                config('app.key')
+            ),
+            'permit_status' => $state['permitStatus'],
+            'permit_is_expired' => $state['isExpired'],
+        ]);
+
+        return redirect($url);
     }
 
-    $token = bin2hex(random_bytes(32));
-
-    DB::table('verification_tokens')->insert([
-        'permit_application_id' => $applicant->id,
-        'token_hash'            => hash('sha256', $token),
-        'ip_address'            => $request->ip(),
-        'user_agent'            => $request->userAgent(),
-        'expires_at'            => now()->addMinutes(5),
-        'used'                  => false,
-        'created_at'            => now(),
-        'updated_at'            => now(),
-    ]);
-
-    $url = URL::temporarySignedRoute(
-        'verify.certificate',
-        now()->addMinutes(5),
-        ['token' => $token]
-    );
-
-    session([
-        'verified_permit_id' => $applicant->id,
-        'verified_permit_hash' => hash_hmac(
-            'sha256',
-            $applicant->permit_no . $applicant->date_of_birth,
-            config('app.key')
-        ),
-        'permit_status' => $state['permitStatus'],
-        'permit_is_expired' => $state['isExpired'],
-    ]);
-
-    return redirect($url);
-}
-
-    // public function showCertificate(Request $request, $token)
-    // {
-    //     $tokenHash = hash('sha256', $token);
-
-    //     $record = DB::table('verification_tokens')
-    //         ->where('token_hash', $tokenHash)
-    //         ->first();
-
-    //     if (!$record) {
-    //         abort(403, 'Invalid verification link.');
-    //     }
-
-
-    //     if (now()->gt(Carbon::parse($record->expires_at))) {
-    //         abort(403, 'Verification link expired.');
-    //     }
-
-    //     DB::table('verification_tokens')
-    //         ->where('token_hash', $tokenHash)
-    //         ->update(['used' => true, 'used_at' => now()]);
-
-    //     $applicant = PermitApplication::with(
-    //         'permitCategory',
-    //         'payment',
-    //         'establishmentClinics',
-    //         'signOffs',
-    //         'testResults',
-    //         'healthInterviews.healthInterviewSymptom.symptoms',
-    //         'appointment.editTransactions',
-    //         'messages'
-    //     )->findOrFail($record->permit_application_id);
-
-    //     // $expiry = optional($applicant->signOffs)->expiry_date;
-
-    //     // $isExpired = $expiry
-    //     //     ? now()->gt(Carbon::parse($expiry))
-    //     //     : false;
-
-    //     $isExpired = session('permit_is_expired', false);
-
-
-    //     return response()
-    //         ->view('verify.certificate', compact('applicant', 'isExpired', 'token'))
-    //         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-    //         ->header('Pragma', 'no-cache')
-    //         ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
-    // }
     public function showCertificate(Request $request, $token)
     {
         $tokenHash = hash('sha256', $token);
@@ -779,7 +732,8 @@ class PermitApplicationApi extends Controller
             abort(403, 'Invalid verification link.');
         }
 
-        if (now()->gt(\Carbon\Carbon::parse($record->expires_at))) {
+
+        if (now()->gt(Carbon::parse($record->expires_at))) {
             abort(403, 'Verification link expired.');
         }
 
@@ -787,7 +741,7 @@ class PermitApplicationApi extends Controller
             ->where('token_hash', $tokenHash)
             ->update(['used' => true, 'used_at' => now()]);
 
-        $applicant = PermitApplication::with([
+        $applicant = PermitApplication::with(
             'permitCategory',
             'payment',
             'establishmentClinics',
@@ -796,18 +750,16 @@ class PermitApplicationApi extends Controller
             'healthInterviews.healthInterviewSymptom.symptoms',
             'appointment.editTransactions',
             'messages'
-        ])->findOrFail($record->permit_application_id);
+        )->findOrFail($record->permit_application_id);
 
-        // 🔥 SINGLE SOURCE OF TRUTH (DATABASE ONLY)
-        $signOff = $applicant->signOffs?->first();
+        // $expiry = optional($applicant->signOffs)->expiry_date;
 
-        $expiry = $signOff?->expiry_date;
+        // $isExpired = $expiry
+        //     ? now()->gt(Carbon::parse($expiry))
+        //     : false;
 
-        $isExpired = false;
+        $isExpired = session('permit_is_expired', false);
 
-        if ($expiry) {
-            $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
-        }
 
         return response()
             ->view('verify.certificate', compact('applicant', 'isExpired', 'token'))
@@ -815,6 +767,54 @@ class PermitApplicationApi extends Controller
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
     }
+    // public function showCertificate(Request $request, $token)
+    // {
+    //     $tokenHash = hash('sha256', $token);
+
+    //     $record = DB::table('verification_tokens')
+    //         ->where('token_hash', $tokenHash)
+    //         ->first();
+
+    //     if (!$record) {
+    //         abort(403, 'Invalid verification link.');
+    //     }
+
+    //     if (now()->gt(\Carbon\Carbon::parse($record->expires_at))) {
+    //         abort(403, 'Verification link expired.');
+    //     }
+
+    //     DB::table('verification_tokens')
+    //         ->where('token_hash', $tokenHash)
+    //         ->update(['used' => true, 'used_at' => now()]);
+
+    //     $applicant = PermitApplication::with([
+    //         'permitCategory',
+    //         'payment',
+    //         'establishmentClinics',
+    //         'signOffs',
+    //         'testResults',
+    //         'healthInterviews.healthInterviewSymptom.symptoms',
+    //         'appointment.editTransactions',
+    //         'messages'
+    //     ])->findOrFail($record->permit_application_id);
+
+    //     // 🔥 SINGLE SOURCE OF TRUTH (DATABASE ONLY)
+    //     $signOff = $applicant->signOffs?->first();
+
+    //     $expiry = $signOff?->expiry_date;
+
+    //     $isExpired = false;
+
+    //     if ($expiry) {
+    //         $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
+    //     }
+
+    //     return response()
+    //         ->view('verify.certificate', compact('applicant', 'isExpired', 'token'))
+    //         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+    //         ->header('Pragma', 'no-cache')
+    //         ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+    // }
 
 
     public function downloadCertificate($id)
