@@ -776,13 +776,13 @@ public function verifyPermit($permit_no)
 
         $state = $this->resolvePermitStateUnified($applicant);
 
-        if ($state['signOff']) {
-            $state['signOff']->trackAccess(
-                'viewed',
-                'web_portal_form',
-                $request
-            );
-        }
+        // if ($state['signOff']) {
+        //     $state['signOff']->trackAccess(
+        //         'viewed',
+        //         'web_portal_form',
+        //         $request
+        //     );
+        // }
 
         $token = bin2hex(random_bytes(32));
 
@@ -1030,7 +1030,7 @@ public function showCertificate(Request $request, $token)
     }
  
     // Debug log (remove after testing)
-    \Log::info('Certificate display expiry check', [
+    Log::info('Certificate display expiry check', [
         'permit_no' => $applicant->permit_no,
         'has_signoff' => $signOff ? true : false,
         'is_granted' => $signOff?->is_granted ?? false,
