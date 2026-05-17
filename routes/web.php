@@ -85,7 +85,7 @@ Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::cl
 Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
     ->name('verify.permit');
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
-Route::post('/verify-permit/retrieve',
+Route::get('/verify-permit/retrieve',
     [PermitApplicationApi::class, 'retrievePermit']
 )->middleware('throttle:3,1') 
  ->name('verify.retrieval');
