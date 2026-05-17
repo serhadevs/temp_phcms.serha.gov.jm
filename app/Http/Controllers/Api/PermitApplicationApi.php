@@ -609,6 +609,7 @@ class PermitApplicationApi extends Controller
         );
 
 
+        // 🔥 SINGLE SOURCE OF TRUTH (IMPORTANT)
         session([
             'verified_permit_id' => $applicant->id,
             'verified_permit_hash' => hash_hmac(
@@ -620,13 +621,7 @@ class PermitApplicationApi extends Controller
             'permit_is_expired' => $state['isExpired'],
         ]);
 
-        return [
-            'success' => true,
-            'message' => 'Permit verified successfully.',
-            'applicant' => $applicant,
-            'token' => $token,
-            'url' => $url,
-        ];
+        return redirect($url);
     }
 
     public function retrievePermit(Request $request)
