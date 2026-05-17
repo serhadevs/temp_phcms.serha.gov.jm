@@ -632,6 +632,110 @@ class PermitApplicationApi extends Controller
 
 
 
+// public function verifyPermit($permit_no)
+// {
+//     $permitNo = strtoupper(trim($permit_no));
+ 
+//     $applicant = PermitApplication::with('signOffs')
+//         ->whereRaw('UPPER(permit_no) = ?', [$permitNo])
+//         ->first();
+ 
+//     if (!$applicant) {
+//         return [
+//             'success' => false,
+//             'message' => 'No application found.',
+//             'applicant' => null,
+//             'token' => null,
+//             'url' => null,
+//         ];
+//     }
+ 
+//     DB::table('retrieval_attempts')->insert([
+//         'firstname' => strtolower(trim($applicant->firstname)) ?: null,
+//         'lastname' => strtolower(trim($applicant->lastname)) ?: null,
+//         'date_of_birth' => $applicant->date_of_birth,
+//         'permit_no' => $permitNo,
+//         'ip_address' => request()->ip(),
+//         'user_agent' => substr(request()->userAgent(), 0, 255),
+//         'success' => true,
+//         'created_at' => now(),
+//         'updated_at' => now(),
+//     ]);
+ 
+//     $state = $this->resolvePermitStateUnified($applicant);
+ 
+//     // if ($state['signOff']) {
+//     //     $state['signOff']->trackAccess(
+//     //         'viewed',
+//     //         'web_portal_form',
+//     //         request()
+//     //     );
+//     // }
+ 
+//     // 🔥 ROBUST EXPIRY CALCULATION
+//     $isExpired = false;
+//     $signOff = null;
+//     $expiry = null;
+ 
+//     // Handle both single model and collection
+//     if ($applicant->signOffs) {
+//         if (is_collection($applicant->signOffs)) {
+//             $signOff = $applicant->signOffs->first();
+//         } else {
+//             $signOff = $applicant->signOffs;
+//         }
+//     }
+ 
+//     // Only mark as expired if we have a sign-off AND it's actually granted AND has expiry date
+//     if ($signOff && $signOff->is_granted && $signOff->expiry_date) {
+//         $expiry = \Carbon\Carbon::parse($signOff->expiry_date);
+//         $isExpired = $expiry->isPast();
+//     }
+ 
+//     // Debug log (remove after testing)
+//     Log::info('Permit expiry check', [
+//         'permit_no' => $permitNo,
+//         'has_signoff' => $signOff ? true : false,
+//         'is_granted' => $signOff?->is_granted ?? false,
+//         'expiry_date' => $signOff?->expiry_date ?? null,
+//         'is_expired' => $isExpired,
+//         'today' => now()->toDateString(),
+//     ]);
+ 
+//     $token = bin2hex(random_bytes(32));
+ 
+//     DB::table('verification_tokens')->insert([
+//         'permit_application_id' => $applicant->id,
+//         'token_hash' => hash('sha256', $token),
+//         'ip_address' => request()->ip(),
+//         'user_agent' => substr(request()->userAgent(), 0, 255),
+//         'expires_at' => now()->addMinutes(5),
+//         'used' => false,
+//         'created_at' => now(),
+//         'updated_at' => now(),
+//     ]);
+ 
+//     // 🔥 SINGLE SOURCE OF TRUTH - SET SESSION WITH CORRECT EXPIRY STATUS
+//     session([
+//         'verified_permit_id' => $applicant->id,
+//         'verified_permit_hash' => hash_hmac(
+//             'sha256',
+//             $applicant->permit_no . $applicant->date_of_birth,
+//             config('app.key')
+//         ),
+//         'permit_status' => $state['permitStatus'],
+//         'permit_is_expired' => $isExpired,
+//     ]);
+ 
+//     $url = URL::temporarySignedRoute(
+//         'verify.certificate',
+//         now()->addMinutes(5),
+//         ['token' => $token]
+//     );
+//   return redirect($url);
+    
+// }
+
 public function verifyPermit($permit_no)
 {
     $permitNo = strtoupper(trim($permit_no));
@@ -667,7 +771,7 @@ public function verifyPermit($permit_no)
     // if ($state['signOff']) {
     //     $state['signOff']->trackAccess(
     //         'viewed',
-    //         'web_portal_form',
+    //         'api',
     //         request()
     //     );
     // }
@@ -677,11 +781,13 @@ public function verifyPermit($permit_no)
     $signOff = null;
     $expiry = null;
  
-    // Handle both single model and collection
+    // Handle both single model and collection using Laravel helpers
     if ($applicant->signOffs) {
-        if (is_collection($applicant->signOffs)) {
+        // Check if it's a collection using instanceof
+        if ($applicant->signOffs instanceof \Illuminate\Database\Eloquent\Collection) {
             $signOff = $applicant->signOffs->first();
         } else {
+            // It's a single model
             $signOff = $applicant->signOffs;
         }
     }
@@ -732,8 +838,8 @@ public function verifyPermit($permit_no)
         now()->addMinutes(5),
         ['token' => $token]
     );
-  return redirect($url);
-    
+ 
+    return redirect($url);
 }
 
     public function retrievePermit(Request $request)
