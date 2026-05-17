@@ -581,13 +581,13 @@ class PermitApplicationApi extends Controller
 
         $state = $this->resolvePermitStateUnified($applicant);
 
-        if ($state['signOff']) {
-            $state['signOff']->trackAccess(
-                'viewed',
-                'web_portal_form',
-                request()
-            );
-        }
+        // if ($state['signOff']) {
+        //     $state['signOff']->trackAccess(
+        //         'viewed',
+        //         'web_portal_form',
+        //         request()
+        //     );
+        // }
 
         $token = bin2hex(random_bytes(32));
 
