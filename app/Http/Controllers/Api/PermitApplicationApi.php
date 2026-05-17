@@ -335,83 +335,83 @@ class PermitApplicationApi extends Controller
     //     }
     // }
 
-    public function verifyPermit($permit_no)
-    {
-        try {
+    // public function verifyPermit($permit_no)
+    // {
+    //     try {
 
-            // $applicant = PermitApplication::where('permit_no', $permit_no)->first();
-            $applicant = PermitApplication::with('signOffs')->where('permit_no', $permit_no)->first();
+    //         // $applicant = PermitApplication::where('permit_no', $permit_no)->first();
+    //         $applicant = PermitApplication::with('signOffs')->where('permit_no', $permit_no)->first();
 
-            if (!$applicant) {
-                Log::warning('Permit not found', [
-                    'permit_no' => $permit_no,
-                    'ip' => request()->ip(),
-                ]);
+    //         if (!$applicant) {
+    //             Log::warning('Permit not found', [
+    //                 'permit_no' => $permit_no,
+    //                 'ip' => request()->ip(),
+    //             ]);
 
-                return response()->json([
-                    "success" => false,
-                    "message" => "Permit not found"
-                ], 404);
-            }
+    //             return response()->json([
+    //                 "success" => false,
+    //                 "message" => "Permit not found"
+    //             ], 404);
+    //         }
 
-            // Unified state (only for signOff existence, NOT expiry display)
-            $state = $this->resolvePermitStateUnified($applicant);
+    //         // Unified state (only for signOff existence, NOT expiry display)
+    //         $state = $this->resolvePermitStateUnified($applicant);
 
-            $signOff = $state['signOff'];
+    //         $signOff = $state['signOff'];
 
-            // 🚨 SAFE tracking: only if ecard exists
-            if ($signOff && !empty($signOff->ecard_id)) {
-                $signOff->trackAccess(
-                    'viewed',
-                    'api_qr_scan',
-                    request()
-                );
-            }
+    //         // 🚨 SAFE tracking: only if ecard exists
+    //         if ($signOff && !empty($signOff->ecard_id)) {
+    //             $signOff->trackAccess(
+    //                 'viewed',
+    //                 'api_qr_scan',
+    //                 request()
+    //             );
+    //         }
 
-            // Generate token
-            $token = bin2hex(random_bytes(32));
+    //         // Generate token
+    //         $token = bin2hex(random_bytes(32));
 
-            DB::table('verification_tokens')->insert([
-                'permit_application_id' => $applicant->id,
-                'token_hash'            => hash('sha256', $token),
-                'ip_address'            => request()->ip(),
-                'user_agent'            => request()->userAgent(),
-                'expires_at'            => now()->addMinutes(5),
-                'used'                  => false,
-                'created_at'            => now(),
-                'updated_at'            => now(),
-            ]);
+    //         DB::table('verification_tokens')->insert([
+    //             'permit_application_id' => $applicant->id,
+    //             'token_hash'            => hash('sha256', $token),
+    //             'ip_address'            => request()->ip(),
+    //             'user_agent'            => request()->userAgent(),
+    //             'expires_at'            => now()->addMinutes(5),
+    //             'used'                  => false,
+    //             'created_at'            => now(),
+    //             'updated_at'            => now(),
+    //         ]);
 
-            $url = URL::temporarySignedRoute(
-                'verify.certificate',
-                now()->addMinutes(5),
-                ['token' => $token]
-            );
+    //         $url = URL::temporarySignedRoute(
+    //             'verify.certificate',
+    //             now()->addMinutes(5),
+    //             ['token' => $token]
+    //         );
 
-            // 🚨 ONLY AUTH STATE (NO EXPIRY HERE)
-            session([
-                'verified_permit_id' => $applicant->id,
-                'verified_permit_hash' => hash_hmac(
-                    'sha256',
-                    $applicant->permit_no . $applicant->date_of_birth,
-                    config('app.key')
-                ),
-            ]);
+    //         // 🚨 ONLY AUTH STATE (NO EXPIRY HERE)
+    //         session([
+    //             'verified_permit_id' => $applicant->id,
+    //             'verified_permit_hash' => hash_hmac(
+    //                 'sha256',
+    //                 $applicant->permit_no . $applicant->date_of_birth,
+    //                 config('app.key')
+    //             ),
+    //         ]);
 
-            return redirect($url);
-        } catch (\Throwable $e) {
+    //         return redirect($url);
+    //     } catch (\Throwable $e) {
 
-            Log::error('Permit verification failed', [
-                'error' => $e->getMessage(),
-                'permit_no' => $permit_no,
-            ]);
+    //         Log::error('Permit verification failed', [
+    //             'error' => $e->getMessage(),
+    //             'permit_no' => $permit_no,
+    //         ]);
 
-            return response()->json([
-                "status" => "error",
-                "message" => "Verification failed"
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             "status" => "error",
+    //             "message" => "Verification failed"
+    //         ], 500);
+    //     }
+    // }
 
     // public function retrievePermit(Request $request)
     // {
@@ -549,87 +549,176 @@ class PermitApplicationApi extends Controller
     //     return redirect($url);
     // }
 
+    // public function retrievePermit(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'firstname'     => 'required|string',
+    //         'lastname'      => 'required|string',
+    //         'date_of_birth' => 'required|date',
+    //         'permit_no'     => 'required|string',
+    //     ]);
+
+    //     $firstname = strtolower(trim($validated['firstname']));
+    //     $lastname  = strtolower(trim($validated['lastname']));
+    //     $dob       = $validated['date_of_birth'];
+    //     $permitNo  = strtoupper(trim($validated['permit_no']));
+
+    //     $applicant = PermitApplication::whereRaw('LOWER(firstname) = ?', [$firstname])
+    //         ->whereRaw('LOWER(lastname) = ?', [$lastname])
+    //         ->whereDate('date_of_birth', $dob)
+    //         ->whereRaw('UPPER(permit_no) = ?', [$permitNo])
+    //         ->first();
+
+    //     if (!$applicant) {
+    //         return back()->withErrors([
+    //             'not_found' => 'No application found. Please check your details.'
+    //         ]);
+    //     }
+
+    //     DB::table('retrieval_attempts')->insert([
+    //         'firstname' => $firstname,
+    //         'lastname' => $lastname,
+    //         'date_of_birth' => $dob,
+    //         'permit_no' => $permitNo,
+    //         'ip_address' => $request->ip(),
+    //         'user_agent' => $request->userAgent(),
+    //         'success' => true,
+    //         'created_at' => now(),
+    //         'updated_at' => now(),
+    //     ]);
+
+    //     $state = $this->resolvePermitStateUnified($applicant);
+
+    //     if ($state['signOff']) {
+    //         $state['signOff']->trackAccess(
+    //             'viewed',
+    //             'web_portal_form',
+    //             $request
+    //         );
+    //     }
+
+    //     $token = bin2hex(random_bytes(32));
+
+    //     DB::table('verification_tokens')->insert([
+    //         'permit_application_id' => $applicant->id,
+    //         'token_hash'            => hash('sha256', $token),
+    //         'ip_address'            => $request->ip(),
+    //         'user_agent'            => $request->userAgent(),
+    //         'expires_at'            => now()->addMinutes(5),
+    //         'used'                  => false,
+    //         'created_at'            => now(),
+    //         'updated_at'            => now(),
+    //     ]);
+
+    //     $url = URL::temporarySignedRoute(
+    //         'verify.certificate',
+    //         now()->addMinutes(5),
+    //         ['token' => $token]
+    //     );
+
+    //     // 🔥 SINGLE SOURCE OF TRUTH (IMPORTANT)
+    //     session([
+    //         'verified_permit_id' => $applicant->id,
+    //         'verified_permit_hash' => hash_hmac(
+    //             'sha256',
+    //             $applicant->permit_no . $applicant->date_of_birth,
+    //             config('app.key')
+    //         ),
+    //         'permit_status' => $state['permitStatus'],
+    //         'permit_is_expired' => $state['isExpired'],
+    //     ]);
+
+    //     return redirect($url);
+    // }
+
     public function retrievePermit(Request $request)
-    {
-        $validated = $request->validate([
-            'firstname'     => 'required|string',
-            'lastname'      => 'required|string',
-            'date_of_birth' => 'required|date',
-            'permit_no'     => 'required|string',
+{
+    // Allow QR access OR form access
+    $permitNo = $request->input('permit_no');
+
+    if (!$permitNo) {
+        return back()->withErrors([
+            'not_found' => 'Permit number is required.'
         ]);
-
-        $firstname = strtolower(trim($validated['firstname']));
-        $lastname  = strtolower(trim($validated['lastname']));
-        $dob       = $validated['date_of_birth'];
-        $permitNo  = strtoupper(trim($validated['permit_no']));
-
-        $applicant = PermitApplication::whereRaw('LOWER(firstname) = ?', [$firstname])
-            ->whereRaw('LOWER(lastname) = ?', [$lastname])
-            ->whereDate('date_of_birth', $dob)
-            ->whereRaw('UPPER(permit_no) = ?', [$permitNo])
-            ->first();
-
-        if (!$applicant) {
-            return back()->withErrors([
-                'not_found' => 'No application found. Please check your details.'
-            ]);
-        }
-
-        DB::table('retrieval_attempts')->insert([
-            'firstname' => $firstname,
-            'lastname' => $lastname,
-            'date_of_birth' => $dob,
-            'permit_no' => $permitNo,
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'success' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        $state = $this->resolvePermitStateUnified($applicant);
-
-        if ($state['signOff']) {
-            $state['signOff']->trackAccess(
-                'viewed',
-                'web_portal_form',
-                $request
-            );
-        }
-
-        $token = bin2hex(random_bytes(32));
-
-        DB::table('verification_tokens')->insert([
-            'permit_application_id' => $applicant->id,
-            'token_hash'            => hash('sha256', $token),
-            'ip_address'            => $request->ip(),
-            'user_agent'            => $request->userAgent(),
-            'expires_at'            => now()->addMinutes(5),
-            'used'                  => false,
-            'created_at'            => now(),
-            'updated_at'            => now(),
-        ]);
-
-        $url = URL::temporarySignedRoute(
-            'verify.certificate',
-            now()->addMinutes(5),
-            ['token' => $token]
-        );
-
-        // 🔥 SINGLE SOURCE OF TRUTH (IMPORTANT)
-        session([
-            'verified_permit_id' => $applicant->id,
-            'verified_permit_hash' => hash_hmac(
-                'sha256',
-                $applicant->permit_no . $applicant->date_of_birth,
-                config('app.key')
-            ),
-            'permit_status' => $state['permitStatus'],
-            'permit_is_expired' => $state['isExpired'],
-        ]);
-
-        return redirect($url);
     }
+
+    $firstname = strtolower(trim($request->input('firstname', '')));
+    $lastname  = strtolower(trim($request->input('lastname', '')));
+    $dob       = $request->input('date_of_birth');
+
+    $query = PermitApplication::query()
+        ->whereRaw('UPPER(permit_no) = ?', [strtoupper(trim($permitNo))]);
+
+    // only apply identity checks if provided (QR may not have them)
+    if ($firstname && $lastname && $dob) {
+        $query->whereRaw('LOWER(firstname) = ?', [$firstname])
+              ->whereRaw('LOWER(lastname) = ?', [$lastname])
+              ->whereDate('date_of_birth', $dob);
+    }
+
+    $applicant = $query->first();
+
+    if (!$applicant) {
+        return back()->withErrors([
+            'not_found' => 'No application found. Please check your details.'
+        ]);
+    }
+
+    DB::table('retrieval_attempts')->insert([
+        'firstname' => $firstname,
+        'lastname' => $lastname,
+        'date_of_birth' => $dob,
+        'permit_no' => strtoupper($permitNo),
+        'ip_address' => $request->ip(),
+        'user_agent' => $request->userAgent(),
+        'success' => true,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $state = $this->resolvePermitStateUnified($applicant);
+
+    // ONLY track if signoff exists (prevents null issues)
+    if (!empty($state['signOff'])) {
+        $state['signOff']->trackAccess(
+            'viewed',
+            'web_portal_form',
+            $request
+        );
+    }
+
+    $token = bin2hex(random_bytes(32));
+
+    DB::table('verification_tokens')->insert([
+        'permit_application_id' => $applicant->id,
+        'token_hash'            => hash('sha256', $token),
+        'ip_address'            => $request->ip(),
+        'user_agent'            => $request->userAgent(),
+        'expires_at'            => now()->addMinutes(5),
+        'used'                  => false,
+        'created_at'            => now(),
+        'updated_at'            => now(),
+    ]);
+
+    $url = URL::temporarySignedRoute(
+        'verify.certificate',
+        now()->addMinutes(5),
+        ['token' => $token]
+    );
+
+    session([
+        'verified_permit_id' => $applicant->id,
+        'verified_permit_hash' => hash_hmac(
+            'sha256',
+            $applicant->permit_no . $applicant->date_of_birth,
+            config('app.key')
+        ),
+        'permit_status' => $state['permitStatus'],
+        'permit_is_expired' => $state['isExpired'],
+    ]);
+
+    return redirect($url);
+}
 
     // public function showCertificate(Request $request, $token)
     // {
