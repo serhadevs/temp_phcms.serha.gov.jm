@@ -635,10 +635,11 @@ class PermitApplicationApi extends Controller
 public function verifyPermit($permit_no)
 {
     $permitNo = strtoupper(trim($permit_no));
-
-    $applicant = PermitApplication::whereRaw('UPPER(permit_no) = ?', [$permitNo])
+ 
+    $applicant = PermitApplication::with('signOffs')
+        ->whereRaw('UPPER(permit_no) = ?', [$permitNo])
         ->first();
-
+ 
     if (!$applicant) {
         return [
             'success' => false,
@@ -648,7 +649,7 @@ public function verifyPermit($permit_no)
             'url' => null,
         ];
     }
-
+ 
     DB::table('retrieval_attempts')->insert([
         'firstname' => strtolower(trim($applicant->firstname)) ?: null,
         'lastname' => strtolower(trim($applicant->lastname)) ?: null,
@@ -660,28 +661,49 @@ public function verifyPermit($permit_no)
         'created_at' => now(),
         'updated_at' => now(),
     ]);
-
+ 
     $state = $this->resolvePermitStateUnified($applicant);
-
-    // if ($state['signOff']) {
-    //     $state['signOff']->trackAccess(
-    //         'viewed',
-    //         'web_portal_form',
-    //         request()
-    //     );
-    // }
-
-    // 🔥 CALCULATE EXPIRY STATUS HERE
-    $signOff = $applicant->signOffs?->first();
-    $expiry = $signOff?->expiry_date;
-    $isExpired = false;
-    
-    if ($expiry) {
-        $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
+ 
+    if ($state['signOff']) {
+        $state['signOff']->trackAccess(
+            'viewed',
+            'web_portal_form',
+            request()
+        );
     }
-
+ 
+    // 🔥 ROBUST EXPIRY CALCULATION
+    $isExpired = false;
+    $signOff = null;
+    $expiry = null;
+ 
+    // Handle both single model and collection
+    if ($applicant->signOffs) {
+        if (is_collection($applicant->signOffs)) {
+            $signOff = $applicant->signOffs->first();
+        } else {
+            $signOff = $applicant->signOffs;
+        }
+    }
+ 
+    // Only mark as expired if we have a sign-off AND it's actually granted AND has expiry date
+    if ($signOff && $signOff->is_granted && $signOff->expiry_date) {
+        $expiry = \Carbon\Carbon::parse($signOff->expiry_date);
+        $isExpired = $expiry->isPast();
+    }
+ 
+    // Debug log (remove after testing)
+    \Log::info('Permit expiry check', [
+        'permit_no' => $permitNo,
+        'has_signoff' => $signOff ? true : false,
+        'is_granted' => $signOff?->is_granted ?? false,
+        'expiry_date' => $signOff?->expiry_date ?? null,
+        'is_expired' => $isExpired,
+        'today' => now()->toDateString(),
+    ]);
+ 
     $token = bin2hex(random_bytes(32));
-
+ 
     DB::table('verification_tokens')->insert([
         'permit_application_id' => $applicant->id,
         'token_hash' => hash('sha256', $token),
@@ -692,7 +714,7 @@ public function verifyPermit($permit_no)
         'created_at' => now(),
         'updated_at' => now(),
     ]);
-
+ 
     // 🔥 SINGLE SOURCE OF TRUTH - SET SESSION WITH CORRECT EXPIRY STATUS
     session([
         'verified_permit_id' => $applicant->id,
@@ -702,24 +724,16 @@ public function verifyPermit($permit_no)
             config('app.key')
         ),
         'permit_status' => $state['permitStatus'],
-        'permit_is_expired' => $isExpired,  
+        'permit_is_expired' => $isExpired,
     ]);
-
+ 
     $url = URL::temporarySignedRoute(
         'verify.certificate',
         now()->addMinutes(5),
         ['token' => $token]
     );
-
-    // return [
-    //     'success' => true,
-    //     'message' => 'Permit verified successfully.',
-    //     'applicant' => $applicant,
-    //     'token' => $token,
-    //     'url' => $url,
-    // ];
-
-     return redirect($url);
+  return redirect($url);
+    
 }
 
     public function retrievePermit(Request $request)
@@ -909,7 +923,62 @@ public function verifyPermit($permit_no)
     //         ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
     // }
 
-    public function showCertificate(Request $request, $token)
+//     public function showCertificate(Request $request, $token)
+// {
+//     $tokenHash = hash('sha256', $token);
+ 
+//     $record = DB::table('verification_tokens')
+//         ->where('token_hash', $tokenHash)
+//         ->first();
+ 
+//     if (!$record) {
+//         abort(403, 'Invalid verification link.');
+//     }
+ 
+//     if (now()->gt(Carbon::parse($record->expires_at))) {
+//         abort(403, 'Verification link expired.');
+//     }
+ 
+//     DB::table('verification_tokens')
+//         ->where('token_hash', $tokenHash)
+//         ->update(['used' => true, 'used_at' => now()]);
+ 
+//     $applicant = PermitApplication::with(
+//         'permitCategory',
+//         'payment',
+//         'establishmentClinics',
+//         'signOffs',
+//         'testResults',
+//         'healthInterviews.healthInterviewSymptom.symptoms',
+//         'appointment.editTransactions',
+//         'messages'
+//     )->findOrFail($record->permit_application_id);
+ 
+//     // Get the sign-off record
+//     $signOff = $applicant->signOffs?->first();
+ 
+//     // Get expiry date from sign-off
+//     $expiry = $signOff?->expiry_date;
+ 
+//     // Determine if permit is expired
+//     $isExpired = false;
+//     if ($expiry) {
+//         $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
+//     }
+ 
+//     // 🔥 FALLBACK: If no expiry found in DB, check session (set by verifyPermit)
+//     if (!$isExpired && session()->has('permit_is_expired')) {
+//         $isExpired = session('permit_is_expired');
+//     }
+ 
+//     return response()
+//         ->view('verify.certificate', compact('applicant', 'signOff', 'expiry', 'isExpired', 'token'))
+//         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+//         ->header('Pragma', 'no-cache')
+//         ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+// }
+
+public function showCertificate(Request $request, $token)
 {
     $tokenHash = hash('sha256', $token);
  
@@ -940,22 +1009,35 @@ public function verifyPermit($permit_no)
         'messages'
     )->findOrFail($record->permit_application_id);
  
-    // Get the sign-off record
-    $signOff = $applicant->signOffs?->first();
- 
-    // Get expiry date from sign-off
-    $expiry = $signOff?->expiry_date;
- 
-    // Determine if permit is expired
+    // 🔥 ROBUST EXPIRY CALCULATION
     $isExpired = false;
-    if ($expiry) {
-        $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
+    $signOff = null;
+    $expiry = null;
+ 
+    // Handle both single model and collection
+    if ($applicant->signOffs) {
+        if (is_collection($applicant->signOffs)) {
+            $signOff = $applicant->signOffs->first();
+        } else {
+            $signOff = $applicant->signOffs;
+        }
     }
  
-    // 🔥 FALLBACK: If no expiry found in DB, check session (set by verifyPermit)
-    if (!$isExpired && session()->has('permit_is_expired')) {
-        $isExpired = session('permit_is_expired');
+    // Only mark as expired if we have a sign-off AND it's actually granted AND has expiry date
+    if ($signOff && $signOff->is_granted && $signOff->expiry_date) {
+        $expiry = \Carbon\Carbon::parse($signOff->expiry_date);
+        $isExpired = $expiry->isPast();
     }
+ 
+    // Debug log (remove after testing)
+    \Log::info('Certificate display expiry check', [
+        'permit_no' => $applicant->permit_no,
+        'has_signoff' => $signOff ? true : false,
+        'is_granted' => $signOff?->is_granted ?? false,
+        'expiry_date' => $signOff?->expiry_date ?? null,
+        'is_expired' => $isExpired,
+        'today' => now()->toDateString(),
+    ]);
  
     return response()
         ->view('verify.certificate', compact('applicant', 'signOff', 'expiry', 'isExpired', 'token'))
