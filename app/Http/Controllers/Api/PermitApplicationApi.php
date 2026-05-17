@@ -663,13 +663,13 @@ public function verifyPermit($permit_no)
 
     $state = $this->resolvePermitStateUnified($applicant);
 
-    if ($state['signOff']) {
-        $state['signOff']->trackAccess(
-            'viewed',
-            'web_portal_form',
-            request()
-        );
-    }
+    // if ($state['signOff']) {
+    //     $state['signOff']->trackAccess(
+    //         'viewed',
+    //         'web_portal_form',
+    //         request()
+    //     );
+    // }
 
     // 🔥 CALCULATE EXPIRY STATUS HERE
     $signOff = $applicant->signOffs?->first();
@@ -711,13 +711,15 @@ public function verifyPermit($permit_no)
         ['token' => $token]
     );
 
-    return [
-        'success' => true,
-        'message' => 'Permit verified successfully.',
-        'applicant' => $applicant,
-        'token' => $token,
-        'url' => $url,
-    ];
+    // return [
+    //     'success' => true,
+    //     'message' => 'Permit verified successfully.',
+    //     'applicant' => $applicant,
+    //     'token' => $token,
+    //     'url' => $url,
+    // ];
+
+     return redirect($url);
 }
 
     public function retrievePermit(Request $request)
