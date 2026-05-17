@@ -245,85 +245,95 @@ class PermitApplicationApi extends Controller
     // }
 
     public function verifyPermit($permit_no)
-{
-    try {
+    {
+        try {
 
-        $applicant = PermitApplication::where('permit_no', $permit_no)->first();
+            $applicant = PermitApplication::where('permit_no', $permit_no)->first();
 
-        if (!$applicant) {
-            Log::warning('Permit not found', [
+            if (!$applicant) {
+                Log::warning('Permit not found', [
+                    'permit_no' => $permit_no,
+                    'ip' => request()->ip(),
+                ]);
+
+                return response()->json([
+                    "success" => false,
+                    "message" => "Permit not found"
+                ], 404);
+            }
+
+            $state = $this->resolvePermitStateUnified($applicant);
+
+            // if ($state['signOff']) {
+            //     $state['signOff']->trackAccess(
+            //         'viewed',
+            //         'api_qr_scan',
+            //         request()
+            //     );
+            // }
+
+            if (
+                $state['signOff'] &&
+                !empty($state['signOff']->ecard_id)
+            ) {
+                $state['signOff']->trackAccess(
+                    'viewed',
+                    'api_qr_scan',
+                    request()
+                );
+            }
+
+            $token = bin2hex(random_bytes(32));
+
+            DB::table('verification_tokens')->insert([
+                'permit_application_id' => $applicant->id,
+                'token_hash'           => hash('sha256', $token),
+                'ip_address'           => request()->ip(),
+                'user_agent'           => request()->userAgent(),
+                'expires_at'           => now()->addMinutes(5),
+                'used'                 => false,
+                'created_at'           => now(),
+                'updated_at'           => now(),
+            ]);
+
+            $url = URL::temporarySignedRoute(
+                'verify.certificate',
+                now()->addMinutes(5),
+                ['token' => $token]
+            );
+
+            // 🔥 SAME STATE ALWAYS
+            session([
+                'verified_permit_id' => $applicant->id,
+                'verified_permit_hash' => hash_hmac(
+                    'sha256',
+                    $applicant->permit_no . $applicant->date_of_birth,
+                    config('app.key')
+                ),
+                'permit_status' => $state['permitStatus'],
+                'permit_is_expired' => $state['isExpired'],
+            ]);
+
+            Log::info('Permit verified successfully', [
                 'permit_no' => $permit_no,
+                'permit_id' => $applicant->id,
                 'ip' => request()->ip(),
             ]);
 
+            return redirect($url);
+        } catch (\Throwable $e) {
+
+            Log::error('Permit verification failed', [
+                'error' => $e->getMessage(),
+                'permit_no' => $permit_no,
+            ]);
+
             return response()->json([
-                "success" => false,
-                "message" => "Permit not found"
-            ], 404);
+                "status" => "error",
+                "message" => "Verification failed"
+            ], 500);
         }
-
-        $state = $this->resolvePermitStateUnified($applicant);
-
-        if ($state['signOff']) {
-            $state['signOff']->trackAccess(
-                'viewed',
-                'api_qr_scan',
-                request()
-            );
-        }
-
-        $token = bin2hex(random_bytes(32));
-
-        DB::table('verification_tokens')->insert([
-            'permit_application_id' => $applicant->id,
-            'token_hash'           => hash('sha256', $token),
-            'ip_address'           => request()->ip(),
-            'user_agent'           => request()->userAgent(),
-            'expires_at'           => now()->addMinutes(5),
-            'used'                 => false,
-            'created_at'           => now(),
-            'updated_at'           => now(),
-        ]);
-
-        $url = URL::temporarySignedRoute(
-            'verify.certificate',
-            now()->addMinutes(5),
-            ['token' => $token]
-        );
-
-        // 🔥 SAME STATE ALWAYS
-        session([
-            'verified_permit_id' => $applicant->id,
-            'verified_permit_hash' => hash_hmac(
-                'sha256',
-                $applicant->permit_no . $applicant->date_of_birth,
-                config('app.key')
-            ),
-            'permit_status' => $state['permitStatus'],
-            'permit_is_expired' => $state['isExpired'],
-        ]);
-
-        Log::info('Permit verified successfully', [
-            'permit_no' => $permit_no,
-            'permit_id' => $applicant->id,
-            'ip' => request()->ip(),
-        ]);
-
-        return redirect($url);
-
-    } catch (\Throwable $e) {
-
-        Log::error('Permit verification failed', [
-            'error' => $e->getMessage(),
-            'permit_no' => $permit_no,
-        ]);
-
-        return response()->json([
-            "status" => "error",
-            "message" => "Verification failed"
-        ], 500);
     }
-}
 
     // public function retrievePermit(Request $request)
     // {
