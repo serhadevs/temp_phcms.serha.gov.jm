@@ -163,16 +163,7 @@ class PermitApplicationApi extends Controller
     {
         try {
 
-            $applicant = PermitApplication::with(
-                'permitCategory',
-                'payment',
-                'establishmentClinics',
-                'signOffs',
-                'testResults',
-                'healthInterviews.healthInterviewSymptom.symptoms',
-                'appointment.editTransactions',
-                'messages'
-            )->where('permit_no', $permit_no)->first();
+            $applicant = PermitApplication::where('permit_no', $permit_no)->first();
 
             if (!$applicant) {
                 Log::warning('Permit not found', [
@@ -186,33 +177,15 @@ class PermitApplicationApi extends Controller
                 ], 404);
             }
 
-            // ✅ FIXED: safely handle signOffs (could be null or collection)
-            $signOff = $applicant->signOffs?->first();
+            $state = $this->resolvePermitState($applicant);
 
-            $expiry = $signOff?->expiry_date;
-
-            // ✅ FIXED: consistent expiry logic
-            $isExpired = false;
-
-            if ($expiry) {
-                $isExpired = \Carbon\Carbon::parse($expiry)->isPast();
-            }
-
-            if ($signOff) {
-
-                // ONLY log if ecard exists
-                if (!empty($signOff->ecard_id)) {
-                    $signOff->trackAccess(
-                        'viewed',
-                        'api_qr_scan',
-                        request()
-                    );
-                } else {
-                    Log::warning('Skipped ecard access logging - missing ecard_id', [
-                        'sign_off_id' => $signOff->id,
-                        'permit_no' => $permit_no
-                    ]);
-                }
+            // optional tracking
+            if ($state['signOff']) {
+                $state['signOff']->trackAccess(
+                    'viewed',
+                   'api_qr_scan',
+                    request()
+                );
             }
 
             // Generate secure token using cryptographically random bytes
@@ -246,7 +219,8 @@ class PermitApplicationApi extends Controller
                     $applicant->permit_no . $applicant->date_of_birth,
                     config('app.key')
                 ),
-                'permit_is_expired' => (bool) $isExpired,
+                 'permit_status' => $state['permitStatus'],
+                'permit_is_expired' => $state['isExpired'],
             ]);
 
             Log::info('Permit verified successfully', [
