@@ -664,13 +664,13 @@ public function verifyPermit($permit_no)
  
     $state = $this->resolvePermitStateUnified($applicant);
  
-    if ($state['signOff']) {
-        $state['signOff']->trackAccess(
-            'viewed',
-            'web_portal_form',
-            request()
-        );
-    }
+    // if ($state['signOff']) {
+    //     $state['signOff']->trackAccess(
+    //         'viewed',
+    //         'web_portal_form',
+    //         request()
+    //     );
+    // }
  
     // 🔥 ROBUST EXPIRY CALCULATION
     $isExpired = false;
@@ -693,7 +693,7 @@ public function verifyPermit($permit_no)
     }
  
     // Debug log (remove after testing)
-    \Log::info('Permit expiry check', [
+    Log::info('Permit expiry check', [
         'permit_no' => $permitNo,
         'has_signoff' => $signOff ? true : false,
         'is_granted' => $signOff?->is_granted ?? false,
@@ -776,13 +776,13 @@ public function verifyPermit($permit_no)
 
         $state = $this->resolvePermitStateUnified($applicant);
 
-        // if ($state['signOff']) {
-        //     $state['signOff']->trackAccess(
-        //         'viewed',
-        //         'web_portal_form',
-        //         $request
-        //     );
-        // }
+        if ($state['signOff']) {
+            $state['signOff']->trackAccess(
+                'viewed',
+                'web_portal_form',
+                $request
+            );
+        }
 
         $token = bin2hex(random_bytes(32));
 
