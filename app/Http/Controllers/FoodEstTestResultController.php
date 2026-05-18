@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FoodEstTestResultController extends Controller
 {
@@ -21,6 +22,7 @@ class FoodEstTestResultController extends Controller
      */
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching food establishment test result list', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -60,6 +62,7 @@ class FoodEstTestResultController extends Controller
 
     public function customIndex(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching food establishment test result list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -86,6 +89,7 @@ class FoodEstTestResultController extends Controller
      */
     public function create(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading food establishment test result create form', ['user_id' => auth()->user()->id]);
         $application = EstablishmentApplications::with('establishmentCategory')
             ->find($request->route('id'));
 
@@ -102,6 +106,7 @@ class FoodEstTestResultController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating food establishment test result', ['user_id' => auth()->user()->id]);
         $food_est = $request->validate([
             'visit_purpose' => 'required',
             'staff_contact' => 'required',
@@ -136,6 +141,7 @@ class FoodEstTestResultController extends Controller
      */
     public function outstanding($id)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding food establishment test result list', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -178,6 +184,7 @@ class FoodEstTestResultController extends Controller
 
     public function outstandingCustom(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding food establishment test result list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -206,6 +213,7 @@ class FoodEstTestResultController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading food establishment test result edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = EstablishmentApplications::with('establishmentCategory')
             ->find($id);
 
@@ -221,6 +229,7 @@ class FoodEstTestResultController extends Controller
 
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing food establishment test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = EstablishmentApplications::with('establishmentCategory')
             ->find($id);
 
@@ -244,6 +253,7 @@ class FoodEstTestResultController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating food establishment test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $updated_est_results = $request->validate([
             'visit_purpose' => 'required',
             'staff_contact' => 'required',
@@ -308,6 +318,7 @@ class FoodEstTestResultController extends Controller
                 throw new Exception("This Test Result does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update food establishment test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -321,6 +332,7 @@ class FoodEstTestResultController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting food establishment test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($result = TestResult::with('establishmentApplication')
                 ->where('facility_id', auth()->user()->facility_id)
@@ -361,6 +373,7 @@ class FoodEstTestResultController extends Controller
                 throw new Exception("These test results either does not exist or is not a part of your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('FoodEstTestResultController::destroy: ' . $e->getMessage());
             DB::rollBack();
             return $e->getMessage();
         }

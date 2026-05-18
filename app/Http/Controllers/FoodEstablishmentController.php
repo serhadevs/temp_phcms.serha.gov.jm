@@ -25,6 +25,7 @@ class FoodEstablishmentController extends Controller
 {
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching food establishment list', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             //Allow latty to see food establishments up to the last 6 months
             $id = 180;
@@ -63,6 +64,7 @@ class FoodEstablishmentController extends Controller
 
     public function indexCustom(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching food establishment list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -84,6 +86,7 @@ class FoodEstablishmentController extends Controller
 
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading food establishment create form', ['user_id' => auth()->user()->id]);
         $establishment_categories = EstablishmentCategories::all();
 
         return view('establishments.create', compact('establishment_categories'));
@@ -91,6 +94,7 @@ class FoodEstablishmentController extends Controller
 
     public function generateEstPermitNo()
     {
+        Log::channel('systemOperations')->info('Generating food establishment permit number', ['user_id' => auth()->user()->id]);
         do {
             $abbr = DB::table('facilities')
                 ->select('abbr')
@@ -110,6 +114,7 @@ class FoodEstablishmentController extends Controller
 
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating food establishment', ['user_id' => auth()->user()->id]);
         $food_est_application = $request->validate([
             'current_est_closed' => 'required',
             // 'new_est' => 'accepted:1',
@@ -156,6 +161,7 @@ class FoodEstablishmentController extends Controller
 
     public function storeRenewal(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating food establishment renewal', ['user_id' => auth()->user()->id]);
         //Delete Test Results
         $food_est_application = $request->validate([
             'current_est_closed' => 'required',
@@ -212,6 +218,7 @@ class FoodEstablishmentController extends Controller
 
     public function view(Request $request)
     {
+        Log::channel('systemOperations')->info('Viewing food establishment', ['user_id' => auth()->user()->id]);
         $est_application = EstablishmentApplications::with('operators.editTransactions', 'zippedApplication', 'editTransactions', 'testResults', 'signOff', 'signOff.user:id,firstname,lastname')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $enableEditFeature = "0";
@@ -223,6 +230,7 @@ class FoodEstablishmentController extends Controller
 
     public function renewal(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading food establishment renewal form', ['user_id' => auth()->user()->id]);
         $application = EstablishmentApplications::with('operators')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::all();
 
@@ -231,6 +239,7 @@ class FoodEstablishmentController extends Controller
 
     public function createOperator(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating food establishment operator', ['user_id' => auth()->user()->id]);
         try {
             if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                 ->find($request->data['food_establishment_id'])
@@ -261,6 +270,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception('This Establishment does not exist or does not belong to your facility.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to create food establishment operator: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -268,6 +278,7 @@ class FoodEstablishmentController extends Controller
 
     public function editOperators(Request $request)
     {
+        Log::channel('systemOperations')->info('Updating food establishment operator', ['user_id' => auth()->user()->id]);
         try {
             if ($operator = FoodEstablishmentOperators::find($request->data["operator_id"])) {
                 if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -318,6 +329,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception("Operator not found");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update food establishment operator: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -325,6 +337,7 @@ class FoodEstablishmentController extends Controller
 
     public function deleteOperator(Request $request)
     {
+        Log::channel('systemOperations')->info('Deleting food establishment operator', ['user_id' => auth()->user()->id]);
         try {
             if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                 ->find($request->data['est_app_id'])
@@ -362,6 +375,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception("The food establishment application for this operator does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete food establishment operator: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -369,6 +383,7 @@ class FoodEstablishmentController extends Controller
 
     public function getEdit(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading food establishment edit form', ['user_id' => auth()->user()->id]);
         $est_application = EstablishmentApplications::with('operators', 'editTransactions')->find($request->route('id'));
         $establishment_categories = EstablishmentCategories::withTrashed()->get();
         $app_type_id = 3;
@@ -379,6 +394,7 @@ class FoodEstablishmentController extends Controller
 
     public function edit(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating food establishment', ['user_id' => auth()->user()->id, 'id' => $id]);
         $food_est_updated = $request->validate([
             'current_est_closed' => 'required',
             'prev_est_closed' => 'required',
@@ -443,6 +459,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception("This food establishment does not exist or does nopt belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update food establishment: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -450,6 +467,7 @@ class FoodEstablishmentController extends Controller
 
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting food establishment', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($food_est = EstablishmentApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
                 ->find($id)
@@ -481,6 +499,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception('This application does not exist. This cannot be deleted.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete food establishment: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -488,7 +507,7 @@ class FoodEstablishmentController extends Controller
 
     public function showInspections(Request $request)
     {
-
+        Log::channel('systemOperations')->info('Viewing food establishment inspections', ['user_id' => auth()->user()->id]);
         $id = $request->route('id');
         $today = date_format(new Datetime(), "Y-m-d");
         $yesterday = date_format(date_modify(new DateTime(), "-1 days"), "Y-m-d");
@@ -532,6 +551,7 @@ class FoodEstablishmentController extends Controller
 
     public function foodEstablishmentCategories()
     {
+        Log::channel('systemOperations')->info('Fetching food establishment categories list', ['user_id' => auth()->user()->id]);
         $categories = EstablishmentCategories::all();
 
         return view('establishments.categories.index', compact('categories'));
@@ -539,6 +559,7 @@ class FoodEstablishmentController extends Controller
 
     public function addEstCategory(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating food establishment category', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             if ($est_cat = EstablishmentCategories::create(['name' => $request->data['est_cat_name']])) {
@@ -563,6 +584,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception("Error creating establishment category. Unable to store record.");
             }
         } catch (Exception $ex) {
+            Log::channel('systemOperations')->error('Failed to create food establishment category: ' . $ex->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $ex->getMessage();
         }
@@ -570,6 +592,7 @@ class FoodEstablishmentController extends Controller
 
     public function updateEstCategory(Request $request)
     {
+        Log::channel('systemOperations')->info('Updating food establishment category', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             if ($estCategory = EstablishmentCategories::find($request->data['est_cat_id'])) {
@@ -607,6 +630,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception("Unable to update establishment category. This category does not exist.");
             }
         } catch (Exception $ex) {
+            Log::channel('systemOperations')->error('Failed to update food establishment category: ' . $ex->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $ex->getMessage();
         }
@@ -614,6 +638,7 @@ class FoodEstablishmentController extends Controller
 
     public function deleteEstCategory(Request $request)
     {
+        Log::channel('systemOperations')->info('Deleting food establishment category', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             if ($estCategory = EstablishmentCategories::find($request->data['est_cat_id'])) {
@@ -642,6 +667,7 @@ class FoodEstablishmentController extends Controller
                 throw new Exception("Unable to delete establishment category. This category does not exist.");
             }
         } catch (Exception $ex) {
+            Log::channel('systemOperations')->error('Failed to delete food establishment category: ' . $ex->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $ex->getMessage();
         }
@@ -692,14 +718,14 @@ class FoodEstablishmentController extends Controller
 
     public function createExpiredEstablishments()
     {
-
+        Log::channel('systemOperations')->info('Loading expired food establishment create form', ['user_id' => auth()->user()->id]);
         $categories = EstablishmentCategories::all();
         return view('establishments.expiredapplications.create', compact('categories'));
     }
 
     public function showAllExpiredEstablishments(Request $request)
     {
-
+        Log::channel('systemOperations')->info('Fetching expired food establishment list', ['user_id' => auth()->user()->id]);
         $validatedFields = $request->validate([
             'starting_date' => 'required',
             'ending_date' => 'required',

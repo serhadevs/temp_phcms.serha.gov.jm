@@ -16,10 +16,12 @@ class Messaging extends Controller
 {
    
     public function index(){
+        Log::channel('systemOperations')->info('Fetching message list', ['user_id' => auth()->user()->id]);
         return view('food_handlers_permit.message');
     }
 
     public function showMessages(){
+        Log::channel('systemOperations')->info('Fetching message list', ['user_id' => auth()->user()->id]);
         if (in_array(auth()->user()->role_id, [1])) {
             $messages = Messages::with('user', 'permit_applications', 'emailtypes')->orderBy('created_at', 'desc')->get();
         } else {

@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Answers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 
 class AnswersController extends Controller
 {
     public function create($id,$exam_id){
-
+        Log::channel('systemOperations')->info('Loading answer create form', ['user_id' => auth()->user()->id, 'id' => $id]);
         return view('answers.create',compact('id','exam_id'));
     }
 
     public function store(Request $request, $id,$exam_id)
     {
+        Log::channel('systemOperations')->info('Creating answer', ['user_id' => auth()->user()->id, 'id' => $id]);
         $request->validate([
             'answer.*' => 'required',
             'is_correct' => 'required',

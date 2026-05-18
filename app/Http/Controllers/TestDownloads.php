@@ -17,6 +17,7 @@ use App\Models\ZippedApplications;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use DateTime;
 use Illuminate\Support\Facades\Storage;
 use File;
@@ -31,6 +32,7 @@ class TestDownloads extends Controller
      */
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching download list', ['user_id' => auth()->user()->id]);
         // try {
         PermitJob::dispatch();
         FoodEstJob::dispatch();
@@ -44,6 +46,7 @@ class TestDownloads extends Controller
 
     public function customCheckDownloads(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching download list with custom date range', ['user_id' => auth()->user()->id]);
         $start_date = $request->route('date') . " 00:00:00";
         $end_date = $request->route('date') . " 23:59:59";
 
@@ -96,6 +99,7 @@ class TestDownloads extends Controller
             }
             return "success job";
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to check downloads with custom date range: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -103,6 +107,7 @@ class TestDownloads extends Controller
 
     public function cleanUpDownloads()
     {
+        Log::channel('systemOperations')->info('Cleaning up downloads', ['user_id' => auth()->user()->id]);
         $downloads = Downloads::with('zippedApplications')
             ->where('application_type_id', 3)
             ->where('created_at', '>', '2024-01-15')
@@ -122,6 +127,7 @@ class TestDownloads extends Controller
 
     public function checkDownloads(Request $request)
     {
+        Log::channel('systemOperations')->info('Checking downloads', ['user_id' => auth()->user()->id]);
         $start_date = $request->route('date') . " 00:00:00";
         $end_date = $request->route('date') . " 23:59:59";
 
@@ -179,6 +185,7 @@ class TestDownloads extends Controller
             }
             return "success job";
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to check downloads: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -186,6 +193,7 @@ class TestDownloads extends Controller
 
     public function checkFoodEstDownloads($id)
     {
+        Log::channel('systemOperations')->info('Checking food establishment downloads', ['user_id' => auth()->user()->id, 'id' => $id]);
         $downloads = Downloads::where('id', $id)
             ->where('touched', NULL)
             ->get();
@@ -233,6 +241,7 @@ class TestDownloads extends Controller
 
     public function writeAllFoodEstablishments()
     {
+        Log::channel('systemOperations')->info('Writing all food establishments', ['user_id' => auth()->user()->id]);
         $file = fopen('food-establishments.txt', 'a') or die('Unable to open file!');
 
         foreach (
@@ -251,6 +260,7 @@ class TestDownloads extends Controller
 
     public function testTourist()
     {
+        Log::channel('systemOperations')->info('Testing tourist establishments', ['user_id' => auth()->user()->id]);
         dd(TouristEstablishments::with('managers', 'services')
             ->where('created_at', '>', '2023-07-01')
             // ->doesntHave('managers')
@@ -260,6 +270,7 @@ class TestDownloads extends Controller
 
     public function clearAppointments()
     {
+        Log::channel('systemOperations')->info('Clearing appointments', ['user_id' => auth()->user()->id]);
         $path = storage_path("app/public/test.csv");
 
         $handle = fopen($path, "r");
@@ -296,6 +307,7 @@ class TestDownloads extends Controller
 
     public function sanitizeAppointments()
     {
+        Log::channel('systemOperations')->info('Sanitizing appointments', ['user_id' => auth()->user()->id]);
         $path = storage_path("app/public/to_delete_9.csv");
 
         $handle = fopen($path, "r");
@@ -323,6 +335,7 @@ class TestDownloads extends Controller
 
     public function copyDownloadsToBeChecked()
     {
+        Log::channel('systemOperations')->info('Copying downloads to be checked', ['user_id' => auth()->user()->id]);
         $urls = [
             [13067,    "downloads/establishment-archives/STC-2023-12-01.zip"],
             [13070,    "downloads/establishment-archives/STC-2023-12-08.zip"],
@@ -906,6 +919,7 @@ class TestDownloads extends Controller
 
     public function sanitizeAppointmentsParams($old_date_id, $new_date_id)
     {
+        Log::channel('systemOperations')->info('Sanitizing appointments by params', ['user_id' => auth()->user()->id, 'old_date_id' => $old_date_id, 'new_date_id' => $new_date_id]);
         DB::beginTransaction();
         $appointments = Appointments::where('exam_date_id', $old_date_id)->get();
         $old_exam_date = ExamDates::find($old_date_id);
@@ -939,6 +953,7 @@ class TestDownloads extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading download create form', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -950,6 +965,7 @@ class TestDownloads extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating download', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -961,6 +977,7 @@ class TestDownloads extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing download', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -972,6 +989,7 @@ class TestDownloads extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading download edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -984,6 +1002,7 @@ class TestDownloads extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating download', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -995,6 +1014,7 @@ class TestDownloads extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting download', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }

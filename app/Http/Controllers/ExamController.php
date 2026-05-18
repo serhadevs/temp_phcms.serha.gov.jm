@@ -10,12 +10,14 @@ use App\Models\TestResult;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 
 class ExamController extends Controller
 {
 
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching exam list', ['user_id' => auth()->user()->id]);
         $exams = StudentExam::with('questions')
 
             ->get();
@@ -25,6 +27,7 @@ class ExamController extends Controller
 
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating exam', ['user_id' => auth()->user()->id]);
         $request->validate([
             'title' => 'required|string|max:255',
         ]);
@@ -48,6 +51,7 @@ class ExamController extends Controller
     }
     public function review($examId)
     {
+        Log::channel('systemOperations')->info('Viewing exam', ['user_id' => auth()->user()->id, 'examId' => $examId]);
         $studentExam = StudentExam::with(['questions', 'answers'])
             ->where('id', $examId)
             ->where('user_id', auth()->id()) // Only allow review of exams owned by the user
@@ -74,6 +78,7 @@ class ExamController extends Controller
 
     public function update(Request $request)
     {
+        Log::channel('systemOperations')->info('Updating exam', ['user_id' => auth()->user()->id]);
         $request->validate([
             'title' => 'required|string|max:255',
         ]);
@@ -110,6 +115,7 @@ class ExamController extends Controller
     // }
 
     public function takeExam($id){
+        Log::channel('systemOperations')->info('Viewing exam', ['user_id' => auth()->user()->id, 'id' => $id]);
         //Look up exam based on the id
         $questions = StudentExam::with('questions')->where('id', $id)->first();
        //dd($questions);
@@ -123,6 +129,7 @@ class ExamController extends Controller
     
 
     public function startExam(Request $request){
+        Log::channel('systemOperations')->info('Starting exam', ['user_id' => auth()->user()->id]);
         $validatedInput = $request->validate([
             'app_id' => 'required|integer',
         ]);
@@ -164,7 +171,7 @@ class ExamController extends Controller
     }
 
     public function submitExam(Request $request){
-
+        Log::channel('systemOperations')->info('Submitting exam', ['user_id' => auth()->user()->id]);
         //Get all the questions from the db
         $questions = Questions::with('answers')->where('exam_id', $request->input('exam_id'))->get();
         //Find the applicant with a given id

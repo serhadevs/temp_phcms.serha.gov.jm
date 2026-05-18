@@ -12,12 +12,13 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class ExamDateController extends Controller
 {
     public function index()
     {
-
+        Log::channel('systemOperations')->info('Fetching exam date list', ['user_id' => auth()->user()->id]);
         if (in_array(auth()->user()->role_id, [1])) {
             $exam_dates = ExamDates::with('permitCategory', 'facility', 'application_type', 'examSites')->get();
         } else {
@@ -31,6 +32,7 @@ class ExamDateController extends Controller
 
     public function filter($id)
     {
+        Log::channel('systemOperations')->info('Fetching exam date list', ['user_id' => auth()->user()->id, 'id' => $id]);
         //Find Facility in Database
         $exam_dates = ExamDates::with('permitCategory', 'facility', 'application_type', 'examSites')->where('facility_id', $id)->get();
         $exam_days = collect(['mon' => 'Monday', 'tue' => 'Tuesday', 'wed' => 'Wednesday', 'thur' => 'Thursday', 'fri' => 'Friday', 'sat' => 'Saturday', 'sun' => 'Sunday']);
@@ -39,6 +41,7 @@ class ExamDateController extends Controller
 
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading exam date create form', ['user_id' => auth()->user()->id]);
         $applicationArray = [1, 2];
         $application_types = ApplicationType::whereIn('id', $applicationArray)->get();
         $permitcategories = PermitCategory::all();
@@ -54,7 +57,7 @@ class ExamDateController extends Controller
 
     public function store(Request $request)
     {
-
+        Log::channel('systemOperations')->info('Creating exam date', ['user_id' => auth()->user()->id]);
         $exam_date = $request->validate([
             'application_type_id' => 'required',
             'permit_category_id' => 'null',
@@ -89,15 +92,17 @@ class ExamDateController extends Controller
 
             return redirect()->route('examdates')->with('success', 'Exam Date was succesfully added');
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to create exam date: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->route('dashboard.dashboard')->with('error', 'Exception Error: ' . $e);
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to create exam date: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->route('dashboard.dashboard')->with('error', 'Query Exception Error: ' . $e);
         }
     }
 
     public function edit($id)
     {
-
+        Log::channel('systemOperations')->info('Loading exam date edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $applicationArray = [1, 2];
         $application_types = ApplicationType::whereIn('id', $applicationArray)->get();
         $permitcategories = PermitCategory::all();
@@ -116,6 +121,7 @@ class ExamDateController extends Controller
 
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating exam date', ['user_id' => auth()->user()->id, 'id' => $id]);
         // Validate the incoming request
         $validatedData = $request->validate([
             'application_type_id' => 'required|integer|exists:application_types,id',
@@ -143,8 +149,10 @@ class ExamDateController extends Controller
             return redirect()->route('examdates')
                 ->with('success', 'Exam date updated successfully.');
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update exam date: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('examdates')->with('error', 'Exception Error: ' . $e);
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to update exam date: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('examdates')->with('error', 'Query Exception Error: ' . $e);
         }
     }
@@ -152,6 +160,7 @@ class ExamDateController extends Controller
     //get examSites based on permit category id
     public function getExamSite(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching exam site', ['user_id' => auth()->user()->id]);
         try {
             $exam_sites = ExamSites::where('facility_id', auth()->user()->facility_id)
                 ->whereRelation('examDates', 'permit_category_id', $request->data['permit_category_id'])
@@ -163,6 +172,7 @@ class ExamDateController extends Controller
                 'status' => 200
             ]);
         } catch (Exception $exception) {
+            Log::channel('systemOperations')->error('Failed to fetch exam site: ' . $exception->getMessage(), ['user_id' => auth()->user()->id]);
             return response()->json([
                 'error' => $exception->getMessage(),
                 'status' => 400
@@ -172,6 +182,7 @@ class ExamDateController extends Controller
 
     public function getPossibleTime(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching available exam times', ['user_id' => auth()->user()->id]);
         try {
             $excluded_exam_dates = [];
             $day = "";
@@ -206,6 +217,7 @@ class ExamDateController extends Controller
                 'status' => 200
             ]);
         } catch (Exception $exception) {
+            Log::channel('systemOperations')->error('Failed to fetch available exam times: ' . $exception->getMessage(), ['user_id' => auth()->user()->id]);
             return response()->json([
                 'error' => $exception->getMessage(),
                 'status' => 400

@@ -22,10 +22,12 @@ class PermitApplicationApi extends Controller
 
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching permit application list');
         return view('verify.index');
     }
     public function fetchApplications($permit_no)
     {
+        Log::channel('systemOperations')->info('Fetching permit application', ['permit_no' => $permit_no]);
         try {
             $applicant = PermitApplication::with(
                 'permitCategory:id,name',
@@ -54,6 +56,7 @@ class PermitApplicationApi extends Controller
                 // "token" => $token,
             ], 200);
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to fetch permit application: ' . $e->getMessage(), ['permit_no' => $permit_no]);
             return response()->json(['message' => 'An error occurred while fetching applications.', 'error' => $e->getMessage()], 500);
         }
     }
@@ -253,6 +256,7 @@ class PermitApplicationApi extends Controller
 
     public function showCertificate(Request $request, $token)
     {
+        Log::channel('systemOperations')->info('Viewing permit verification certificate');
         $tokenHash = hash('sha256', $token);
 
         $record = DB::table('verification_tokens')
@@ -374,6 +378,7 @@ class PermitApplicationApi extends Controller
 
     public function generateLink($permitNo)
     {
+        Log::channel('systemOperations')->info('Generating permit verification link', ['permit_no' => $permitNo]);
         $applicant = PermitApplication::with(
             'permitCategory',
             'payment',
@@ -413,6 +418,7 @@ class PermitApplicationApi extends Controller
 
     public function qrVerify(Request $request)
     {
+        Log::channel('systemOperations')->info('Verifying permit via QR scan');
         // Validate query string from QR
         $data = $request->validate([
             'firstname'     => 'required|string',

@@ -20,6 +20,7 @@ class AuthController extends Controller
 
     public function index()
     {
+        Log::channel('systemOperations')->info('Loading login page');
         return view('auth.login');
     }
 
@@ -93,6 +94,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        Log::channel('logOut')->info('Logging out user', ['user_id' => auth()->user()->id]);
         // $userId = Auth::id();
          //Find the user in the database that matches the id
          $sessionId = Session::get('session_id');

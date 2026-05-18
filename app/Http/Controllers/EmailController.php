@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\PermitApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmailController extends Controller
 {
     public function ApplicationEmail($new_permit_application){
+        Log::channel('systemOperations')->info('Sending application email', ['user_id' => auth()->user()->id]);
         $sendEmailInfo = PermitApplication::with('permitCategory', 'appointment', 'user')->find($new_permit_application->id);
         $appointment = DB::table('appointments')
             ->join('exam_dates', 'exam_dates.id', '=', 'appointments.exam_date_id')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HealthCertApplicationsController extends Controller
 {
@@ -13,6 +14,7 @@ class HealthCertApplicationsController extends Controller
      */
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching health certificate application list', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -23,6 +25,7 @@ class HealthCertApplicationsController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading health certificate application create form', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -34,6 +37,7 @@ class HealthCertApplicationsController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating health certificate application', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -45,6 +49,7 @@ class HealthCertApplicationsController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing health certificate application', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -56,6 +61,7 @@ class HealthCertApplicationsController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading health certificate application edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -68,6 +74,7 @@ class HealthCertApplicationsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating health certificate application', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -79,6 +86,7 @@ class HealthCertApplicationsController extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting health certificate application', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }

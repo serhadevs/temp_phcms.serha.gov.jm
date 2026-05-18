@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use ZipArchive;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,6 +30,7 @@ class TestNewJobs extends Controller
 
     public function manualJobs()
     {
+        Log::channel('systemOperations')->info('Running manual jobs', ['user_id' => auth()->user()->id]);
         $this->permitJob();
         $this->foodEstJob();
         $this->touristJob();
@@ -36,6 +38,7 @@ class TestNewJobs extends Controller
 
     public function printClinicPermits($clinic_id)
     {
+        Log::channel('systemOperations')->info('Printing clinic permits', ['user_id' => auth()->user()->id, 'clinic_id' => $clinic_id]);
         try {
             $counter = 0;
             $rand_string = explode('.', time() / rand(10000, 99999))[0];
@@ -86,6 +89,7 @@ class TestNewJobs extends Controller
             $zip->close();
             $create_download->update(['application_amount' => $counter]);
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to print clinic permits: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'clinic_id' => $clinic_id]);
             echo $e->getMessage();
         }
     }
@@ -97,6 +101,7 @@ class TestNewJobs extends Controller
      */
     public function permitJob()
     {
+        Log::channel('systemOperations')->info('Running permit job', ['user_id' => auth()->user()->id]);
         //Get all permit applications
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs', 'zippedApplication')
             ->where('photo_upload', '<>', NULL)
@@ -187,6 +192,7 @@ class TestNewJobs extends Controller
                         }
                     }
                 } catch (Exception $e) {
+                    Log::channel('systemOperations')->error('Failed to run permit job: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
                     return $e->getMessage();
                 }
             } else if ($key == 2) {
@@ -262,6 +268,7 @@ class TestNewJobs extends Controller
                         }
                     }
                 } catch (Exception $e) {
+                    Log::channel('systemOperations')->error('Failed to run permit job: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
                     return $e->getMessage();
                 }
             } else if ($key == 3) {
@@ -339,6 +346,7 @@ class TestNewJobs extends Controller
                         }
                     }
                 } catch (Exception $e) {
+                    Log::channel('systemOperations')->error('Failed to run permit job: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
                     return $e->getMessage();
                 }
             }
@@ -347,6 +355,7 @@ class TestNewJobs extends Controller
 
     public function foodEstJob()
     {
+        Log::channel('systemOperations')->info('Running food establishment job', ['user_id' => auth()->user()->id]);
         $food_establishments = EstablishmentApplications::with('user', 'testResults', 'operators', 'establishmentCategory', 'signOff', 'zippedApplication', 'payment')
             ->doesntHave('zippedApplication')
             ->has('signOff')
@@ -508,6 +517,7 @@ class TestNewJobs extends Controller
 
     public function touristJob()
     {
+        Log::channel('systemOperations')->info('Running tourist establishment job', ['user_id' => auth()->user()->id]);
         $tourist_ests = TouristEstablishments::with('printableApplication')
             ->doesntHave('printableApplication')
             ->get();
@@ -523,6 +533,7 @@ class TestNewJobs extends Controller
     //Neded for setting the record clean
     public function clearAllNonExistentFoodHandlers()
     {
+        Log::channel('systemOperations')->info('Clearing all non-existent food handlers', ['user_id' => auth()->user()->id]);
         try {
             $permits_affected = [];
             $i = 0;
@@ -543,6 +554,7 @@ class TestNewJobs extends Controller
             DB::commit();
             return $permits_affected;
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to clear non-existent food handlers: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -553,6 +565,7 @@ class TestNewJobs extends Controller
     //Delete all unzipped records
     public function deleteAllUnzippedPermits()
     {
+        Log::channel('systemOperations')->info('Deleting all unzipped permits', ['user_id' => auth()->user()->id]);
         try {
             $unzipped_permits = ZippedApplications::where('application_type_id', 1)
                 ->where('created_at', '>', '2024-01-15')
@@ -566,6 +579,7 @@ class TestNewJobs extends Controller
             }
             DB::commit();
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete unzipped permits: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -579,6 +593,7 @@ class TestNewJobs extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating job', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -590,6 +605,7 @@ class TestNewJobs extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing job', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -601,6 +617,7 @@ class TestNewJobs extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading job edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -613,6 +630,7 @@ class TestNewJobs extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating job', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -624,6 +642,7 @@ class TestNewJobs extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting job', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }

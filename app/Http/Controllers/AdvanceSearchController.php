@@ -19,7 +19,9 @@ use Illuminate\Support\Facades\Log;
 
 class AdvanceSearchController extends Controller
 {
-    public function index() {}
+    public function index() {
+        Log::channel('systemOperations')->info('Fetching advance search results', ['user_id' => auth()->user()->id]);
+    }
 
     public function create()
     {
@@ -268,6 +270,7 @@ class AdvanceSearchController extends Controller
 
     public function search(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching advance search results', ['user_id' => auth()->user()->id]);
         $request->validate([
             'q' => 'required|min:1',
         ]);

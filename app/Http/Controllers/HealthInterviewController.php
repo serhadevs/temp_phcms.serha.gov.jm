@@ -16,6 +16,7 @@ use App\Models\TravelHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use DateTime;
 use Exception;
 
@@ -28,6 +29,7 @@ class HealthInterviewController extends Controller
      */
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching health interview list', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -72,6 +74,7 @@ class HealthInterviewController extends Controller
 
     public function customFilterIndex(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching health interview list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -91,6 +94,7 @@ class HealthInterviewController extends Controller
 
     public function outstandingApplications($app_type_id, $filter_id)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding health interview list', ['user_id' => auth()->user()->id]);
         // $id = $request->route('filter_id');
         // $app_type_id = $request->route('app_type_id');
         if (auth()->user()->default_filter_id != "") {
@@ -158,6 +162,7 @@ class HealthInterviewController extends Controller
      */
     public function create(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading health interview create form', ['user_id' => auth()->user()->id]);
         $app_id = $request->route('app_id');
         $app_type_id = $request->route('app_type_id');
         $symptoms = Symptoms::all();
@@ -185,6 +190,7 @@ class HealthInterviewController extends Controller
 
     public function customFilterOutstanding(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding health interview list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -223,6 +229,7 @@ class HealthInterviewController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating health interview', ['user_id' => auth()->user()->id]);
         $health_interview = $request->validate([
             'test_results_exist' => 'required',
             'test_location' => 'required_if:test_results_exist,0',
@@ -335,6 +342,7 @@ class HealthInterviewController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing health interview', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($interview = HealthInterview::find($id)) {
                 if ($interview->permit_application_id != "") {
@@ -353,6 +361,7 @@ class HealthInterviewController extends Controller
                 throw new Exception("This health interview does not exist");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view health interview: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('health-interview.index', ['id' => 0])->with('error', $e->getMessage());
         }
     }
@@ -366,6 +375,7 @@ class HealthInterviewController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading health interview edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($interview = HealthInterview::find($id)) {
                 if ($interview->sign_off_status !== 1) {
@@ -384,6 +394,7 @@ class HealthInterviewController extends Controller
                 throw new Exception("This health interview does not exist.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to load health interview edit form: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('health-interview.index', ['id' => 0])->with('error', $e->getMessage());
         }
     }
@@ -397,6 +408,7 @@ class HealthInterviewController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating health interview', ['user_id' => auth()->user()->id, 'id' => $id]);
         $updated_interview = $request->validate([
             'literate' => 'required|numeric',
             'typhoid' => 'required',
@@ -463,6 +475,7 @@ class HealthInterviewController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to update health interview: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('health-interview.view', ['id' => $old_interview->id])->with('error', $e->getMessage());
         }
     }
@@ -475,6 +488,7 @@ class HealthInterviewController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting health interview', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($interview = HealthInterview::with('permitApplication', 'healthCertApplication')
                 ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -512,12 +526,14 @@ class HealthInterviewController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to delete health interview: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return $e->getMessage();
         }
     }
 
     public function destroySymptom(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting health interview symptom', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($interview_sym = HealthInterviewSymptom::find($id)) {
                 if ($interview = HealthInterview::find($interview_sym->health_interview_id)) {
@@ -555,12 +571,14 @@ class HealthInterviewController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to delete health interview symptom: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return $e->getMessage();
         }
     }
 
     public function addTravelHistory(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Creating health interview travel history', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($request->data['destination'] && $request->data['travel_date']) {
                 if ($application = $request->data['application_type'] == '1' ? PermitApplication::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id) : HealthCertApplications::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id)) {
@@ -605,12 +623,14 @@ class HealthInterviewController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to create health interview travel history: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return $e->getMessage();
         }
     }
 
     public function destroyTravelHistory(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting health interview travel history', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($trip = TravelHistory::find($id)) {
                 if ($interview = $trip->health_cert_application_id == "" ? HealthInterview::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -650,6 +670,7 @@ class HealthInterviewController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to delete health interview travel history: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return $e->getMessage();
         }
     }

@@ -6,6 +6,7 @@ use App\Models\PaymentTypes;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentReportController extends Controller
 {
@@ -16,6 +17,7 @@ class PaymentReportController extends Controller
      */
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching payment report list', ['user_id' => auth()->user()->id]);
         $payment_types = PaymentTypes::with('paymentTypeFacilities')
             ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
             ->get();
@@ -30,6 +32,7 @@ class PaymentReportController extends Controller
      */
     public function showReport(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching payment report with custom date range', ['user_id' => auth()->user()->id]);
         $timeline = $request->validate([
             'starting_date' => 'required',
             'ending_date' => 'required',
@@ -88,6 +91,7 @@ class PaymentReportController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating payment report', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -99,6 +103,7 @@ class PaymentReportController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing payment report', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -110,6 +115,7 @@ class PaymentReportController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading payment report edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -122,6 +128,7 @@ class PaymentReportController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating payment report', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -133,6 +140,7 @@ class PaymentReportController extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting payment report', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }

@@ -12,10 +12,13 @@ use Illuminate\Support\Facades\Validator;
 
 class CollectCardController extends Controller
 {
-    public function index() {}
+    public function index() {
+        Log::channel('systemOperations')->info('Fetching collect card list', ['user_id' => auth()->user()->id]);
+    }
 
     public function create($id = null)
     {
+        Log::channel('systemOperations')->info('Loading collect card create form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //Find the applicant
         $applicant = PermitApplication::findOrFail($id);
         $id_types = IdentificationTypes::all();

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Auth;
 use App\Models\MailingList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class MailingListController extends Controller
@@ -17,6 +18,7 @@ class MailingListController extends Controller
      */
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching mailing list', ['user_id' => auth()->user()->id]);
         $mailing_list = MailingList::all();
 
         return view('admin.mailing_list.index', compact('mailing_list'));
@@ -58,6 +60,7 @@ class MailingListController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating mailing list', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             if (MailingList::where('email', $request->data['email'])->first()) {
@@ -80,6 +83,7 @@ class MailingListController extends Controller
             }
         } catch (Exception $ex) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to create mailing list: ' . $ex->getMessage(), ['user_id' => auth()->user()->id]);
             return $ex->getMessage();
         }
     }
@@ -92,6 +96,7 @@ class MailingListController extends Controller
      */
     public function show(MailingList $mailingList)
     {
+        Log::channel('systemOperations')->info('Viewing mailing list', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -103,6 +108,7 @@ class MailingListController extends Controller
      */
     public function edit(MailingList $mailingList)
     {
+        Log::channel('systemOperations')->info('Loading mailing list edit form', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -115,6 +121,7 @@ class MailingListController extends Controller
      */
     public function update(Request $request, MailingList $mailingList)
     {
+        Log::channel('systemOperations')->info('Updating mailing list', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             if ($mailingList) {
@@ -136,6 +143,7 @@ class MailingListController extends Controller
             }
         } catch (Exception $ex) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to update mailing list: ' . $ex->getMessage(), ['user_id' => auth()->user()->id]);
             return $ex->getMessage();
         }
     }
@@ -148,6 +156,7 @@ class MailingListController extends Controller
      */
     public function destroy(MailingList $mailingList)
     {
+        Log::channel('systemOperations')->info('Deleting mailing list', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             if ($mailingList) {
@@ -165,12 +174,14 @@ class MailingListController extends Controller
             }
         } catch (Exception $ex) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to delete mailing list: ' . $ex->getMessage(), ['user_id' => auth()->user()->id]);
             return $ex->getMessage();
         }
     }
 
     public function changeActiveStatus(MailingList $mailingList)
     {
+        Log::channel('systemOperations')->info('Updating mailing list active status', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             if ($mailingList) {
@@ -188,6 +199,7 @@ class MailingListController extends Controller
             }
         } catch (Exception $ex) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to update mailing list active status: ' . $ex->getMessage(), ['user_id' => auth()->user()->id]);
             return $ex->getMessage();
         }
     }

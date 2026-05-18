@@ -29,6 +29,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use OpenAI\Laravel\Facades\OpenAI;
 
@@ -36,8 +37,8 @@ class ReportController extends Controller
 {
     public function index()
     {
-
-        //Get all applications types 
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
+        //Get all applications types
 
         $application_type = ApplicationType::all();
         $establishmentCategories = EstablishmentCategories::withTrashed()->get();
@@ -57,6 +58,7 @@ class ReportController extends Controller
 
     public function generalReport(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching report with custom date range', ['user_id' => auth()->user()->id]);
         $criteria = $request->validate([
             "starting_date" => "required|date",
             "ending_date" => "required|date",
@@ -153,18 +155,20 @@ class ReportController extends Controller
             }
             return view('reports.generalreport.report', compact('applications', 'application_type', 'is_general_report'));
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to fetch report with custom date range: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
 
     public function numberApplicationsByCategory()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         return view('reports.establishments.index');
     }
 
     public function numberApplicationsByCategoryShow(NumberApplicationsByCategory $request)
     {
-
+        Log::channel('systemOperations')->info('Viewing report', ['user_id' => auth()->user()->id]);
         $incomingFields = $request->validated();
         $counts = [];
         $permitcategorysArray = PermitCategory::pluck('id')->toArray();
@@ -196,8 +200,10 @@ class ReportController extends Controller
                 }
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view report: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->with('error', 'Unable to fullfil request' . $e);
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to view report: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->with('error', 'There was an issue with you query' . $e);
         }
 
@@ -210,12 +216,13 @@ class ReportController extends Controller
 
     public function numberOnsiteApplications()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         return view('reports.onsite.index');
     }
 
     public function numberOnsiteApplicationsShow(NumberApplicationsByCategory $request)
     {
-
+        Log::channel('systemOperations')->info('Viewing report', ['user_id' => auth()->user()->id]);
         $incomingFields = $request->validated();
 
         $start_date = $incomingFields['starting_date'];
@@ -240,13 +247,14 @@ class ReportController extends Controller
 
     public function numberSignOffs()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         $application_types = ApplicationType::all();
         return view('reports.signoffs.index', compact('application_types'));
     }
 
     public function numberSignOffsShow(Request $request)
     {
-
+        Log::channel('systemOperations')->info('Viewing report', ['user_id' => auth()->user()->id]);
         $incomingFields = $request->validate([
             'starting_date' => 'required|date',
             'ending_date' => 'required|date'
@@ -271,8 +279,10 @@ class ReportController extends Controller
                 $counts[$categoryId] = ['count' => $count, 'category_name' => $category_name->name];
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view report: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->with('error', 'Unable to fullfil request' . $e);
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to view report: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->with('error', 'There was an issue with you query' . $e);
         }
 
@@ -281,7 +291,7 @@ class ReportController extends Controller
 
     public function backLogReport()
     {
-
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         $counts = [];
         $applicationTypesArray = ApplicationType::pluck('id')->toArray();
         $backlog = Payments::with('applicationType')->whereNotNull('manual_receipt_date')->get();
@@ -293,11 +303,15 @@ class ReportController extends Controller
         return view('reports.backlog.index', ['counts' => $counts]);
     }
 
-    public function newTouristEstablishmentReport(NumberApplicationsByCategory $request) {}
+    public function newTouristEstablishmentReport(NumberApplicationsByCategory $request)
+    {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
+    }
 
     //Transaction Report
     public function transactionReportIndex()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         $application_types = ApplicationType::all();
 
         return view('reports.transactions.index', compact('application_types'));
@@ -305,6 +319,7 @@ class ReportController extends Controller
 
     public function generateTransactionReport(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching report with custom date range', ['user_id' => auth()->user()->id]);
         $criteria = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date',
@@ -331,6 +346,7 @@ class ReportController extends Controller
 
     public function printedCardsIndex()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         $est_clinics = EstablishmentClinics::with('user')
             ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
             ->get();
@@ -343,6 +359,7 @@ class ReportController extends Controller
 
     public function generatePrintedCards(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching report with custom date range', ['user_id' => auth()->user()->id]);
         $criteria = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date',
@@ -391,6 +408,7 @@ class ReportController extends Controller
 
     public function createInspectionsReport()
     {
+        Log::channel('systemOperations')->info('Loading report create form', ['user_id' => auth()->user()->id]);
         $application_types = ApplicationType::all();
 
         return view('reports.inspections.create', compact('application_types'));
@@ -398,6 +416,7 @@ class ReportController extends Controller
 
     public function generateInspectionsReport(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching report with custom date range', ['user_id' => auth()->user()->id]);
         $criteria = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date',
@@ -421,12 +440,13 @@ class ReportController extends Controller
 
     public function countCategoriesByZone()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         return view('reports.categorybyzonecount.index');
     }
 
     public function viewCountCategoriesByZone(Request $request)
     {
-
+        Log::channel('systemOperations')->info('Viewing report', ['user_id' => auth()->user()->id]);
         $incomingFields = $request->validate([
             'starting_date' => 'required|date',
             'ending_date' => 'required|date',
@@ -453,6 +473,7 @@ class ReportController extends Controller
 
     public function generateReport()
     {
+        Log::channel('systemOperations')->info('Fetching report with custom date range', ['user_id' => auth()->user()->id]);
         // Fetch data from database
 
         $start_date = '2025-01-01';
@@ -512,11 +533,13 @@ class ReportController extends Controller
 
     public function allEstablishmentsByZone()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         return view('reports.establishments.estbyzone');
     }
 
     public function viewAllEstablishmentsByZone(Request $request)
     {
+        Log::channel('systemOperations')->info('Viewing report', ['user_id' => auth()->user()->id]);
         // Validate input
         $incomingFields = $request->validate([
             'zone' => 'required'
@@ -541,6 +564,7 @@ class ReportController extends Controller
 
     public function downloadsTest()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         $downloads = Downloads::withCount('zippedApplications')
             ->where('created_at', '>', '2024-01-01')
             ->where('created_at', '<', '2024-12-31')
@@ -554,6 +578,7 @@ class ReportController extends Controller
 
     public function generateMorningReport()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         $users = User::where('last_seen', '>', \Carbon\Carbon::today()->setHour(0))
             ->get();
         $roles = DB::table('roles')->pluck('name', 'id');
@@ -565,6 +590,7 @@ class ReportController extends Controller
 
     public function generateAfternoonReport()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         $users = User::where('last_seen', '>', \Carbon\Carbon::today()->setHour(0))
             ->get();
         $roles = DB::table('roles')->pluck('name', 'id');
@@ -610,11 +636,13 @@ class ReportController extends Controller
     }
     public function collectedCardsIndex()
     {
+        Log::channel('systemOperations')->info('Fetching report list', ['user_id' => auth()->user()->id]);
         return view('reports.collectedcards.index');
     }
 
     public function collectedCardsReport(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching report with custom date range', ['user_id' => auth()->user()->id]);
         $validatedData = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',

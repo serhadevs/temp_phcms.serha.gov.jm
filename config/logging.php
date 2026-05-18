@@ -130,7 +130,12 @@ return [
             'path' => storage_path("logs/activities.log"),
             'level' => 'info',
             'driver' => 'single'
-        ]
+        ],
+        'logOut' => [
+            'path' => storage_path('logs/logout.log'),
+            'level' => 'info',
+            'driver' => 'single'
+        ],
     ],
 
 ];

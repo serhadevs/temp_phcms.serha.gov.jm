@@ -19,6 +19,7 @@ use App\Models\TouristEstablishments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SummaryReportController extends Controller
 {
@@ -29,6 +30,7 @@ class SummaryReportController extends Controller
      */
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching summary report list', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -39,6 +41,7 @@ class SummaryReportController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading summary report create form', ['user_id' => auth()->user()->id]);
         $payment_types = PaymentTypes::with('paymentTypeFacilities')
             ->whereRelation('paymentTypeFacilities', 'facility_id', auth()->user()->facility_id)
             ->get();
@@ -56,6 +59,7 @@ class SummaryReportController extends Controller
 
     public function show(Request $request)
     {
+        Log::channel('systemOperations')->info('Viewing summary report', ['user_id' => auth()->user()->id]);
         $timeline = $request->validate([
             'starting_date' => 'required|date',
             'ending_date' => 'required|date',
@@ -85,6 +89,7 @@ class SummaryReportController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating summary report', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -845,6 +850,7 @@ class SummaryReportController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading summary report edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -857,6 +863,7 @@ class SummaryReportController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating summary report', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -868,6 +875,7 @@ class SummaryReportController extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting summary report', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }

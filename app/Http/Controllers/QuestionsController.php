@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Questions;
 use App\Models\StudentExam;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class QuestionsController extends Controller
 {
@@ -16,6 +17,7 @@ class QuestionsController extends Controller
      */
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching exam question list', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -26,6 +28,7 @@ class QuestionsController extends Controller
      */
     public function create($examId)
     {
+        Log::channel('systemOperations')->info('Loading exam question create form', ['user_id' => auth()->user()->id, 'examId' => $examId]);
         $exam = StudentExam::findOrFail($examId);
         return view('questions.create', compact('exam'));
     }
@@ -38,6 +41,7 @@ class QuestionsController extends Controller
      */
     public function store(Request $request,$examId)
     {
+        Log::channel('systemOperations')->info('Creating exam question', ['user_id' => auth()->user()->id, 'examId' => $examId]);
         $request->validate([
             'question' => 'required|string',
         ]);
@@ -59,6 +63,7 @@ class QuestionsController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing exam question', ['user_id' => auth()->user()->id, 'id' => $id]);
         $questions = Questions::with('answers')->where('exam_id', $id)->get();
         //dd($questions);
         return view('questions.view', compact('questions', 'id'));
@@ -72,6 +77,7 @@ class QuestionsController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading exam question edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -84,6 +90,7 @@ class QuestionsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating exam question', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -95,6 +102,7 @@ class QuestionsController extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting exam question', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }

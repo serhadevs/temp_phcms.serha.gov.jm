@@ -13,12 +13,14 @@ class WaiverApprovalController extends Controller
 {
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching waiver approval list', ['user_id' => auth()->user()->id]);
         $waivers = Waivers::with('establishment', 'user')->get();
         return view('waiver_approvals.index', compact('waivers'));
     }
 
     public function store(Request $request)
 {
+    Log::channel('systemOperations')->info('Creating waiver approval', ['user_id' => auth()->user()->id]);
     $request->validate([
         'waiver_establishment_id' => 'required|exists:waiver_establishments,id',
         'application_id' => 'required|exists:establishment_clinics,id',
