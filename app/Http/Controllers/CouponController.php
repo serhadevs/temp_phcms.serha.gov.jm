@@ -13,6 +13,7 @@ class CouponController extends Controller
 {
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching coupon list', ['user_id' => auth()->user()->id]);
         // Logic to display all coupons
         $coupons = Coupons::all();
         return view('coupons.index', compact('coupons'));
@@ -20,6 +21,7 @@ class CouponController extends Controller
 
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading coupon create form', ['user_id' => auth()->user()->id]);
         // Logic to show the form for creating a new coupon
     }
 
@@ -63,21 +65,25 @@ class CouponController extends Controller
 
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing coupon', ['user_id' => auth()->user()->id, 'id' => $id]);
         return view('temp_online.coupon');
     }
 
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading coupon edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         // Logic to show the form for editing a specific coupon
     }
 
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating coupon', ['user_id' => auth()->user()->id, 'id' => $id]);
         // Logic to update a specific coupon
     }
 
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting coupon', ['user_id' => auth()->user()->id, 'id' => $id]);
         // Logic to delete a specific coupon
     }
 

@@ -60,7 +60,7 @@ class UserController extends Controller
 
     public function index()
     {
-
+        Log::channel('systemOperations')->info('Fetching users list', ['user_id' => auth()->user()->id]);
         $roles = [1,8];
         if (in_array(Auth::user()->role_id,$roles)) {
 
@@ -89,7 +89,7 @@ class UserController extends Controller
 
     public function filterUsers(Request $request)
     {
-
+        Log::channel('systemOperations')->info('Filtering users list', ['user_id' => auth()->user()->id]);
         $facility_id = $request->facility_id;
         //dd($facility_id);
         $role_id = $request->role_id;
@@ -103,6 +103,7 @@ class UserController extends Controller
     //Shows currently logged in users
     public function onlineUsers(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching online users', ['user_id' => auth()->user()->id]);
         $currentUsers = User::whereNotNull('last_seen')
             ->whereNotNull('last_seen')
             ->orderBy('last_seen', 'DESC')
@@ -115,6 +116,7 @@ class UserController extends Controller
 
     public function loginUsersLocations()
     {
+        Log::channel('systemOperations')->info('Fetching login user locations', ['user_id' => auth()->user()->id]);
         $loginUsers = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->whereNull('logout_time')->get();
         $loginUsersCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')->count();
         $ksaCount = LoginActivity::join('users', 'login_activity.user_id', '=', 'users.id')
@@ -133,6 +135,7 @@ class UserController extends Controller
     //This function serves you the forget password reset form to the user.
     public function forgetPasswordPage()
     {
+        Log::channel('systemOperations')->info('Loading forget password page');
         return view('auth.forgetpassword');
     }
 
@@ -144,8 +147,8 @@ class UserController extends Controller
 
     public function forgetpassword(Request $request)
     {
-
-        //Get the email from the request 
+        Log::channel('systemOperations')->info('Processing forgot password request');
+        //Get the email from the request
         $email = $request->email;
 
         //dd($email);
@@ -175,6 +178,7 @@ class UserController extends Controller
 
     public function reset($token)
     {
+        Log::channel('systemOperations')->info('Loading password reset form');
         $user = User::where('remember_token', '=', $token)->first();
 
         if (!empty($user)) {
@@ -188,7 +192,7 @@ class UserController extends Controller
 
     public function post_reset($token, Request $request)
     {
-
+        Log::channel('systemOperations')->info('Processing password reset');
         $newpassword = $request->password;
         $confirmpassword = $request->password_confirmation;
         $user = User::where('remember_token', '=', $token)->first();
@@ -222,6 +226,7 @@ class UserController extends Controller
     //It resets the password for the user in the database to password123
     public function resetpassword($id)
     {
+        Log::channel('systemOperations')->info('Resetting user password', ['user_id' => auth()->user()->id, 'id' => $id]);
         //Find the user
         $user = User::find($id);
 
@@ -239,6 +244,7 @@ class UserController extends Controller
 
     public function restore($id)
     {
+        Log::channel('systemOperations')->info('Restoring user account', ['user_id' => auth()->user()->id, 'id' => $id]);
         // Find the soft-deleted user
         $user = User::withTrashed()->find($id);
 
@@ -255,11 +261,13 @@ class UserController extends Controller
 
     public function changepasswordMe()
     {
+        Log::channel('systemOperations')->info('Loading change password form', ['user_id' => auth()->user()->id]);
         return view('auth.changepassword');
     }
 
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Updating own password', ['user_id' => auth()->user()->id]);
         $incomingFields = $request->validate([
             'password' => 'required|string|min:8|confirmed',
         ], [
@@ -289,6 +297,7 @@ class UserController extends Controller
 
     public function createuser()
     {
+        Log::channel('systemOperations')->info('Loading create user form', ['user_id' => auth()->user()->id]);
         //Role 2 which is an admin will not be able to add a superadmin
 
         // $roles = Role::where('name', '!=', 'Super Admin')->get();
@@ -303,6 +312,7 @@ class UserController extends Controller
 
     public function addUser(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating new user', ['user_id' => auth()->user()->id]);
         $incomingFields = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
@@ -336,12 +346,13 @@ class UserController extends Controller
 
     public function switchFacility(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading switch facility page', ['user_id' => auth()->user()->id]);
         return view("users.switch_facility");
     }
 
     public function viewEditForm($id)
     {
-
+        Log::channel('systemOperations')->info('Loading user edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //Check to see if the user is authorized to edit an application
 
         if (!in_array(auth()->user()->role_id, [1, 2])) {
@@ -367,7 +378,8 @@ class UserController extends Controller
 
     public function editUser(Request $request, $id)
     {
-        //Get the values from the request 
+        Log::channel('systemOperations')->info('Updating user account', ['user_id' => auth()->user()->id, 'id' => $id]);
+        //Get the values from the request
 
         $validatedData = $request->validate([
             'firstname' => 'required',
@@ -402,8 +414,10 @@ class UserController extends Controller
             //Error if the user update is not valid
             return redirect()->route('users')->with(['error' => 'Error updating record or nothing to update']);
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update user account: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('users')->with(['error' => 'Exception Error:' . $e->getMessage()]);
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to update user account: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('users')->with(['error' => 'Query Exception:' . $e->getMessage()]);
         }
     }
@@ -433,6 +447,7 @@ class UserController extends Controller
 
     public function deactivateUser($id)
     {
+        Log::channel('systemOperations')->info('Deactivating user account', ['user_id' => auth()->user()->id, 'id' => $id]);
         // Find the user in the database by ID
         $user = User::find($id);
 

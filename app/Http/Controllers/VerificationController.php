@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\PermitApplication;
+use Illuminate\Support\Facades\Log;
 
 class VerificationController extends Controller
 {
     public function show($permit_no)
     {
+        Log::channel('systemOperations')->info('Viewing permit verification', ['permit_no' => $permit_no]);
         $applicant = PermitApplication::with(
             'permitCategory',
             'payment',

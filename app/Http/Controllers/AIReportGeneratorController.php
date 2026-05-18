@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PermitApplication;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
 class AIReportGeneratorController extends Controller
@@ -12,10 +13,12 @@ class AIReportGeneratorController extends Controller
 
 
     public function index(){
+        Log::channel('systemOperations')->info('Fetching AI report generator', ['user_id' => auth()->user()->id]);
         return view('reports.aireports.create');
     }
 
     public function generateReport(Request $request){
+        Log::channel('systemOperations')->info('Generating AI report', ['user_id' => auth()->user()->id]);
         $prompt = $request->prompt;
 
         $data = PermitApplication::whereDate('created_at','>=','2024-01-01')->get();

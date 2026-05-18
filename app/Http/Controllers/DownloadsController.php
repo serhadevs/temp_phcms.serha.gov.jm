@@ -11,6 +11,7 @@ use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DownloadsController extends Controller
 {
@@ -21,6 +22,7 @@ class DownloadsController extends Controller
      */
     public function food_handlers($id)
     {
+        Log::channel('systemOperations')->info('Fetching food handler permit downloads list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -67,6 +69,7 @@ class DownloadsController extends Controller
 
     public function customFilterFHand(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching food handler permit downloads list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -92,6 +95,7 @@ class DownloadsController extends Controller
 
     public function food_est($id)
     {
+        Log::channel('systemOperations')->info('Fetching food establishment downloads list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -133,6 +137,7 @@ class DownloadsController extends Controller
 
     public function customFilterFoodEst(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching food establishment downloads list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -161,6 +166,7 @@ class DownloadsController extends Controller
      */
     public function downloadZip(Request $request)
     {
+        Log::channel('systemOperations')->info('Downloading zip file', ['user_id' => auth()->user()->id]);
         $now = \Carbon\Carbon::now()->toDateTimeString();
         $download = Downloads::find($request->download_id);
         if ($download) {
@@ -179,6 +185,7 @@ class DownloadsController extends Controller
      */
     public function tourist_est($id)
     {
+        Log::channel('systemOperations')->info('Fetching tourist establishment downloads list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -224,6 +231,7 @@ class DownloadsController extends Controller
 
     public function customFilterTourEst(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching tourist establishment downloads list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -252,6 +260,7 @@ class DownloadsController extends Controller
      */
     public function destroyPrintable(Request $request)
     {
+        Log::channel('systemOperations')->info('Deleting printable application', ['user_id' => auth()->user()->id]);
         $now = \Carbon\Carbon::now()->toDateTimeString();
         try {
             if ($request->route('app_type')) {
@@ -269,6 +278,7 @@ class DownloadsController extends Controller
             }
             return "success";
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete printable application: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
@@ -281,6 +291,7 @@ class DownloadsController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading download edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -293,6 +304,7 @@ class DownloadsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating download', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -304,6 +316,7 @@ class DownloadsController extends Controller
      */
     public function destroy(Request $request)
     {
+        Log::channel('systemOperations')->info('Deleting download', ['user_id' => auth()->user()->id]);
         try {
             if (Downloads::find($request->route('id'))) {
                 if (Downloads::find($request->route('id'))->update(['deleted_at' => date('Y-m-d H:i:s')])) {
@@ -311,12 +324,14 @@ class DownloadsController extends Controller
                 }
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete download: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
 
     public function deleteAll(Request $request)
     {
+        Log::channel('systemOperations')->info('Deleting all selected downloads', ['user_id' => auth()->user()->id]);
         try {
             DB::beginTransaction();
             foreach ($request->data["selected_items"] as $item) {
@@ -331,6 +346,7 @@ class DownloadsController extends Controller
             DB::commit();
             return "success";
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete all selected downloads: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }

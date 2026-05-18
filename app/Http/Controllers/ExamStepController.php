@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Answers;
 use App\Models\StudentExam;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ExamStepController extends Controller
 {
     public function showStep(Request $request, $examId, $step)
 {
+    Log::channel('systemOperations')->info('Viewing exam step', ['user_id' => auth()->user()->id, 'examId' => $examId]);
     $exam = StudentExam::with('questions')->findOrFail($examId);
     $question = $exam->questions->slice($step - 1, 1)->first();
 
@@ -22,6 +24,7 @@ class ExamStepController extends Controller
 
 public function storeAnswer(Request $request, $examId, $step)
 {
+    Log::channel('systemOperations')->info('Storing exam step answer', ['user_id' => auth()->user()->id, 'examId' => $examId]);
     $request->validate([
         'answer' => 'required|string'
     ]);

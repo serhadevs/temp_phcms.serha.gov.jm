@@ -40,6 +40,7 @@ class SignOffController extends Controller
 
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching sign-off list', ['user_id' => auth()->user()->id]);
         $excludedIds = [4, 7];
         $application_type = ApplicationType::whereNotIn('id', $excludedIds)->get();
 
@@ -49,6 +50,7 @@ class SignOffController extends Controller
 
     public function create(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Loading sign-off create form', ['user_id' => auth()->user()->id]);
         $id = $request->id;
         $exam_sites = DB::table('exam_sites')->whereNull('deleted_at')->where('facility_id', auth()->user()->facility_id)->get();
         return view('signoffs.create', compact('exam_sites', 'id'));
@@ -56,6 +58,7 @@ class SignOffController extends Controller
 
     public function fetchApplications(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching sign-off applications', ['user_id' => auth()->user()->id]);
         $sign_off_params = $request->validate([
             'app_type_id' => 'required',
             'exam_date' => 'required_if:app_type_id,1,2',
@@ -144,7 +147,8 @@ class SignOffController extends Controller
 
     public function approve(Request $request)
     {
-        // $app_type_id = 
+        Log::channel('systemOperations')->info('Approving sign-off', ['user_id' => auth()->user()->id]);
+        // $app_type_id =
         // $request->data["appTypeId"];
         $counter = 0;
         try {
@@ -247,6 +251,7 @@ class SignOffController extends Controller
             ];
             // }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to approve sign-off: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             //Return error message to view
             return $e->getMessage();
@@ -256,7 +261,7 @@ class SignOffController extends Controller
 
     public function viewSignOffs()
     {
-
+        Log::channel('systemOperations')->info('Viewing sign-offs', ['user_id' => auth()->user()->id]);
         try {
 
             $applications = SignOff::join('establishment_applications', 'sign_offs.application_id', '=', 'establishment_applications.id')
@@ -271,14 +276,17 @@ class SignOffController extends Controller
 
             return view('signoffs.signsoff', compact('applications'));
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view sign-offs: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->with('error', 'Unknown error occured', $e->getMessage());
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to view sign-offs: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->with('error', 'Unable to fetch data from the database!', $e->getMessage());
         }
     }
 
     public function requestSignoffReversal(Request $request)
     {
+        Log::channel('systemOperations')->info('Requesting sign-off reversal', ['user_id' => auth()->user()->id]);
         try {
             if ($application = $request->data['app_type'] == 1 ?
                 PermitApplication::with('zippedApplication', 'signOffs')->find($request->data['application_id'])
@@ -313,6 +321,7 @@ class SignOffController extends Controller
                 throw new Exception("This permit application does not exist");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to request sign-off reversal: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -320,6 +329,7 @@ class SignOffController extends Controller
 
     public function viewReversalRequests()
     {
+        Log::channel('systemOperations')->info('Viewing sign-off reversal requests', ['user_id' => auth()->user()->id]);
         $requests = EditTransactions::with('signOffs', 'user')
             ->where('system_operation_type_id', 4)
             ->where('facility_id', auth()->user()->facility_id)
@@ -331,6 +341,7 @@ class SignOffController extends Controller
 
     public function approveReversal($id)
     {
+        Log::channel('systemOperations')->info('Approving sign-off reversal', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($edit = EditTransactions::find($id)) {
                 if ($sign_off = SignOff::find($edit->table_id)) {
@@ -366,6 +377,7 @@ class SignOffController extends Controller
                 throw new Exception("This request for this ID does not exist");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to approve sign-off reversal: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -373,6 +385,7 @@ class SignOffController extends Controller
 
     public function permitJob($permitIds)
     {
+        Log::channel('systemOperations')->info('Running permit job', ['user_id' => auth()->user()->id]);
         $permit_applications = PermitApplication::with('permitCategory', 'payment', 'appointment.examDate.examSites', 'user', 'establishmentClinics', 'testResults', 'signOffs', 'zippedApplication')
             ->where('photo_upload', '<>', NULL)
             ->where('photo_upload', '<>', '0')
@@ -459,6 +472,7 @@ class SignOffController extends Controller
                         }
                     }
                 } catch (Exception $e) {
+                    Log::channel('systemOperations')->error('Failed to run permit job: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
                     return $e->getMessage();
                 }
             } else if ($key == 2) {
@@ -531,6 +545,7 @@ class SignOffController extends Controller
                         }
                     }
                 } catch (Exception $e) {
+                    Log::channel('systemOperations')->error('Failed to run permit job: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
                     return $e->getMessage();
                 }
             } else if ($key == 3) {
@@ -605,6 +620,7 @@ class SignOffController extends Controller
                         }
                     }
                 } catch (Exception $e) {
+                    Log::channel('systemOperations')->error('Failed to run permit job: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
                     return $e->getMessage();
                 }
             }
@@ -614,6 +630,7 @@ class SignOffController extends Controller
 
     public function printClinicPermits($clinic_id)
     {
+        Log::channel('systemOperations')->info('Printing clinic permits', ['user_id' => auth()->user()->id, 'clinic_id' => $clinic_id]);
         try {
             $counter = 0;
             $rand_string = explode('.', time() / rand(10000, 99999))[0];
@@ -664,6 +681,7 @@ class SignOffController extends Controller
             $zip->close();
             $create_download->update(['application_amount' => $counter]);
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to print clinic permits: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'clinic_id' => $clinic_id]);
             echo $e->getMessage();
         }
     }

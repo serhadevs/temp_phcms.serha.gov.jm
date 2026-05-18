@@ -14,12 +14,14 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AppointmentController extends Controller
 {
 
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching appointment list', ['user_id' => auth()->user()->id]);
         $exam_dates = ExamDates::with('permitCategory')->where('facility_id', auth()->user()->facility_id)
             ->where('application_type_id', 1)
             ->with(['permitCategory' => function ($query) {
@@ -35,7 +37,7 @@ class AppointmentController extends Controller
 
     public function filterExamDates($id, $day)
     {
-
+        Log::channel('systemOperations')->info('Fetching exam dates by category and day', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             $weekDays = ['sun', 'mon', 'tue', 'wed', 'thur', 'fri', 'sat'];
             $exam_dates = ExamDates::with('permitCategory', 'examSites')
@@ -57,6 +59,7 @@ class AppointmentController extends Controller
                 'data' => $exam_dates
             ], 200);
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to fetch exam dates by category and day: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return response()->json([
                 'success' => false,
                 'message' => 'Error fetching exam dates: ' . $e->getMessage()
@@ -158,6 +161,7 @@ class AppointmentController extends Controller
 
     public function getBookedDates(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching booked appointment dates', ['user_id' => auth()->user()->id]);
         try {
             //Also ensure you get the days that actually have a exam day to it
             //Monday, Tuesday, Wednesday, Thursday
@@ -213,6 +217,7 @@ class AppointmentController extends Controller
                 'status' => 200
             ]);
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to fetch booked appointment dates: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return response()->json([
                 'error' => $e->getMessage(),
                 'status' => 400
@@ -222,6 +227,7 @@ class AppointmentController extends Controller
 
     public function show(Request $request)
     {
+        Log::channel('systemOperations')->info('Viewing appointment', ['user_id' => auth()->user()->id]);
         // Validate incoming request fields
         $incomingFields = $request->validate([
             "app_date" => "required|date",
@@ -254,8 +260,10 @@ class AppointmentController extends Controller
                 return redirect()->back()->with('error', 'No appointments found for the selected date.');
             }
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to view appointment: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->back()->with('error', 'There was an issue with the query: ' . $e->getMessage());
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view appointment: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->back()->with('error', 'An unexpected error occurred: ' . $e->getMessage());
         }
 

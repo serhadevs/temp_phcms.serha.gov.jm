@@ -10,6 +10,7 @@ use App\Models\PermitCategory;
 use App\Models\TestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use DateTime;
 use Exception;
 
@@ -23,6 +24,7 @@ class PermitTestResultsController extends Controller
 
     public function outstanding($id)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding permit test result list', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -67,6 +69,7 @@ class PermitTestResultsController extends Controller
 
     public function outstandingCustom(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding permit test result list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -87,6 +90,7 @@ class PermitTestResultsController extends Controller
 
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching permit test result list', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -129,6 +133,7 @@ class PermitTestResultsController extends Controller
 
     public function customFilterProcessedResults(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching permit test result list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -152,11 +157,13 @@ class PermitTestResultsController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading permit test result create form', ['user_id' => auth()->user()->id]);
         //
     }
 
     public function permitResults(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading permit test result create form', ['user_id' => auth()->user()->id]);
         $permit_id = $request->route('id');
         $permit_application = PermitApplication::with('appointment.examDate.examSites', 'establishmentClinics')
             ->find($permit_id);
@@ -167,6 +174,7 @@ class PermitTestResultsController extends Controller
 
     public function addPermitResults(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating permit test result', ['user_id' => auth()->user()->id]);
         $permit_results = $request->validate([
             'staff_contact' => 'required',
             'overall_score' => 'required|numeric|max:100|min:0'
@@ -197,6 +205,7 @@ class PermitTestResultsController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating permit test result', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -219,6 +228,7 @@ class PermitTestResultsController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading permit test result edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($result = TestResult::find($id)) {
                 if ($permit_application = PermitApplication::with('testResults', 'user')->find($result->application_id)) {
@@ -241,6 +251,7 @@ class PermitTestResultsController extends Controller
                 throw new Exception('This Test Result does not exist.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to load permit test result edit form: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', $e->getMessage());
         }
     }
@@ -248,6 +259,7 @@ class PermitTestResultsController extends Controller
 
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing permit test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($result = TestResult::find($id)) {
                 if ($permit_application = PermitApplication::with('testResults', 'user')->find($result->application_id)) {
@@ -271,6 +283,7 @@ class PermitTestResultsController extends Controller
                 throw new Exception('This Test Result does not exist.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view permit test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', $e->getMessage());
         }
     }
@@ -284,6 +297,7 @@ class PermitTestResultsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating permit test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $updated_results = $request->validate([
             'staff_contact' => 'required',
             'overall_score' => 'required|numeric|max:100|min:0',
@@ -338,6 +352,7 @@ class PermitTestResultsController extends Controller
                 throw new Exception('These test results do not exist.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update permit test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -350,6 +365,7 @@ class PermitTestResultsController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting permit test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($results = TestResult::with('permitApplication')
                 ->where('application_type_id', 1)
@@ -390,6 +406,7 @@ class PermitTestResultsController extends Controller
                 throw new Exception("This test results either no longer exists or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('PermitTestResultsController::destroy: ' . $e->getMessage());
             DB::rollBack();
             return $e->getMessage();
         }

@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TouristEstApplicationsController extends Controller
 {
@@ -26,6 +27,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching tourist establishment applications', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -71,6 +73,7 @@ class TouristEstApplicationsController extends Controller
 
     public function customIndex(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching tourist establishment applications with custom date range', ['user_id' => auth()->user()->id]);
         $timeline = $request->validate([
             'starting_date' => 'required',
             'ending_date' => 'required',
@@ -92,6 +95,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading tourist establishment create form', ['user_id' => auth()->user()->id]);
         return view('tourist_est.create');
     }
 
@@ -103,6 +107,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating tourist establishment application', ['user_id' => auth()->user()->id]);
         $tourist_est = $request->validate([
             'establishment_name' => 'required',
             'establishment_address' => 'required',
@@ -164,6 +169,7 @@ class TouristEstApplicationsController extends Controller
 
     public function generateTouristPermitNo()
     {
+        Log::channel('systemOperations')->info('Generating tourist establishment permit number', ['user_id' => auth()->user()->id]);
         //Generate permit no.
         do {
             $abbr = Facility::where('id', auth()->user()->facility_id)
@@ -188,6 +194,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function view($id)
     {
+        Log::channel('systemOperations')->info('Viewing tourist establishment application', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = TouristEstablishments::with('managers.editTransactions', 'services', 'user')->find($id);
 
         $system_operation_type_id = 10;
@@ -205,6 +212,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading tourist establishment edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = TouristEstablishments::with('managers', 'services', 'user')->find($id);
         $system_operation_type_id = 10;
 
@@ -223,6 +231,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating tourist establishment application', ['user_id' => auth()->user()->id, 'id' => $id]);
         $update_tourist_est = $request->validate([
             'establishment_name' => 'required',
             'establishment_address' => 'required',
@@ -282,6 +291,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This tourist establishment application does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update tourist establishment application: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -297,6 +307,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function createManager($tourist_est_id)
     {
+        Log::channel('systemOperations')->info('Loading manager create form for tourist establishment', ['user_id' => auth()->user()->id, 'id' => $tourist_est_id]);
         $establishment_name = TouristEstablishments::find($tourist_est_id)->establishment_name;
 
         return view('tourist_est.create_mangers', compact('establishment_name', 'tourist_est_id'));
@@ -304,6 +315,7 @@ class TouristEstApplicationsController extends Controller
 
     public function storeManager(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Adding manager to tourist establishment', ['user_id' => auth()->user()->id, 'id' => $id]);
         $tourist_est_managers = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
@@ -345,6 +357,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This application does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to add manager to tourist establishment: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -367,6 +380,7 @@ class TouristEstApplicationsController extends Controller
      */
     public function editManager($id)
     {
+        Log::channel('systemOperations')->info('Loading manager edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $manager = TouristEstManagers::find($id);
         $establishment = TouristEstablishments::find($manager->tourist_establishment_id);
 
@@ -375,6 +389,7 @@ class TouristEstApplicationsController extends Controller
 
     public function updateManager(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating tourist establishment manager', ['user_id' => auth()->user()->id, 'id' => $id]);
         $tourist_est_manager_update = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
@@ -436,6 +451,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This tourist establishment manager does not exist.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update tourist establishment manager: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -452,6 +468,7 @@ class TouristEstApplicationsController extends Controller
 
     public function updateService(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating tourist establishment service', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($service = TouristEstServices::find($id)) {
                 if ($application = TouristEstablishments::with('user')
@@ -504,6 +521,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This service does not exist.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update tourist establishment service: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -514,12 +532,14 @@ class TouristEstApplicationsController extends Controller
                 return 'success';
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update tourist establishment service: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return $e->getMessage();
         }
     }
 
     public function deleteService(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting tourist establishment service', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($service = TouristEstServices::find($id)) {
                 if ($application = TouristEstablishments::with('user')
@@ -559,6 +579,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This service does not exist.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete tourist establishment service: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -566,6 +587,7 @@ class TouristEstApplicationsController extends Controller
 
     public function deleteManager(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting tourist establishment manager', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($manager = TouristEstManagers::find($id)) {
                 if ($application = TouristEstablishments::with('user')
@@ -605,6 +627,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This tourist establishment manager does not exist.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete tourist establishment manager: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -612,6 +635,7 @@ class TouristEstApplicationsController extends Controller
 
     public function storeService(Request $request)
     {
+        Log::channel('systemOperations')->info('Adding service to tourist establishment', ['user_id' => auth()->user()->id]);
         try {
             if ($application = TouristEstablishments::with('user')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
@@ -650,6 +674,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This tourist establishment application either does not exist or doesn't belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to add service to tourist establishment: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             DB::rollBack();
             return $e->getMessage();
         }
@@ -661,12 +686,14 @@ class TouristEstApplicationsController extends Controller
                 return 'success';
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to add service to tourist establishment: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
 
     public function renewal($id)
     {
+        Log::channel('systemOperations')->info('Loading tourist establishment renewal form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = TouristEstablishments::with('services', 'managers')->find($id);
 
         return view('tourist_est.renew', compact('application'));
@@ -674,6 +701,7 @@ class TouristEstApplicationsController extends Controller
 
     public function renew(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Processing tourist establishment renewal', ['user_id' => auth()->user()->id, 'id' => $id]);
         $tourist_est = $request->validate([
             'establishment_name' => 'required',
             'establishment_address' => 'required',
@@ -765,6 +793,7 @@ class TouristEstApplicationsController extends Controller
 
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting tourist establishment application', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($application = TouristEstablishments::with('testResults', 'managers', 'services')->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->find($id)) {
                 if ($application->sign_off_status != '1') {
@@ -817,6 +846,7 @@ class TouristEstApplicationsController extends Controller
                 throw new Exception("This establishment does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete tourist establishment application: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }

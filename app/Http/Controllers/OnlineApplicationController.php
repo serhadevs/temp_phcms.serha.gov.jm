@@ -9,6 +9,7 @@ use App\Models\PermitApplication;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -22,6 +23,7 @@ class OnlineApplicationController extends Controller
      */
     public function index(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching online application list');
         if ($request->hasValidSignature()) {
             $online_user = OnlineUser::find($request->online_user);
             return view('temp_online.application', compact('online_user'));
@@ -34,15 +36,18 @@ class OnlineApplicationController extends Controller
 
     public function createConfirm()
     {
+        Log::channel('systemOperations')->info('Loading online application create form');
         return view('temp_online.verify_email');
     }
 
     public function getStarted()
     {
+        Log::channel('systemOperations')->info('Viewing online application get started page');
         return view('temp_online.index');
     }
 
     public function resendLink(){
+        Log::channel('systemOperations')->info('Viewing online application resend link page');
         return view('temp_online.verify_email_confirmation');
     }
 
@@ -66,6 +71,7 @@ class OnlineApplicationController extends Controller
 
     public function verifyEmail(Request $request)
     {
+        Log::channel('systemOperations')->info('Verifying online application email');
         try {
             $request->validate([
                 'email' => 'required|email'
@@ -95,6 +101,7 @@ class OnlineApplicationController extends Controller
                 ], 500);
             }
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to verify online application email: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -109,6 +116,7 @@ class OnlineApplicationController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading online application create form');
         //
     }
 
@@ -120,6 +128,7 @@ class OnlineApplicationController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating online application');
         $form_info = $request->validate([
             // 'permit_category_id' => 'required',
             'confirm_fname' => "required",
@@ -229,17 +238,20 @@ class OnlineApplicationController extends Controller
 
     public function payment($id)
     {
+        Log::channel('systemOperations')->info('Viewing online application payment page', ['id' => $id]);
         $permit_application = PermitApplication::find($id);
         return view('temp_online.payment', compact('permit_application'));
     }
 
     public function redeemCoupon($id){
+        Log::channel('systemOperations')->info('Viewing online application redeem coupon page', ['id' => $id]);
         $permit_application = PermitApplication::find($id);
         return view('temp_online.coupon', compact('permit_application'));
     }
 
     public function completedApplication($id)
     {
+        Log::channel('systemOperations')->info('Viewing completed online application', ['id' => $id]);
         $application = PermitApplication::find($id);
         return view('temp_online.completed_application', compact('application'));
     }
@@ -252,6 +264,7 @@ class OnlineApplicationController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing online application', ['id' => $id]);
         //
     }
 
@@ -263,6 +276,7 @@ class OnlineApplicationController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading online application edit form', ['id' => $id]);
         //
     }
 
@@ -275,6 +289,7 @@ class OnlineApplicationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating online application', ['id' => $id]);
         //
     }
 
@@ -286,6 +301,7 @@ class OnlineApplicationController extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting online application', ['id' => $id]);
         //
     }
 }

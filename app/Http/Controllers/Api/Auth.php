@@ -88,6 +88,7 @@ class Auth extends Controller
 
     public function logout(Request $request)
     {
+        Log::channel('systemOperations')->info('API logout');
         //Find the current logged in user
         $user = $request->user();
 
@@ -112,7 +113,7 @@ class Auth extends Controller
 
     public function loginuser(UserLoginRequest $request)
     {
-
+        Log::channel('systemOperations')->info('API login');
 
         //Validate the user information
         $credentials = $request->validated();

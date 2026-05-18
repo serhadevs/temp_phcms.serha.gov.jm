@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class SwitchFacilityController extends Controller
 {
     public function index(){
+        Log::channel('systemOperations')->info('Loading switch facility form', ['user_id' => auth()->user()->id]);
         return view('switchfacility.create');
     }
 
     public function update(Request $request)
     {
+        Log::channel('systemOperations')->info('Updating facility', ['user_id' => auth()->user()->id]);
         // Validate the request data
         $validatedData = $request->validate([
             "location" => "required"
@@ -41,9 +44,11 @@ class SwitchFacilityController extends Controller
     
             return redirect()->route('dashboard.dashboard')->with('success', 'Location updated successfully');
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update facility: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             // Handle any exceptions that occur during the update process
             return back()->with('error', 'An error occurred while updating location: ' . $e->getMessage());
         }  catch (QueryException $e){
+            Log::channel('systemOperations')->error('Failed to update facility: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->with('error', 'Unable to fetch data from the database!', $e->getMessage());
         }
     }

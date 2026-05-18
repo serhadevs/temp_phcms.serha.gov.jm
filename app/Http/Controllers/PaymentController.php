@@ -42,7 +42,7 @@ class PaymentController extends Controller
 {
     public function index()
     {
-
+        Log::channel('systemOperations')->info('Fetching payment list', ['user_id' => auth()->user()->id]);
         // $today = date('Y-m-d');
         // //Set Faculty ID
         // //Disappear when paid
@@ -54,6 +54,7 @@ class PaymentController extends Controller
 
     public function filterProcessedPayments($id)
     {
+        Log::channel('systemOperations')->info('Fetching payment list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -95,6 +96,7 @@ class PaymentController extends Controller
 
     public function customFilterProcessedPayments(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching payment list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -238,6 +240,7 @@ class PaymentController extends Controller
 
     public function customFilterOutstandingPayments(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding payment list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -300,6 +303,7 @@ class PaymentController extends Controller
 
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading payment create form', ['user_id' => auth()->user()->id]);
         $prices = Prices::join('application_types', 'prices.application_type_id', '=', 'application_types.id')
             ->selectRaw('if(prices.id = 7, "Food Handlers - Student", (if(prices.id=8 , "Food Handlers - Teacher Regular", 
             (if(prices.id = 9 , "Food Handlers - Teacher - Early Childhood", application_types.name))))) 
@@ -322,6 +326,7 @@ class PaymentController extends Controller
 
     public function createFromApplication(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading payment create form from application', ['user_id' => auth()->user()->id]);
         $app_id = $request->route('app_id');
         $app_type = $request->route('app_t_id');
         $permit_type = "";
@@ -363,6 +368,7 @@ class PaymentController extends Controller
 
     public function applyClinicPermitPayment($clinic_id)
     {
+        Log::channel('systemOperations')->info('Creating payment for clinic permit', ['user_id' => auth()->user()->id, 'clinic_id' => $clinic_id]);
         $est_payment = Payments::where('application_id', $clinic_id)
             ->where('application_type_id', 4)
             ->first();
@@ -393,11 +399,13 @@ class PaymentController extends Controller
             return json_encode($permit_ids);
         } catch (Exception $e) {
             DB::rollBack();
+            Log::channel('systemOperations')->error('Failed to create payment for clinic permit: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'clinic_id' => $clinic_id]);
         }
     }
 
     public function fixStanMarkSTT()
     {
+        Log::channel('systemOperations')->info('Fixing Stan Mark STT payments', ['user_id' => auth()->user()->id]);
         $applications = PermitApplication::with('payment')
             ->where('establishment_clinic_id', 2431)
             ->doesntHave('payment')
@@ -429,6 +437,7 @@ class PaymentController extends Controller
 
     public function printReceipt(Request $request)
     {
+        Log::channel('systemOperations')->info('Viewing payment receipt', ['user_id' => auth()->user()->id]);
         $payment_id = $request->route('id');
         $payment = Payments::with('paymentType')->find($payment_id);
 
@@ -595,6 +604,7 @@ class PaymentController extends Controller
 
     public function registerOnlinePayment(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating online payment', ['user_id' => auth()->user()->id]);
         $new_payment = $request->validate([
             'price_id' => 'required',
             'application_id' => 'required',
@@ -621,6 +631,7 @@ class PaymentController extends Controller
 
     public function searchApplication(Request $request)
     {
+        Log::channel('systemOperations')->info('Searching payment application', ['user_id' => auth()->user()->id]);
         $application_id = $request->route('app_id');
         $price_id = $request->route('price_id');
 
@@ -1255,6 +1266,7 @@ class PaymentController extends Controller
     // }
     public function fixRobertsIssue()
     {
+        Log::channel('systemOperations')->info('Fixing Roberts issue payments', ['user_id' => auth()->user()->id]);
         try {
             $establishment_clinic = EstablishmentApplications::find(2398);
             $est_permits = PermitApplication::where('establishment_clinic_id', 2398)->get();
@@ -1274,12 +1286,14 @@ class PaymentController extends Controller
                 );
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to fix Roberts issue payments: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
 
     public function fixLattyIssue()
     {
+        Log::channel('systemOperations')->info('Fixing Latty issue payments', ['user_id' => auth()->user()->id]);
         try {
             $counter = 0;
             $establishment_clinic = EstablishmentApplications::find(2345);
@@ -1311,12 +1325,14 @@ class PaymentController extends Controller
             }
             return $counter;
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to fix Latty issue payments: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
 
     public function paymentStatus(int $app_id, $app_type_id)
     {
+        Log::channel('systemOperations')->info('Checking payment status', ['user_id' => auth()->user()->id]);
         if ($app_type_id == 4) {
             $application = EstablishmentClinics::withCount('payment')->find($app_id);
             $due_payments = $application->due_payments == NULL ? 1 : $application->due_payments;
@@ -1341,6 +1357,7 @@ class PaymentController extends Controller
 
     public function outstandingCancellations()
     {
+        Log::channel('systemOperations')->info('Fetching outstanding payment cancellation list', ['user_id' => auth()->user()->id]);
         $paymentCancellations = PaymentCancellationRequests::with('payment.applicationType', 'requester')
             ->where('facility_id', auth()->user()->facility_id)
             ->where('approved', NULL)
@@ -1350,6 +1367,7 @@ class PaymentController extends Controller
 
     public function requestCancelPayment(Request $request)
     {
+        Log::channel('systemOperations')->info('Requesting payment cancellation', ['user_id' => auth()->user()->id]);
         $payment_cancellation = $request->data;
         try {
             if (Payments::find($payment_cancellation["payment_id"])) {
@@ -1366,6 +1384,7 @@ class PaymentController extends Controller
                 throw new Exception('No payment is associated with this id or it has already been deleted.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to request payment cancellation: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
@@ -1399,6 +1418,7 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating payment', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -1410,6 +1430,7 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing payment', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -1421,6 +1442,7 @@ class PaymentController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading payment edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -1433,6 +1455,7 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating payment', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -1444,6 +1467,7 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting payment', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }

@@ -519,6 +519,7 @@ class PermitApplicationController extends Controller
 
     public function newApplicationAppointmentFeature()
     {
+        Log::channel('systemOperations')->info('Loading permit application create form', ['user_id' => auth()->user()->id]);
         $categories = PermitCategory::all();
         $appointments_available = ExamDates::join('exam_sites', 'exam_dates.exam_site_id', '=', 'exam_sites.id')
             ->join('permit_categories', 'permit_categories.id', '=', 'exam_dates.permit_category_id')
@@ -582,6 +583,7 @@ class PermitApplicationController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading permit application create form', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -775,6 +777,7 @@ class PermitApplicationController extends Controller
 
     public function addNewAppointment(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating permit application appointment', ['user_id' => auth()->user()->id]);
         try {
             if (Appointments::create([
                 'appointment_date' => $request->data['appointment_date'],
@@ -788,6 +791,7 @@ class PermitApplicationController extends Controller
                 ];
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to create permit application appointment: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
@@ -843,6 +847,7 @@ class PermitApplicationController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading permit application edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -855,6 +860,7 @@ class PermitApplicationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating permit application', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -945,6 +951,7 @@ class PermitApplicationController extends Controller
 
     public function printApplication($id)
     {
+        Log::channel('systemOperations')->info('Viewing permit application', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             $permit_application = PermitApplication::with([
                 'permitCategory',
@@ -969,6 +976,7 @@ class PermitApplicationController extends Controller
             $filename = $permit_application->firstname . '_' . $permit_application->lastname . '_' . $permit_application->id . '.pdf';
             return $pdf->stream($filename);
         } catch (\Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view permit application: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->back()->with('error', 'Unable to generate PDF: ' . $e->getMessage());
         }
     }

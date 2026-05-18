@@ -30,7 +30,7 @@ class SettingsController extends Controller
 
     public function index()
     {
-
+        Log::channel('systemOperations')->info('Fetching setting list', ['user_id' => auth()->user()->id]);
         $stmp = StmpSettings::find(1);
         $roles = DB::table('roles')->get();
         //dd($roles);
@@ -39,7 +39,7 @@ class SettingsController extends Controller
 
     public function store(StmpSettingsRequest $request)
     {
-
+        Log::channel('systemOperations')->info('Creating setting', ['user_id' => auth()->user()->id]);
         $stmp_settings = $request->validated();
 
         $email = $stmp_settings['from_address'];
@@ -57,14 +57,17 @@ class SettingsController extends Controller
 
             return redirect()->route('admin.index')->with('success', 'Successfully Updated STMP Settings. Test Email was sent to: ' . $email);
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to create setting: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->route('admin.index')->with('error', 'Unable to update STMP Settings ' . $e->getMessage());
         } catch (QueryException $e) {
+            Log::channel('systemOperations')->error('Failed to create setting: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return redirect()->route('admin.index')->with('error', 'There is an issue with the query ' . $e->getMessage());
         }
     }
 
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading setting create form', ['user_id' => auth()->user()->id]);
         $stmp = StmpSettings::find(1);
 
         return view('admin.stmp', compact('stmp'));
@@ -72,11 +75,13 @@ class SettingsController extends Controller
 
     public function TestEmail()
     {
+        Log::channel('systemOperations')->info('Sending test email', ['user_id' => auth()->user()->id]);
         Mail::to('tywayneb@serha.gov.jm')->send(new SendTestEmailConfig());
     }
 
     public function allPaymentMethods()
     {
+        Log::channel('systemOperations')->info('Fetching all payment methods', ['user_id' => auth()->user()->id]);
         $ptfs = PaymentTypeFacilities::all();
 
         return view('admin.payment_type_facilities_setting', compact('ptfs'));
@@ -84,6 +89,7 @@ class SettingsController extends Controller
 
     public function changePMethodActiveStatus($payment_type_id, $facility_id)
     {
+        Log::channel('systemOperations')->info('Updating payment method active status', ['user_id' => auth()->user()->id]);
         try {
             $ptf = PaymentTypeFacilities::where('payment_type_id', $payment_type_id)
                 ->where('facility_id', $facility_id)
@@ -98,18 +104,21 @@ class SettingsController extends Controller
                 return ['success', "Payment Method has been deactivated"];
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update payment method active status: ' . $e->getMessage(), ['user_id' => auth()->user()->id]);
             return $e->getMessage();
         }
     }
 
     public function customPrint()
     {
+        Log::channel('systemOperations')->info('Loading custom print form', ['user_id' => auth()->user()->id]);
         return view('admin.custom_print');
     }
 
     //New Function
     public function generateCustomPrint(Request $request)
     {
+        Log::channel('systemOperations')->info('Generating custom print', ['user_id' => auth()->user()->id]);
         $criteria = $request->validate([
             'application_ids' => "required",
             'application_type_id' => 'required'

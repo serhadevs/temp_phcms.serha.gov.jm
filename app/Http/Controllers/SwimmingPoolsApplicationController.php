@@ -23,6 +23,7 @@ class SwimmingPoolsApplicationController extends Controller
      */
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching swimming pool application list', ['user_id' => auth()->user()->id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -58,6 +59,7 @@ class SwimmingPoolsApplicationController extends Controller
 
     public function customIndex(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching swimming pool application list with custom date range', ['user_id' => auth()->user()->id]);
         $timeline = $request->validate([
             'starting_date' => 'required',
             'ending_date' => 'required',
@@ -79,6 +81,7 @@ class SwimmingPoolsApplicationController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading swimming pool application create form', ['user_id' => auth()->user()->id]);
         return view('swimming_pools.create');
     }
 
@@ -111,6 +114,7 @@ class SwimmingPoolsApplicationController extends Controller
 
     public function generateSwimmingPoolPermitNo()
     {
+        Log::channel('systemOperations')->info('Generating swimming pool permit number', ['user_id' => auth()->user()->id]);
         //Generate permit no.
         do {
             $abbr = auth()->user()->facility->abbr;
@@ -133,6 +137,7 @@ class SwimmingPoolsApplicationController extends Controller
      */
     public function view($id)
     {
+        Log::channel('systemOperations')->info('Viewing swimming pool application', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = SwimmingPoolsApplications::find($id);
         $is_edit = 0;
 
@@ -147,6 +152,7 @@ class SwimmingPoolsApplicationController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading swimming pool application edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = SwimmingPoolsApplications::find($id);
         $is_edit = 1;
 
@@ -225,6 +231,7 @@ class SwimmingPoolsApplicationController extends Controller
 
     public function renewal($id)
     {
+        Log::channel('systemOperations')->info('Loading swimming pool application renewal form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = SwimmingPoolsApplications::find($id);
 
         return view('swimming_pools.renew', compact('application'));
@@ -267,6 +274,7 @@ class SwimmingPoolsApplicationController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting swimming pool application', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($s_pool = SwimmingPoolsApplications::with('user')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
@@ -302,6 +310,7 @@ class SwimmingPoolsApplicationController extends Controller
                 throw new Exception("This swimming pool application does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete swimming pool application: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }

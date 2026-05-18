@@ -11,6 +11,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SwimmingPoolTestResultController extends Controller
 {
@@ -21,6 +22,7 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching swimming pool test result list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -63,6 +65,7 @@ class SwimmingPoolTestResultController extends Controller
 
     public function customIndex(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching swimming pool test result list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -89,6 +92,7 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function create($id)
     {
+        Log::channel('systemOperations')->info('Loading swimming pool test result create form', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($application = SwimmingPoolsApplications::with('payment')->find($id)) {
                 if (!empty($application->payment)) {
@@ -100,12 +104,14 @@ class SwimmingPoolTestResultController extends Controller
                 throw new Exception('This swimming pool does not exist');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to load swimming pool test result create form: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('test-results.swimming-pools.index', ['id' => 0])->with('error', $e->getMessage());
         }
     }
 
     public function outstanding($id)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding swimming pool test result list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -147,6 +153,7 @@ class SwimmingPoolTestResultController extends Controller
 
     public function customOutstanding(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding swimming pool test result list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -173,6 +180,7 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function store(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Creating swimming pool test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $sp_results = $request->validate([
             'staff_contact' => 'required',
             'test_date' => 'date|required',
@@ -206,6 +214,7 @@ class SwimmingPoolTestResultController extends Controller
                 throw new Exception('This swimming pool does not exist');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to create swimming pool test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->route('test-results.swimming-pools.index', ['id' => 0])->with('error', $e->getMessage());
         }
     }
@@ -218,6 +227,7 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing swimming pool test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($application = SwimmingPoolsApplications::with('payment', 'testResults')
                 ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
@@ -235,6 +245,7 @@ class SwimmingPoolTestResultController extends Controller
                 throw new Exception('This test results entry does not exist or does not belong to your facility.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to view swimming pool test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -247,6 +258,7 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading swimming pool test result edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($application = SwimmingPoolsApplications::with('payment', 'testResults')->find($id)) {
                 if (!empty($application->payment)) {
@@ -260,6 +272,7 @@ class SwimmingPoolTestResultController extends Controller
                 throw new Exception('This test results entry does not exist.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to load swimming pool test result edit form: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -273,6 +286,7 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating swimming pool test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $results_edit = $request->validate([
             'staff_contact' => 'required',
             'test_date' => 'date|required',
@@ -331,6 +345,7 @@ class SwimmingPoolTestResultController extends Controller
                 throw new Exception('This Test Result does not exist.');
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update swimming pool test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -344,6 +359,7 @@ class SwimmingPoolTestResultController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting swimming pool test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($result = TestResult::where('facility_id', auth()->user()->facility_id)
                 ->where('application_type_id', 5)
@@ -382,6 +398,7 @@ class SwimmingPoolTestResultController extends Controller
                 throw new Exception("This test results does not exist or does not belong your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete swimming pool test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }

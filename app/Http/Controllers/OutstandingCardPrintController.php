@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use ZipArchive;
 
 class OutstandingCardPrintController extends Controller
 {
     public function index(){
+        Log::channel('systemOperations')->info('Fetching outstanding card print list', ['user_id' => auth()->user()->id]);
         // Retrieve data from the table
         $data = User::all();
 

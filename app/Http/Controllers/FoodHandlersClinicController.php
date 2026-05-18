@@ -68,6 +68,7 @@ class FoodHandlersClinicController extends Controller
 
     public function customFilter(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching food handlers clinic list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -92,12 +93,14 @@ class FoodHandlersClinicController extends Controller
      */
     public function create()
     {
+        Log::channel('systemOperations')->info('Loading food handlers clinic create form', ['user_id' => auth()->user()->id]);
         $waivers = WaiverEstablishments::all();
         return view('food_handlers_clinic.create', compact('waivers'));
     }
 
     public function renewal($id)
     {
+        Log::channel('systemOperations')->info('Loading food handlers clinic renewal form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = EstablishmentClinics::find($id);
         $permit_applications = PermitApplication::where('establishment_clinic_id', $id)->get();
 
@@ -381,6 +384,7 @@ class FoodHandlersClinicController extends Controller
 
     public function viewEmployees($id)
     {
+        Log::channel('systemOperations')->info('Viewing food handlers clinic employees', ['user_id' => auth()->user()->id, 'id' => $id]);
         $permits = PermitApplication::where('establishment_clinic_id', $id)->get();
     }
 
@@ -442,6 +446,7 @@ class FoodHandlersClinicController extends Controller
 
     public function requestsIndex()
     {
+        Log::channel('systemOperations')->info('Fetching food handlers clinic employee requests list', ['user_id' => auth()->user()->id]);
         $requests = EditTransactions::with('changedColumns', 'establishmentClinic', 'user')
             ->where('system_operation_type_id', 1)
             ->where('application_type_id', 4)
@@ -455,6 +460,7 @@ class FoodHandlersClinicController extends Controller
 
     public function approveRequest($id)
     {
+        Log::channel('systemOperations')->info('Approving food handlers clinic employee request', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($edit_transaction = EditTransactions::with('changedColumns')
                 ->where('facility_id', auth()->user()->facility_id)

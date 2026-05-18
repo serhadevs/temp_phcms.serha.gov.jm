@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TouristEstTestResultController extends Controller
 {
@@ -21,6 +22,7 @@ class TouristEstTestResultController extends Controller
      */
     public function index($id)
     {
+        Log::channel('systemOperations')->info('Fetching tourist establishment test result list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -64,6 +66,7 @@ class TouristEstTestResultController extends Controller
 
     public function customIndex(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching tourist establishment test result list with custom date range', ['user_id' => auth()->user()->id]);
         date_default_timezone_set('Etc/GMT+5');
         $timeline = $request->validate([
             'starting_date' => 'required',
@@ -91,6 +94,7 @@ class TouristEstTestResultController extends Controller
      */
     public function create($id)
     {
+        Log::channel('systemOperations')->info('Loading tourist establishment test result create form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = TouristEstablishments::with('payments', 'testResults')
             ->whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())
             ->find($id);
@@ -100,6 +104,7 @@ class TouristEstTestResultController extends Controller
 
     public function outstanding($id)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding tourist establishment test result list', ['user_id' => auth()->user()->id, 'id' => $id]);
         if (auth()->user()->default_filter_id != "") {
             $id = auth()->user()->default_filter_id;
         }
@@ -143,6 +148,7 @@ class TouristEstTestResultController extends Controller
 
     public function outstandingCustom(Request $request)
     {
+        Log::channel('systemOperations')->info('Fetching outstanding tourist establishment test result list with custom date range', ['user_id' => auth()->user()->id]);
         $timeline = $request->validate([
             'starting_date' => 'required',
             'ending_date' => 'required',
@@ -167,6 +173,7 @@ class TouristEstTestResultController extends Controller
      */
     public function store(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Creating tourist establishment test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $tourist_est_results = $request->validate([
             'staff_contact' => 'required',
             'test_date' => 'required',
@@ -198,6 +205,7 @@ class TouristEstTestResultController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing tourist establishment test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = TouristEstablishments::with('testResults')
             ->find($id);
         $is_view = 1;
@@ -215,6 +223,7 @@ class TouristEstTestResultController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading tourist establishment test result edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         $application = TouristEstablishments::with('testResults')
             ->find($id);
         $system_operation_type_id = 3;
@@ -232,6 +241,7 @@ class TouristEstTestResultController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating tourist establishment test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         $tourist_est_results = $request->validate([
             'staff_contact' => 'required',
             'test_date' => 'required',
@@ -295,6 +305,7 @@ class TouristEstTestResultController extends Controller
                 throw new Exception("These results do not exist.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to update tourist establishment test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -308,6 +319,7 @@ class TouristEstTestResultController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Deleting tourist establishment test result', ['user_id' => auth()->user()->id, 'id' => $id]);
         try {
             if ($results = TestResult::with('touristEstablishment')
                 ->where('application_type_id', 6)
@@ -348,6 +360,7 @@ class TouristEstTestResultController extends Controller
                 throw new Exception("This test result either does not exist or does not belong to your facility.");
             }
         } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Failed to delete tourist establishment test result: ' . $e->getMessage(), ['user_id' => auth()->user()->id, 'id' => $id]);
             DB::rollBack();
             return $e->getMessage();
         }

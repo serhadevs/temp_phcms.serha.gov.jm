@@ -7,6 +7,7 @@ use App\Models\ExamDates;
 use App\Models\PermitCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ClinicPermitApplicationController extends Controller
 {
@@ -17,6 +18,7 @@ class ClinicPermitApplicationController extends Controller
      */
     public function index()
     {
+        Log::channel('systemOperations')->info('Fetching clinic permit application list', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -27,6 +29,7 @@ class ClinicPermitApplicationController extends Controller
      */
     public function create(Request $request)
     {
+        Log::channel('systemOperations')->info('Loading clinic permit application create form', ['user_id' => auth()->user()->id]);
         $clinic_permit = EstablishmentClinics::whereIn('user_id', User::facilityUsers()->pluck('id')->flatten())->where('id', $request->route('clinic_app_id'))->first();
 
         if ($clinic_permit->proposed_date == NULL) {
@@ -69,6 +72,7 @@ class ClinicPermitApplicationController extends Controller
      */
     public function store(Request $request)
     {
+        Log::channel('systemOperations')->info('Creating clinic permit application', ['user_id' => auth()->user()->id]);
         //
     }
 
@@ -80,6 +84,7 @@ class ClinicPermitApplicationController extends Controller
      */
     public function show($id)
     {
+        Log::channel('systemOperations')->info('Viewing clinic permit application', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -91,6 +96,7 @@ class ClinicPermitApplicationController extends Controller
      */
     public function edit($id)
     {
+        Log::channel('systemOperations')->info('Loading clinic permit application edit form', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -103,6 +109,7 @@ class ClinicPermitApplicationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::channel('systemOperations')->info('Updating clinic permit application', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 
@@ -114,6 +121,7 @@ class ClinicPermitApplicationController extends Controller
      */
     public function destroy($id)
     {
+        Log::channel('systemOperations')->info('Deleting clinic permit application', ['user_id' => auth()->user()->id, 'id' => $id]);
         //
     }
 }
