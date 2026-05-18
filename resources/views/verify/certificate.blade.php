@@ -81,9 +81,7 @@
 
 <body class="bg-light">
 
-  
-
-    <div class="permit-wrapper">
+     <div class="permit-wrapper">
 
         {{-- WATERMARK --}}
         @if ($isExpired)

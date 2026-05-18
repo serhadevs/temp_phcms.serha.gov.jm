@@ -517,6 +517,7 @@ class PermitApplicationController extends Controller
         return view('food_handlers_permit.create', compact('categories', 'appointments_available'));
     }
 
+    # Feature to help with selecting the appointment date based on availability
     public function newApplicationAppointmentFeature()
     {
         Log::channel('systemOperations')->info('Loading permit application create form', ['user_id' => auth()->user()->id]);
@@ -687,10 +688,13 @@ class PermitApplicationController extends Controller
 
             //Appointment email function. 
             $sendAppointmentMail = new Services();
+            // $createOnlineApplication = new Services();
 
             Log::channel('systemOperations')->info('Permit Application store called', ['user_id' => auth()->user()->id, 'application_id' => $new_permit_application->id]);
+            
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
                 $sendAppointmentMail->sendAppointmentEmail($new_permit_application);
+                // $createOnlineApplication->createOnlineUserAccount($new_permit_application->permit_no);
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
             } else {
 
