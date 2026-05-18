@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Contracts\Mail\Mailable;
+
 
 class Services extends Controller
 {
@@ -193,7 +195,7 @@ class Services extends Controller
             );
 
             // Send activation email AFTER commit
-            $this->sendActivationEmail($applicantEmail,$applicant,$activationCode);
+            $this->sendActivationEmail($applicantEmail, $applicant, $activationCode);
         } catch (Exception $e) {
             DB::rollBack();
             Log::channel('systemOperations')->error(
@@ -211,14 +213,22 @@ class Services extends Controller
         return false;
     }
 
-    private function sendActivationEmail($applicantEmail,$applicant,$activationCode)
+    private function sendActivationEmail($applicantEmail, $applicant, $activationCode)
     {
-
         try {
-            Mail::to($applicantEmail)->queue(new SendActivationEmail($applicantEmail,$applicant,$activationCode));
-            Log::channel('systemOperations')->info('Activation Email Sent to', ['user_id' => auth()->user()->id, 'application_id' => $applicant->id]);
+            Mail::to($applicantEmail)->send(
+                new SendActivationEmail($applicantEmail, $applicant, $activationCode)
+            );
+
+            Log::channel('systemOperations')->info(
+                'Activation Email Sent',
+                ['application_id' => $applicant->id]
+            );
         } catch (Exception $e) {
-            Log::channel('systemOperations')->error('Activation Email Sent to', ['message' => $e->getMessage()]);
+            Log::channel('systemOperations')->error(
+                'Activation Email Failed',
+                ['message' => $e->getMessage()]
+            );
         }
     }
 }
