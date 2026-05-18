@@ -397,7 +397,7 @@
 
                 <!-- LEFT SIDE: Information -->
                 <div class="col-lg-6 info-panel">
-                    <h1>Food Handler Permit Certificate</h1>
+                    <h1>Food Handlers Permit Certificate</h1>
                     <h3>Official Secure Portal for Verification of your Food Handlers Permit</h3>
 
                     <p>The Food Handlers Permit Certificate serves as proof that you are certified to handle food
