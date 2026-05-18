@@ -45,6 +45,7 @@ use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\WaiverApprovalController;
+use App\Http\Controllers\LicenseController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Payments;
 use App\Models\PermitApplication;
@@ -74,6 +75,9 @@ use Livewire\Livewire;
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+// Route::post('/login', [AuthController::class, 'login'])
+//     ->middleware('throttle:authentication_attempts')
+//     ->name('login.post');
 Route::get('/check/establishment/job/{id}', [TestDownloads::class, 'checkFoodEstDownloads']);
 Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::class, 'sanitizeAppointmentsParams']);
 
@@ -81,7 +85,7 @@ Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::cl
 Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
     ->name('verify.permit');
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
-Route::post('/verify-permit/retrieve',
+Route::get('/verify-permit/retrieve',
     [PermitApplicationApi::class, 'retrievePermit']
 )->middleware('throttle:3,1') 
  ->name('verify.retrieval');
@@ -577,4 +581,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.pas
   // Route::delete("/mailing-list/active/{mailingList}", [MailingListController::class, 'changeActiveStatus'])->name('update.activation.status');
   // Route::get("/morning-report", [ReportController::class, 'generateMorningReport']);
   // Route::get("/afternoon-report", [ReportController::class, 'generateAfternoonReport']);
+
+
+  Route::get('/product-key', [LicenseController::class, 'index'])
+    ->name('product.key');
 });

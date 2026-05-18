@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\StmpSettings;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -52,5 +54,16 @@ class AppServiceProvider extends ServiceProvider
                 Config::set('mail', $data);
             }
         }
+
+        RateLimiter::for('authentication_attempts', function (Request $request) {
+        return Limit::perMinute(5) // Clamp execution lines to 5 requests per minute
+            ->by($request->input('email') . $request->ip()) // Scope attempts by email AND IP 
+            ->response(function (Request $request, array $headers) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Too many login attempts. System locked for 60 seconds.'
+                ], 429, $headers);
+            });
+    });
     }
 }

@@ -229,8 +229,8 @@ class SignOffController extends Controller
                     }
 
                     //If sign off is complete send the email to say that they have been signed off
-                    $sendPermitReadyEmail = new Services();
-                    $sendPermitReadyEmail->sendPermitReadyEmail($application);
+                    // $sendPermitReadyEmail = new Services();
+                    // $sendPermitReadyEmail->sendPermitReadyEmail($application);
                     $counter++;
                 }
             }

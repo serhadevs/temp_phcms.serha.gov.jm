@@ -84,7 +84,7 @@
     @php
         $isExpired = session('permit_is_expired');
     @endphp
-    {{-- <div class="watermark"></div> --}}
+
     <div class="permit-wrapper">
 
         {{-- WATERMARK --}}
@@ -255,11 +255,10 @@
             <div class="mt-2">
                 @if (empty($applicant->signOffs))
                     @php
-                      
+
                         $appointment = optional($applicant->appointment)->first();
                         $appointmentDate = $appointment ? $appointment->appointment_date : null;
 
-                       
                         $verb =
                             $appointmentDate && \Carbon\Carbon::parse($appointmentDate)->isBefore(today())
                                 ? 'was'
@@ -269,7 +268,13 @@
                     To finalize this application, the applicant must complete the Food Handlers examination and attend
                     the Medical Interview. The appointment date {{ $verb }}
                     <strong>
-                        {{ $appointmentDate ? \Carbon\Carbon::parse($appointmentDate)->format('d F Y') : 'No Date Scheduled' }}
+                        @if ($appointmentDate)
+                            {{ \Carbon\Carbon::parse($appointmentDate)->format('d F Y') }}
+                        @elseif($applicant->establishmentClinics?->proposed_date)
+                            {{ \Carbon\Carbon::parse($applicant->establishmentClinics->proposed_date)->format('d F Y') }}
+                        @else
+                            No Date Scheduled
+                        @endif
                     </strong>.
                     After successful completion, the Medical Officer of Health will review the results and, if approved,
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
@@ -287,6 +292,45 @@
                     and may operate in compliance with national public health regulations.
                 @endif
             </div>
+
+            {{-- <div class="mt-2">
+                    @if ($applicant->signOffs->isEmpty())
+                        @php
+                            $appointment = optional($applicant->appointment)->first();
+                            $proposedClinic = optional($applicant->establishmentClinics)->first();
+
+                            $appointmentDate = $appointment?->appointment_date;
+                            $proposedDate = $proposedClinic?->proposed_date;
+
+                            $dateToShow = $appointmentDate ?? $proposedDate;
+
+                            $verb = $dateToShow && \Carbon\Carbon::parse($dateToShow)->isBefore(today()) ? 'was' : 'is';
+                        @endphp
+
+                        To finalize this application, the applicant must complete the Food Handlers examination and attend
+                        the Medical Interview. The appointment date {{ $verb }}
+                        <strong>
+                            {{ $dateToShow ? \Carbon\Carbon::parse($dateToShow)->format('d F Y') : 'has not yet been scheduled' }}
+                        </strong>.
+                        After successful completion, the Medical Officer of Health will review the results and, if approved,
+                        officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
+                        Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
+                        clearance and certification for all persons involved in the handling and preparation of food.
+                    @elseif ($isExpired ?? false)
+                        You need to make an appointment at your health department to renew your permit.
+                    @else
+                        The application has now been reviewed and approved by the <strong>Medical Officer of Health
+                            (MOH)</strong>.
+                        In accordance with the <strong>Food Safety Act (1998)</strong>, individuals who handle, prepare, or
+                        come
+                        into contact with food for public consumption must be medically examined, certified, and officially
+                        authorized before engaging in food-handling activities. With the successful completion of the
+                        required
+                        examination and medical interview, and the formal sign-off granted, this applicant is now legally
+                        recognized
+                        as certified to handle food and may operate in compliance with national public health regulations.
+                    @endif
+                </div> --}}
 
 
             @if ($applicant->signOffs && !$isExpired)
@@ -306,7 +350,103 @@
         </div>
     </div>
 
+    <!-- FOOTER -->
+    <div class="mt-5 pt-4"
+        style="border-top: 3px solid #003366; background: linear-gradient(to right, #f8f9fa, #ffffff); padding: 30px 20px; border-radius: 8px; margin-left: -15px; margin-right: -15px; margin-bottom: -15px;">
+
+        <div class="container" style="max-width: 900px;">
+
+
+            <!-- MIDDLE SECTION: Contact & Details (3 columns) -->
+            <div class="row mb-4"
+                style="padding: 20px 0; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
+
+                <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
+                    <div style="padding: 10px;">
+                        <small
+                            style="color: #666; display: block; margin-bottom: 5px; font-weight: 600;">CONTACT</small>
+                        <a href="mailto:permits@moh.gov.jm"
+                            style="color: #b30000; text-decoration: none; font-weight: 600; font-size: 13px;">
+                            permits@serha.gov.jm
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4 text-center mb-3 mb-md-0"
+                    style="border-left: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0;">
+                    <div style="padding: 10px;">
+                        <small style="color: #666; display: block; margin-bottom: 5px; font-weight: 600;">RETRIEVAL DATE:</small>
+                        <span style="color: #333; font-weight: 600; font-size: 13px;">
+                            {{ now()->format('d F Y') }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4 text-center">
+                    <div style="padding: 10px;">
+                        <small style="color: #666; display: block; margin-bottom: 5px; font-weight: 600;">REFERENCE
+                            ID</small>
+                        <span
+                            style="color: #333; font-weight: 600; font-size: 13px; font-family: 'Courier New', monospace;">
+                            {{ $applicant->permit_no ?? $applicant->id }}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- BOTTOM SECTION: Legal Statement -->
+            <div class="row">
+                <div class="col-12">
+                    <div
+                        style="padding: 15px; background: rgba(31, 78, 120, 0.05); border-left: 4px solid #003366; border-radius: 4px;">
+                        <p style="font-size: 11px; color: #555; margin: 0; line-height: 1.6;">
+                            <strong style="color: #003366;">
+                                @if ($applicant->signOffs && $applicant->signOffs->is_granted)
+                                    OFFICIAL DOCUMENT:
+                                @else
+                                    UNOFFICAL DOCUMENT
+                                @endif
+                            </strong>
+
+                            @if ($applicant->signOffs && $applicant->signOffs->is_granted)
+                                This E-Card is issued under the Food Safety Act (1998) and Public Health (Food Handling)
+                                Regulations.
+                                Unauthorized reproduction, alteration, or fraudulent use is prohibited by law.
+                            @else
+                                This is confirmation of application for a Food Handlers Permit under the Food Safety
+                                Act(1998) and Public Health (Food Handling) Regulations.
+                            @endif
+
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM DECORATION -->
+            <div style="margin-top: 15px; text-align: center;">
+                <p style="font-size: 10px; color: #999; margin-top: 5px; margin-bottom: 0;">
+                    Verified by IDPro &nbsp;•&nbsp; {{ now()->format('d/m/Y H:i') }} &nbsp;•&nbsp; {{ $token }}
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+    </div>
+
 </body>
+
+
+{{-- </div>
+    </div> --}}
+
+</body>
+
+
 <script>
     function emailConfirmation() {
         const subject = "Food Handlers Permit Confirmation";

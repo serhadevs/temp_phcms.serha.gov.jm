@@ -23,7 +23,7 @@ Route::middleware(['api.client'])->group(function () {
     // Route::post('/logout', [Auth::class, 'logout']);
 });
 
-Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit']);
+Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit'])->name('permit.verify');
 
 Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
 
@@ -31,5 +31,6 @@ Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::cla
 // Routes that require authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
+    Route::get('/verify-permit/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('api.download');
     Route::post('/logout', [Auth::class, 'logout']);
 });
