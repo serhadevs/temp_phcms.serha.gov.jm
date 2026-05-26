@@ -24,6 +24,8 @@ Route::middleware(['api.client'])->group(function () {
 });
 
 Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit'])->name('permit.verify');
+Route::post('/auth/verify-activation-code', [Auth::class, 'verifyCode']);
+Route::post('/auth/set-password', [Auth::class, 'setPassword']);
 
 Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
 

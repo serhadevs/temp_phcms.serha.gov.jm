@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequestApi;
 use App\Http\Requests\UserLoginRequest;
+use App\Mail\SendOnboardingEmail;
 use App\Models\OnlineUser;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+
 
 class Auth extends Controller
 {
@@ -86,6 +90,65 @@ class Auth extends Controller
         ], 200);
     }
 
+    public function verifyCode(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|digits:6'
+        ]);
+
+        $user = OnlineUser::where('email', $request->email)
+            ->where('activation_code', $request->code)
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Invalid code'
+            ], 400);
+        }
+
+        if (now()->greaterThan($user->activation_expires_at)) {
+            return response()->json([
+                'message' => 'Code expired'
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'Code verified',
+            'email' => $user->email
+        ]);
+    }
+
+    public function setPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $user = OnlineUser::where('email', $request->email)->firstOrFail();
+
+        $user->update([
+            'password' => Hash::make($request->password),
+            'activated_at' => now(),
+            'email_verified_at' => now(),
+            'activation_code' => null,
+            'activation_expires_at' => null,
+        ]);
+
+        // create auth token for mobile login
+        $token = $user->createToken('mobile')->plainTextToken;
+        $email = $user->email;
+
+        // send onboarding complete email
+        $this->sendOnboardingCompleteEmail($user,$email);
+
+        return response()->json([
+            'message' => 'Account activated successfully',
+            'token' => $token
+        ]);
+    }
+
     public function logout(Request $request)
     {
         Log::channel('systemOperations')->info('API logout');
@@ -144,5 +207,14 @@ class Auth extends Controller
             'token_type'    => 'Bearer'
 
         ], 201);
+    }
+
+    private function sendOnboardingCompleteEmail($user,$email){
+    try {
+            Mail::to($email)->queue(new SendOnboardingEmail($user,$email));
+            Log::channel('systemOperations')->info('Onboarding Email Email Sent to', ['applicant' => $email]);
+        } catch (Exception $e) {
+            Log::channel('systemOperations')->error('Activation Email Sent to', ['message' => $e->getMessage()]);
+        }
     }
 }

@@ -22,6 +22,13 @@ class OnlineUser extends Authenticatable
         'email',
         'email_verified_at',
         'password',
+        'activation_token',
+        'activation_expires_at',
+        'activated_at',
+        'email_verified_at',
+        'activation_code',
+        // 'email_verified'
+        
     ];
 
     /**
@@ -44,6 +51,9 @@ class OnlineUser extends Authenticatable
         return [
             // 'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'activation_expires_at' => 'datetime',
+            'activated_at' => 'datetime',
+            'email_verified_at' => 'boolean'
         ];
     }
 }

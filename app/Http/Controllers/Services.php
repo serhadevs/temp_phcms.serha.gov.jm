@@ -6,15 +6,21 @@ use App\Jobs\SendOnlineUserVerifyEmail;
 use App\Jobs\SendPaymentReceiptEmail;
 use App\Jobs\SendPermitApplicationEmailJob;
 use App\Mail\PermitReadyMail;
+use App\Mail\SendActivationEmail;
 use App\Models\Messages;
+use App\Models\OnlineUser;
 use App\Models\PermitApplication;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Illuminate\Contracts\Mail\Mailable;
+
 
 class Services extends Controller
 {
@@ -130,10 +136,99 @@ class Services extends Controller
 
                 Mail::to($application->email)->queue(new PermitReadyMail($application));
                 Log::channel('systemOperations')->info('E-Card Email Sent', ['user_id' => auth()->user()->id, 'application_id' => $application->permit_no]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
 
                 Log::error('Failed to send sign-off email to ' . $application->email . ': ' . $e->getMessage());
             }
+        }
+    }
+    public function createOnlineUserAccount($permit_no)
+    {
+        //Check to see if the user already has an account in the online_users table
+
+        $online_applicant = OnlineUser::where('permit_no', $permit_no)->first();
+
+        if ($online_applicant) {
+            Log::channel('systemOperations')->info('The user already has an online account. No account was created', ['user_id' => auth()->user()->id]);
+            return;
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Look up applicant
+            $applicant = PermitApplication::where('permit_no', $permit_no)->firstOrFail();
+            $applicantEmail = $applicant->email;
+
+            // Validate email
+            if (!$this->validateEmail($applicantEmail)) {
+                throw new Exception('Invalid email address.');
+            }
+
+            // Generate credentials
+            $passwordHash = Hash::make(Str::random(20));
+            $token = Str::random(64);
+            $activationCode = rand(100000, 999999);
+
+            // Create online user
+            $newOnlineUser = OnlineUser::create([
+                'permit_no' => $applicant->permit_no,
+                'email' => $applicantEmail,
+                'password' => $passwordHash,
+                'activation_token' => $token,
+                'activation_expires_at' => now()->addDays(7),
+                'activation_code' => $activationCode
+            ]);
+
+            // Build activation link
+            // $activationLink = url("/activate-account?token=$token&email=$applicantEmail");
+
+            DB::commit();
+
+            Log::channel('systemOperations')->info(
+                'Online profile created for the user',
+                [
+                    'user_id' => auth()->user()->id,
+                    'online_user_id' => $newOnlineUser->id,
+                    'permit_no' => $permit_no
+                ]
+            );
+
+            // Send activation email AFTER commit
+            $this->sendActivationEmail($applicantEmail, $applicant, $activationCode);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::channel('systemOperations')->error(
+                'Unable to create online profile',
+                ['message' => $e->getMessage()]
+            );
+        }
+    }
+
+    private function validateEmail($applicantEmail)
+    {
+        if (filter_var($applicantEmail, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        }
+        return false;
+    }
+
+    private function sendActivationEmail($applicantEmail, $applicant, $activationCode)
+    {
+        try {
+            Mail::to($applicantEmail)->send(
+                new SendActivationEmail($applicantEmail, $applicant, $activationCode)
+            );
+
+            Log::channel('systemOperations')->info(
+                'Activation Email Sent',
+                ['application_id' => $applicant->id]
+            );
+        } catch (Exception $e) {
+            Log::channel('systemOperations')->error(
+                'Activation Email Failed',
+                ['message' => $e->getMessage()]
+            );
         }
     }
 }

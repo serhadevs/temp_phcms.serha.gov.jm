@@ -1,13 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Permit is Ready</title>
+    <title>Activate Your Mobile App Account</title>
     <style>
-        /* Bootstrap-inspired fallback styles */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #f8f9fa;
@@ -38,12 +36,14 @@
             font-size: 22px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #ffffff; /* Explicitly set to white */
+            color: #ffffff;
+            /* Explicitly set to white */
         }
 
         .card-body {
             padding: 35px 30px;
-            color: #333333; /* Changed from #ffffff to dark grey/black for visibility */
+            color: #333333;
+            /* Changed from #ffffff to dark grey/black for visibility */
             line-height: 1.6;
             font-size: 15px;
         }
@@ -67,7 +67,8 @@
         .alert-info ol {
             margin: 0;
             padding-left: 20px;
-            color: #444; /* Dark grey for list items */
+            color: #444;
+            /* Dark grey for list items */
         }
 
         .alert-info li {
@@ -115,7 +116,8 @@
 
             .card-header h1 {
                 font-size: 18px;
-                color: #ffffff; /* Removed the override that made it black */
+                color: #ffffff;
+                /* Removed the override that made it black */
             }
 
             .card-body {
@@ -161,36 +163,49 @@
 
     <div class="card">
         <div class="card-header">
-            <h1>Your Food Handlers E-Card Permit is Ready!</h1>
+            <h1>You are one step away from activating the Food Handlers Mobile App - Powered By IDPro</h1>
         </div>
 
         <div class="card-body">
-            <p>Dear <strong>{{ Str::ucfirst($application['firstname']) }}
-                    {{ Str::ucfirst($application['lastname']) }}</strong>,</p>
+            <p>Dear <strong>{{ Str::ucfirst($applicant['firstname']) }}
+                    {{ Str::ucfirst($applicant['lastname']) }}</strong>,</p>
 
-            <p>We are pleased to inform you that your Food Handler's Application has been officially reviewed, approved,
+            <p>We are pleased to inform you that your Food Handler’s Application has been officially reviewed, approved,
                 and signed off by the Medical Officer of Health.</p>
 
-            <p>We have great news: <strong>Your official E-Card is ready to use right now!</strong> You can use this
-                digital certificate immediately as legal proof of your authorization to handle food.</p>
+            <p><strong>Your mobile app account has been created.</strong>
+                You are now ready to activate your account and set your password so you can securely access your Food
+                Handler’s E-Card from the PHCMS Mobile App anytime.</p>
 
             <div class="alert-info">
-                <h3>How to get your E-Card:</h3>
+                <h3>Activate your mobile app account:</h3>
                 <ol>
-                    <li>Click on this link: <br>
-                        <a href="https://phcms.serha.gov.jm/api/verify-permit/{{ $application->permit_no }}"
-                            style="color: #0b4ea2; text-decoration: underline;">
-                            https://phcms.serha.gov.jm/api/verify-permit/{{ $application->permit_no }}
-                        </a>
-                    </li>
-                    <li>Click on <strong>"Download E-Card"</strong> to view your Food Handlers E-Card Permit.</li>
-                    <li>Save it to your mobile device or print a copy for your employer.</li>
+                    <li>Enter this code to login into the mobile app</li>
+
+                    <div
+                        style="margin: 28px 0; padding: 20px; background-color: #F3F3F3; border-radius: 4px; text-align: center;">
+                        <p
+                            style="margin: 0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #222222;">
+                            Your temporary activation code:
+                        </p>
+                       <p style="color: #E50914; font-family: 'Courier New', Courier, monospace; font-size: 32px; font-weight: bold; text-decoration: none; letter-spacing: 6px; display: inline-block;">
+                         {{ $activationCode }}
+                       </p>
+                            
+                    </div>
+
+                    <li>Create your password when prompted.</li>
+                    <li>Log in to the IDPro Identity Management App to view and download your Food Handler’s E-Card.(Once the Medical
+                        Office of Health signs off your application)</li>
                 </ol>
             </div>
 
+            <p style="margin-top: 35px;">
+                For security reasons, this activation code will expire in <strong>7 days</strong>.
+                If the code expires, please contact your Health Department for assistance.
+            </p>
 
-            <p style="margin-top: 35px;">If you have any questions regarding your application or need technical
-                assistance, please do not hesitate to contact us.</p>
+            <p>If you have any questions or need technical assistance, please do not hesitate to contact us.</p>
 
             <p>Thank you for your commitment to maintaining excellent Public Health Standards!</p>
 
@@ -203,7 +218,7 @@
         <div class="card-footer">
             &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.<br>
             This is an automated message, please do not reply directly to this email. The E-Card Verification process
-            was done using IDPro.
+            is powered by IDPro.
         </div>
     </div>
 
