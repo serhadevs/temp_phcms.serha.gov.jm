@@ -7,26 +7,22 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 
-
-//Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show'])->middleware('web');
 // Route to get authenticated user details
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//  Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
+
 // Route for user login
 Route::middleware(['api.client'])->group(function () {
     Route::post('loginapi', [Auth::class, 'login']);
     Route::post('/login/user', [Auth::class, 'loginuser']);
-    //  Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
-    // Route::post('/logout', [Auth::class, 'logout']);
+  
 });
 
 Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit'])->name('permit.verify');
 Route::post('/auth/verify-activation-code', [Auth::class, 'verifyCode']);
 Route::post('/auth/set-password', [Auth::class, 'setPassword']);
-
 Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
 
 
@@ -35,4 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
     Route::get('/verify-permit/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('api.download');
     Route::post('/logout', [Auth::class, 'logout']);
+
+    //Notifications
+    
 });

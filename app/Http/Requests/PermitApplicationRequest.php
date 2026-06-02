@@ -48,7 +48,7 @@ class PermitApplicationRequest extends FormRequest
         }
 
         return [
-           'permit_category_id' => 'required',
+            'permit_category_id' => 'required',
             'firstname' => "required",
             'middlename' => "nullable",
             'lastname' => "required",
@@ -56,7 +56,7 @@ class PermitApplicationRequest extends FormRequest
             'date_of_birth' => 'required|date',
             'gender' => 'required',
             'permit_type' => 'required',
-            'no_of_years' => [ 'nullable', 'numeric', 'required_if:permit_type,student'],
+            'no_of_years' => ['nullable', 'numeric', 'required_if:permit_type,student'],
             'cell_phone' => 'nullable',
             'home_phone' => 'nullable',
             'work_phone' => 'nullable',
@@ -65,13 +65,17 @@ class PermitApplicationRequest extends FormRequest
             'employer_address' => 'nullable',
             'email' => 'nullable|email',
             // 'trn' => $trnRule,
-            'trn' => 'required',
+            // 'trn' => 'required',
+            'trn' => [
+                'required',
+                'regex:/^(?!\d{3}-000-000$)1\d{2}-\d{3}-\d{3}$/'
+            ],
 
             'applied_before' => 'required',
             'granted' => 'required_if:applied_before,=,1',
             'reason' => 'nullable',
             // 'photo_upload' => 'nullable|extensions:jpg,png,jpeg',
-            'photo_upload' => ['nullable', new FileExtensions($this->photo_upload? pathinfo($this->photo_upload->getClientOriginalName(), PATHINFO_EXTENSION): '')],
+            'photo_upload' => ['nullable', new FileExtensions($this->photo_upload ? pathinfo($this->photo_upload->getClientOriginalName(), PATHINFO_EXTENSION) : '')],
             'exam_date' => 'required',
             'exam_session' => 'required',
             // 'application_date' => 'required',
