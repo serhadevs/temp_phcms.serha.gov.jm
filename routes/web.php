@@ -85,6 +85,8 @@ Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::cl
 Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
     ->name('verify.permit');
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
+Route::get('/verify-permit/data-protection', [PermitApplicationApi::class, 'dataPage'])->name('data-protection');
+Route::get('/verify-permit/terms', [PermitApplicationApi::class, 'termsPage'])->name('terms');
 Route::post('/verify-permit/retrieve',
     [PermitApplicationApi::class, 'retrievePermit']
 )->middleware('throttle:3,1') 

@@ -25,6 +25,14 @@ class PermitApplicationApi extends Controller
         Log::channel('systemOperations')->info('Fetching permit application list');
         return view('verify.index');
     }
+
+    public function dataPage(){
+        return view('verify.data-protection');
+    }
+     public function termsPage(){
+        return view('verify.terms');
+    }
+
     public function fetchApplications($permit_no)
     {
         Log::channel('systemOperations')->info('Fetching permit application', ['permit_no' => $permit_no]);
@@ -501,31 +509,7 @@ class PermitApplicationApi extends Controller
         return redirect($url);
     }
 
-    // private function resolvePermitState($applicant)
-    // {
-
-    //     $signOff = $applicant->signOffs()
-    //         ->where('is_granted', 1)
-    //         ->latest()
-    //         ->first();
-
-    //     $expiry = optional($signOff)->expiry_date;
-
-    //     $isExpired = $expiry
-    //         ? now()->gt(Carbon::parse($expiry))
-    //         : false;
-
-    //     $permitStatus = $signOff
-    //         ? ($isExpired ? 'expired' : 'valid')
-    //         : 'not_signed_off';
-
-    //     return [
-    //         'signOff' => $signOff,
-    //         'expiry' => $expiry,
-    //         'isExpired' => $isExpired,
-    //         'permitStatus' => $permitStatus,
-    //     ];
-    // }
+    
 
     private function resolvePermitStateUnified($applicant)
     {
