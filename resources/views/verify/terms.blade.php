@@ -135,21 +135,7 @@
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center"
-                href="https://www.serha.gov.jm">
-
-                <img src="{{ asset('images/serha_logo.png') }}"
-                    class="logo me-2"
-                    alt="SERHA">
-
-                <span class="fw-bold">
-                    South East Regional Health Authority
-                </span>
-            </a>
-        </div>
-    </nav>
+   @include('verify.partials.header')
 
     <main class="main-content content-panel">
         <div class="container">
