@@ -157,7 +157,7 @@
                                 <!-- TEXT (now wider) -->
                                 <div class="col-6 col-md-8 text-center">
                                     <h6 class="fw-bold mb-0">
-                                        MIN. OF HEALTH AND WELLNESS
+                                        MINISTRY OF HEALTH AND WELLNESS
                                     </h6>
 
                                     <small class="text-muted d-block mt-1" style="font-size:11px;">
