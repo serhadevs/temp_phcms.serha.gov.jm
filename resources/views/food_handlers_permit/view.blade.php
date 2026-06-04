@@ -41,11 +41,7 @@
                         {{ $permit_application->lastname ?? 'No Last Name' }}</span>
                 </h4>
 
-                {{-- Cache Busting --}}
-                @php
-                    $photoPath = storage_path('app/public/' . $permit_application->photo_upload);
-                    $version = file_exists($photoPath) ? filemtime($photoPath) : 1;
-                @endphp
+              
 
                 <img src="{{ asset('storage/' . $permit->photo_upload) }}?v={{ $version }}">
                 <div class="card-body">
