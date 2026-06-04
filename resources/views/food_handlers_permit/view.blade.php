@@ -40,16 +40,23 @@
                     <span>{{ $permit_application->firstname ?? 'No First Name' }}
                         {{ $permit_application->lastname ?? 'No Last Name' }}</span>
                 </h4>
-                {{--  --}}
+
+                {{-- Cache Busting --}}
+                @php
+                    $photoPath = storage_path('app/public/' . $permit_application->photo_upload);
+                    $version = file_exists($photoPath) ? filemtime($photoPath) : 1;
+                @endphp
+
+                <img src="{{ asset('storage/' . $permit->photo_upload) }}?v={{ $version }}">
                 <div class="card-body">
-                    <form action="{{ route('permit.application.update', ['id' => $permit_application->id]) }}" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ route('permit.application.update', ['id' => $permit_application->id]) }}"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col col-md-3 text-center">
                                 <div class="mt-3 text-center">
-                                    <div class="mt-3">
+                                    {{-- <div class="mt-3">
                                         @if ($permit_application->photo_upload)
                                             <img src="{{ asset('storage/' . $permit_application->photo_upload) }}"
                                                 alt="No Image found" style="display:block" class="mx-auto rounded w-100"
@@ -65,6 +72,30 @@
 
 
                                         @endif
+                                        <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
+                                            name="photo_upload" style="display:none">
+                                    </div> --}}
+
+                                    <div class="mt-3">
+                                        @if ($permit_application->photo_upload)
+                                            @php
+                                                $photoPath = storage_path(
+                                                    'app/public/' . $permit_application->photo_upload,
+                                                );
+                                                $version = file_exists($photoPath) ? filemtime($photoPath) : 1;
+                                            @endphp
+                                            <img src="{{ asset('storage/' . $permit_application->photo_upload) }}?v={{ $version }}"
+                                                alt="No Image found" style="display:block" class="mx-auto rounded w-100"
+                                                id="applicant_img">
+                                        @else
+                                            @if (strtolower($permit_application->gender) == 'male')
+                                                <img src="{{ asset('images/male.jpg') }}" class="w-100 rounded-circle" />
+                                            @endif
+                                            @if (strtolower($permit_application->gender) == 'female')
+                                                <img src="{{ asset('images/female.jpg') }}" class="w-100 rounded-circle" />
+                                            @endif
+                                        @endif
+
                                         <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
                                             name="photo_upload" style="display:none">
                                     </div>
@@ -855,7 +886,7 @@
         </div>
 
 
-        </div>
+    </div>
     </div>
 
     {{-- Payment Modal --}}
@@ -1163,7 +1194,7 @@
         function populateCardPickUpModal(appid, payment) {
             document.getElementById('card_app_id').value = appid
             document.getElementById('application_type_id').value = payment.application_type_id
-            
+
         }
     </script>
 
