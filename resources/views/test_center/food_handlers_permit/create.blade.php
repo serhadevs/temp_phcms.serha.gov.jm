@@ -57,9 +57,6 @@
                             @endif
                         </div>
 
-
-
-
                         <div class="mt-3">
                             <label for="" class="form-label">Permit Type</label>
                             <select name="" id="" class="form-select" readonly disabled>
@@ -161,11 +158,6 @@
                             <label for="" class="form-label">Comments</label>
                             <textarea class="form-control" name="comments">{{ old('comments') }}</textarea>
                         </div>
-
-
-
-
-
                 </div>
 
                 <div class="card-footer mb-2">
