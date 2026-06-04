@@ -43,7 +43,7 @@
 
               
 
-                <img src="{{ asset('storage/' . $permit->photo_upload) }}?v={{ $version }}">
+                {{-- <img src="{{ asset('storage/' . $permit->photo_upload) }}?v={{ $version }}"> --}}
                 <div class="card-body">
                     <form action="{{ route('permit.application.update', ['id' => $permit_application->id]) }}"
                         method="POST" enctype="multipart/form-data">
