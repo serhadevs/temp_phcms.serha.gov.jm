@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
         body{
             font-family: Arial, Helvetica, sans-serif;
             background:#f4f6f9;
@@ -14,6 +17,7 @@
 
         .card{
             max-width:600px;
+            width: calc(100% - 32px);
             margin:40px auto;
             background:white;
             padding:30px;
@@ -38,9 +42,10 @@
             font-size:22px;
         }
 
-        .row{
-            margin:12px 0;
-            font-size:18px;
+         .row {
+            margin: 12px 0;
+            font-size: 18px;
+            word-break: break-word;  
         }
 
         .label{
