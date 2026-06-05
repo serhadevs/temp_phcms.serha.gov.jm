@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -26,10 +27,12 @@ class PermitApplicationApi extends Controller
         return view('verify.index');
     }
 
-    public function dataPage(){
+    public function dataPage()
+    {
         return view('verify.data-protection');
     }
-     public function termsPage(){
+    public function termsPage()
+    {
         return view('verify.terms');
     }
 
@@ -179,23 +182,44 @@ class PermitApplicationApi extends Controller
 
     public function retrievePermit(Request $request)
     {
-        $validated = $request->validate([
-            'firstname'     => 'required|string',
-            'lastname'      => 'required|string',
-            'date_of_birth' => 'required|date',
-            'permit_no'     => 'required|string',
+        $validated = Validator::make($request->all(), [
+            'firstname'          => 'required|string',
+            'lastname'           => 'required|string',
+            'date_of_birth'      => 'required|date',
+            'permit_no'          => 'nullable|string|required_without:application_number',
+            'application_number' => 'nullable|string|required_without:permit_no',
+        ], [
+            'permit_no.required_without' =>
+            'Permit Number is required(if you do not have your Application Number).',
+            'application_number.required_without' =>
+            'Application Number is required(if you do not have your Permit Number).',
         ]);
+
+        $validated = $validated->validate();
 
         $firstname = strtolower(trim($validated['firstname']));
         $lastname  = strtolower(trim($validated['lastname']));
         $dob       = $validated['date_of_birth'];
         $permitNo  = strtoupper(trim($validated['permit_no']));
+        $applicationNumber = strtoupper(trim($validated['application_number']));
 
-        $applicant = PermitApplication::whereRaw('LOWER(firstname) = ?', [$firstname])
+        // $applicant = PermitApplication::whereRaw('LOWER(firstname) = ?', [$firstname])
+        //     ->whereRaw('LOWER(lastname) = ?', [$lastname])
+        //     ->whereDate('date_of_birth', $dob)
+        //     ->whereRaw('UPPER(permit_no) = ?', [$permitNo])
+        //     ->first();
+
+        $query = PermitApplication::whereRaw('LOWER(firstname) = ?', [$firstname])
             ->whereRaw('LOWER(lastname) = ?', [$lastname])
-            ->whereDate('date_of_birth', $dob)
-            ->whereRaw('UPPER(permit_no) = ?', [$permitNo])
-            ->first();
+            ->whereDate('date_of_birth', $dob);
+
+        if (!empty($permitNo)) {
+            $query->whereRaw('UPPER(permit_no) = ?', [strtoupper($permitNo)]);
+        } else {
+            $query->where('id', $applicationNumber);
+        }
+
+        $applicant = $query->first();
 
         if (!$applicant) {
             return back()->withErrors([
@@ -217,13 +241,13 @@ class PermitApplicationApi extends Controller
 
         $state = $this->resolvePermitStateUnified($applicant);
 
-        // if ($state['signOff']) {
-        //     $state['signOff']->trackAccess(
-        //         'viewed',
-        //         'web_portal_form',
-        //         $request
-        //     );
-        // }
+        if ($state['signOff']) {
+            $state['signOff']->trackAccess(
+                'viewed',
+                'web_portal_form',
+                $request
+            );
+        }
 
         $token = bin2hex(random_bytes(32));
 
@@ -509,7 +533,7 @@ class PermitApplicationApi extends Controller
         return redirect($url);
     }
 
-    
+
 
     private function resolvePermitStateUnified($applicant)
     {

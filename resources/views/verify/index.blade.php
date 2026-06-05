@@ -262,7 +262,7 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
         }
 
-        
+
 
         @keyframes scanPulse {
             0% {
@@ -319,21 +319,22 @@
 
     <!-- Official Top Bar -->
     <div class="top-bar">
-    <div class="container d-flex justify-content-between align-items-center">
-        <span class="d-flex align-items-center">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag" style="height: 16px; width: auto;" class="me-2">
-            Government of Jamaica
-        </span>
-        
-        <div class="d-none d-md-block">
-            <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
-            <a href="#" class="text-white text-decoration-none">Contact Us</a>
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="d-flex align-items-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg" alt="Jamaica Flag"
+                    style="height: 16px; width: auto;" class="me-2">
+                Government of Jamaica
+            </span>
+
+            <div class="d-none d-md-block">
+                <a href="#" class="text-white text-decoration-none me-3">Accessibility</a>
+                <a href="#" class="text-white text-decoration-none">Contact Us</a>
+            </div>
         </div>
     </div>
-</div>
 
-  
-@include('verify.partials.header')
+
+    @include('verify.partials.header')
     <!-- Main Content wrapper to push footer down -->
     <main class="main-content">
         <div class="container-fluid m-0 p-0">
@@ -441,18 +442,41 @@
                                 </div>
 
                                 <!-- Permit Number -->
-                                <div class="mb-4">
+                                <div class="mb-3">
                                     <label class="form-label">Permit Number</label>
                                     <span class="form-text">
                                         Found on your payment receipt or previous permit document (e.g., KSA1234567)
                                     </span>
 
-                                    <input type="text"
-                                        class="form-control @error('permit_no') is-invalid @enderror"
+                                    <input type="text" class="form-control @error('permit_no') is-invalid @enderror"
                                         placeholder="Enter your Permit Number" name="permit_no"
                                         value="{{ old('permit_no') }}">
 
                                     @error('permit_no')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- OR Divider -->
+                                <div class="text-center fw-bold text-muted mb-2">
+                                    &mdash; OR &mdash;
+                                </div>
+
+                                <!-- Application Number -->
+                                <div class="mb-4">
+                                    <label class="form-label">Application Number</label>
+                                    <span class="form-text">
+                                        Found on your payment receipt (e.g., 437483)
+                                    </span>
+
+                                    <input type="text"
+                                        class="form-control @error('application_number') is-invalid @enderror"
+                                        placeholder="Enter your application number" name="application_number"
+                                        value="{{ old('application_number') }}">
+
+                                    @error('application_number')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -489,7 +513,7 @@
         </div>
     </main>
 
-   @include('verify.partials.footer')
+    @include('verify.partials.footer')
 
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
