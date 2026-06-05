@@ -17,8 +17,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['api.client'])->group(function () {
     Route::post('loginapi', [Auth::class, 'login']);
     Route::post('/login/user', [Auth::class, 'loginuser']);
-  
+    Route::post('/forgot-password', [Auth::class, 'sendOtp']);
+    Route::post('/verify-otp', [Auth::class, 'verifyOtp']);
+    Route::post('/reset-password', [Auth::class, 'resetPassword']);
 });
+
+// Route::post('/forgot-password', [Auth::class, 'sendOtp']);
+// Route::post('/verify-otp', [Auth::class, 'verifyOtp']);
+// Route::post('/reset-password', [Auth::class, 'resetPassword']);
 
 Route::get('/verify-permit/{permit_no}', [PermitApplicationApi::class, 'verifyPermit'])->name('permit.verify');
 Route::post('/auth/verify-activation-code', [Auth::class, 'verifyCode']);
@@ -29,9 +35,9 @@ Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::cla
 // Routes that require authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/applicant/{permit_no}', [PermitApplicationApi::class, 'fetchApplications']);
-    Route::get('/verify-permit/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('api.download');
+    Route::get('/verify-permit/download/{id}', [PermitApplicationApi::class, 'downloadCertificate'])->name('api.download');
     Route::post('/logout', [Auth::class, 'logout']);
 
     //Notifications
-    
+
 });
