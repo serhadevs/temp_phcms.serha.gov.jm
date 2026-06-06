@@ -15,8 +15,8 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="/verify-permit/home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Food Handlers Permit</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Establisment Licenses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/verify-permit/home">Food Handlers Permit</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/verify-establishments">Establisment Licenses</a></li>
                     {{-- <li class="nav-item"><a class="nav-link" href="#">Resources</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">News</a></li> --}}
                 </ul>
