@@ -14,8 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('online_users', function (Blueprint $table) {
-            $table->string('email')->nullable()->after('permit_no');
-            $table->timestamp('email_verified_at')->nullable()->after('email');
+            if (!Schema::hasColumn('online_users', 'email')) {
+                $table->string('email')->nullable()->after('permit_no');
+            }
+            if (!Schema::hasColumn('online_users', 'email_verified_at')) {
+                $table->timestamp('email_verified_at')->nullable()->after('email');
+            }
         });
     }
 
