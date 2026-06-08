@@ -10,6 +10,7 @@ use App\Mail\SendActivationEmail;
 use App\Models\Messages;
 use App\Models\OnlineUser;
 use App\Models\PermitApplication;
+use App\Models\SignOff;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -230,5 +231,19 @@ class Services extends Controller
                 ['message' => $e->getMessage()]
             );
         }
+    }
+
+    function generateEcards(){
+        do {
+            // Generate a random integer between 1 and 9,999,999
+            $randomNumber = mt_rand(1, 9999999);
+            
+            // Format it with the prefix and pad it to exactly 7 digits with leading zeros
+            $formattedNumber = 'ECARD-' . str_pad((string)$randomNumber, 7, '0', STR_PAD_LEFT);
+            
+           
+        } while (SignOff::where('ecard_id', $formattedNumber)->exists());
+
+        return $formattedNumber;
     }
 }

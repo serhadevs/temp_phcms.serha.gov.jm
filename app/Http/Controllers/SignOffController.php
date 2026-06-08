@@ -217,6 +217,8 @@ class SignOffController extends Controller
                             $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+1 years"), "Y-m-d");
                         }
 
+                        $generateEcards = new Services();
+
                         SignOff::create([
                             'is_granted' => TRUE,
                             'permit_no' => $application->permit_no,
@@ -224,13 +226,14 @@ class SignOffController extends Controller
                             'user_id' => Auth()->user()->id,
                             'application_type_id' => $request->data["appTypeId"],
                             'application_id' => $item,
-                            'expiry_date' => $expiry_date
+                            'expiry_date' => $expiry_date,
+                            'ecard_id'            => $generateEcards->generateEcards()
                         ]);
                     }
 
                     //If sign off is complete send the email to say that they have been signed off
-                    // $sendPermitReadyEmail = new Services();
-                    // $sendPermitReadyEmail->sendPermitReadyEmail($application);
+                    $sendPermitReadyEmail = new Services();
+                    $sendPermitReadyEmail->sendPermitReadyEmail($application);
                     $counter++;
                 }
             }

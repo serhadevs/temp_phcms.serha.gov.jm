@@ -342,17 +342,17 @@
 
                 <!-- LEFT SIDE: Information -->
                 <div class="col-lg-6 info-panel">
-                    <h1>Food Handlers Permit Certificate</h1>
-                    <h3>Official Secure Portal for Verification of your Food Handlers Permit</h3>
+                    <h1>Food Establishments License Certificate</h1>
+                    <h3>Official Secure Portal for Verification of your Food Establishments License</h3>
 
-                    <p>The Food Handlers Permit Certificate serves as proof that you are certified to handle food
+                    <p>The Food Establishments License Certificate serves as proof that you are certified to handle food
                         commercially in accordance with the Ministry of Health & Wellness Public Health Regulations of
                         1998. This system is powered by IDPro.</p>
 
                     <ul class="feature-list">
                         <li><span class="custom-bullet"></span> Proof that you are valid to handle food preparation</li>
                         <li><span class="custom-bullet"></span> Applicant identification information</li>
-                        <li><span class="custom-bullet"></span> Active and expired permit lookup</li>
+                        <li><span class="custom-bullet"></span> Active and expired License lookup</li>
                     </ul>
 
                     <div class="d-flex flex-wrap gap-3 justify-content-lg-start justify-content-center">
@@ -382,64 +382,21 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <form action="{{ route('verify.retrieval') }}" method="post">
+                    {{-- <form action="{{ route('verify.establishments.view') }}" method="post">
                         @csrf
 
                         <div class="form-card">
                             <div class="form-header">
                                 <div class="form-icon">
-                                    <i class="bi bi-file-earmark-person"></i>
+                                    <i class="bi bi-building"></i>
                                 </div>
-                                <h2 class="h4 fw-bold">Food Handlers Permit Retrieval Form</h2>
+                                <h2 class="h4 fw-bold">Food Establishments License Retrieval Form</h2>
                                 <p class="text-muted small mb-0">Please provide the required information to generate &
                                     retrieve your certificate.</p>
                             </div>
 
-                            <form>
-                                <!-- First & Last Name Row -->
-                                <div class="row g-3 mb-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">First Name</label>
-
-                                        <input type="text"
-                                            class="form-control @error('firstname') is-invalid @enderror"
-                                            placeholder="Enter First Name" name="firstname"
-                                            value="{{ old('firstname') }}">
-                                    </div>
-                                    @error('firstname')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Last Name</label>
-
-                                        <input type="text"
-                                            class="form-control @error('lastname') is-invalid @enderror"
-                                            placeholder="Enter Last Name" name="lastname" value="{{ old('lastname') }}">
-                                    </div>
-                                    @error('lastname')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Date of Birth</label>
-                                    <span class="form-text">As it appears on your official ID</span>
-
-                                    <input type="date"
-                                        class="form-control @error('date_of_birth') is-invalid @enderror"
-                                        name="date_of_birth" value="{{ old('date_of_birth') }}">
-
-                                    @error('date_of_birth')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
+                          
+                                    
 
                                 <!-- Permit Number -->
                                 <div class="mb-3">
@@ -457,7 +414,7 @@
                                             {{ $message }}
                                         </div>
                                     @enderror
-                                </div>
+                                </div> 
 
                                 <!-- OR Divider -->
                                 <div class="text-center fw-bold text-muted mb-2">
@@ -490,15 +447,12 @@
                                             <i class="bi bi-x"></i> Cancel
                                         </button>
                                     </div>
-                                    <div class="col-6">
-                                        <button type="submit" class="btn btn-retrieve w-100">
-                                            <i class="bi bi-search"></i> Retrieve
-                                        </button>
-                                    </div>
+                                 
                                 </div>
-                            </form>
+                           
                         </div>
-                    </form>
+                    </form> --}}
+                    <h1>Coming Soon</h1>
 
 
                     <div class="secure-connection-badge">

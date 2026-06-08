@@ -354,8 +354,10 @@
             const home_phone = document.getElementById('home_phone');
 
             const maskOptions = {
-                mask: '000-000-000'
+                mask: '100-000-000'
             }
+
+            
 
             const maskOptions2 = {
                 mask: '1(000)000-0000'

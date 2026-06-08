@@ -235,10 +235,10 @@
             <table class="card-header">
                 <tr>
                     <td width="15%">
-                        <img src="{{ public_path('images/coatofarms.png') }}" style="height:55px;">
+                        <img src="{{ public_path('images/coatofarms2.png') }}" style="height:55px;">
                     </td>
                     <td width="70%" align="center">
-                        <h1 class="card-title">MIN. OF HEALTH AND WELLNESS</h1>
+                        <h1 class="card-title">MINISTRY. OF HEALTH AND WELLNESS</h1>
                         <p class="card-subtitle">
                             Public Health (Food Handling 1998) Regulations<br>
                             26,27,28,29,30 & 31
@@ -323,7 +323,7 @@
         <footer class="document-footer">
 
             <div class="footer-item">
-                <img src="{{ public_path('images/serha_logo.png') }}" style="width:0.75rem">
+                <img src="{{ public_path('images/serha_logo.png') }}" style="width:1rem">
                 South East Regional Health Authority
             </div>
 

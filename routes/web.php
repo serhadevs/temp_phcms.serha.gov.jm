@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdvanceSearchController;
 use App\Http\Controllers\AIReportGeneratorController;
 use App\Http\Controllers\AnswersController;
+use App\Http\Controllers\Api\EstablishmentsApi;
 use App\Http\Controllers\Api\PermitApplicationApi;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
@@ -85,20 +86,23 @@ Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::cl
 Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
     ->name('verify.permit');
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
+Route::get('/verify-permit/data-protection', [PermitApplicationApi::class, 'dataPage'])->name('data-protection');
+Route::get('/verify-permit/terms', [PermitApplicationApi::class, 'termsPage'])->name('terms');
 Route::post('/verify-permit/retrieve',
     [PermitApplicationApi::class, 'retrievePermit']
 )->middleware('throttle:3,1') 
  ->name('verify.retrieval');
-Route::get('/verify-permit/certificate/{token}',
-    [PermitApplicationApi::class, 'showCertificate']
-)->name('verify.certificate')->middleware('signed');
+Route::get('/verify-permit/certificate/{token}',[PermitApplicationApi::class, 'showCertificate'])->name('verify.certificate')->middleware('signed');
 Route::get('/verify-permit/download/{id}', 
     [PermitApplicationApi::class, 'downloadCertificate']
 )->name('verify.download')
  ->middleware(['signed','throttle:3,1']); 
  Route::get('/verify-permit/qr', [PermitApplicationApi::class, 'qrVerify']);
 
-//  Route::post('/generate-verification-link/{permitNo}', [PermitApplicationApi::class, 'generateLink']);
+//Food Establishment Licenses
+Route::get('/verify-establishments',[EstablishmentsApi::class,'index'])->name('verify.establishments');
+Route::post('/verify-establishments/retreive',[EstablishmentsApi::class,'viewLicense'])->name('verify.establishments.view');
+Route::get('/verify-establishment/license/{token}',[EstablishmentsApi::class,'showLicense'])->name('verify.license')->middleware('signed');
 
 //Users routes for users not logged in
 

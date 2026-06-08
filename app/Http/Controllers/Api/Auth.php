@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequestApi;
 use App\Http\Requests\UserLoginRequest;
 use App\Mail\SendOnboardingEmail;
 use App\Models\OnlineUser;
+use App\Models\PasswordResetOtp;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -141,7 +142,7 @@ class Auth extends Controller
         $email = $user->email;
 
         // send onboarding complete email
-        $this->sendOnboardingCompleteEmail($user,$email);
+        $this->sendOnboardingCompleteEmail($user, $email);
 
         return response()->json([
             'message' => 'Account activated successfully',
@@ -209,12 +210,139 @@ class Auth extends Controller
         ], 201);
     }
 
-    private function sendOnboardingCompleteEmail($user,$email){
-    try {
-            Mail::to($email)->queue(new SendOnboardingEmail($user,$email));
+    private function sendOnboardingCompleteEmail($user, $email)
+    {
+        try {
+            Mail::to($email)->queue(new SendOnboardingEmail($user, $email));
             Log::channel('systemOperations')->info('Onboarding Email Email Sent to', ['applicant' => $email]);
         } catch (Exception $e) {
             Log::channel('systemOperations')->error('Activation Email Sent to', ['message' => $e->getMessage()]);
         }
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $user = OnlineUser::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email not found'
+            ], 404);
+        }
+
+        PasswordResetOtp::where(
+            'email',
+            $request->email
+        )->delete();
+
+        $otp = random_int(100000, 999999);
+
+        PasswordResetOtp::create([
+            'email' => $request->email,
+            'otp' => bcrypt($otp),
+            'expires_at' => now()->addMinutes(10)
+        ]);
+
+        Mail::raw(
+            "Your IDPro password reset code is: {$otp}",
+            function ($message) use ($request) {
+                $message
+                    ->to($request->email)
+                    ->subject('IDPro Password Reset Code');
+            }
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP sent successfully'
+        ]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required'
+        ]);
+
+        $record = PasswordResetOtp::where(
+            'email',
+            $request->email
+        )->latest()->first();
+
+        if (!$record) {
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP not found'
+            ], 400);
+        }
+
+        if ($record->expires_at < now()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP expired'
+            ], 400);
+        }
+
+        if (!Hash::check($request->otp, $record->otp)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid OTP'
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP verified'
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required',
+            'password' => 'required|min:8|confirmed'
+        ]);
+
+        $record = PasswordResetOtp::where(
+            'email',
+            $request->email
+        )->latest()->first();
+
+        if (!$record) {
+            return response()->json([
+                'success' => false
+            ], 400);
+        }
+
+        if (!Hash::check($request->otp, $record->otp)) {
+            return response()->json([
+                'success' => false
+            ], 400);
+        }
+
+        $user = OnlineUser::where(
+            'email',
+            $request->email
+        )->first();
+
+        $user->password = Hash::make(
+            $request->password
+        );
+
+        $user->save();
+
+        $record->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated'
+        ]);
     }
 }
