@@ -66,10 +66,11 @@ class PermitApplicationRequest extends FormRequest
             'email' => 'nullable|email',
             // 'trn' => $trnRule,
             // 'trn' => 'required',
-            'trn' => [
-                'required',
-                'regex:/^(?!\d{3}-000-000$)1\d{2}-\d{3}-\d{3}$/'
-            ],
+            'trn' => 'nullable',
+            // 'trn' => [
+            //     'required',
+            //     'regex:/^(?!\d{3}-000-000$)1\d{2}-\d{3}-\d{3}$/'
+            // ],
 
             'applied_before' => 'required',
             'granted' => 'required_if:applied_before,=,1',

@@ -382,7 +382,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <form action="{{ route('verify.establishments.view') }}" method="post">
+                    {{-- <form action="{{ route('verify.establishments.view') }}" method="post">
                         @csrf
 
                         <div class="form-card">
@@ -395,51 +395,8 @@
                                     retrieve your certificate.</p>
                             </div>
 
-                            <form>
-                                    <!-- First & Last Name Row -->
-                                    {{-- <div class="row g-3 mb-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label">First N</label>
-
-                                            <input type="text"
-                                                class="form-control @error('firstname') is-invalid @enderror"
-                                                placeholder="Enter First Name" name="firstname"
-                                                value="{{ old('firstname') }}">
-                                        </div>
-                                        @error('firstname')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-
-                                        <div class="col-md-6">
-                                            <label class="form-label">Last Name</label>
-
-                                            <input type="text"
-                                                class="form-control @error('lastname') is-invalid @enderror"
-                                                placeholder="Enter Last Name" name="lastname" value="{{ old('lastname') }}">
-                                        </div>
-                                        @error('lastname')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Date of Birth</label>
-                                        <span class="form-text">As it appears on your official ID</span>
-
-                                        <input type="date"
-                                            class="form-control @error('date_of_birth') is-invalid @enderror"
-                                            name="date_of_birth" value="{{ old('date_of_birth') }}">
-
-                                        @error('date_of_birth')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div> --}}
+                          
+                                    
 
                                 <!-- Permit Number -->
                                 <div class="mb-3">
@@ -490,15 +447,12 @@
                                             <i class="bi bi-x"></i> Cancel
                                         </button>
                                     </div>
-                                    {{-- <div class="col-6">
-                                        <button type="submit" class="btn btn-retrieve w-100">
-                                            <i class="bi bi-search"></i> Retrieve
-                                        </button>
-                                    </div> --}}
+                                 
                                 </div>
-                            </form>
+                           
                         </div>
-                    </form>
+                    </form> --}}
+                    <h1>Coming Soon</h1>
 
 
                     <div class="secure-connection-badge">
