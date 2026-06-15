@@ -245,11 +245,19 @@
                     class="form-control">{{ $app_type_id == 1 ? $application->permitApplication?->address : $application->healthCertApplication?->address }}</label>
             </div>
 
-             <div class="mt-3">
+             {{-- <div class="mt-3">
                 <label for="" class="form-label">Email Adddress</label>
                 <label for=""
                     class="form-control">{{ $app_type_id == 1 ? $application->permitApplication?->email : 'Null' }}</label>
-            </div>
+            </div> --}}
+            @if($app_type_id == 1 && !empty($application->permitApplication?->email))
+    <div class="mt-3">
+        <label class="form-label">Email Address</label>
+        <label class="form-control">
+            {{ $application->permitApplication->email }}
+        </label>
+    </div>
+@endif
             <div class="row mt-3">
                 <div class="col">
                     <label for="" class="form-label">Test Score</label>
