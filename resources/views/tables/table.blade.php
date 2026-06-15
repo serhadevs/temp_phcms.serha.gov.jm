@@ -244,6 +244,12 @@
                 <label for=""
                     class="form-control">{{ $app_type_id == 1 ? $application->permitApplication?->address : $application->healthCertApplication?->address }}</label>
             </div>
+
+             <div class="mt-3">
+                <label for="" class="form-label">Email Adddress</label>
+                <label for=""
+                    class="form-control">{{ $app_type_id == 1 ? $application->permitApplication?->email : 'Null' }}</label>
+            </div>
             <div class="row mt-3">
                 <div class="col">
                     <label for="" class="form-label">Test Score</label>
