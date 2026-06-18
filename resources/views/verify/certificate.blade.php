@@ -274,13 +274,13 @@
                     </strong>.
                     After successful completion, the Medical Officer of Health will review the results and, if approved,
                     officially sign off on the application. Once signed, the permit becomes an Official Food Handlers
-                    Permit in accordance with the requirements of the Food Safety Act (1998), which mandates medical
+                    Permit in accordance with the requirements of the Public Health (Food Handling) Regulations, 1998, which mandates medical
                     clearance and certification for all persons involved in the handling and preparation of food.
                 @elseif (isset($isExpired) && $isExpired)
                     You need to make an appointment at your health department to renew your permit.
                 @else
                     The application has now been reviewed and approved by the <strong>Medical Officer of
-                        Health(MOH)</strong>. In accordance with the <strong>Food Safety Act (1998)</strong>,
+                        Health(MOH)</strong>. In accordance with the <strong>Public Health (Food Handling) Regulations, 1998</strong>,
                     individuals who handle, prepare, or come into contact with food for public consumption must be
                     medically examined, certified, and officially authorized before engaging in food-handling
                     activities. With the successful completion of the required examination and medical interview, and
@@ -407,12 +407,10 @@
                             </strong>
 
                             @if ($applicant->signOffs && $applicant->signOffs->is_granted)
-                                This E-Card is issued under the Food Safety Act (1998) and Public Health (Food Handling)
-                                Regulations.
+                                This E-Card is issued under the Public Health (Food Handling) Regulations, 1998.
                                 Unauthorized reproduction, alteration, or fraudulent use is prohibited by law.
                             @else
-                                This is confirmation of application for a Food Handlers Permit under the Food Safety
-                                Act(1998) and Public Health (Food Handling) Regulations.
+                                This is confirmation of application for a Food Handlers Permit under the Public Health (Food Handling) Regulations, 1998.
                             @endif
 
 
