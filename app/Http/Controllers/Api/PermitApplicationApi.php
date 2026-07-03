@@ -203,6 +203,8 @@ class PermitApplicationApi extends Controller
         $permitNo  = strtoupper(trim($validated['permit_no']));
         $applicationNumber = strtoupper(trim($validated['application_number']));
 
+        // dd($request->all());
+
         // $applicant = PermitApplication::whereRaw('LOWER(firstname) = ?', [$firstname])
         //     ->whereRaw('LOWER(lastname) = ?', [$lastname])
         //     ->whereDate('date_of_birth', $dob)
@@ -213,10 +215,21 @@ class PermitApplicationApi extends Controller
             ->whereRaw('LOWER(lastname) = ?', [$lastname])
             ->whereDate('date_of_birth', $dob);
 
+        // if (!empty($permitNo)) {
+        //     $query->whereRaw('UPPER(permit_no) = ?', [strtoupper($permitNo)]);
+        // } else {
+        //     $query->where('id', $applicationNumber);
+        // }else{
+        //     $query->where('establishment_clinic_id',$applicationNumber);
+        // }
+
         if (!empty($permitNo)) {
             $query->whereRaw('UPPER(permit_no) = ?', [strtoupper($permitNo)]);
         } else {
-            $query->where('id', $applicationNumber);
+            $query->where(function ($q) use ($applicationNumber) {
+                $q->where('id', $applicationNumber)
+                    ->orWhere('establishment_clinic_id', $applicationNumber);
+            });
         }
 
         $applicant = $query->first();
@@ -307,6 +320,17 @@ class PermitApplicationApi extends Controller
             ->where('token_hash', $tokenHash)
             ->update(['used' => true, 'used_at' => now()]);
 
+        // $applicant = PermitApplication::with(
+        //     'permitCategory',
+        //     'payment',
+        //     'establishmentClinics',
+        //     'signOffs',
+        //     'testResults',
+        //     'healthInterviews.healthInterviewSymptom.symptoms',
+        //     'appointment.editTransactions',
+        //     'messages'
+        // )->findOrFail($record->permit_application_id);
+
         $applicant = PermitApplication::with(
             'permitCategory',
             'payment',
@@ -316,7 +340,10 @@ class PermitApplicationApi extends Controller
             'healthInterviews.healthInterviewSymptom.symptoms',
             'appointment.editTransactions',
             'messages'
-        )->findOrFail($record->permit_application_id);
+        )
+            ->where('id', $record->permit_application_id)
+            ->orWhere('establishment_clinic_id', $record->permit_application_id)
+            ->firstOrFail();
 
         // 🔥 ROBUST EXPIRY CALCULATION
         $isExpired = false;
