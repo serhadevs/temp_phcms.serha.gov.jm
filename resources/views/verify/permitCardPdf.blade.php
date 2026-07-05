@@ -91,7 +91,7 @@
         .card-header td {
             vertical-align: middle;
             padding-bottom: 20px;
-             font-family: Arial, Helvetica, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .card-title {
@@ -100,7 +100,7 @@
             font-weight: 900;
             letter-spacing: 0.5px;
             color: #111;
-             font-family: Arial, Helvetica, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .card-subtitle {
@@ -216,19 +216,20 @@
         <!-- HEADER -->
         <div style="text-align: center; margin-bottom: 30px;">
 
-    <h2 style="font-size: 20px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">
-        Official Food Handlers Permit Certificate
-    </h2>
+            <h2 style="font-size: 20px; font-weight: bold; color: #0b4ea2; margin: 0; letter-spacing: 0.5px;">
+                Official Food Handlers Permit Certificate
+            </h2>
 
-    <p style="font-size: 16px; color: #0b4ea2; margin: 8px 0 0 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        Verification by IDPro
-    </p>
+            <p
+                style="font-size: 16px; color: #0b4ea2; margin: 8px 0 0 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                Verification by IDPro
+            </p>
 
-    <p style="font-size: 13px; color: #666; margin: 15px 0 0 0; line-height: 1.5;">
-        This confirms the issuance of the Food Handlers Permit for:
-    </p>
+            <p style="font-size: 13px; color: #666; margin: 15px 0 0 0; line-height: 1.5;">
+                This confirms the issuance of the Food Handlers Permit for:
+            </p>
 
-</div>
+        </div>
 
         <!-- ID CARD -->
         <div class="id-card">
@@ -294,7 +295,16 @@
             <div class="test"><b>Medical Clearance:</b>
                 {{ $applicant->healthInterviews?->whitlow === 'absent' ? 'Passed' : 'Failed' }}</div>
             <div class="test"><b>Food Handling Training:</b>
-                {{ $applicant->testResults?->overall_score > 75 ? 'Passed' : 'Failed' }}</div>
+                <div>
+                    @if (is_null($applicant->testResults?->overall_score))
+                        Pending
+                    @elseif ($applicant->testResults->overall_score >= 70)
+                        Passed
+                    @else
+                        Failed
+                    @endif
+                </div>
+            </div>
             <div class="test">
                 <b>Test Date:</b>
                 {{ optional($applicant->testResults)->test_date
@@ -334,7 +344,8 @@
             <div class="footer-item">
                 {{ \Carbon\Carbon::now()->format('d M Y • h:i A') }}
             </div>
-            <div class ="footer-item">This document verification was provide by  <img src="{{ public_path('images/idpro_logo.png') }}" style="width:1rem"></div>
+            <div class ="footer-item">This document verification was provide by <img
+                    src="{{ public_path('images/idpro_logo.png') }}" style="width:1rem"></div>
             <div class="notice-block">
                 <strong>Data Protection Notice:</strong>
                 This document complies with the Jamaica Data Protection Act (2020).
