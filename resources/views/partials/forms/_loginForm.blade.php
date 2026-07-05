@@ -27,7 +27,7 @@
                                     <a href="{{ route('login') }}">
                                         <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA LOGO" width="60rem">
                                     </a>
-                                    <h5 class="text-center">Public Health Certificate Management System(PHCMS) from 81</h5>
+                                    <h5 class="text-center">Public Health Certificate Management System(PHCMS)</h5>
                                 </div>
 
                             </div>
