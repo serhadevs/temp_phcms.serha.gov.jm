@@ -211,7 +211,11 @@ class SignOffController extends Controller
                             if ($application->permit_type == "student") {
                                 $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+" . ($application->no_of_years != NULL ? $application->no_of_years : "1")  . " years"), "Y-m-d");
                             } else {
-                                $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+1 years"), "Y-m-d");
+                                if($application->permit_category_id == 8){
+                                    $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+2 years"), "Y-m-d");
+                                }else{
+                                    $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+1 years"), "Y-m-d");
+                                }
                             }
                         } else {
                             $expiry_date = date_format(date_modify(date_create($exam_date->test_date), "+1 years"), "Y-m-d");
