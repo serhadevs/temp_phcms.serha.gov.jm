@@ -11,6 +11,7 @@ use App\Models\Messages;
 use App\Models\OnlineUser;
 use App\Models\PermitApplication;
 use App\Models\SignOff;
+use App\Models\SMSMessages;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Mail\Mailable;
+use Twilio\Rest\Client;
 
 
 class Services extends Controller
@@ -233,17 +235,79 @@ class Services extends Controller
         }
     }
 
-    function generateEcards(){
+    function generateEcards()
+    {
         do {
             // Generate a random integer between 1 and 9,999,999
             $randomNumber = mt_rand(1, 9999999);
-            
+
             // Format it with the prefix and pad it to exactly 7 digits with leading zeros
             $formattedNumber = 'ECARD-' . str_pad((string)$randomNumber, 7, '0', STR_PAD_LEFT);
-            
-           
         } while (SignOff::where('ecard_id', $formattedNumber)->exists());
 
         return $formattedNumber;
+    }
+
+    public function sendSMS($templateId,$permit_application)
+    {
+        $sid = env('TWILIO_ACCOUNT_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
+
+        if (!$sid || !$token) {
+            Log::error('Twilio credentials are not configured.');
+            return false;
+        }
+
+        $template = SMSMessages::where('id', $templateId)->first();
+
+        if (!$template) {
+            Log::warning("SMS template {$templateId} not found.");
+            return false;
+        }
+
+        $data = [
+            'firstname' => $permit_application->firstname,
+            'lastname' => $permit_application->lastname,
+            'application_number' => $permit_application->id,
+            'permit_number' => $permit_application->permit_no,
+        ];
+
+        $message = $this->replacePlaceholders($template->message, $data);
+
+        try {
+            $twilio = new Client($sid, $token);
+
+            $twilio->messages->create(
+                $permit_application->cell_phone,
+                [
+                    'body' => $message,
+                    'from' => '+13344543920',
+                ]
+            );
+
+            Log::info('SMS sent successfully.', [
+                'to' => $permit_application->cell_phone,
+                'template_id' => $templateId,
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error('SMS Error: ' . $e->getMessage(), [
+                'to' => $permit_application->cell_phone,
+                'template_id' => $templateId,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return false;
+        }
+    }
+
+    private function replacePlaceholders($message, $data): string
+    {
+        foreach ($data as $key => $value) {
+            $message = str_replace('{' . $key . '}', $value ?? '', $message);
+        }
+
+        return $message;
     }
 }

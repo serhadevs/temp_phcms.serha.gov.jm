@@ -22,6 +22,7 @@ use App\Http\Controllers\FoodEstablishmentController;
 use App\Http\Controllers\FoodEstTestResultController;
 use App\Http\Controllers\FoodHandlersClinicController;
 use App\Http\Controllers\HealthInterviewController;
+use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\MailingListController;
 use App\Http\Controllers\Messaging;
 use App\Http\Controllers\OnlineApplicationController;
@@ -40,19 +41,20 @@ use App\Http\Controllers\SwimmingPoolTestResultController;
 use App\Http\Controllers\SwitchFacilityController;
 use App\Http\Controllers\TestDownloads;
 use App\Http\Controllers\TestNewJobs;
+use App\Http\Controllers\TextMessagesController;
 use App\Http\Controllers\TouristEstApplicationsController;
 use App\Http\Controllers\TouristEstTestResultController;
 use App\Http\Controllers\TrainingManualsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\WaiverApprovalController;
-use App\Http\Controllers\LicenseController;
 use App\Http\Middleware\printerAuthAttempt;
 use App\Models\Payments;
 use App\Models\PermitApplication;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
+
 
 
 
@@ -110,6 +112,9 @@ Route::get('/forget-password', [UserController::class, 'forgetPasswordPage'])->n
 Route::post('/forget-password', [UserController::class, 'forgetpassword'])->name('forget.password');
 Route::get('/reset/{token}', [UserController::class, 'reset']);
 Route::post('/reset/{token}', [UserController::class, 'post_reset']);
+
+//Send Text Message
+Route::get('/send-message',[TextMessagesController::class, 'sendMessage']);
 
 //Online Application for FOod Handlers Permit
 Route::get("/permit/online/application", [OnlineApplicationController::class, 'index'])->name('permit.online.application');

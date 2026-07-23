@@ -14,6 +14,7 @@
         "mantas-done/laravel-apm": "^1.0",
         "owen-it/laravel-auditing": "^14.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
+        "twilio/sdk": "^8.11",
         "yajra/laravel-datatables": "^12.0",
         "yungts97/laravel-user-activity-log": "^1.4"
     },

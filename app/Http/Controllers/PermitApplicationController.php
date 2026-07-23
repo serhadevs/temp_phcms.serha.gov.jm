@@ -604,6 +604,7 @@ class PermitApplicationController extends Controller
             $permit_application['establishment_clinic_id'] = $request->establishment_clinic_id;
         }
 
+        //Remove this and use the Services file
         function generatePermitNo()
         {
             do {
@@ -624,6 +625,8 @@ class PermitApplicationController extends Controller
 
         $permit_application['user_id'] = Auth()->user()->id;
         $permit_application['permit_no'] = generatePermitNo();
+
+        //Create a service for this
         if ($request->file('photo_upload')) {
             $path = $request->file('photo_upload')->storeAs('photo_uploads', $permit_application['permit_no'] . '.' . $request->photo_upload->extension(), 'public');
             $permit_application['photo_upload'] = $path;
@@ -686,14 +689,18 @@ class PermitApplicationController extends Controller
                 }
             }
 
-            //Appointment email function. 
-            $sendAppointmentMail = new Services();
-            // $createOnlineApplication = new Services();
+            //Appointment email function and SMS Messages
+            $services = new Services();
 
             Log::channel('systemOperations')->info('Permit Application store called', ['user_id' => auth()->user()->id, 'application_id' => $new_permit_application->id]);
             
             if (empty($request->establishment_clinic_id) || $est_clinic->permits_count == $est_clinic->no_of_employees) {
-                $sendAppointmentMail->sendAppointmentEmail($new_permit_application);
+                $services->sendAppointmentEmail($new_permit_application);
+
+                // if($new_permit_application->cell_phone){
+                //     $services->sendSMS(1,$new_permit_application);
+                // }
+                
                 // $createOnlineApplication->createOnlineUserAccount($new_permit_application->permit_no);
                 return redirect()->route('permit.index', ['id' => 0])->with('success', 'Application has been processed successfully. The Application ID is: ' . $new_permit_application->id . '');
             } else {
@@ -799,48 +806,6 @@ class PermitApplicationController extends Controller
             return $e->getMessage();
         }
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function printInspection($id)
-    // {
-    //     try {
-    //         //Get the inspection to be printed 
-    //         $inspection = Inspection::where('entry_number_inspections', $id)
-    //             ->join("establishment_master", "establishment_master.establishment_id", "=", "sanitized_inspections.establishment_id")
-    //             ->where('sanitized_inspections.entry_number_inspections', $id)->firstOrFail();
-
-    //         //Pass the inspection details to the view for the pdf
-    //         $inspectionData = [
-    //             'inspection' => $inspection
-    //         ];
-
-    //         $pdf = PDF::loadView('inspections.inspectionPDF', $inspectionData);
-
-    //         // Check if PDF is successfully generated
-    //         if (!$pdf) {
-    //             return view('inspections.view')->with('error', 'Unable to generate PDF for ' . $inspection->establishment_name);
-    //         }
-
-    //         // Add the establishment name and the id to the pdf before it is downloaded
-    //         $fileName = strval($inspection->establishment_name) . '_' . strval($inspection->establishment_id) . '.pdf';
-
-    //         // Show the pdf in the browser
-    //         return $pdf->stream($fileName);
-    //     } catch (ModelNotFoundException $e) {
-    //         // Handle the case when the inspection is not found
-    //         return view('inspections.view')->with('error', 'Inspection not found for ID ' . $id);
-    //     } catch (\Exception $e) {
-    //         // Handle other exceptions
-    //         return view('inspections.view')->with('error', 'An error occurred: ' . $e->getMessage());
-    //     }
-    // }
-
-
 
 
     /**
