@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\EstablishmentClinics;
 use App\Models\PermitApplication;
 use App\Models\SignOff;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -579,5 +580,30 @@ class PermitApplicationApi extends Controller
             'permitStatus' => $signOff?->is_granted ? 'APPROVED' : 'PENDING',
             'isExpired' => $isExpired,
         ];
+    }
+
+    public function onsite()
+    {
+        return view('verify.verify_onsite');
+    }
+
+    public function onsiteRetrievel(Request $request)
+    {
+
+        $validated = request()->validate([
+            'company_name' => 'nullable',
+            'application_number' => 'nullable',
+            'email_address' => 'nullable'
+        ]);
+
+        $onsite = EstablishmentClinics::with('permits','signOff')
+            ->where('name', $validated['company_name'])
+            ->where('sign_off_status',1)
+            ->first();
+
+        return response()->json([
+            'message' => 'yes',
+            'result' => $onsite
+        ]);
     }
 }

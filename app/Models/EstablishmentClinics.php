@@ -37,7 +37,8 @@ class EstablishmentClinics extends Model implements Auditable
         'deleted_at',
         'due_payments',
         'submitted_by_id',
-        'waiver_establishment_id'
+        'waiver_establishment_id',
+        'email_address'
     ];
 
     public $timestamps = true;

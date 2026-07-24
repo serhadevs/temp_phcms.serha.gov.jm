@@ -86,25 +86,22 @@ Route::get("/test/sanitize-data/{old_date_id}/{new_date_id}", [TestDownloads::cl
 
 //Verification of Permits via QR Code
 Route::get('/verify/{permit_no}', [VerificationController::class, 'show'])
-    ->name('verify.permit');
+  ->name('verify.permit');
 Route::get('/verify-permit/home', [PermitApplicationApi::class, 'index']);
 Route::get('/verify-permit/data-protection', [PermitApplicationApi::class, 'dataPage'])->name('data-protection');
 Route::get('/verify-permit/terms', [PermitApplicationApi::class, 'termsPage'])->name('terms');
-Route::post('/verify-permit/retrieve',
-    [PermitApplicationApi::class, 'retrievePermit']
-)->middleware('throttle:3,1') 
- ->name('verify.retrieval');
-Route::get('/verify-permit/certificate/{token}',[PermitApplicationApi::class, 'showCertificate'])->name('verify.certificate')->middleware('signed');
-Route::get('/verify-permit/download/{id}', 
-    [PermitApplicationApi::class, 'downloadCertificate']
-)->name('verify.download')
- ->middleware(['signed','throttle:3,1']); 
- Route::get('/verify-permit/qr', [PermitApplicationApi::class, 'qrVerify']);
+Route::post('/verify-permit/retrieve',[PermitApplicationApi::class, 'retrievePermit'])->middleware('throttle:3,1')->name('verify.retrieval');
+Route::get('/verify-permit/certificate/{token}', [PermitApplicationApi::class, 'showCertificate'])->name('verify.certificate')->middleware('signed');
+Route::get('/verify-permit/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('verify.download')->middleware(['signed', 'throttle:3,1']);
+Route::get('/verify-permit/qr', [PermitApplicationApi::class, 'qrVerify']);
+
+Route::get('/verify-permit/company',[PermitApplicationApi::class, 'onsite']);
+Route::post('/verify-permit/company/retreive',[PermitApplicationApi::class, 'onsiteRetrievel'])->name('verify.onsite.submit');
 
 //Food Establishment Licenses
-Route::get('/verify-establishments',[EstablishmentsApi::class,'index'])->name('verify.establishments');
-Route::post('/verify-establishments/retreive',[EstablishmentsApi::class,'viewLicense'])->name('verify.establishments.view');
-Route::get('/verify-establishment/license/{token}',[EstablishmentsApi::class,'showLicense'])->name('verify.license')->middleware('signed');
+Route::get('/verify-establishments', [EstablishmentsApi::class, 'index'])->name('verify.establishments');
+Route::post('/verify-establishments/retreive', [EstablishmentsApi::class, 'viewLicense'])->name('verify.establishments.view');
+Route::get('/verify-establishment/license/{token}', [EstablishmentsApi::class, 'showLicense'])->name('verify.license')->middleware('signed');
 
 //Users routes for users not logged in
 
@@ -114,7 +111,7 @@ Route::get('/reset/{token}', [UserController::class, 'reset']);
 Route::post('/reset/{token}', [UserController::class, 'post_reset']);
 
 //Send Text Message
-Route::get('/send-message',[TextMessagesController::class, 'sendMessage']);
+Route::get('/send-message', [TextMessagesController::class, 'sendMessage']);
 
 //Online Application for FOod Handlers Permit
 Route::get("/permit/online/application", [OnlineApplicationController::class, 'index'])->name('permit.online.application');
@@ -131,7 +128,7 @@ Route::get('/permit/online/application/complete/{id}', [OnlineApplicationControl
 Route::post('/coupon/redeem', [CouponController::class, 'redeem'])->name('coupons.redeem');
 
 
-Route::group(['middleware' => ['auth', 'prevent-back-history','check.default.password','check.password.expiry']], function () {
+Route::group(['middleware' => ['auth', 'prevent-back-history', 'check.default.password', 'check.password.expiry']], function () {
 
   //Dashboard Routes
   Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.dashboard');
