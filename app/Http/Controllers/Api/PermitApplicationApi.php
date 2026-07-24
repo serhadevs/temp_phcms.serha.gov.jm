@@ -596,7 +596,7 @@ class PermitApplicationApi extends Controller
             'email_address' => 'nullable'
         ]);
 
-        $onsite = EstablishmentClinics::with('permits')
+        $onsite = EstablishmentClinics::with('permits','signOff')
             ->where('name', $validated['company_name'])
             // ->where('sign_off_status',1)
             ->first();
