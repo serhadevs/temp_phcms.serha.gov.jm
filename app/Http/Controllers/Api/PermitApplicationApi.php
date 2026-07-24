@@ -598,7 +598,7 @@ class PermitApplicationApi extends Controller
 
         $onsite = EstablishmentClinics::with('permits')
             ->where('name', $validated['company_name'])
-            // ->where('sign_off_status',1)
+            ->where('sign_off_status',1)
             ->first();
 
         return response()->json([
