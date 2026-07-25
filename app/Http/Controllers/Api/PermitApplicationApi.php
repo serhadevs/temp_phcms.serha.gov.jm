@@ -601,9 +601,16 @@ class PermitApplicationApi extends Controller
             // ->where('sign_off_status',1)
             ->first();
 
-        return response()->json([
-            'message' => 'yes',
-            'result' => $onsite
-        ]);
+            //dd($onsite);
+
+        return redirect()->route('verify.onsite.show',$onsite->id);
+    }
+
+    public function onsiteShow(int $onsite){
+
+         $onsite = EstablishmentClinics::with(['permits', 'signOff'])
+        ->findOrFail($onsite);
+
+    return view('verify.verify_onsite_show', compact('onsite'));
     }
 }
