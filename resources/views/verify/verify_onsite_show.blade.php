@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('partials.successMessage')
+    {{-- @include('partials.successMessage') --}}
 
     <div class="container-xl">
         <div class="nk-content-inner">
