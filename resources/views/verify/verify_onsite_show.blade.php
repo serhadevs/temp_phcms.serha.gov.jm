@@ -3,226 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHCMS - Onsite Verification</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>PHCMS - Onsite Verification - Powered By ID Pro</title>
+
+    <!-- Tailwind CDN (utility classes only — used here to hand-build a shadcn/ui-style surface) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Inter — the typeface shadcn/ui defaults to -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide icons — same icon set shadcn/ui uses -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --bg-color: #f4f6f9;
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --muted: 210 40% 96.1%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --border: 214.3 31.8% 91.4%;
+            --ring: 222.2 84% 4.9%;
+            --radius: 0.625rem;
         }
+
         body {
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background-color: hsl(210 40% 98%);
+            color: hsl(var(--foreground));
         }
-        .navbar-brand {
-            font-weight: 700;
-            letter-spacing: 1px;
+
+        .sc-card {
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.03);
         }
-        .page-header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
-            border-left: 5px solid var(--primary-color);
-        }
-        .details-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            padding: 20px;
-            margin-bottom: 20px;
-            height: 100%;
-        }
-        .details-label {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        .details-value {
-            font-size: 1rem;
+
+        .sc-label {
+            font-size: 0.75rem;
             font-weight: 500;
-            color: #212529;
-            margin-bottom: 15px;
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
-        .table-wrapper {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            padding: 20px;
+
+        .sc-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: hsl(var(--foreground));
         }
-        .photo-circle {
-            width: 40px;
-            height: 40px;
-            background-color: #e9ecef;
-            border-radius: 50%;
+
+        .sc-input {
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background: hsl(var(--background));
+            font-size: 0.875rem;
+            transition: box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .sc-input:focus {
+            outline: none;
+            border-color: hsl(var(--ring) / 0.4);
+            box-shadow: 0 0 0 3px hsl(var(--ring) / 0.10);
+        }
+
+        .sc-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            border-radius: var(--radius);
+            padding: 0.4rem 0.75rem;
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+            transition: background-color 0.15s ease;
+        }
+
+        .sc-btn:hover:not(:disabled) { background: hsl(var(--muted)); }
+        .sc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .sc-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.15rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .sc-badge-success { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+        .sc-badge-danger  { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+        .sc-badge-warning { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+        .sc-badge-info    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+        .sc-badge-neutral { background: hsl(var(--muted)); color: hsl(var(--foreground)); border-color: hsl(var(--border)); }
+
+        .sc-table th {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: hsl(var(--muted-foreground));
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid hsl(var(--border));
+            text-align: left;
+        }
+
+        .sc-table td {
+            padding: 0.65rem 1rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid hsl(var(--border));
+            vertical-align: middle;
+        }
+
+        .sc-table tbody tr:hover { background: hsl(var(--muted) / 0.5); }
+        .sc-table tbody tr:last-child td { border-bottom: none; }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 9999px;
+            object-fit: cover;
+            border: 1px solid hsl(var(--border));
+        }
+
+        .avatar-fallback {
+            width: 36px;
+            height: 36px;
+            border-radius: 9999px;
+            background: hsl(var(--muted));
+            border: 1px solid hsl(var(--border));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 5px 10px;
-        }
-        .search-container {
-            position: relative;
-        }
-        .search-container i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-        .search-input {
-            padding-left: 40px;
-            border-radius: 20px;
-        }
-        .address-text {
-            font-size: 0.8rem;
-            color: #6c757d;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: hsl(var(--muted-foreground));
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fa-solid fa-notes-medical me-2"></i>PHCMS</a>
-            <div class="d-flex">
-                <a href="#" class="btn btn-outline-light btn-sm">Login</a>
+    <!-- Nav -->
+    <nav class="border-b bg-white" style="border-color: hsl(var(--border));">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-semibold tracking-tight text-sm">
+                <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                PHCMS
             </div>
+            <a href="#" class="sc-btn">
+                <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+                Login
+            </a>
         </div>
     </nav>
 
-    <div class="container-fluid px-4 pb-5">
-        
-        <!-- Flash Error Message from Controller -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        {{-- Flash error --}}
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                <i class="fa-solid fa-circle-exclamation me-2"></i> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="sc-card border-red-200 bg-red-50 text-red-700 px-4 py-3 mb-5 flex items-start gap-2 text-sm">
+                <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 shrink-0"></i>
+                <div class="flex-1">{{ session('error') }}</div>
+                <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('div.sc-card').remove()">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
             </div>
         @endif
 
-        <!-- Header Section -->
-        <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
+        {{-- Header --}}
+        <div class="sc-card p-5 mb-5 flex items-center justify-between flex-wrap gap-3">
             <div>
-                <h3 class="mb-1">{{ $onsite->name ?? $onsite->establishment_name ?? 'Unknown Establishment' }}</h3>
-                <p class="text-muted mb-0">Onsite Verification &middot; Application #{{ $onsite->id ?? 'N/A' }}</p>
+                <h1 class="text-xl font-semibold tracking-tight">{{ $onsite->name ?? 'Unknown Establishment' }}</h1>
+                <p class="text-sm mt-0.5" style="color: hsl(var(--muted-foreground));">
+                    Onsite Verification &middot; Application #{{ $onsite->id ?? 'N/A' }}
+                </p>
             </div>
             <div>
-                @if($onsite->signOff)
-                    <span class="badge bg-success fs-6"><i class="fa-solid fa-check-double me-1"></i> Signed Off</span>
+                @if ($onsite->signOff && $onsite->signOff->is_granted)
+                    <span class="sc-badge sc-badge-success">
+                        <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Signed Off &middot; Granted
+                    </span>
+                @elseif ($onsite->signOff && !$onsite->signOff->is_granted)
+                    <span class="sc-badge sc-badge-danger">
+                        <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> Signed Off &middot; Refused
+                    </span>
                 @else
-                    <span class="badge bg-warning text-dark fs-6"><i class="fa-solid fa-clock me-1"></i> Pending Sign-Off</span>
+                    <span class="sc-badge sc-badge-warning">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending Sign-Off
+                    </span>
                 @endif
             </div>
         </div>
 
-        <!-- Details Section -->
-        <div class="row mb-4">
-            <!-- Establishment Details -->
-            <div class="col-md-6 mb-3 mb-md-0">
-                <div class="details-card">
-                    <h5 class="border-bottom pb-2 mb-3"><i class="fa-solid fa-building me-2"></i>Establishment Details</h5>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="details-label">Address</div>
-                            <div class="details-value">{{ $onsite->address ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">Contact Person</div>
-                            <div class="details-value">{{ $onsite->contact_person ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">Telephone</div>
-                            <div class="details-value">{{ $onsite->telephone ?? $onsite->phone ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">Email Address</div>
-                            <div class="details-value">{{ $onsite->email_address ?? $onsite->email ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">Fax</div>
-                            <div class="details-value">{{ $onsite->fax ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">No. of Employees</div>
-                            <div class="details-value">{{ $onsite->no_of_employees ?? 'N/A' }}</div>
-                        </div>
+        {{-- Details --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+
+            <div class="sc-card p-5">
+                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b" style="border-color: hsl(var(--border));">
+                    <i data-lucide="building-2" class="w-4 h-4"></i> Establishment Details
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <div class="sc-label">Address</div>
+                        <div class="sc-value">{{ $onsite->address ?? 'N/A' }}</div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Contact Person</div>
+                        <div class="sc-value">{{ $onsite->contact_person ?? 'N/A' }}</div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Telephone</div>
+                        <div class="sc-value">{{ $onsite->telephone ?? 'N/A' }}</div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Email Address</div>
+                        <div class="sc-value">{{ $onsite->email_address ?? 'N/A' }}</div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Fax</div>
+                        <div class="sc-value">{{ $onsite->fax_no ?? 'N/A' }}</div>
+                    </div>
+                    <div>
+                        <div class="sc-label">No. of Employees</div>
+                        <div class="sc-value">{{ $onsite->no_of_employees ?? 'N/A' }}</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Visit Details -->
-            <div class="col-md-6">
-                <div class="details-card">
-                    <h5 class="border-bottom pb-2 mb-3"><i class="fa-solid fa-calendar-check me-2"></i>Visit Information</h5>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="details-label">Application Date</div>
-                            <div class="details-value">
-                                {{ $onsite->application_date ? \Carbon\Carbon::parse($onsite->application_date)->format('M d, Y') : 'N/A' }}
-                            </div>
+            <div class="sc-card p-5">
+                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b" style="border-color: hsl(var(--border));">
+                    <i data-lucide="calendar-check-2" class="w-4 h-4"></i> Visit Information
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="sc-label">Application Date</div>
+                        <div class="sc-value">
+                            {{ optional($onsite->application_date)->format('M d, Y') ?? 'N/A' }}
                         </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">Proposed Visit Date</div>
-                            <div class="details-value">
-                                {{ $onsite->proposed_visit_date ? \Carbon\Carbon::parse($onsite->proposed_visit_date)->format('M d, Y') : 'N/A' }}
-                            </div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Proposed Visit Date</div>
+                        <div class="sc-value">
+                            {{ optional($onsite->proposed_date)->format('M d, Y') ?? 'N/A' }}
                         </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">Proposed Time</div>
-                            <div class="details-value">
-                                {{ $onsite->proposed_time ? \Carbon\Carbon::parse($onsite->proposed_time)->format('h:i A') : 'N/A' }}
-                            </div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Proposed Time</div>
+                        <div class="sc-value">
+                            {{ $onsite->proposed_time ? \Carbon\Carbon::parse($onsite->proposed_time)->format('h:i A') : 'N/A' }}
                         </div>
-                        <div class="col-sm-6">
-                            <div class="details-label">Sign-Off</div>
-                            <div class="details-value">
-                                @if($onsite->signOff)
-                                    <span class="text-success"><i class="fa-solid fa-check-circle"></i> Signed Off On {{ \Carbon\Carbon::parse($onsite->signOff->created_at)->format('M d, Y') }}</span>
-                                @else
-                                    <span class="text-danger">No sign-off has been recorded yet.</span>
-                                @endif
-                            </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="sc-label">Sign-Off</div>
+                        <div class="sc-value">
+                            @if ($onsite->signOff)
+                                <span class="sc-badge sc-badge-success">
+                                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                                    Signed off on {{ optional($onsite->signOff->sign_off_date)->format('M d, Y') ?? optional($onsite->signOff->created_at)->format('M d, Y') }}
+                                </span>
+                            @else
+                                <span class="sc-badge sc-badge-neutral">No sign-off recorded yet</span>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Permit Holders Table Section -->
-        <div class="table-wrapper">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                <h5 class="mb-0"><i class="fa-solid fa-users me-2"></i>Permit Holders ({{ $onsite->permits ? $onsite->permits->count() : 0 }})</h5>
-                
-                <!-- Search Input -->
-                <div class="search-container w-25 min-w-200">
-                    <i class="fa-solid fa-search"></i>
-                    <input type="text" id="tableSearch" class="form-control search-input" placeholder="Search permit holders...">
+        {{-- Permit holders table --}}
+        <div class="sc-card p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                <h2 class="text-sm font-semibold flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    Permit Holders
+                    <span class="sc-badge sc-badge-neutral">{{ $onsite->permits ? $onsite->permits->count() : 0 }}</span>
+                </h2>
+
+                <div class="relative w-full sm:w-72">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style="color: hsl(var(--muted-foreground));"></i>
+                    <input
+                        type="text"
+                        id="tableSearch"
+                        class="sc-input w-full pl-9 pr-3 py-2"
+                        placeholder="Search permit holders..."
+                    >
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-hover align-middle" id="permitTable">
-                    <thead class="table-light">
+            <div class="overflow-x-auto">
+                <table class="w-full sc-table" id="permitTable">
+                    <thead>
                         <tr>
                             <th>Photo</th>
                             <th>Permit No.</th>
-                            <th>Name & Address</th>
+                            <th>Name &amp; Address</th>
                             <th>Occupation</th>
                             <th>TRN</th>
                             <th>Contact</th>
@@ -232,87 +311,157 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($onsite->permits as $permit)
-                        <tr>
-                            <td>
-                                <!-- Take first 3 letters of the name for the circle placeholder -->
-                                <div class="photo-circle">{{ Str::limit($permit->name ?? $permit->first_name, 3, '') }}</div>
-                            </td>
-                            <td><strong>{{ $permit->permit_no ?? 'N/A' }}</strong></td>
-                            <td>
-                                {{ $permit->name ?? ($permit->first_name . ' ' . $permit->last_name) }}<br>
-                                <span class="address-text">{{ $permit->address ?? 'N/A' }}</span>
-                            </td>
-                            <td>{{ $permit->occupation ?? 'N/A' }}</td>
-                            <td>{{ $permit->trn ?? 'N/A' }}</td>
-                            <td>{{ $permit->contact ?? $permit->phone ?? 'N/A' }}</td>
-                            <td>{{ ucfirst($permit->gender) ?? 'N/A' }}</td>
-                            <td>
-                                {{ $permit->dob ? \Carbon\Carbon::parse($permit->dob)->format('M d, Y') : 'N/A' }}
-                            </td>
-                            <td>
-                                @if(in_array(strtolower($permit->status), ['granted signed off', 'granted', 'active', 'approved']))
-                                    <span class="badge rounded-pill bg-success status-badge">{{ $permit->status }}</span>
-                                @else
-                                    <span class="badge rounded-pill bg-warning text-dark status-badge">{{ $permit->status ?? 'Pending Signed Off' }}</span>
-                                @endif
-                            </td>
-                        </tr>
+                        @forelse ($onsite->permits as $permit)
+                            @php
+                                $fullName = trim($permit->firstname . ' ' . $permit->middlename . ' ' . $permit->lastname);
+                                $initials = strtoupper(substr($permit->firstname ?? '', 0, 1) . substr($permit->lastname ?? '', 0, 1));
+                                $hasPhoto = $permit->photo_upload && \Illuminate\Support\Facades\Storage::disk('public')->exists($permit->photo_upload);
+                            @endphp
+                            <tr>
+                                <td>
+                                    @if ($hasPhoto)
+                                        <img
+                                            src="{{ \Illuminate\Support\Facades\Storage::url($permit->photo_upload) }}"
+                                            alt="{{ $fullName }}"
+                                            class="avatar"
+                                        >
+                                    @else
+                                        <div class="avatar-fallback">{{ $initials ?: '?' }}</div>
+                                    @endif
+                                </td>
+                                <td class="font-medium">{{ $permit->permit_no ?? 'N/A' }}</td>
+                                <td>
+                                    <div class="font-medium">{{ $fullName }}</div>
+                                    <div class="text-xs" style="color: hsl(var(--muted-foreground));">{{ $permit->address ?? 'N/A' }}</div>
+                                </td>
+                                <td>{{ $permit->occupation ?? 'N/A' }}</td>
+                                <td>{{ $permit->trn ?? 'N/A' }}</td>
+                                <td>{{ $permit->cell_phone ?? 'N/A' }}</td>
+                                <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td>
+                                <td>
+                                    {{ optional($permit->date_of_birth)->format('M d, Y') ?? 'N/A' }}
+                                </td>
+                                <td>
+                                    <div class="flex flex-wrap gap-1">
+                                        @if ($permit->granted)
+                                            <span class="sc-badge sc-badge-success">Granted</span>
+                                        @elseif (!is_null($permit->granted))
+                                            <span class="sc-badge sc-badge-danger">Refused</span>
+                                        @else
+                                            <span class="sc-badge sc-badge-warning">Pending</span>
+                                        @endif
+
+                                        @if ($permit->sign_off_status)
+                                            <span class="sc-badge sc-badge-info">Signed Off</span>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="9" class="text-center text-muted py-4">
-                                No permit holders found for this establishment.
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="9" class="text-center py-10" style="color: hsl(var(--muted-foreground));">
+                                    No permit holders found for this establishment.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
-                <!-- No Results Message (Hidden by default) -->
-                <div id="noResults" class="text-center py-4 d-none text-muted">
-                    <i class="fa-solid fa-magnifying-glass fs-2 mb-2"></i>
-                    <p>No permit holders match your search.</p>
+
+                <div id="noResults" class="hidden text-center py-10" style="color: hsl(var(--muted-foreground));">
+                    <i data-lucide="search-x" class="w-6 h-6 mx-auto mb-2"></i>
+                    <p class="text-sm">No permit holders match your search.</p>
+                </div>
+            </div>
+
+            {{-- Pagination footer --}}
+            <div id="paginationBar" class="flex items-center justify-between flex-wrap gap-3 pt-4 mt-1 border-t" style="border-color: hsl(var(--border));">
+                <p class="text-xs" style="color: hsl(var(--muted-foreground));" id="paginationSummary">
+                    Showing 0 of 0
+                </p>
+                <div class="flex items-center gap-1.5">
+                    <button type="button" id="prevPage" class="sc-btn">
+                        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Previous
+                    </button>
+                    <span class="text-xs px-2" style="color: hsl(var(--muted-foreground));" id="pageIndicator">Page 1 of 1</span>
+                    <button type="button" id="nextPage" class="sc-btn">
+                        Next <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Table Search Script -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const searchInput = document.getElementById("tableSearch");
-            const tableRows = document.querySelectorAll("#permitTable tbody tr");
-            const noResults = document.getElementById("noResults");
+        lucide.createIcons();
 
-            // Don't initialize search if table is empty
-            if(tableRows.length === 1 && tableRows[0].querySelector('td').colSpan === 9) {
+        document.addEventListener('DOMContentLoaded', function () {
+            const ROWS_PER_PAGE = 10;
+
+            const searchInput = document.getElementById('tableSearch');
+            const tableBody = document.querySelector('#permitTable tbody');
+            const allRows = Array.from(tableBody.querySelectorAll('tr')).filter(
+                row => !row.querySelector('td[colspan]') // exclude the "no permits" empty-state row
+            );
+            const noResults = document.getElementById('noResults');
+            const paginationBar = document.getElementById('paginationBar');
+            const paginationSummary = document.getElementById('paginationSummary');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+
+            let currentPage = 1;
+
+            if (allRows.length === 0) {
                 searchInput.disabled = true;
+                paginationBar.classList.add('hidden');
                 return;
             }
 
-            searchInput.addEventListener("keyup", function(e) {
-                const term = e.target.value.toLowerCase();
-                let hasResults = false;
+            function getFilteredRows() {
+                const term = searchInput.value.trim().toLowerCase();
+                if (!term) return allRows;
+                return allRows.filter(row => row.textContent.toLowerCase().includes(term));
+            }
 
-                tableRows.forEach(row => {
-                    const rowText = row.textContent.toLowerCase();
-                    
-                    if (rowText.includes(term)) {
-                        row.style.display = "";
-                        hasResults = true;
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
+            function render() {
+                const filtered = getFilteredRows();
+                const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
+                currentPage = Math.min(currentPage, totalPages);
 
-                if (!hasResults && term !== "") {
-                    noResults.classList.remove('d-none');
+                allRows.forEach(row => { row.style.display = 'none'; });
+
+                if (filtered.length === 0) {
+                    noResults.classList.remove('hidden');
                 } else {
-                    noResults.classList.add('d-none');
+                    noResults.classList.add('hidden');
+                    const start = (currentPage - 1) * ROWS_PER_PAGE;
+                    const pageRows = filtered.slice(start, start + ROWS_PER_PAGE);
+                    pageRows.forEach(row => { row.style.display = ''; });
                 }
+
+                const startIdx = filtered.length === 0 ? 0 : (currentPage - 1) * ROWS_PER_PAGE + 1;
+                const endIdx = Math.min(currentPage * ROWS_PER_PAGE, filtered.length);
+                paginationSummary.textContent = `Showing ${startIdx}-${endIdx} of ${filtered.length}`;
+                pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+
+                prevBtn.disabled = currentPage <= 1;
+                nextBtn.disabled = currentPage >= totalPages;
+            }
+
+            searchInput.addEventListener('keyup', function () {
+                currentPage = 1;
+                render();
             });
+
+            prevBtn.addEventListener('click', function () {
+                if (currentPage > 1) { currentPage--; render(); }
+            });
+
+            nextBtn.addEventListener('click', function () {
+                currentPage++; render();
+            });
+
+            render();
         });
     </script>
 </body>
