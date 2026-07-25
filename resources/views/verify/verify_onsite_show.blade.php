@@ -283,13 +283,13 @@
                     <div>
                         <div class="sc-label">Application Date</div>
                         <div class="sc-value">
-                            {{ optional($onsite->application_date)->format('M d, Y') ?? 'N/A' }}
+                            {{ $onsite->application_date }}
                         </div>
                     </div>
                     <div>
                         <div class="sc-label">Proposed Visit Date</div>
                         <div class="sc-value">
-                            {{ optional($onsite->proposed_date)->format('M d, Y') ?? 'N/A' }}
+                            {{ $onsite->proposed_date}}
                         </div>
                     </div>
                     <div>
