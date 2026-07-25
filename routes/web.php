@@ -98,6 +98,8 @@ Route::get('/verify-permit/qr', [PermitApplicationApi::class, 'qrVerify']);
 Route::get('/verify-permit/company',[PermitApplicationApi::class, 'onsite']);
 Route::post('/verify-permit/company/retreive',[PermitApplicationApi::class, 'onsiteRetrievel'])->name('verify.onsite.submit');
 Route::get('/verify-permit/company/show/{onsite}',[PermitApplicationApi::class, 'onsiteShow'])->name('verify.onsite.show');
+Route::get('/onsite/{onsite}/permits/download', [PermitApplicationApi::class, 'downloadPermits'])
+    ->name('onsite.permits.download');
 
 //Food Establishment Licenses
 Route::get('/verify-establishments', [EstablishmentsApi::class, 'index'])->name('verify.establishments');

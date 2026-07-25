@@ -635,4 +635,10 @@ class PermitApplicationApi extends Controller
             ->with('error', 'An error occurred while loading this record. Please try again.');
     }
 }
+
+public function downloadPermits(int $onsite){
+    return response()->json([
+        'message' => 'success'
+    ]);
+}
 }
