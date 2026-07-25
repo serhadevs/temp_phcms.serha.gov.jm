@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,8 +82,14 @@
             transition: background-color 0.15s ease;
         }
 
-        .sc-btn:hover:not(:disabled) { background: hsl(var(--muted)); }
-        .sc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .sc-btn:hover:not(:disabled) {
+            background: hsl(var(--muted));
+        }
+
+        .sc-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
 
         .sc-badge {
             display: inline-flex;
@@ -96,11 +103,35 @@
             white-space: nowrap;
         }
 
-        .sc-badge-success { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
-        .sc-badge-danger  { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
-        .sc-badge-warning { background: #fffbeb; color: #b45309; border-color: #fde68a; }
-        .sc-badge-info    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
-        .sc-badge-neutral { background: hsl(var(--muted)); color: hsl(var(--foreground)); border-color: hsl(var(--border)); }
+        .sc-badge-success {
+            background: #f0fdf4;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .sc-badge-danger {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .sc-badge-warning {
+            background: #fffbeb;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+
+        .sc-badge-info {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+        .sc-badge-neutral {
+            background: hsl(var(--muted));
+            color: hsl(var(--foreground));
+            border-color: hsl(var(--border));
+        }
 
         .sc-table th {
             font-size: 0.72rem;
@@ -120,8 +151,13 @@
             vertical-align: middle;
         }
 
-        .sc-table tbody tr:hover { background: hsl(var(--muted) / 0.5); }
-        .sc-table tbody tr:last-child td { border-bottom: none; }
+        .sc-table tbody tr:hover {
+            background: hsl(var(--muted) / 0.5);
+        }
+
+        .sc-table tbody tr:last-child td {
+            border-bottom: none;
+        }
 
         .avatar {
             width: 36px;
@@ -146,6 +182,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Nav -->
@@ -169,7 +206,8 @@
             <div class="sc-card border-red-200 bg-red-50 text-red-700 px-4 py-3 mb-5 flex items-start gap-2 text-sm">
                 <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 shrink-0"></i>
                 <div class="flex-1">{{ session('error') }}</div>
-                <button type="button" class="text-red-500 hover:text-red-700" onclick="this.closest('div.sc-card').remove()">
+                <button type="button" class="text-red-500 hover:text-red-700"
+                    onclick="this.closest('div.sc-card').remove()">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -204,7 +242,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
 
             <div class="sc-card p-5">
-                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b" style="border-color: hsl(var(--border));">
+                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b"
+                    style="border-color: hsl(var(--border));">
                     <i data-lucide="building-2" class="w-4 h-4"></i> Establishment Details
                 </h2>
                 <div class="grid grid-cols-2 gap-4">
@@ -236,7 +275,8 @@
             </div>
 
             <div class="sc-card p-5">
-                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b" style="border-color: hsl(var(--border));">
+                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b"
+                    style="border-color: hsl(var(--border));">
                     <i data-lucide="calendar-check-2" class="w-4 h-4"></i> Visit Information
                 </h2>
                 <div class="grid grid-cols-2 gap-4">
@@ -264,7 +304,8 @@
                             @if ($onsite->signOff)
                                 <span class="sc-badge sc-badge-success">
                                     <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                                    Signed off on {{ optional($onsite->signOff->sign_off_date)->format('M d, Y') ?? optional($onsite->signOff->created_at)->format('M d, Y') }}
+                                    Signed off on
+                                    {{ optional($onsite->signOff->sign_off_date)->format('M d, Y') ?? optional($onsite->signOff->created_at)->format('M d, Y') }}
                                 </span>
                             @else
                                 <span class="sc-badge sc-badge-neutral">No sign-off recorded yet</span>
@@ -281,17 +322,15 @@
                 <h2 class="text-sm font-semibold flex items-center gap-2">
                     <i data-lucide="users" class="w-4 h-4"></i>
                     Permit Holders
-                    <span class="sc-badge sc-badge-neutral">{{ $onsite->permits ? $onsite->permits->count() : 0 }}</span>
+                    <span
+                        class="sc-badge sc-badge-neutral">{{ $onsite->permits ? $onsite->permits->count() : 0 }}</span>
                 </h2>
 
                 <div class="relative w-full sm:w-72">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style="color: hsl(var(--muted-foreground));"></i>
-                    <input
-                        type="text"
-                        id="tableSearch"
-                        class="sc-input w-full pl-9 pr-3 py-2"
-                        placeholder="Search permit holders..."
-                    >
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2"
+                        style="color: hsl(var(--muted-foreground));"></i>
+                    <input type="text" id="tableSearch" class="sc-input w-full pl-9 pr-3 py-2"
+                        placeholder="Search permit holders...">
                 </div>
             </div>
 
@@ -313,18 +352,21 @@
                     <tbody>
                         @forelse ($onsite->permits as $permit)
                             @php
-                                $fullName = trim($permit->firstname . ' ' . $permit->middlename . ' ' . $permit->lastname);
-                                $initials = strtoupper(substr($permit->firstname ?? '', 0, 1) . substr($permit->lastname ?? '', 0, 1));
-                                $hasPhoto = $permit->photo_upload && \Illuminate\Support\Facades\Storage::disk('public')->exists($permit->photo_upload);
+                                $fullName = trim(
+                                    $permit->firstname . ' ' . $permit->middlename . ' ' . $permit->lastname,
+                                );
+                                $initials = strtoupper(
+                                    substr($permit->firstname ?? '', 0, 1) . substr($permit->lastname ?? '', 0, 1),
+                                );
+                                $hasPhoto =
+                                    $permit->photo_upload &&
+                                    \Illuminate\Support\Facades\Storage::disk('public')->exists($permit->photo_upload);
                             @endphp
                             <tr>
                                 <td>
                                     @if ($hasPhoto)
-                                        <img
-                                            src="{{ \Illuminate\Support\Facades\Storage::url($permit->photo_upload) }}"
-                                            alt="{{ $fullName }}"
-                                            class="avatar"
-                                        >
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($permit->photo_upload) }}"
+                                            alt="{{ $fullName }}" class="avatar">
                                     @else
                                         <div class="avatar-fallback">{{ $initials ?: '?' }}</div>
                                     @endif
@@ -332,7 +374,8 @@
                                 <td class="font-medium">{{ $permit->permit_no ?? 'N/A' }}</td>
                                 <td>
                                     <div class="font-medium">{{ $fullName }}</div>
-                                    <div class="text-xs" style="color: hsl(var(--muted-foreground));">{{ $permit->address ?? 'N/A' }}</div>
+                                    <div class="text-xs" style="color: hsl(var(--muted-foreground));">
+                                        {{ $permit->address ?? 'N/A' }}</div>
                                 </td>
                                 <td>{{ $permit->occupation ?? 'N/A' }}</td>
                                 <td>{{ $permit->trn ?? 'N/A' }}</td>
@@ -343,9 +386,9 @@
                                 </td>
                                 <td>
                                     <div class="flex flex-wrap gap-1">
-                                        @if ($permit->is_granted)
+                                        @if ($permit->sign_off_status === 1)
                                             <span class="sc-badge sc-badge-success">Granted</span>
-                                        @elseif (!is_null($permit->granted))
+                                        @elseif (!is_null($permit->sign_off_status))
                                             <span class="sc-badge sc-badge-danger">Refused</span>
                                         @else
                                             <span class="sc-badge sc-badge-warning">Pending</span>
@@ -359,7 +402,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center py-10" style="color: hsl(var(--muted-foreground));">
+                                <td colspan="9" class="text-center py-10"
+                                    style="color: hsl(var(--muted-foreground));">
                                     No permit holders found for this establishment.
                                 </td>
                             </tr>
@@ -374,7 +418,8 @@
             </div>
 
             {{-- Pagination footer --}}
-            <div id="paginationBar" class="flex items-center justify-between flex-wrap gap-3 pt-4 mt-1 border-t" style="border-color: hsl(var(--border));">
+            <div id="paginationBar" class="flex items-center justify-between flex-wrap gap-3 pt-4 mt-1 border-t"
+                style="border-color: hsl(var(--border));">
                 <p class="text-xs" style="color: hsl(var(--muted-foreground));" id="paginationSummary">
                     Showing 0 of 0
                 </p>
@@ -382,7 +427,8 @@
                     <button type="button" id="prevPage" class="sc-btn">
                         <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Previous
                     </button>
-                    <span class="text-xs px-2" style="color: hsl(var(--muted-foreground));" id="pageIndicator">Page 1 of 1</span>
+                    <span class="text-xs px-2" style="color: hsl(var(--muted-foreground));" id="pageIndicator">Page 1
+                        of 1</span>
                     <button type="button" id="nextPage" class="sc-btn">
                         Next <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                     </button>
@@ -394,7 +440,7 @@
     <script>
         lucide.createIcons();
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const ROWS_PER_PAGE = 10;
 
             const searchInput = document.getElementById('tableSearch');
@@ -428,7 +474,9 @@
                 const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
                 currentPage = Math.min(currentPage, totalPages);
 
-                allRows.forEach(row => { row.style.display = 'none'; });
+                allRows.forEach(row => {
+                    row.style.display = 'none';
+                });
 
                 if (filtered.length === 0) {
                     noResults.classList.remove('hidden');
@@ -436,7 +484,9 @@
                     noResults.classList.add('hidden');
                     const start = (currentPage - 1) * ROWS_PER_PAGE;
                     const pageRows = filtered.slice(start, start + ROWS_PER_PAGE);
-                    pageRows.forEach(row => { row.style.display = ''; });
+                    pageRows.forEach(row => {
+                        row.style.display = '';
+                    });
                 }
 
                 const startIdx = filtered.length === 0 ? 0 : (currentPage - 1) * ROWS_PER_PAGE + 1;
@@ -448,21 +498,26 @@
                 nextBtn.disabled = currentPage >= totalPages;
             }
 
-            searchInput.addEventListener('keyup', function () {
+            searchInput.addEventListener('keyup', function() {
                 currentPage = 1;
                 render();
             });
 
-            prevBtn.addEventListener('click', function () {
-                if (currentPage > 1) { currentPage--; render(); }
+            prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    render();
+                }
             });
 
-            nextBtn.addEventListener('click', function () {
-                currentPage++; render();
+            nextBtn.addEventListener('click', function() {
+                currentPage++;
+                render();
             });
 
             render();
         });
     </script>
 </body>
+
 </html>
