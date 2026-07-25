@@ -610,7 +610,7 @@ class PermitApplicationApi extends Controller
    public function onsiteShow(int $onsite)
 {
     try {
-        $onsite = EstablishmentClinics::with(['permits', 'signOff'])
+        $onsite = EstablishmentClinics::with(['permits', 'signOff','payments'])
             ->findOrFail($onsite);
  
         return view('verify.verify_onsite_show', compact('onsite'));

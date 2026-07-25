@@ -180,6 +180,29 @@
             font-weight: 600;
             color: hsl(var(--muted-foreground));
         }
+
+        .tab-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            padding: 0.75rem 1.1rem;
+            color: hsl(var(--muted-foreground));
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+ 
+        .tab-trigger:hover {
+            color: hsl(var(--foreground));
+        }
+ 
+        .tab-trigger.active {
+            color: hsl(var(--foreground));
+            border-bottom-color: hsl(var(--foreground));
+        }
     </style>
 </head>
 
@@ -189,7 +212,7 @@
     <nav class="border-b bg-white" style="border-color: hsl(var(--border));">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2 font-semibold tracking-tight text-sm">
-                <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo" width="50" height="50">
+                <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo" width="25" height="25">
                 Public Health Certificate Management System (PHCMS 2.0)
             </div>
             <a href="#" class="sc-btn">
@@ -238,13 +261,22 @@
         </div>
 
         {{-- Details --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-
-            <div class="sc-card p-5">
-                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b"
-                    style="border-color: hsl(var(--border));">
+        <div class="sc-card mb-5 overflow-hidden">
+ 
+            <div class="flex border-b overflow-x-auto" style="border-color: hsl(var(--border));" role="tablist">
+                <button type="button" class="tab-trigger active" data-tab="establishment" role="tab">
                     <i data-lucide="building-2" class="w-4 h-4"></i> Establishment Details
-                </h2>
+                </button>
+                <button type="button" class="tab-trigger" data-tab="visit" role="tab">
+                    <i data-lucide="calendar-check-2" class="w-4 h-4"></i> Visit Information
+                </button>
+                <button type="button" class="tab-trigger" data-tab="payment" role="tab">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i> Payment Details
+                </button>
+            </div>
+ 
+            {{-- Establishment Details --}}
+            <div class="tab-panel p-5" data-tab-panel="establishment">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <div class="sc-label">Address</div>
@@ -272,23 +304,20 @@
                     </div>
                 </div>
             </div>
-
-            <div class="sc-card p-5">
-                <h2 class="text-sm font-semibold flex items-center gap-2 pb-3 mb-4 border-b"
-                    style="border-color: hsl(var(--border));">
-                    <i data-lucide="calendar-check-2" class="w-4 h-4"></i> Visit Information
-                </h2>
+ 
+            {{-- Visit Information --}}
+            <div class="tab-panel p-5 hidden" data-tab-panel="visit">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <div class="sc-label">Application Date</div>
                         <div class="sc-value">
-                            {{ $onsite->application_date }}
+                            {{ optional($onsite->application_date)->format('M d, Y') ?? 'N/A' }}
                         </div>
                     </div>
                     <div>
                         <div class="sc-label">Proposed Visit Date</div>
                         <div class="sc-value">
-                            {{ $onsite->proposed_date}}
+                            {{ optional($onsite->proposed_date)->format('M d, Y') ?? 'N/A' }}
                         </div>
                     </div>
                     <div>
@@ -303,8 +332,7 @@
                             @if ($onsite->signOff)
                                 <span class="sc-badge sc-badge-success">
                                     <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                                    Signed off on
-                                    {{ $onsite->signOff->sign_off_date }}
+                                    Signed off on {{ optional($onsite->signOff->sign_off_date)->format('M d, Y') ?? optional($onsite->signOff->created_at)->format('M d, Y') }}
                                 </span>
                             @else
                                 <span class="sc-badge sc-badge-neutral">No sign-off recorded yet</span>
@@ -313,6 +341,57 @@
                     </div>
                 </div>
             </div>
+ 
+            {{-- Payment Details --}}
+            <div class="tab-panel p-5 hidden" data-tab-panel="payment">
+                @php
+                    $amountDue = $onsite->due_payments ?? 0;
+                    $hasWaiver = !is_null($onsite->waiver_establishment_id);
+                @endphp
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="sc-label">Amount Due</div>
+                        <div class="sc-value">
+                            @if ($amountDue > 0)
+                                <span class="sc-badge sc-badge-danger">
+                                    JMD {{ number_format($amountDue, 2) }}
+                                </span>
+                            @else
+                                <span class="sc-badge sc-badge-success">Fully Paid</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Payment Status</div>
+                        <div class="sc-value">
+                            @if ($amountDue > 0)
+                                <span class="sc-badge sc-badge-warning">
+                                    <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Outstanding
+                                </span>
+                            @else
+                                <span class="sc-badge sc-badge-success">
+                                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Paid
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div>
+                        <div class="sc-label">Fee Waiver</div>
+                        <div class="sc-value">
+                            @if ($hasWaiver)
+                                <span class="sc-badge sc-badge-info">Waiver Applied</span>
+                            @else
+                                <span class="sc-badge sc-badge-neutral">No Waiver</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+ 
+                {{-- NOTE: only `due_payments` and `waiver_establishment_id` were available on the
+                     sample record used to build this page. If invoices, receipts, or payment
+                     method are tracked via a separate relationship, wire that in here instead. --}}
+            </div>
+ 
         </div>
 
         {{-- Permit holders table --}}
