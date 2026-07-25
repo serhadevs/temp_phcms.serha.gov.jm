@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHCMS - Onsite Verification Powered By ID Pro</title>
+    <title>PHCMS - Onsite Verification</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome for icons -->
@@ -68,6 +68,7 @@
             font-weight: bold;
             color: var(--primary-color);
             font-size: 0.8rem;
+            text-transform: uppercase;
         }
         .status-badge {
             font-size: 0.8rem;
@@ -106,14 +107,27 @@
     </nav>
 
     <div class="container-fluid px-4 pb-5">
+        
+        <!-- Flash Error Message from Controller -->
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <!-- Header Section -->
         <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
             <div>
-                <h3 class="mb-1">FONTANA PHARMACY LTD</h3>
-                <p class="text-muted mb-0">Onsite Verification &middot; Application #3492</p>
+                <h3 class="mb-1">{{ $onsite->name ?? $onsite->establishment_name ?? 'Unknown Establishment' }}</h3>
+                <p class="text-muted mb-0">Onsite Verification &middot; Application #{{ $onsite->id ?? 'N/A' }}</p>
             </div>
             <div>
-                <span class="badge bg-warning text-dark fs-6"><i class="fa-solid fa-clock me-1"></i> Pending Sign-Off</span>
+                @if($onsite->signOff)
+                    <span class="badge bg-success fs-6"><i class="fa-solid fa-check-double me-1"></i> Signed Off</span>
+                @else
+                    <span class="badge bg-warning text-dark fs-6"><i class="fa-solid fa-clock me-1"></i> Pending Sign-Off</span>
+                @endif
             </div>
         </div>
 
@@ -126,27 +140,27 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="details-label">Address</div>
-                            <div class="details-value">SHOP 23, SOVEREIGN CENTRE, 106 HOPE ROAD, KINGSTON 6</div>
+                            <div class="details-value">{{ $onsite->address ?? 'N/A' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">Contact Person</div>
-                            <div class="details-value">ANDRENE POWELL</div>
+                            <div class="details-value">{{ $onsite->contact_person ?? 'N/A' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">Telephone</div>
-                            <div class="details-value">+1(876)978-3485</div>
+                            <div class="details-value">{{ $onsite->telephone ?? $onsite->phone ?? 'N/A' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">Email Address</div>
-                            <div class="details-value">N/A</div>
+                            <div class="details-value">{{ $onsite->email_address ?? $onsite->email ?? 'N/A' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">Fax</div>
-                            <div class="details-value">N/A</div>
+                            <div class="details-value">{{ $onsite->fax ?? 'N/A' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">No. of Employees</div>
-                            <div class="details-value">21</div>
+                            <div class="details-value">{{ $onsite->no_of_employees ?? 'N/A' }}</div>
                         </div>
                     </div>
                 </div>
@@ -159,19 +173,31 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="details-label">Application Date</div>
-                            <div class="details-value">N/A</div>
+                            <div class="details-value">
+                                {{ $onsite->application_date ? \Carbon\Carbon::parse($onsite->application_date)->format('M d, Y') : 'N/A' }}
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">Proposed Visit Date</div>
-                            <div class="details-value">N/A</div>
+                            <div class="details-value">
+                                {{ $onsite->proposed_visit_date ? \Carbon\Carbon::parse($onsite->proposed_visit_date)->format('M d, Y') : 'N/A' }}
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">Proposed Time</div>
-                            <div class="details-value">9:00 AM</div>
+                            <div class="details-value">
+                                {{ $onsite->proposed_time ? \Carbon\Carbon::parse($onsite->proposed_time)->format('h:i A') : 'N/A' }}
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="details-label">Sign-Off</div>
-                            <div class="details-value text-danger">No sign-off has been recorded yet.</div>
+                            <div class="details-value">
+                                @if($onsite->signOff)
+                                    <span class="text-success"><i class="fa-solid fa-check-circle"></i> Signed Off On {{ \Carbon\Carbon::parse($onsite->signOff->created_at)->format('M d, Y') }}</span>
+                                @else
+                                    <span class="text-danger">No sign-off has been recorded yet.</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -181,7 +207,7 @@
         <!-- Permit Holders Table Section -->
         <div class="table-wrapper">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                <h5 class="mb-0"><i class="fa-solid fa-users me-2"></i>Permit Holders (10)</h5>
+                <h5 class="mb-0"><i class="fa-solid fa-users me-2"></i>Permit Holders ({{ $onsite->permits ? $onsite->permits->count() : 0 }})</h5>
                 
                 <!-- Search Input -->
                 <div class="search-container w-25 min-w-200">
@@ -206,156 +232,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1 -->
+                        @forelse($onsite->permits as $permit)
                         <tr>
-                            <td><div class="photo-circle">ASH</div></td>
-                            <td><strong>KSA01040426</strong></td>
                             <td>
-                                ASHLEY BUCKLEY<br>
-                                <span class="address-text">LOT 343 HOUSING DRIVE KINGSTON 6</span>
+                                <!-- Take first 3 letters of the name for the circle placeholder -->
+                                <div class="photo-circle">{{ Str::limit($permit->name ?? $permit->first_name, 3, '') }}</div>
                             </td>
-                            <td>CASHIER</td>
-                            <td>130-508-004</td>
-                            <td>1(876)583-4936</td>
-                            <td>Female</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                            <td><strong>{{ $permit->permit_no ?? 'N/A' }}</strong></td>
+                            <td>
+                                {{ $permit->name ?? ($permit->first_name . ' ' . $permit->last_name) }}<br>
+                                <span class="address-text">{{ $permit->address ?? 'N/A' }}</span>
+                            </td>
+                            <td>{{ $permit->occupation ?? 'N/A' }}</td>
+                            <td>{{ $permit->trn ?? 'N/A' }}</td>
+                            <td>{{ $permit->contact ?? $permit->phone ?? 'N/A' }}</td>
+                            <td>{{ ucfirst($permit->gender) ?? 'N/A' }}</td>
+                            <td>
+                                {{ $permit->dob ? \Carbon\Carbon::parse($permit->dob)->format('M d, Y') : 'N/A' }}
+                            </td>
+                            <td>
+                                @if(in_array(strtolower($permit->status), ['granted signed off', 'granted', 'active', 'approved']))
+                                    <span class="badge rounded-pill bg-success status-badge">{{ $permit->status }}</span>
+                                @else
+                                    <span class="badge rounded-pill bg-warning text-dark status-badge">{{ $permit->status ?? 'Pending Signed Off' }}</span>
+                                @endif
+                            </td>
                         </tr>
-                        <!-- Row 2 -->
+                        @empty
                         <tr>
-                            <td><div class="photo-circle">MAK</div></td>
-                            <td><strong>KSA10110426</strong></td>
-                            <td>
-                                MAKADA FRANCIS<br>
-                                <span class="address-text">527 ORLANDO AVENUE SPANISH TOWN</span>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                No permit holders found for this establishment.
                             </td>
-                            <td>STOREROOM ASSISTANT</td>
-                            <td>123-910-226</td>
-                            <td>1(876)819-4897</td>
-                            <td>Female</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
                         </tr>
-                        <!-- Row 3 -->
-                        <tr>
-                            <td><div class="photo-circle">CEC</div></td>
-                            <td><strong>KSA45150426</strong></td>
-                            <td>
-                                CECILE GORDON-HEMMINGS<br>
-                                <span class="address-text">6 CIRCLE CLOSE TRAFALGAR PARK KINGSTON 10</span>
-                            </td>
-                            <td>PHARMACIST</td>
-                            <td>100-067-409</td>
-                            <td>1(876)288-8666</td>
-                            <td>Female</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-warning text-dark status-badge">Pending Signed Off</span></td>
-                        </tr>
-                        <!-- Row 4 -->
-                        <tr>
-                            <td><div class="photo-circle">NIC</div></td>
-                            <td><strong>KSA05720426</strong></td>
-                            <td>
-                                NICHOLE HEMMINGS<br>
-                                <span class="address-text">3 YORO CRESCENT THREE OAKS GARDEN KINGSTON 20</span>
-                            </td>
-                            <td>PHARMACY TECHNICIAN</td>
-                            <td>128-858-486</td>
-                            <td>1(876)507-0335</td>
-                            <td>Female</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
-                        </tr>
-                        <!-- Row 5 -->
-                        <tr>
-                            <td><div class="photo-circle">MAT</div></td>
-                            <td><strong>KSA39100426</strong></td>
-                            <td>
-                                MATTHEW HITCHENER<br>
-                                <span class="address-text">9 WOODLAWN AVENUE KINGSTON 19</span>
-                            </td>
-                            <td>WAREHOUSE SUPERVISOR</td>
-                            <td>116-789-280</td>
-                            <td>1(876)463-1008</td>
-                            <td>Male</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
-                        </tr>
-                        <!-- Row 6 -->
-                        <tr>
-                            <td><div class="photo-circle">SAD</div></td>
-                            <td><strong>KSA02190426</strong></td>
-                            <td>
-                                SADIAN MOULTON<br>
-                                <span class="address-text">14 RHONA WALK DELACREE PARK KINGSTON 13</span>
-                            </td>
-                            <td>CASHIER</td>
-                            <td>113-306-962</td>
-                            <td>1(876)531-9255</td>
-                            <td>Female</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
-                        </tr>
-                        <!-- Row 7 -->
-                        <tr>
-                            <td><div class="photo-circle">TRI</div></td>
-                            <td><strong>KSA89920426</strong></td>
-                            <td>
-                                TRICHELLE NOYAN<br>
-                                <span class="address-text">4 PAYTON PLACE MONA ROAD KINGSTON</span>
-                            </td>
-                            <td>CASHIER</td>
-                            <td>130-351-105</td>
-                            <td>1(658)218-9599</td>
-                            <td>Female</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
-                        </tr>
-                        <!-- Row 8 -->
-                        <tr>
-                            <td><div class="photo-circle">RUT</div></td>
-                            <td><strong>KSA41270426</strong></td>
-                            <td>
-                                RUTHANN PENGELLEY<br>
-                                <span class="address-text">5 HAMPSTEAD PLACE KINGSTON 3</span>
-                            </td>
-                            <td>CASHIER</td>
-                            <td>126-918-856</td>
-                            <td>1(876)847-3831</td>
-                            <td>Female</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
-                        </tr>
-                        <!-- Row 9 -->
-                        <tr>
-                            <td><div class="photo-circle">NIC</div></td>
-                            <td><strong>KSA61450426</strong></td>
-                            <td>
-                                NICHOLAS SMITH<br>
-                                <span class="address-text">25 COLLISTON CLOSE</span>
-                            </td>
-                            <td>INVENTORY ASSISTANT</td>
-                            <td>129-376-701</td>
-                            <td>1(876)570-5967</td>
-                            <td>Male</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-warning text-dark status-badge">Pending Signed Off</span></td>
-                        </tr>
-                        <!-- Row 10 -->
-                        <tr>
-                            <td><div class="photo-circle">CHA</div></td>
-                            <td><strong>KSA40850426</strong></td>
-                            <td>
-                                CHADANE THOMPSON<br>
-                                <span class="address-text">GAYLE MOUNT DISTRICT GORDON TOWN ST ANDREW</span>
-                            </td>
-                            <td>SALES ASSOCIATE</td>
-                            <td>129-984-248</td>
-                            <td>1(876)565-1953</td>
-                            <td>Male</td>
-                            <td>N/A</td>
-                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
-                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
                 <!-- No Results Message (Hidden by default) -->
@@ -377,12 +286,17 @@
             const tableRows = document.querySelectorAll("#permitTable tbody tr");
             const noResults = document.getElementById("noResults");
 
+            // Don't initialize search if table is empty
+            if(tableRows.length === 1 && tableRows[0].querySelector('td').colSpan === 9) {
+                searchInput.disabled = true;
+                return;
+            }
+
             searchInput.addEventListener("keyup", function(e) {
                 const term = e.target.value.toLowerCase();
                 let hasResults = false;
 
                 tableRows.forEach(row => {
-                    // Get all text content from the row
                     const rowText = row.textContent.toLowerCase();
                     
                     if (rowText.includes(term)) {
@@ -393,8 +307,7 @@
                     }
                 });
 
-                // Toggle 'No Results' message
-                if (!hasResults) {
+                if (!hasResults && term !== "") {
                     noResults.classList.remove('d-none');
                 } else {
                     noResults.classList.add('d-none');
