@@ -189,12 +189,11 @@
     <nav class="border-b bg-white" style="border-color: hsl(var(--border));">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2 font-semibold tracking-tight text-sm">
-                <i data-lucide="stethoscope" class="w-4 h-4"></i>
-                PHCMS
+                <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo">
+                Public Health Certificate Management System (PHCMS 2.0)
             </div>
             <a href="#" class="sc-btn">
-                <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
-                Login
+              Permit Verification By ID Pro
             </a>
         </div>
     </nav>
