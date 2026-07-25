@@ -243,7 +243,7 @@
                     Onsite Verification &middot; Application #{{ $onsite->id ?? 'N/A' }}
                 </p>
             </div>
-            <div>
+            <div class="flex items-center gap-2 flex-wrap">
                 @if ($onsite->signOff && $onsite->signOff->is_granted)
                     <span class="sc-badge sc-badge-success">
                         <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Signed Off &middot; Granted
@@ -256,6 +256,17 @@
                     <span class="sc-badge sc-badge-warning">
                         <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending Sign-Off
                     </span>
+                @endif
+ 
+                @if ($onsite->permits && $onsite->permits->count() > 0)
+                    <a
+                        href="{{ route('onsite.permits.download', $onsite->id) }}"
+                        class="sc-btn"
+                        style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));"
+                    >
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        Download All Permits
+                    </a>
                 @endif
             </div>
         </div>
