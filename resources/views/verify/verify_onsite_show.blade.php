@@ -421,10 +421,10 @@
                             <th>Name &amp; Address</th>
                             <th>Occupation</th>
                             <th>TRN</th>
-                            <th>Contact</th>
+                            {{-- <th>Contact</th> --}}
                             <th>Gender</th>
                             <th>DOB</th>
-                            <th>Status</th>
+                            <th>View Permit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -457,25 +457,13 @@
                                 </td>
                                 <td>{{ $permit->occupation ?? 'N/A' }}</td>
                                 <td>{{ $permit->trn ?? 'N/A' }}</td>
-                                <td>{{ $permit->cell_phone ?? 'N/A' }}</td>
+                                {{-- <td>{{ $permit->cell_phone ?? 'N/A' }}</td> --}}
                                 <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td>
                                 <td>
                                     {{ optional($permit->date_of_birth)->format('M d, Y') ?? 'N/A' }}
                                 </td>
                                 <td>
-                                    <div class="flex flex-wrap gap-1">
-                                        @if ($permit->sign_off_status === 1)
-                                            <span class="sc-badge sc-badge-success">Granted</span>
-                                        @elseif (!is_null($permit->sign_off_status))
-                                            <span class="sc-badge sc-badge-danger">Refused</span>
-                                        @else
-                                            <span class="sc-badge sc-badge-warning">Pending</span>
-                                        @endif
-
-                                        @if ($permit->sign_off_status === 1)
-                                            <span class="sc-badge sc-badge-info">Signed Off</span>
-                                        @endif
-                                    </div>
+                                    
                                 </td>
                             </tr>
                         @empty
