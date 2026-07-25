@@ -515,12 +515,30 @@
         </div>
     </div>
 
-    <script>
+  <script>
         lucide.createIcons();
-
-        document.addEventListener('DOMContentLoaded', function() {
+ 
+        document.addEventListener('DOMContentLoaded', function () {
+            // ---- Tabs (Establishment / Visit / Payment) ----
+            const tabTriggers = document.querySelectorAll('.tab-trigger');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+ 
+            tabTriggers.forEach(trigger => {
+                trigger.addEventListener('click', function () {
+                    const target = this.dataset.tab;
+ 
+                    tabTriggers.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+ 
+                    tabPanels.forEach(panel => {
+                        panel.classList.toggle('hidden', panel.dataset.tabPanel !== target);
+                    });
+                });
+            });
+ 
+            // ---- Permit table search + pagination ----
             const ROWS_PER_PAGE = 10;
-
+ 
             const searchInput = document.getElementById('tableSearch');
             const tableBody = document.querySelector('#permitTable tbody');
             const allRows = Array.from(tableBody.querySelectorAll('tr')).filter(
@@ -532,67 +550,59 @@
             const pageIndicator = document.getElementById('pageIndicator');
             const prevBtn = document.getElementById('prevPage');
             const nextBtn = document.getElementById('nextPage');
-
+ 
             let currentPage = 1;
-
+ 
             if (allRows.length === 0) {
                 searchInput.disabled = true;
                 paginationBar.classList.add('hidden');
                 return;
             }
-
+ 
             function getFilteredRows() {
                 const term = searchInput.value.trim().toLowerCase();
                 if (!term) return allRows;
                 return allRows.filter(row => row.textContent.toLowerCase().includes(term));
             }
-
+ 
             function render() {
                 const filtered = getFilteredRows();
                 const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
                 currentPage = Math.min(currentPage, totalPages);
-
-                allRows.forEach(row => {
-                    row.style.display = 'none';
-                });
-
+ 
+                allRows.forEach(row => { row.style.display = 'none'; });
+ 
                 if (filtered.length === 0) {
                     noResults.classList.remove('hidden');
                 } else {
                     noResults.classList.add('hidden');
                     const start = (currentPage - 1) * ROWS_PER_PAGE;
                     const pageRows = filtered.slice(start, start + ROWS_PER_PAGE);
-                    pageRows.forEach(row => {
-                        row.style.display = '';
-                    });
+                    pageRows.forEach(row => { row.style.display = ''; });
                 }
-
+ 
                 const startIdx = filtered.length === 0 ? 0 : (currentPage - 1) * ROWS_PER_PAGE + 1;
                 const endIdx = Math.min(currentPage * ROWS_PER_PAGE, filtered.length);
                 paginationSummary.textContent = `Showing ${startIdx}-${endIdx} of ${filtered.length}`;
                 pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
-
+ 
                 prevBtn.disabled = currentPage <= 1;
                 nextBtn.disabled = currentPage >= totalPages;
             }
-
-            searchInput.addEventListener('keyup', function() {
+ 
+            searchInput.addEventListener('keyup', function () {
                 currentPage = 1;
                 render();
             });
-
-            prevBtn.addEventListener('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    render();
-                }
+ 
+            prevBtn.addEventListener('click', function () {
+                if (currentPage > 1) { currentPage--; render(); }
             });
-
-            nextBtn.addEventListener('click', function() {
-                currentPage++;
-                render();
+ 
+            nextBtn.addEventListener('click', function () {
+                currentPage++; render();
             });
-
+ 
             render();
         });
     </script>
