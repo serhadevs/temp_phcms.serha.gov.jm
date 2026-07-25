@@ -194,11 +194,11 @@
             margin-bottom: -1px;
             transition: color 0.15s ease, border-color 0.15s ease;
         }
- 
+
         .tab-trigger:hover {
             color: hsl(var(--foreground));
         }
- 
+
         .tab-trigger.active {
             color: hsl(var(--foreground));
             border-bottom-color: hsl(var(--foreground));
@@ -216,7 +216,7 @@
                 Public Health Certificate Management System (PHCMS 2.0)
             </div>
             <a href="#" class="sc-btn">
-              Permit Verification By ID Pro
+                Permit Verification By ID Pro
             </a>
         </div>
     </nav>
@@ -257,13 +257,10 @@
                         <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending Sign-Off
                     </span>
                 @endif
- 
+
                 @if ($onsite->permits && $onsite->permits->count() > 0)
-                    <a
-                        href="{{ route('onsite.permits.download', $onsite->id) }}"
-                        class="sc-btn"
-                        style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));"
-                    >
+                    <a href="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
+                        style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));">
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         Download All Permits
                     </a>
@@ -273,7 +270,7 @@
 
         {{-- Details --}}
         <div class="sc-card mb-5 overflow-hidden">
- 
+
             <div class="flex border-b overflow-x-auto" style="border-color: hsl(var(--border));" role="tablist">
                 <button type="button" class="tab-trigger active" data-tab="establishment" role="tab">
                     <i data-lucide="building-2" class="w-4 h-4"></i> Establishment Details
@@ -285,7 +282,7 @@
                     <i data-lucide="credit-card" class="w-4 h-4"></i> Payment Details
                 </button>
             </div>
- 
+
             {{-- Establishment Details --}}
             <div class="tab-panel p-5" data-tab-panel="establishment">
                 <div class="grid grid-cols-2 gap-4">
@@ -315,7 +312,7 @@
                     </div>
                 </div>
             </div>
- 
+
             {{-- Visit Information --}}
             <div class="tab-panel p-5 hidden" data-tab-panel="visit">
                 <div class="grid grid-cols-2 gap-4">
@@ -343,7 +340,8 @@
                             @if ($onsite->signOff)
                                 <span class="sc-badge sc-badge-success">
                                     <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                                    Signed off on {{ optional($onsite->signOff->sign_off_date)->format('M d, Y') ?? optional($onsite->signOff->created_at)->format('M d, Y') }}
+                                    Signed off on
+                                    {{ optional($onsite->signOff->sign_off_date)->format('M d, Y') ?? optional($onsite->signOff->created_at)->format('M d, Y') }}
                                 </span>
                             @else
                                 <span class="sc-badge sc-badge-neutral">No sign-off recorded yet</span>
@@ -352,7 +350,7 @@
                     </div>
                 </div>
             </div>
- 
+
             {{-- Payment Details --}}
             <div class="tab-panel p-5 hidden" data-tab-panel="payment">
                 @php
@@ -397,12 +395,12 @@
                         </div>
                     </div>
                 </div>
- 
+
                 {{-- NOTE: only `due_payments` and `waiver_establishment_id` were available on the
                      sample record used to build this page. If invoices, receipts, or payment
                      method are tracked via a separate relationship, wire that in here instead. --}}
             </div>
- 
+
         </div>
 
         {{-- Permit holders table --}}
@@ -432,7 +430,7 @@
                             <th>Name &amp; Address</th>
                             <th>Occupation</th>
                             <th>TRN</th>
-                            {{-- <th>Contact</th> --}}
+
                             <th>Gender</th>
                             <th>DOB</th>
                             <th>View Permit</th>
@@ -468,13 +466,15 @@
                                 </td>
                                 <td>{{ $permit->occupation ?? 'N/A' }}</td>
                                 <td>{{ $permit->trn ?? 'N/A' }}</td>
-                                {{-- <td>{{ $permit->cell_phone ?? 'N/A' }}</td> --}}
+
                                 <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td>
                                 <td>
                                     {{ optional($permit->date_of_birth)->format('M d, Y') ?? 'N/A' }}
                                 </td>
                                 <td>
-                                    
+                                    <a href="#" class="sc-btn" title="View">
+                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -514,30 +514,30 @@
         </div>
     </div>
 
-  <script>
+    <script>
         lucide.createIcons();
- 
-        document.addEventListener('DOMContentLoaded', function () {
+
+        document.addEventListener('DOMContentLoaded', function() {
             // ---- Tabs (Establishment / Visit / Payment) ----
             const tabTriggers = document.querySelectorAll('.tab-trigger');
             const tabPanels = document.querySelectorAll('.tab-panel');
- 
+
             tabTriggers.forEach(trigger => {
-                trigger.addEventListener('click', function () {
+                trigger.addEventListener('click', function() {
                     const target = this.dataset.tab;
- 
+
                     tabTriggers.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
- 
+
                     tabPanels.forEach(panel => {
                         panel.classList.toggle('hidden', panel.dataset.tabPanel !== target);
                     });
                 });
             });
- 
+
             // ---- Permit table search + pagination ----
             const ROWS_PER_PAGE = 10;
- 
+
             const searchInput = document.getElementById('tableSearch');
             const tableBody = document.querySelector('#permitTable tbody');
             const allRows = Array.from(tableBody.querySelectorAll('tr')).filter(
@@ -549,59 +549,67 @@
             const pageIndicator = document.getElementById('pageIndicator');
             const prevBtn = document.getElementById('prevPage');
             const nextBtn = document.getElementById('nextPage');
- 
+
             let currentPage = 1;
- 
+
             if (allRows.length === 0) {
                 searchInput.disabled = true;
                 paginationBar.classList.add('hidden');
                 return;
             }
- 
+
             function getFilteredRows() {
                 const term = searchInput.value.trim().toLowerCase();
                 if (!term) return allRows;
                 return allRows.filter(row => row.textContent.toLowerCase().includes(term));
             }
- 
+
             function render() {
                 const filtered = getFilteredRows();
                 const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
                 currentPage = Math.min(currentPage, totalPages);
- 
-                allRows.forEach(row => { row.style.display = 'none'; });
- 
+
+                allRows.forEach(row => {
+                    row.style.display = 'none';
+                });
+
                 if (filtered.length === 0) {
                     noResults.classList.remove('hidden');
                 } else {
                     noResults.classList.add('hidden');
                     const start = (currentPage - 1) * ROWS_PER_PAGE;
                     const pageRows = filtered.slice(start, start + ROWS_PER_PAGE);
-                    pageRows.forEach(row => { row.style.display = ''; });
+                    pageRows.forEach(row => {
+                        row.style.display = '';
+                    });
                 }
- 
+
                 const startIdx = filtered.length === 0 ? 0 : (currentPage - 1) * ROWS_PER_PAGE + 1;
                 const endIdx = Math.min(currentPage * ROWS_PER_PAGE, filtered.length);
                 paginationSummary.textContent = `Showing ${startIdx}-${endIdx} of ${filtered.length}`;
                 pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
- 
+
                 prevBtn.disabled = currentPage <= 1;
                 nextBtn.disabled = currentPage >= totalPages;
             }
- 
-            searchInput.addEventListener('keyup', function () {
+
+            searchInput.addEventListener('keyup', function() {
                 currentPage = 1;
                 render();
             });
- 
-            prevBtn.addEventListener('click', function () {
-                if (currentPage > 1) { currentPage--; render(); }
+
+            prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    render();
+                }
             });
- 
-            nextBtn.addEventListener('click', function () {
-                currentPage++; render();
+
+            nextBtn.addEventListener('click', function() {
+                currentPage++;
+                render();
             });
- 
+
             render();
         });
     </script>
