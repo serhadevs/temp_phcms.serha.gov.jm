@@ -189,7 +189,7 @@
     <nav class="border-b bg-white" style="border-color: hsl(var(--border));">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2 font-semibold tracking-tight text-sm">
-                <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo">
+                <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo" width="100" height="100">
                 Public Health Certificate Management System (PHCMS 2.0)
             </div>
             <a href="#" class="sc-btn">
