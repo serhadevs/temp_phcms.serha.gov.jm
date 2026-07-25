@@ -343,7 +343,7 @@
                                 </td>
                                 <td>
                                     <div class="flex flex-wrap gap-1">
-                                        @if ($permit->granted)
+                                        @if ($permit->is_granted)
                                             <span class="sc-badge sc-badge-success">Granted</span>
                                         @elseif (!is_null($permit->granted))
                                             <span class="sc-badge sc-badge-danger">Refused</span>
@@ -351,7 +351,7 @@
                                             <span class="sc-badge sc-badge-warning">Pending</span>
                                         @endif
 
-                                        @if ($permit->sign_off_status)
+                                        @if ($permit->sign_off_status === 1)
                                             <span class="sc-badge sc-badge-info">Signed Off</span>
                                         @endif
                                     </div>
