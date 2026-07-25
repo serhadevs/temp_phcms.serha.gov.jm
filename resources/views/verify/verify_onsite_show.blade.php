@@ -305,7 +305,7 @@
                                 <span class="sc-badge sc-badge-success">
                                     <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
                                     Signed off on
-                                    {{ optional($onsite->signOff->sign_off_date)->format('M d, Y') ?? optional($onsite->signOff->created_at)->format('M d, Y') }}
+                                    {{ $onsite->signOff->sign_off_date }}
                                 </span>
                             @else
                                 <span class="sc-badge sc-badge-neutral">No sign-off recorded yet</span>
