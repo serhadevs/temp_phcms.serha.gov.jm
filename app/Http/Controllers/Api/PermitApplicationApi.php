@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PermitApplicationApi extends Controller
 {
@@ -606,11 +607,32 @@ class PermitApplicationApi extends Controller
         return redirect()->route('verify.onsite.show',$onsite->id);
     }
 
-    public function onsiteShow(int $onsite){
-
-         $onsite = EstablishmentClinics::with(['permits', 'signOff'])
-        ->findOrFail($onsite);
-
-    return view('verify.verify_onsite_show', compact('onsite'));
+   public function onsiteShow(int $onsite)
+{
+    try {
+        $onsite = EstablishmentClinics::with(['permits', 'signOff'])
+            ->findOrFail($onsite);
+ 
+        return view('verify.verify_onsite_show', compact('onsite'));
+ 
+    } catch (ModelNotFoundException $e) {
+        Log::error('Onsite verification record not found: ' . $e->getMessage(), [
+            'establishment_id' => $onsite,
+        ]);
+ 
+        return redirect()
+            ->back()
+            ->with('error', 'The requested onsite verification record was not found.');
+ 
+    } catch (\Exception $e) {
+        Log::error('Error loading onsite verification: ' . $e->getMessage(), [
+            'establishment_id' => $onsite,
+            'trace' => $e->getTraceAsString(),
+        ]);
+ 
+        return redirect()
+            ->back()
+            ->with('error', 'An error occurred while loading this record. Please try again.');
     }
+}
 }
