@@ -1,285 +1,406 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHCMS - Onsite Verification Powered By ID Pro</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --bg-color: #f4f6f9;
+        }
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .page-header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
+        .details-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+        .details-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .details-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #212529;
+            margin-bottom: 15px;
+        }
+        .table-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            padding: 20px;
+        }
+        .photo-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #e9ecef;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.8rem;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+        }
+        .search-container {
+            position: relative;
+        }
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .search-input {
+            padding-left: 40px;
+            border-radius: 20px;
+        }
+        .address-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
 
-@section('content')
-    {{-- @include('partials.successMessage') --}}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fa-solid fa-notes-medical me-2"></i>PHCMS</a>
+            <div class="d-flex">
+                <a href="#" class="btn btn-outline-light btn-sm">Login</a>
+            </div>
+        </div>
+    </nav>
 
-    <div class="container-xl">
-        <div class="nk-content-inner">
-            <div class="nk-content-body">
+    <div class="container-fluid px-4 pb-5">
+        <!-- Header Section -->
+        <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h3 class="mb-1">FONTANA PHARMACY LTD</h3>
+                <p class="text-muted mb-0">Onsite Verification &middot; Application #3492</p>
+            </div>
+            <div>
+                <span class="badge bg-warning text-dark fs-6"><i class="fa-solid fa-clock me-1"></i> Pending Sign-Off</span>
+            </div>
+        </div>
 
-                {{-- Header --}}
-                <div class="nk-block-head nk-page-head">
-                    <div class="nk-block-head-between flex-wrap gap-2">
-                        <div class="nk-block-head-content">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <a href="{{ url()->previous() }}" class="btn btn-icon btn-outline-light">
-                                    <em class="icon ni ni-arrow-left"></em>
-                                </a>
-                                <h2 class="display-6 mb-0">{{ $onsite->name }}</h2>
-                            </div>
-                            <div class="text-soft">
-                                Onsite Verification &middot; Application #{{ $onsite->id }}
-                            </div>
+        <!-- Details Section -->
+        <div class="row mb-4">
+            <!-- Establishment Details -->
+            <div class="col-md-6 mb-3 mb-md-0">
+                <div class="details-card">
+                    <h5 class="border-bottom pb-2 mb-3"><i class="fa-solid fa-building me-2"></i>Establishment Details</h5>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="details-label">Address</div>
+                            <div class="details-value">SHOP 23, SOVEREIGN CENTRE, 106 HOPE ROAD, KINGSTON 6</div>
                         </div>
-
-                        <div>
-                            @if ($onsite->sign_off && $onsite->sign_off->is_granted)
-                                <span class="badge bg-success-soft text-success fs-6 px-3 py-2">
-                                    <em class="icon ni ni-check-circle-fill me-1"></em> Signed Off &mdash; Granted
-                                </span>
-                            @elseif ($onsite->sign_off && !$onsite->sign_off->is_granted)
-                                <span class="badge bg-danger-soft text-danger fs-6 px-3 py-2">
-                                    <em class="icon ni ni-cross-circle-fill me-1"></em> Signed Off &mdash; Refused
-                                </span>
-                            @else
-                                <span class="badge bg-warning-soft text-warning fs-6 px-3 py-2">
-                                    <em class="icon ni ni-clock me-1"></em> Pending Sign-Off
-                                </span>
-                            @endif
+                        <div class="col-sm-6">
+                            <div class="details-label">Contact Person</div>
+                            <div class="details-value">ANDRENE POWELL</div>
                         </div>
-                    </div>
-                </div>
-
-                {{-- Establishment + Sign-off summary cards --}}
-                <div class="row g-gs mb-2">
-                    <div class="col-lg-8">
-                        <div class="card shadow-none h-100">
-                            <div class="card-header bg-lighter">
-                                <h6 class="mb-0"><em class="icon ni ni-building me-1"></em> Establishment Details</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="text-soft small">Address</div>
-                                        <div class="fw-medium">{{ $onsite->address ?? 'N/A' }}</div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="text-soft small">Telephone</div>
-                                        <div class="fw-medium">{{ $onsite->telephone ?? 'N/A' }}</div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="text-soft small">Fax</div>
-                                        <div class="fw-medium">{{ $onsite->fax_no ?? 'N/A' }}</div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="text-soft small">Contact Person</div>
-                                        <div class="fw-medium">{{ $onsite->contact_person ?? 'N/A' }}</div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="text-soft small">Email Address</div>
-                                        <div class="fw-medium">{{ $onsite->email_address ?? 'N/A' }}</div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="text-soft small">No. of Employees</div>
-                                        <div class="fw-medium">{{ $onsite->no_of_employees ?? 'N/A' }}</div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="text-soft small">Application Date</div>
-                                        <div class="fw-medium">
-                                            {{ optional($onsite->application_date)->format('d F Y') ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="text-soft small">Proposed Visit Date</div>
-                                        <div class="fw-medium">
-                                            {{ optional($onsite->proposed_date)->format('d F Y') ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="text-soft small">Proposed Time</div>
-                                        <div class="fw-medium">
-                                            {{ $onsite->proposed_time ? \Carbon\Carbon::parse($onsite->proposed_time)->format('g:i A') : 'N/A' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-sm-6">
+                            <div class="details-label">Telephone</div>
+                            <div class="details-value">+1(876)978-3485</div>
                         </div>
-                    </div>
-
-                    <div class="col-lg-4">
-                        <div class="card shadow-none h-100">
-                            <div class="card-header bg-lighter">
-                                <h6 class="mb-0"><em class="icon ni ni-shield-check me-1"></em> Sign-Off</h6>
-                            </div>
-                            <div class="card-body">
-                                @if ($onsite->sign_off)
-                                    <div class="mb-3">
-                                        <div class="text-soft small">Sign-Off Permit No.</div>
-                                        <div class="fw-medium">{{ $onsite->sign_off->permit_no ?? 'N/A' }}</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="text-soft small">Sign-Off Date</div>
-                                        <div class="fw-medium">
-                                            {{ optional($onsite->sign_off->sign_off_date)->format('d F Y') ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="text-soft small">Expiry Date</div>
-                                        <div class="fw-medium">
-                                            {{ optional($onsite->sign_off->expiry_date)->format('d F Y') ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    @if (!$onsite->sign_off->is_granted && $onsite->sign_off->refusal_reason)
-                                        <div>
-                                            <div class="text-soft small">Refusal Reason</div>
-                                            <div class="fw-medium text-danger">{{ $onsite->sign_off->refusal_reason }}</div>
-                                        </div>
-                                    @endif
-                                @else
-                                    <div class="text-muted text-center py-4">
-                                        <em class="icon ni ni-info fs-3 d-block mb-2"></em>
-                                        No sign-off has been recorded yet.
-                                    </div>
-                                @endif
-                            </div>
+                        <div class="col-sm-6">
+                            <div class="details-label">Email Address</div>
+                            <div class="details-value">N/A</div>
                         </div>
-                    </div>
-                </div>
-
-                {{-- Permits table --}}
-                <div class="nk-block">
-                    <div class="card shadow-none">
-                        <div class="card-header bg-lighter d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0">
-                                <em class="icon ni ni-users me-1"></em>
-                                Permit Holders
-                                <span class="badge bg-primary-soft text-primary ms-1">{{ $onsite->permits->count() }}</span>
-                            </h6>
+                        <div class="col-sm-6">
+                            <div class="details-label">Fax</div>
+                            <div class="details-value">N/A</div>
                         </div>
-
-                        <div class="card-body">
-                            <table
-                                id="permitsTable"
-                                class="table table-hover align-middle"
-                                data-toggle="table"
-                                data-search="true"
-                                data-show-columns="true"
-                                data-show-toggle="true"
-                                data-pagination="true"
-                                data-page-size="10"
-                                data-page-list="[10, 25, 50, 100, All]"
-                                data-sort-name="name"
-                                data-sort-order="asc"
-                            >
-                                <thead class="table-light">
-                                    <tr>
-                                        <th data-field="photo" data-sortable="false">Photo</th>
-                                        <th data-field="permit_no" data-sortable="true">Permit No.</th>
-                                        <th data-field="name" data-sortable="true">Name</th>
-                                        <th data-field="occupation" data-sortable="true">Occupation</th>
-                                        <th data-field="trn" data-sortable="true">TRN</th>
-                                        <th data-field="contact" data-sortable="false">Contact</th>
-                                        <th data-field="gender" data-sortable="true">Gender</th>
-                                        <th data-field="dob" data-sortable="true">Date of Birth</th>
-                                        <th data-field="status" data-sortable="false">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($onsite->permits as $permit)
-                                        <tr>
-                                            <td>
-                                                @if ($permit->photo_upload && Storage::disk('public')->exists($permit->photo_upload))
-                                                    <img src="{{ Storage::url($permit->photo_upload) }}"
-                                                         alt="{{ $permit->firstname }}"
-                                                         class="rounded-circle border"
-                                                         style="width:42px;height:42px;object-fit:cover;">
-                                                @else
-                                                    <span class="rounded-circle bg-lighter d-inline-flex align-items-center justify-content-center border"
-                                                          style="width:42px;height:42px;">
-                                                        <em class="icon ni ni-user text-soft"></em>
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <span class="fw-bold">{{ $permit->permit_no }}</span>
-                                            </td>
-                                            <td>
-                                                <div class="fw-medium">
-                                                    {{ trim($permit->firstname . ' ' . $permit->middlename . ' ' . $permit->lastname) }}
-                                                </div>
-                                                <div class="text-soft small">{{ $permit->address }}</div>
-                                            </td>
-                                            <td>{{ $permit->occupation ?? 'N/A' }}</td>
-                                            <td>{{ $permit->trn ?? 'N/A' }}</td>
-                                            <td>
-                                                <div>{{ $permit->cell_phone ?? 'N/A' }}</div>
-                                            </td>
-                                            <td class="text-capitalize">{{ $permit->gender ?? 'N/A' }}</td>
-                                            <td>
-                                                {{ optional($permit->date_of_birth)->format('d M Y') ?? 'N/A' }}
-                                            </td>
-                                            <td>
-                                                @if ($permit->granted)
-                                                    <span class="badge bg-success-soft text-success">Granted</span>
-                                                @elseif (!is_null($permit->granted))
-                                                    <span class="badge bg-danger-soft text-danger">Refused</span>
-                                                @else
-                                                    <span class="badge bg-warning-soft text-warning">Pending</span>
-                                                @endif
-
-                                                @if ($permit->sign_off_status)
-                                                    <span class="badge bg-info-soft text-info">Signed Off</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <div class="col-sm-6">
+                            <div class="details-label">No. of Employees</div>
+                            <div class="details-value">21</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <!-- Visit Details -->
+            <div class="col-md-6">
+                <div class="details-card">
+                    <h5 class="border-bottom pb-2 mb-3"><i class="fa-solid fa-calendar-check me-2"></i>Visit Information</h5>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="details-label">Application Date</div>
+                            <div class="details-value">N/A</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="details-label">Proposed Visit Date</div>
+                            <div class="details-value">N/A</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="details-label">Proposed Time</div>
+                            <div class="details-value">9:00 AM</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="details-label">Sign-Off</div>
+                            <div class="details-value text-danger">No sign-off has been recorded yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Permit Holders Table Section -->
+        <div class="table-wrapper">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <h5 class="mb-0"><i class="fa-solid fa-users me-2"></i>Permit Holders (10)</h5>
+                
+                <!-- Search Input -->
+                <div class="search-container w-25 min-w-200">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="tableSearch" class="form-control search-input" placeholder="Search permit holders...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="permitTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Photo</th>
+                            <th>Permit No.</th>
+                            <th>Name & Address</th>
+                            <th>Occupation</th>
+                            <th>TRN</th>
+                            <th>Contact</th>
+                            <th>Gender</th>
+                            <th>DOB</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 -->
+                        <tr>
+                            <td><div class="photo-circle">ASH</div></td>
+                            <td><strong>KSA01040426</strong></td>
+                            <td>
+                                ASHLEY BUCKLEY<br>
+                                <span class="address-text">LOT 343 HOUSING DRIVE KINGSTON 6</span>
+                            </td>
+                            <td>CASHIER</td>
+                            <td>130-508-004</td>
+                            <td>1(876)583-4936</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr>
+                            <td><div class="photo-circle">MAK</div></td>
+                            <td><strong>KSA10110426</strong></td>
+                            <td>
+                                MAKADA FRANCIS<br>
+                                <span class="address-text">527 ORLANDO AVENUE SPANISH TOWN</span>
+                            </td>
+                            <td>STOREROOM ASSISTANT</td>
+                            <td>123-910-226</td>
+                            <td>1(876)819-4897</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                        <!-- Row 3 -->
+                        <tr>
+                            <td><div class="photo-circle">CEC</div></td>
+                            <td><strong>KSA45150426</strong></td>
+                            <td>
+                                CECILE GORDON-HEMMINGS<br>
+                                <span class="address-text">6 CIRCLE CLOSE TRAFALGAR PARK KINGSTON 10</span>
+                            </td>
+                            <td>PHARMACIST</td>
+                            <td>100-067-409</td>
+                            <td>1(876)288-8666</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-warning text-dark status-badge">Pending Signed Off</span></td>
+                        </tr>
+                        <!-- Row 4 -->
+                        <tr>
+                            <td><div class="photo-circle">NIC</div></td>
+                            <td><strong>KSA05720426</strong></td>
+                            <td>
+                                NICHOLE HEMMINGS<br>
+                                <span class="address-text">3 YORO CRESCENT THREE OAKS GARDEN KINGSTON 20</span>
+                            </td>
+                            <td>PHARMACY TECHNICIAN</td>
+                            <td>128-858-486</td>
+                            <td>1(876)507-0335</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                        <!-- Row 5 -->
+                        <tr>
+                            <td><div class="photo-circle">MAT</div></td>
+                            <td><strong>KSA39100426</strong></td>
+                            <td>
+                                MATTHEW HITCHENER<br>
+                                <span class="address-text">9 WOODLAWN AVENUE KINGSTON 19</span>
+                            </td>
+                            <td>WAREHOUSE SUPERVISOR</td>
+                            <td>116-789-280</td>
+                            <td>1(876)463-1008</td>
+                            <td>Male</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                        <!-- Row 6 -->
+                        <tr>
+                            <td><div class="photo-circle">SAD</div></td>
+                            <td><strong>KSA02190426</strong></td>
+                            <td>
+                                SADIAN MOULTON<br>
+                                <span class="address-text">14 RHONA WALK DELACREE PARK KINGSTON 13</span>
+                            </td>
+                            <td>CASHIER</td>
+                            <td>113-306-962</td>
+                            <td>1(876)531-9255</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                        <!-- Row 7 -->
+                        <tr>
+                            <td><div class="photo-circle">TRI</div></td>
+                            <td><strong>KSA89920426</strong></td>
+                            <td>
+                                TRICHELLE NOYAN<br>
+                                <span class="address-text">4 PAYTON PLACE MONA ROAD KINGSTON</span>
+                            </td>
+                            <td>CASHIER</td>
+                            <td>130-351-105</td>
+                            <td>1(658)218-9599</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                        <!-- Row 8 -->
+                        <tr>
+                            <td><div class="photo-circle">RUT</div></td>
+                            <td><strong>KSA41270426</strong></td>
+                            <td>
+                                RUTHANN PENGELLEY<br>
+                                <span class="address-text">5 HAMPSTEAD PLACE KINGSTON 3</span>
+                            </td>
+                            <td>CASHIER</td>
+                            <td>126-918-856</td>
+                            <td>1(876)847-3831</td>
+                            <td>Female</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                        <!-- Row 9 -->
+                        <tr>
+                            <td><div class="photo-circle">NIC</div></td>
+                            <td><strong>KSA61450426</strong></td>
+                            <td>
+                                NICHOLAS SMITH<br>
+                                <span class="address-text">25 COLLISTON CLOSE</span>
+                            </td>
+                            <td>INVENTORY ASSISTANT</td>
+                            <td>129-376-701</td>
+                            <td>1(876)570-5967</td>
+                            <td>Male</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-warning text-dark status-badge">Pending Signed Off</span></td>
+                        </tr>
+                        <!-- Row 10 -->
+                        <tr>
+                            <td><div class="photo-circle">CHA</div></td>
+                            <td><strong>KSA40850426</strong></td>
+                            <td>
+                                CHADANE THOMPSON<br>
+                                <span class="address-text">GAYLE MOUNT DISTRICT GORDON TOWN ST ANDREW</span>
+                            </td>
+                            <td>SALES ASSOCIATE</td>
+                            <td>129-984-248</td>
+                            <td>1(876)565-1953</td>
+                            <td>Male</td>
+                            <td>N/A</td>
+                            <td><span class="badge rounded-pill bg-success status-badge">Granted Signed Off</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- No Results Message (Hidden by default) -->
+                <div id="noResults" class="text-center py-4 d-none text-muted">
+                    <i class="fa-solid fa-magnifying-glass fs-2 mb-2"></i>
+                    <p>No permit holders match your search.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    @push('styles')
-        {{-- Bootstrap Table (bootstrap-table.com) — self-contained include, not used elsewhere in the app --}}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.5/dist/bootstrap-table.min.css">
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <style>
-            .bg-success-soft { background-color: rgba(29, 233, 182, 0.12); }
-            .bg-danger-soft  { background-color: rgba(230, 84, 84, 0.12); }
-            .bg-warning-soft { background-color: rgba(255, 171, 0, 0.12); }
-            .bg-info-soft    { background-color: rgba(9, 187, 213, 0.12); }
-            .bg-primary-soft { background-color: rgba(101, 118, 255, 0.12); }
-            .bg-lighter      { background-color: #f7f8fa; }
+    <!-- Table Search Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("tableSearch");
+            const tableRows = document.querySelectorAll("#permitTable tbody tr");
+            const noResults = document.getElementById("noResults");
 
-            #permitsTable td,
-            #permitsTable th {
-                vertical-align: middle;
-            }
+            searchInput.addEventListener("keyup", function(e) {
+                const term = e.target.value.toLowerCase();
+                let hasResults = false;
 
-            /* Bootstrap Table ships its own toolbar/pagination markup —
-               these tweaks just tighten it up to match the rest of the card UI */
-            .bootstrap-table .fixed-table-toolbar {
-                margin-bottom: 12px;
-            }
-
-            .bootstrap-table .fixed-table-toolbar .search input {
-                border-radius: 8px;
-            }
-
-            .bootstrap-table .fixed-table-pagination .pagination {
-                margin-bottom: 0;
-            }
-        </style>
-    @endpush
-
-    @push('scripts')
-        {{-- Bootstrap Table JS — progressively enhances the table via data-toggle="table" --}}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.5/dist/bootstrap-table.min.js"></script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                $('#permitsTable').bootstrapTable({
-                    formatNoMatches: function () {
-                        return 'No permit holders found for this establishment.';
-                    },
+                tableRows.forEach(row => {
+                    // Get all text content from the row
+                    const rowText = row.textContent.toLowerCase();
+                    
+                    if (rowText.includes(term)) {
+                        row.style.display = "";
+                        hasResults = true;
+                    } else {
+                        row.style.display = "none";
+                    }
                 });
+
+                // Toggle 'No Results' message
+                if (!hasResults) {
+                    noResults.classList.remove('d-none');
+                } else {
+                    noResults.classList.add('d-none');
+                }
             });
-        </script>
-    @endpush
-@endsection
+        });
+    </script>
+</body>
+</html>
