@@ -311,13 +311,13 @@
                     <div>
                         <div class="sc-label">Application Date</div>
                         <div class="sc-value">
-                            {{ optional($onsite->application_date)->format('M d, Y') ?? 'N/A' }}
+                            {{ \Carbon\Carbon::parse($onsite->application_date)->format('M d, Y') }}
                         </div>
                     </div>
                     <div>
                         <div class="sc-label">Proposed Visit Date</div>
                         <div class="sc-value">
-                            {{ optional($onsite->proposed_date)->format('M d, Y') ?? 'N/A' }}
+                            {{ \Carbon\Carbon::parse($onsite->proposed_date)->format('M d, Y') }}
                         </div>
                     </div>
                     <div>
