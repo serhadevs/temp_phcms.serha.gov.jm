@@ -658,7 +658,7 @@ class PermitApplicationApi extends Controller
             'permitCategory',
             'signOffs',
             'testResults'
-        ])->select('firstname','lastname','permit_no')->where('establishment_clinic_id',$onsite)->get();
+        ])->where('establishment_clinic_id',$onsite)->get();
 
         dd($applicants);
         return response()->json([
