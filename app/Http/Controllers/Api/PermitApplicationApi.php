@@ -660,7 +660,7 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->where('establishment_clinic_id',$onsite)->where('permit_no',"KSA07761125")->get();
 
-         $signOff = $applicants->signOffs;
+        //  $signOff = $applicants->signOffs;
 
          $qrUrl = url('/api/verify-permit/' . $applicants->permit_no);
         $qrImage = base64_encode(
