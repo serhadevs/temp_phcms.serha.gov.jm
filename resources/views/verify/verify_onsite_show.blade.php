@@ -243,7 +243,7 @@
                     Onsite Verification &middot; Application #{{ $onsite->id ?? 'N/A' }}
                 </p>
             </div>
-            {{-- <div class="flex items-center gap-2 flex-wrap">
+            <div class="flex items-center gap-2 flex-wrap">
                 @if ($onsite->signOff && $onsite->signOff->is_granted)
                     <span class="sc-badge sc-badge-success">
                         <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Signed Off &middot; Granted
@@ -265,7 +265,7 @@
                         Download All Permits
                     </a>
                 @endif
-            </div> --}}
+            </div>
         </div>
 
         {{-- Details --}}
