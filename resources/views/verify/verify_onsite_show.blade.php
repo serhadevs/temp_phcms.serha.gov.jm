@@ -334,20 +334,7 @@
                             {{ $onsite->proposed_time ? \Carbon\Carbon::parse($onsite->proposed_time)->format('h:i A') : 'N/A' }}
                         </div>
                     </div>
-                    <div class="col-span-2">
-                        <div class="sc-label">Sign-Off</div>
-                        <div class="sc-value">
-                            @if ($onsite->signOff)
-                                <span class="sc-badge sc-badge-success">
-                                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                                    Signed off on
-                                    {{ $onsite->signOff->sign_off_date }}
-                                </span>
-                            @else
-                                <span class="sc-badge sc-badge-neutral">No sign-off recorded yet</span>
-                            @endif
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
 
