@@ -653,6 +653,14 @@ class PermitApplicationApi extends Controller
 
     public function downloadPermits(int $onsite)
     {
+
+     $applicants = PermitApplication::with([
+            'permitCategory',
+            'signOffs',
+            'testResults'
+        ])->where('establishment_clinic_id',$onsite)->get();
+
+        dd($applicants);
         return response()->json([
             'message' => 'success'
         ]);

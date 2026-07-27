@@ -244,7 +244,7 @@
                 </p>
             </div>
             <div class="flex items-center gap-2 flex-wrap">
-                @if ($onsite->signOff && $onsite->signOff->is_granted)
+                {{-- @if ($onsite->signOff && $onsite->signOff->is_granted)
                     <span class="sc-badge sc-badge-success">
                         <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Signed Off &middot; Granted
                     </span>
@@ -256,7 +256,7 @@
                     <span class="sc-badge sc-badge-warning">
                         <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending Sign-Off
                     </span>
-                @endif
+                @endif --}}
 
                 @if ($onsite->permits && $onsite->permits->count() > 0)
                     <a href="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
