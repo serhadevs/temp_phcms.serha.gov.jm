@@ -660,9 +660,11 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->where('establishment_clinic_id',$onsite)->where('permit_no',"KSA07761125")->get();
 
-        //  $signOff = $applicants->signOffs;
+         //dd($applicants);
 
-         $qrUrl = url('/api/verify-permit/' . $applicants->permit_no);
+         $signOff = $applicants[0]->signOffs;
+
+         $qrUrl = url('/api/verify-permit/' . $applicants[0]->permit_no);
         $qrImage = base64_encode(
             QrCode::format('png')
                 ->size(160)
@@ -671,12 +673,12 @@ class PermitApplicationApi extends Controller
         );
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('verify.permitCardPdf', [
-            'applicant' => $applicants,
+            'applicant' => $applicants[0],
             'qrImage' => $qrImage,
         ])->setPaper('A4');
 
 
-        return $pdf->download('Food_Handlers_Permit_' . $applicants->permit_no . '.pdf')
+        return $pdf->download('Food_Handlers_Permit_' . $applicants[0]->permit_no . '.pdf')
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
 
 
