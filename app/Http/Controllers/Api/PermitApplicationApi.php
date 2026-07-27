@@ -589,23 +589,40 @@ class PermitApplicationApi extends Controller
     }
 
     public function onsiteRetrievel(Request $request)
-    {
+{
+    $validated = $request->validate([
+        'company_name' => 'nullable|string|max:255',
+        'application_number' => 'nullable|string|max:50',
+        'email_address' => 'nullable|email|max:255',
+    ]);
 
-        $validated = request()->validate([
-            'company_name' => 'nullable',
-            'application_number' => 'nullable',
-            'email_address' => 'nullable'
-        ]);
-
-        $onsite = EstablishmentClinics::with('permits','signOff')
-            ->where('id', $validated['application_number'])
-            // ->where('sign_off_status',1)
-            ->first();
-
-            //dd($onsite);
-
-        return redirect()->route('verify.onsite.show',$onsite->id);
+    // Require at least one search field to avoid unbounded/empty queries
+    if (empty(array_filter($validated))) {
+        return back()->with('error', 'Please provide at least one search field.');
     }
+
+    $onsite = EstablishmentClinics::with('permits', 'signOff')
+        ->when(
+            $validated['application_number'] ?? null,
+            fn ($query, $value) => $query->where('id', $value)
+        )
+        ->when(
+            $validated['company_name'] ?? null,
+            fn ($query, $value) => $query->where('name', 'like', "%{$value}%")
+        )
+        ->when(
+            $validated['email_address'] ?? null,
+            fn ($query, $value) => $query->where('email_address', $value)
+        )
+        // ->where('sign_off_status', 1) // uncomment if this filter should always apply
+        ->first();
+
+    if (!$onsite) {
+        return back()->with('error', 'We did not find a record matching that application number');
+    }
+
+    return redirect()->route('verify.onsite.show', $onsite->id);
+}
 
    public function onsiteShow(int $onsite)
 {
