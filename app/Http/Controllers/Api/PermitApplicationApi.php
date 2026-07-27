@@ -589,73 +589,72 @@ class PermitApplicationApi extends Controller
     }
 
     public function onsiteRetrievel(Request $request)
-{
-    $validated = $request->validate([
-        'company_name' => 'nullable|string|max:255',
-        'application_number' => 'nullable|string|max:50',
-        'email_address' => 'nullable|email|max:255',
-    ]);
-
-    // Require at least one search field to avoid unbounded/empty queries
-    if (empty(array_filter($validated))) {
-        return back()->with('error', 'Please provide at least one search field.');
-    }
-
-    $onsite = EstablishmentClinics::with('permits', 'signOff')
-        ->when(
-            $validated['application_number'] ?? null,
-            fn ($query, $value) => $query->where('id', $value)
-        )
-        ->when(
-            $validated['company_name'] ?? null,
-            fn ($query, $value) => $query->where('name', 'like', "%{$value}%")
-        )
-        ->when(
-            $validated['email_address'] ?? null,
-            fn ($query, $value) => $query->where('email_address', $value)
-        )
-        // ->where('sign_off_status', 1) // uncomment if this filter should always apply
-        ->first();
-
-    if (!$onsite) {
-        return back()->with('error', 'We did not find a record matching that application number');
-    }
-
-    return redirect()->route('verify.onsite.show', $onsite->id);
-}
-
-   public function onsiteShow(int $onsite)
-{
-    try {
-        $onsite = EstablishmentClinics::with(['permits', 'signOff'])
-            ->findOrFail($onsite);
- 
-        return view('verify.verify_onsite_show', compact('onsite'));
- 
-    } catch (ModelNotFoundException $e) {
-        Log::error('Onsite verification record not found: ' . $e->getMessage(), [
-            'establishment_id' => $onsite,
+    {
+        $validated = $request->validate([
+            'company_name' => 'nullable|string|max:255',
+            'application_number' => 'nullable|string|max:50',
+            'email_address' => 'nullable|email|max:255',
         ]);
- 
-        return redirect()
-            ->back()
-            ->with('error', 'The requested onsite verification record was not found.');
- 
-    } catch (\Exception $e) {
-        Log::error('Error loading onsite verification: ' . $e->getMessage(), [
-            'establishment_id' => $onsite,
-            'trace' => $e->getTraceAsString(),
-        ]);
- 
-        return redirect()
-            ->back()
-            ->with('error', 'An error occurred while loading this record. Please try again.');
-    }
-}
 
-public function downloadPermits(int $onsite){
-    return response()->json([
-        'message' => 'success'
-    ]);
-}
+        // Require at least one search field to avoid unbounded/empty queries
+        if (empty(array_filter($validated))) {
+            return back()->with('error', 'Please provide at least one search field.');
+        }
+
+        $onsite = EstablishmentClinics::with('permits', 'signOff')
+            ->when(
+                $validated['application_number'] ?? null,
+                fn($query, $value) => $query->where('id', $value)
+            )
+            ->when(
+                $validated['company_name'] ?? null,
+                fn($query, $value) => $query->where('name', 'like', "%{$value}%")
+            )
+            ->when(
+                $validated['email_address'] ?? null,
+                fn($query, $value) => $query->where('email_address', $value)
+            )
+            // ->where('sign_off_status', 1) // uncomment if this filter should always apply
+            ->first();
+
+        if (!$onsite) {
+            return back()->with('error', 'We did not find a record matching that application number');
+        }
+
+        return redirect()->route('verify.onsite.show', $onsite->id);
+    }
+
+    public function onsiteShow(int $onsite)
+    {
+        try {
+            $onsite = EstablishmentClinics::with(['permits', 'signOff'])
+                ->findOrFail($onsite);
+
+            return view('verify.verify_onsite_show', compact('onsite'));
+        } catch (ModelNotFoundException $e) {
+            Log::error('Onsite verification record not found: ' . $e->getMessage(), [
+                'establishment_id' => $onsite,
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('error', 'The requested onsite verification record was not found.');
+        } catch (\Exception $e) {
+            Log::error('Error loading onsite verification: ' . $e->getMessage(), [
+                'establishment_id' => $onsite,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('error', 'An error occurred while loading this record. Please try again.');
+        }
+    }
+
+    public function downloadPermits(int $onsite)
+    {
+        return response()->json([
+            'message' => 'success'
+        ]);
+    }
 }
