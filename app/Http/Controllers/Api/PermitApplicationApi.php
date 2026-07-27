@@ -653,38 +653,78 @@ class PermitApplicationApi extends Controller
 
     public function downloadPermits(int $onsite)
     {
+        try {
+            $applicants = PermitApplication::with([
+                'permitCategory',
+                'signOffs',
+                'testResults'
+            ])->where('establishment_clinic_id', $onsite)->get();
 
-     $applicants = PermitApplication::with([
-            'permitCategory',
-            'signOffs',
-            'testResults'
-        ])->where('establishment_clinic_id',$onsite)->where('permit_no',"KSA07761125")->get();
+            if ($applicants->isEmpty()) {
+                return back()->with('error', 'No permits found for this establishment.');
+            }
 
-         //dd($applicants);
+            // Build a QR code image for each applicant up front
+            $applicantsData = [];
 
-         $signOff = $applicants[0]->signOffs;
+            foreach ($applicants as $applicant) {
+                try {
+                    $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
 
-         $qrUrl = url('/api/verify-permit/' . $applicants[0]->permit_no);
-        $qrImage = base64_encode(
+                    $qrImage = base64_encode(
+                        QrCode::format('png')
+                            ->size(160)
+                            ->margin(1)
+                            ->generate($qrUrl)
+                    );
+
+                    $applicantsData[] = [
+                        'applicant' => $applicant,
+                        'qrImage' => $qrImage,
+                    ];
+                } catch (\Throwable $innerException) {
+                    // Log the failure for this specific applicant but keep processing the rest
+                    Log::error('Failed to generate QR code for permit', [
+                        'permit_no' => $applicant->permit_no ?? null,
+                        'establishment_clinic_id' => $onsite,
+                        'error' => $innerException->getMessage(),
+                    ]);
+                    continue;
+                }
+            }
+
+            if (empty($applicantsData)) {
+                return back()->with('error', 'Unable to generate any permits for this establishment.');
+            }
+
+            $pdf = Pdf::loadView('verify.permitCardPdf', [
+                'applicants' => $applicantsData,
+            ])->setPaper('A4');
+
+            $fileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.pdf';
+
+            return $pdf->download($fileName)
+                ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        } catch (\Throwable $e) {
+            Log::error('Failed to download permits', [
+                'establishment_clinic_id' => $onsite,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->with('error', 'Something went wrong while generating the permits. Please try again.');
+        }
+    }
+
+    private function generateQrImage(PermitApplication $applicant): string
+    {
+        $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
+
+        return base64_encode(
             QrCode::format('png')
                 ->size(160)
                 ->margin(1)
                 ->generate($qrUrl)
         );
-
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('verify.permitCardPdf', [
-            'applicant' => $applicants[0],
-            'qrImage' => $qrImage,
-        ])->setPaper('A4');
-
-
-        return $pdf->download('Food_Handlers_Permit_' . $applicants[0]->permit_no . '.pdf')
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-
-
-        // dd($applicants);
-        // return response()->json([
-        //     'message' => 'success'
-        // ]);
     }
 }
