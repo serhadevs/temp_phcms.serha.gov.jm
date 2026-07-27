@@ -145,14 +145,14 @@ class PaymentController extends Controller
             $clinic_application = EstablishmentClinics::with('payment', 'user', 'waiver')
                 ->selectRaw('"4" as application_type_id, "' . $application_type->where('id', 4)->first()->name . '" as app_type, establishment_clinics.id as app_number, establishment_clinics.name, "" as permit_no,"" as trn, "" as permit_type, ' . $prices->where('application_type_id', 4)->first()->price . '')
                 ->doesntHave('payment')
-                ->doesntHave('payment')
+                // ->doesntHave('payment')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereBetween('created_at', [$filterTimeline, $today]);
 
             $health_cert_applications = HealthCertApplications::with('payment', 'user')
                 ->selectRaw('"2" as application_type_id, "' . $application_type->where('id', 2)->first()->name . '" as app_type, health_cert_applications.id as app_number, concat(health_cert_applications.firstname, " ", health_cert_applications.lastname) as name, health_cert_applications.permit_no, health_cert_applications.trn, "" as permit_type, ' . $prices->where('application_type_id', 2)->first()->price . '')
                 ->doesntHave('payment')
-                ->doesntHave('payment')
+                // ->doesntHave('payment')
                 ->whereRelation('user', 'facility_id', auth()->user()->facility_id)
                 ->whereBetween('created_at', [$filterTimeline, $today]);
 

@@ -258,6 +258,8 @@
                     </span>
                 @endif --}}
 
+                
+
                 @if ($onsite->permits && $onsite->permits->count() > 0)
                     <a href="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
                         style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));">
