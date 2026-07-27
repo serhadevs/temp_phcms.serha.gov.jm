@@ -1,13 +1,6 @@
-{{--
-    verify_onsite.blade.php
-
-    Generic, unbranded email-login template.
-    Swap the CSS variables in :root, the $appName/$logoUrl values, and the
-    route/action below to make this your own. No layout/app.blade.php
-    dependency — this is a standalone full-page view.
---}}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,7 +26,9 @@
             --divider-color: #e3e5ea;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -183,8 +178,20 @@
         .legal-footer .sep {
             margin: 0 8px;
         }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="card">
@@ -194,33 +201,36 @@
         </div>
 
         <h1>Welcome</h1>
+        @if (session('error'))
+            <div class="alert-error">
+                {{ session('error') }}
+            </div>
+        @endif
 
-        <form method="POST" action="{{ route('verify.onsite.submit')}}">
+        @if ($errors->any())
+            <div class="alert-error">
+                <ul style="margin:0; padding-left: 18px; text-align:left;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('verify.onsite.submit') }}">
             @csrf
 
             <div class="field">
-                <input
-                    type="text"
-                    name="company_name"
-                    placeholder="Enter your company name"
-                    value="{{ old('company_name') }}"
-                    
-                    autofocus
-                >
+                <input type="text" name="company_name" placeholder="Enter your company name"
+                    value="{{ old('company_name') }}" autofocus>
                 @error('company_name')
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="field">
-                <input
-                    type="text"
-                    name="application_number"
-                    placeholder="Application Number"
-                    value="{{ old('application_number') }}"
-                    
-                    autofocus
-                >
+                <input type="text" name="application_number" placeholder="Application Number"
+                    value="{{ old('application_number') }}" autofocus>
                 @error('application_number')
                     <div class="error">{{ $message }}</div>
                 @enderror
@@ -228,14 +238,8 @@
 
 
             <div class="field">
-                <input
-                    type="email"
-                    name="email_address"
-                    placeholder="Email Address"
-                    value="{{ old('email_address') }}"
-                
-                    autofocus
-                >
+                <input type="email" name="email_address" placeholder="Email Address"
+                    value="{{ old('email_address') }}" autofocus>
                 @error('email_address')
                     <div class="error">{{ $message }}</div>
                 @enderror
@@ -244,9 +248,9 @@
             <button type="submit" class="submit">Retrieve Permits</button>
         </form>
 
-        
+
     </div>
-{{-- 
+    {{-- 
     <div class="sub-footer">
         Login to <a href="#">Service One</a> &nbsp;|&nbsp; Login to <a href="#">Service Two</a>
     </div> --}}
@@ -254,9 +258,11 @@
     <div class="legal-footer">
         <a href="#">Terms of Service</a><span class="sep">|</span><a href="#">Privacy Policy</a>
         <div style="margin-top: 8px;">
-            &copy; {{ date('Y') }} South East Regional Health Authority . All rights reserved. Verification powered By Duromics.ca
+            &copy; {{ date('Y') }} South East Regional Health Authority . All rights reserved. Verification powered
+            By Duromics.ca
         </div>
     </div>
 
 </body>
+
 </html>
