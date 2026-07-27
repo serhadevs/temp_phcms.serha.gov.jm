@@ -660,9 +660,29 @@ class PermitApplicationApi extends Controller
             'testResults'
         ])->where('establishment_clinic_id',$onsite)->where('permit_no',"KSA07761125")->get();
 
-        dd($applicants);
-        return response()->json([
-            'message' => 'success'
-        ]);
+         $signOff = $applicants->signOffs;
+
+         $qrUrl = url('/api/verify-permit/' . $applicants->permit_no);
+        $qrImage = base64_encode(
+            QrCode::format('png')
+                ->size(160)
+                ->margin(1)
+                ->generate($qrUrl)
+        );
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('verify.permitCardPdf', [
+            'applicant' => $applicants,
+            'qrImage' => $qrImage,
+        ])->setPaper('A4');
+
+
+        return $pdf->download('Food_Handlers_Permit_' . $applicants->permit_no . '.pdf')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+
+
+        // dd($applicants);
+        // return response()->json([
+        //     'message' => 'success'
+        // ]);
     }
 }
