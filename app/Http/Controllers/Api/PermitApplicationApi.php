@@ -651,7 +651,7 @@ class PermitApplicationApi extends Controller
         }
     }
 
-    public function downloadPermits(int $onsite)
+    public function downloadPermits(Request $request, int $onsite)
     {
         try {
             $applicants = PermitApplication::with([
@@ -661,10 +661,9 @@ class PermitApplicationApi extends Controller
             ])->where('establishment_clinic_id', $onsite)->get();
 
             if ($applicants->isEmpty()) {
-                return back()->with('error', 'No permits found for this establishment.');
+                return $this->failResponse($request, 'No permits found for this establishment.');
             }
 
-            // Build a QR code image for each applicant up front
             $applicantsData = [];
 
             foreach ($applicants as $applicant) {
@@ -683,7 +682,6 @@ class PermitApplicationApi extends Controller
                         'qrImage' => $qrImage,
                     ];
                 } catch (\Throwable $innerException) {
-                    // Log the failure for this specific applicant but keep processing the rest
                     Log::error('Failed to generate QR code for permit', [
                         'permit_no' => $applicant->permit_no ?? null,
                         'establishment_clinic_id' => $onsite,
@@ -694,7 +692,7 @@ class PermitApplicationApi extends Controller
             }
 
             if (empty($applicantsData)) {
-                return back()->with('error', 'Unable to generate any permits for this establishment.');
+                return $this->failResponse($request, 'Unable to generate any permits for this establishment.');
             }
 
             $pdf = Pdf::loadView('verify.onsiteCardPdf', [
@@ -712,8 +710,20 @@ class PermitApplicationApi extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return back()->with('error', 'Something went wrong while generating the permits. Please try again.');
+            return $this->failResponse($request, 'Something went wrong while generating the permits. Please try again.');
         }
+    }
+
+    /**
+     * Return a JSON error for AJAX/fetch requests, or a redirect for normal form submits.
+     */
+    private function failResponse(Request $request, string $message)
+    {
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['error' => $message], 422);
+        }
+
+        return back()->with('error', $message);
     }
 
     private function generateQrImage(PermitApplication $applicant): string

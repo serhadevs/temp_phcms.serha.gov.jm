@@ -258,14 +258,14 @@
                     </span>
                 @endif --}}
 
-                
 
                 @if ($onsite->permits && $onsite->permits->count() > 0)
-                    <a href="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
+                    <button type="button" id="download-permits-btn"
+                        data-url="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
                         style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));">
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         Download All Permits
-                    </a>
+                    </button>
                 @endif
             </div>
         </div>
@@ -336,7 +336,7 @@
                             {{ $onsite->proposed_time ? \Carbon\Carbon::parse($onsite->proposed_time)->format('h:i A') : 'N/A' }}
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -501,6 +501,36 @@
                 </div>
             </div>
         </div>
+
+        {{--  Modal --}}
+
+        <div id="permits-loading-modal"
+            class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div class="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full mx-4 text-center">
+                <div id="permits-modal-icon" class="flex justify-center mb-4">
+                    <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
+                        </path>
+                    </svg>
+                </div>
+
+                <h3 id="permits-modal-title" class="text-lg font-semibold text-gray-900 mb-1">
+                    Generating Permits
+                </h3>
+
+                <p id="permits-modal-message" class="text-sm text-gray-500">
+                    Please wait while we prepare your PDF. This may take a moment.
+                </p>
+
+                <button id="permits-modal-close"
+                    class="hidden mt-4 px-4 py-2 text-sm font-medium rounded-lg bg-gray-900 text-white hover:bg-gray-800">
+                    Close
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -600,6 +630,120 @@
             });
 
             render();
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('download-permits-btn');
+            const modal = document.getElementById('permits-loading-modal');
+            const icon = document.getElementById('permits-modal-icon');
+            const title = document.getElementById('permits-modal-title');
+            const message = document.getElementById('permits-modal-message');
+            const closeBtn = document.getElementById('permits-modal-close');
+
+            if (!btn) return;
+
+            function showModal() {
+                modal.classList.remove('hidden');
+            }
+
+            function hideModal() {
+                modal.classList.add('hidden');
+                // reset state for next click
+                setLoadingState();
+            }
+
+            function setLoadingState() {
+                icon.innerHTML = `
+            <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+        `;
+                title.textContent = 'Generating Permits';
+                message.textContent = 'Please wait while we prepare your PDF. This may take a moment.';
+                closeBtn.classList.add('hidden');
+            }
+
+            function setSuccessState() {
+                icon.innerHTML = `
+            <svg class="h-10 w-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+        `;
+                title.textContent = 'Download Ready';
+                message.textContent = 'Your permits PDF has started downloading.';
+                closeBtn.classList.remove('hidden');
+            }
+
+            function setErrorState(errorMessage) {
+                icon.innerHTML = `
+            <svg class="h-10 w-10 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        `;
+                title.textContent = 'Generation Failed';
+                message.textContent = errorMessage || 'Something went wrong. Please try again.';
+                closeBtn.classList.remove('hidden');
+            }
+
+            btn.addEventListener('click', async function() {
+                const url = btn.dataset.url;
+
+                setLoadingState();
+                showModal();
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json, application/pdf',
+                        },
+                    });
+
+                    const contentType = response.headers.get('Content-Type') || '';
+
+                    if (!response.ok || contentType.includes('application/json')) {
+                        const data = await response.json().catch(() => ({}));
+                        setErrorState(data.error);
+                        return;
+                    }
+
+                    // Success — extract filename from header if present
+                    const disposition = response.headers.get('Content-Disposition') || '';
+                    const match = disposition.match(/filename="?([^"]+)"?/);
+                    const filename = match ? match[1] : 'permits.pdf';
+
+                    const blob = await response.blob();
+                    const blobUrl = window.URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(blobUrl);
+
+                    setSuccessState();
+
+                } catch (err) {
+                    console.error('Download error:', err);
+                    setErrorState('A network error occurred. Please try again.');
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            closeBtn.addEventListener('click', hideModal);
+
+            // Optional: close modal when clicking outside it
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) hideModal();
+            });
         });
     </script>
 </body>
