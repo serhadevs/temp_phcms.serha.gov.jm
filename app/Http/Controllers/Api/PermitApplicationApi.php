@@ -697,7 +697,7 @@ class PermitApplicationApi extends Controller
                 return back()->with('error', 'Unable to generate any permits for this establishment.');
             }
 
-            $pdf = Pdf::loadView('verify.permitCardPdf', [
+            $pdf = Pdf::loadView('verify.onsiteCardPdf', [
                 'applicants' => $applicantsData,
             ])->setPaper('A4');
 
