@@ -499,14 +499,21 @@
                                         @endif
                                     </div>
                                 </td>
-                              
+
                                 <td>
-                                    <a href="{{ route('verify.onsite.download', ['id' => $permit->id]) }}"
-                                        class="sc-btn" title="Download Certificate">
-                                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                                    </a>
+                                    @if ($permit->sign_off_status == 1)
+                                        <a href="{{ route('verify.onsite.download', ['id' => $permit->id]) }}"
+                                            class="sc-btn" title="Download Certificate">
+                                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                        </a>
+                                    @else
+                                        <span class="text-muted" title="No certificate available">
+                                            <i data-lucide="file-x" class="w-3.5 h-3.5"></i>
+                                            Not available
+                                        </span>
+                                    @endif
                                 </td>
-                                
+
                             </tr>
                         @empty
                             <tr>
