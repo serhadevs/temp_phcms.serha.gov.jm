@@ -621,7 +621,15 @@ class PermitApplicationApi extends Controller
             return back()->with('error', 'We did not find a record matching that application number');
         }
 
-        return redirect()->route('verify.onsite.show', $onsite->id);
+
+        // Signed URL, valid for 120 minutes, scoped to this specific establishment
+        $signedUrl = URL::temporarySignedRoute(
+            'verify.onsite.show',
+            now()->addMinutes(120),
+            ['onsite' => $onsite->id]
+        );
+
+        return redirect()->to($signedUrl);
     }
 
     public function onsiteShow(int $onsite)
@@ -630,7 +638,7 @@ class PermitApplicationApi extends Controller
             $onsite = EstablishmentClinics::with(['permits', 'signOff'])
                 ->findOrFail($onsite);
 
-                //dd($onsite);
+            //dd($onsite);
 
             return view('verify.verify_onsite_show', compact('onsite'));
         } catch (ModelNotFoundException $e) {
