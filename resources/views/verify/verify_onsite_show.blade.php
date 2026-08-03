@@ -465,7 +465,7 @@
 
                                 {{-- <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td> --}}
                                 <td>
-                                    {{ $permit->sign_Offs->expiry_date ? \Carbon\Carbon::parse($permit->sign_Offs->expiry_date)->format('d/m/Y') : 'N/A' }}
+                                    {{-- {{ $permit->sign_Offs->expiry_date ? \Carbon\Carbon::parse($permit->sign_Offs->expiry_date)->format('d/m/Y') : 'N/A' }} --}}
                                 </td>
                                 <td>
                                     <div style="display: flex; align-items: center; gap: 8px;">
