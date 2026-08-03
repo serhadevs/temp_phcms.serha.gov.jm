@@ -880,11 +880,31 @@ class PermitApplicationApi extends Controller
         set_time_limit(120);
 
         try {
-            $applicants = PermitApplication::with([
-                'permitCategory',
-                'signOffs',
-                'testResults'
-            ])->where('establishment_clinic_id', $onsite)->where('sign_off_status', 1)->get();
+            // $applicants = PermitApplication::with([
+            //     'permitCategory',
+            //     'signOffs',
+            //     'testResults'
+            // ])->where('establishment_clinic_id', $onsite)->where('sign_off_status', 1)->get();
+
+            $applicants = PermitApplication::select([
+                'id',
+                'establishment_clinic_id',
+                'permit_no',
+                'firstname',
+                'middlename',
+                'lastname',
+                'photo_upload',
+                'permit_category_id', // foreign key required for the permitCategory relation to resolve
+                'sign_off_status',
+            ])
+                ->with([
+                    'permitCategory:id,name',
+                    'signOffs:id,permit_application_id,sign_off_date,expiry_date',
+                    'testResults:id,permit_application_id,overall_score,test_date,test_location',
+                ])
+                ->where('establishment_clinic_id', $onsite)
+                ->where('sign_off_status', 1)
+                ->get();
 
             if ($applicants->isEmpty()) {
                 return $this->failResponse($request, 'No permits found for this establishment.');
