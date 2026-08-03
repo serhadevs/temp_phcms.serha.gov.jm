@@ -549,6 +549,35 @@
                 </div>
             </div>
         </div>
+
+        {{-- Modal --}}
+        <div id="permits-loading-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full mx-4 text-center">
+        <div id="permits-modal-icon" class="flex justify-center mb-4">
+            <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+        </div>
+
+        <h3 id="permits-modal-title" class="text-lg font-semibold text-gray-900 mb-1">
+            Generating Permits
+        </h3>
+
+        <p id="permits-modal-message" class="text-sm text-gray-500">
+            Please wait while we prepare your PDF. This may take a moment.
+        </p>
+
+        <button id="permits-modal-close"
+            class="hidden mt-4 px-4 py-2 text-sm font-medium rounded-lg bg-gray-900 text-white hover:bg-gray-800">
+            Close
+        </button>
+    </div>
+</div>
+
+
+        {{-- Modal End --}}
     </div>
 
     <script>
