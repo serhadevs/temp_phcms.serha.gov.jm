@@ -460,7 +460,7 @@
 
                                 <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td>
                                 <td>
-                                    {{ optional($permit->date_of_birth)->format('M d, Y') ?? 'N/A' }}
+                                    {{ $permit->date_of_birth ? \Carbon\Carbon::parse($permit->date_of_birth)->format('d/m/Y') : 'N/A' }}
                                 </td>
                                 {{-- <td>
                                     <a href="#" class="sc-btn" title="View">

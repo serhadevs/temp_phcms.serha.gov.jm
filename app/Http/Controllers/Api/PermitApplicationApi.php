@@ -593,7 +593,7 @@ class PermitApplicationApi extends Controller
         $validated = $request->validate([
             'company_name' => 'nullable|string|max:255',
             'application_number' => 'nullable|string|max:50',
-            'email_address' => 'nullable|email|max:255',
+            // 'email_address' => 'nullable|email|max:255',
         ]);
 
         // Require at least one search field to avoid unbounded/empty queries
@@ -610,10 +610,10 @@ class PermitApplicationApi extends Controller
                 $validated['company_name'] ?? null,
                 fn($query, $value) => $query->where('name', 'like', "%{$value}%")
             )
-            ->when(
-                $validated['email_address'] ?? null,
-                fn($query, $value) => $query->where('email_address', $value)
-            )
+            // ->when(
+            //     $validated['email_address'] ?? null,
+            //     fn($query, $value) => $query->where('email_address', $value)
+            // )
             // ->where('sign_off_status', 1) // uncomment if this filter should always apply
             ->first();
 
