@@ -251,9 +251,11 @@
                 <p class="text-sm mt-0.5" style="color: hsl(var(--muted-foreground));">
                     Onsite Verification &middot; Application #{{ $onsite->id ?? 'N/A' }}
                     @if ($earliestExpiry && $latestExpiry)
-                        &middot; Expires {{ $earliestExpiry->format('d/m/Y') }}
-                        @if (!$earliestExpiry->equalTo($latestExpiry))
-                            - {{ $latestExpiry->format('d/m/Y') }}
+                        @if ($earliestExpiry->equalTo($latestExpiry))
+                            &middot; Expires {{ $earliestExpiry->format('d/m/Y') }}
+                        @else
+                            &middot; Earliest Expiry: {{ $earliestExpiry->format('d/m/Y') }} &middot; Latest Expiry:
+                            {{ $latestExpiry->format('d/m/Y') }}
                         @endif
                     @endif
                 </p>
