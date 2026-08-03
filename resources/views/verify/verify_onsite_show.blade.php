@@ -223,8 +223,9 @@
                 <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA Logo" width="25" height="25">
                 Public Health Certificate Management System (PHCMS 2.0)
             </div>
-            <a href="#" class="sc-btn">
-                Permit Verification By ID Pro
+            <a href="#" class="sc-btn" style="display: inline-flex; align-items: center; gap: 6px;">
+                Permit Verification By IDPro
+                <img src="{{ asset('images/idpro_logo.png') }}" alt="IDPro logo" style="height: 16px; width: auto;">
             </a>
         </div>
     </nav>
