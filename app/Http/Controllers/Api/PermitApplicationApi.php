@@ -635,14 +635,24 @@ class PermitApplicationApi extends Controller
     public function onsiteShow(int $onsite)
     {
         try {
-            $onsite = EstablishmentClinics::with(['permits', 'signOff'])
+            // $onsite = EstablishmentClinics::with(['permits', 'signOff'])
+            //     ->findOrFail($onsite);
+
+            $onsite = EstablishmentClinics::with([
+                'permits' => function ($query) {
+                    $query->where('permit_no', 'KSA30730125');
+                },
+                'signOff'
+            ])
                 ->findOrFail($onsite);
 
-                
+            dd($onsite);
 
-            $signedOffCount = $onsite->permits->where('sign_off_status',1)->count();
 
-            return view('verify.verify_onsite_show', compact('onsite','signedOffCount'));
+
+            $signedOffCount = $onsite->permits->where('sign_off_status', 1)->count();
+
+            return view('verify.verify_onsite_show', compact('onsite', 'signedOffCount'));
         } catch (ModelNotFoundException $e) {
             Log::error('Onsite verification record not found: ' . $e->getMessage(), [
                 'establishment_id' => $onsite,
