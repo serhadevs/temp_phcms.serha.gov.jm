@@ -446,7 +446,7 @@
                             <th>TRN</th>
                             <th>Expiry Date</th>
                             <th>Approved</th>
-                            <th>Download Permit</th>
+                            <th>Download</th>
                         </tr>
                     </thead>
                     <tbody>
