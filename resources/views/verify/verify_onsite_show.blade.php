@@ -284,9 +284,9 @@
                 <button type="button" class="tab-trigger" data-tab="visit" role="tab">
                     <i data-lucide="calendar-check-2" class="w-4 h-4"></i> Visit Information
                 </button>
-                <button type="button" class="tab-trigger" data-tab="payment" role="tab">
+                {{-- <button type="button" class="tab-trigger" data-tab="payment" role="tab">
                     <i data-lucide="credit-card" class="w-4 h-4"></i> Payment Details
-                </button>
+                </button> --}}
             </div>
 
             {{-- Establishment Details --}}
