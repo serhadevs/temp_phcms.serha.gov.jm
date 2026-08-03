@@ -673,6 +673,7 @@ class PermitApplicationApi extends Controller
 
     public function downloadPermits(Request $request, int $onsite)
     {
+        set_time_limit(120);
         try {
             $applicants = PermitApplication::with([
                 'permitCategory',
