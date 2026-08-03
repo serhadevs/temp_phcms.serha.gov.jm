@@ -33,6 +33,14 @@
             color: hsl(var(--foreground));
         }
 
+
+        .filter-btn.active {
+            background: hsl(var(--foreground));
+            color: hsl(var(--background));
+            border-color: hsl(var(--foreground));
+        }
+
+
         .sc-card {
             background: hsl(var(--background));
             border: 1px solid hsl(var(--border));
@@ -409,11 +417,26 @@
                         class="sc-badge sc-badge-neutral">{{ $onsite->permits ? $onsite->permits->count() : 0 }}</span>
                 </h2>
 
-                <div class="relative w-full sm:w-72">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2"
-                        style="color: hsl(var(--muted-foreground));"></i>
-                    <input type="text" id="tableSearch" class="sc-input w-full pl-9 pr-3 py-2"
-                        placeholder="Search permit holders...">
+                <div class="flex items-center gap-3 flex-wrap w-full sm:w-auto">
+                    {{-- Status filter --}}
+                    <div class="flex items-center gap-1.5" id="statusFilter">
+                        <button type="button" class="sc-btn filter-btn active" data-status="all">
+                            All
+                        </button>
+                        <button type="button" class="sc-btn filter-btn" data-status="signed">
+                            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Signed Off
+                        </button>
+                        <button type="button" class="sc-btn filter-btn" data-status="pending">
+                            <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending
+                        </button>
+                    </div>
+
+                    <div class="relative w-full sm:w-72">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2"
+                            style="color: hsl(var(--muted-foreground));"></i>
+                        <input type="text" id="tableSearch" class="sc-input w-full pl-9 pr-3 py-2"
+                            placeholder="Search permit holders...">
+                    </div>
                 </div>
             </div>
 
@@ -424,10 +447,7 @@
                             <th>Photo</th>
                             <th>Permit No.</th>
                             <th>Name &amp; Address</th>
-                            {{-- <th>Occupation</th> --}}
                             <th>TRN</th>
-
-                            {{-- <th>Gender</th> --}}
                             <th>Expiry Date</th>
                             <th>Approved</th>
                         </tr>
@@ -444,8 +464,9 @@
                                 $hasPhoto =
                                     $permit->photo_upload &&
                                     \Illuminate\Support\Facades\Storage::disk('public')->exists($permit->photo_upload);
+                                $statusKey = $permit->sign_off_status == 1 ? 'signed' : 'pending';
                             @endphp
-                            <tr>
+                            <tr data-status="{{ $statusKey }}">
                                 <td>
                                     @if ($hasPhoto)
                                         <img src="{{ \Illuminate\Support\Facades\Storage::url($permit->photo_upload) }}"
@@ -460,10 +481,7 @@
                                     <div class="text-xs" style="color: hsl(var(--muted-foreground));">
                                         {{ $permit->address ?? 'N/A' }}</div>
                                 </td>
-                                {{-- <td>{{ $permit->occupation ?? 'N/A' }}</td> --}}
                                 <td>{{ $permit->trn ?? 'N/A' }}</td>
-
-                                {{-- <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td> --}}
                                 <td>
                                     {{-- {{ $permit->sign_Offs->expiry_date ? \Carbon\Carbon::parse($permit->sign_Offs->expiry_date)->format('d/m/Y') : 'N/A' }} --}}
                                 </td>
@@ -480,14 +498,12 @@
                                                 <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending Sign Off
                                             </span>
                                         @endif
-
-
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center py-10"
+                                <td colspan="6" class="text-center py-10"
                                     style="color: hsl(var(--muted-foreground));">
                                     No permit holders found for this establishment.
                                 </td>
@@ -520,36 +536,6 @@
                 </div>
             </div>
         </div>
-
-        {{--  Modal --}}
-
-        <div id="permits-loading-modal"
-            class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div class="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full mx-4 text-center">
-                <div id="permits-modal-icon" class="flex justify-center mb-4">
-                    <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                            stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
-                        </path>
-                    </svg>
-                </div>
-
-                <h3 id="permits-modal-title" class="text-lg font-semibold text-gray-900 mb-1">
-                    Generating Permits
-                </h3>
-
-                <p id="permits-modal-message" class="text-sm text-gray-500">
-                    Please wait while we prepare your PDF. This may take a moment.
-                </p>
-
-                <button id="permits-modal-close"
-                    class="hidden mt-4 px-4 py-2 text-sm font-medium rounded-lg bg-gray-900 text-white hover:bg-gray-800">
-                    Close
-                </button>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -573,7 +559,7 @@
                 });
             });
 
-            // ---- Permit table search + pagination ----
+            // ---- Permit table search + status filter + pagination ----
             const ROWS_PER_PAGE = 10;
 
             const searchInput = document.getElementById('tableSearch');
@@ -587,8 +573,10 @@
             const pageIndicator = document.getElementById('pageIndicator');
             const prevBtn = document.getElementById('prevPage');
             const nextBtn = document.getElementById('nextPage');
+            const filterButtons = document.querySelectorAll('#statusFilter .filter-btn');
 
             let currentPage = 1;
+            let activeStatus = 'all';
 
             if (allRows.length === 0) {
                 searchInput.disabled = true;
@@ -598,8 +586,12 @@
 
             function getFilteredRows() {
                 const term = searchInput.value.trim().toLowerCase();
-                if (!term) return allRows;
-                return allRows.filter(row => row.textContent.toLowerCase().includes(term));
+
+                return allRows.filter(row => {
+                    const matchesStatus = activeStatus === 'all' || row.dataset.status === activeStatus;
+                    const matchesSearch = !term || row.textContent.toLowerCase().includes(term);
+                    return matchesStatus && matchesSearch;
+                });
             }
 
             function render() {
@@ -634,6 +626,16 @@
             searchInput.addEventListener('keyup', function() {
                 currentPage = 1;
                 render();
+            });
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    activeStatus = this.dataset.status;
+                    currentPage = 1;
+                    render();
+                });
             });
 
             prevBtn.addEventListener('click', function() {
