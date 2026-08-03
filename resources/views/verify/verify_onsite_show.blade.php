@@ -482,9 +482,11 @@
                                         {{ $permit->address ?? 'N/A' }}</div>
                                 </td>
                                 <td>{{ $permit->trn ?? 'N/A' }}</td>
-                                <td>
+                                {{-- <td>
                                     {{ $permit->signOff?->expiry_date ? \Carbon\Carbon::parse($permit->signOff->expiry_date)->format('d/m/Y') : 'N/A' }}
-                                </td>
+                                </td> --}}
+
+                                <td>{{ $permit->signOff }}</td>
                                 <td>
                                     <div style="display: flex; align-items: center; gap: 8px;">
                                         @if ($permit->sign_off_status == 1)
