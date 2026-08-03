@@ -95,6 +95,8 @@ Route::get('/verify-permit/certificate/{token}', [PermitApplicationApi::class, '
 Route::get('/verify-permit/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('verify.download')->middleware(['signed', 'throttle:3,1']);
 Route::get('/verify-permit/qr', [PermitApplicationApi::class, 'qrVerify']);
 
+
+//Onsite Sign E Card Retrieval
 Route::get('/verify-permit/company',[PermitApplicationApi::class, 'onsite']);
 Route::post('/verify-permit/company/retreive',[PermitApplicationApi::class, 'onsiteRetrievel'])->name('verify.onsite.submit');
 Route::get('/verify-permit/company/show/{onsite}', [PermitApplicationApi::class, 'onsiteShow'])
@@ -102,6 +104,7 @@ Route::get('/verify-permit/company/show/{onsite}', [PermitApplicationApi::class,
     ->middleware('signed');
 Route::get('/onsite/{onsite}/permits/download', [PermitApplicationApi::class, 'downloadPermits'])
     ->name('onsite.permits.download');
+    Route::get('/verify-permit/company/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('verify.onsite.download');
 
 //Food Establishment Licenses
 Route::get('/verify-establishments', [EstablishmentsApi::class, 'index'])->name('verify.establishments');

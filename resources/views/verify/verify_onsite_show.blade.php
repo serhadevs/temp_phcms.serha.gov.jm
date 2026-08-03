@@ -261,19 +261,6 @@
                 </p>
             </div>
             <div class="flex items-center gap-2 flex-wrap">
-                {{-- @if ($onsite->signOff && $onsite->signOff->is_granted)
-                    <span class="sc-badge sc-badge-success">
-                        <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Signed Off &middot; Granted
-                    </span>
-                @elseif ($onsite->signOff && !$onsite->signOff->is_granted)
-                    <span class="sc-badge sc-badge-danger">
-                        <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> Signed Off &middot; Refused
-                    </span>
-                @else
-                    <span class="sc-badge sc-badge-warning">
-                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending Sign-Off
-                    </span>
-                @endif --}}
 
                 @if ($signedOffCount > 0)
                     <button type="button" id="download-permits-btn"
@@ -459,6 +446,7 @@
                             <th>TRN</th>
                             <th>Expiry Date</th>
                             <th>Approved</th>
+                            <th>Download Permit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -495,7 +483,7 @@
                                     {{ $permit->signOffs?->expiry_date ? \Carbon\Carbon::parse($permit->signOffs->expiry_date)->format('d/m/Y') : 'N/A' }}
                                 </td>
 
-                                {{-- <td>{{ $permit->signOff }}</td> --}}
+
                                 <td>
                                     <div style="display: flex; align-items: center; gap: 8px;">
                                         @if ($permit->sign_off_status == 1)
@@ -510,6 +498,14 @@
                                             </span>
                                         @endif
                                     </div>
+                                </td>
+                                <td>
+                                <td>
+                                    <a href="{{ route('verify.onsite.download', ['id' => $permit->id]) }}"
+                                        class="sc-btn" title="Download Certificate">
+                                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                </td>
                                 </td>
                             </tr>
                         @empty
