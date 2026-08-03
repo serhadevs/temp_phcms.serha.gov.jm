@@ -258,7 +258,7 @@
                     </span>
                 @endif --}}
 
-                @if ($onsite->permits->count() > 0 && $onsite->permits->every(fn($permit) => $permit->sign_off_status == 1))
+                {{-- @if ($onsite->permits->count() > 0 && $onsite->permits->every(fn($permit) => $permit->sign_off_status == 1))
                     <button type="button" id="download-permits-btn"
                         data-url="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
                         style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));">
@@ -269,7 +269,14 @@
                     <span class="sc-badge sc-badge-warning">
                         <i data-lucide="clock" class="w-3.5 h-3.5"></i> Your application has not yet been signed off 
                     </span>
-                @endif
+                @endif --}}
+
+                <button type="button" id="download-permits-btn"
+                    data-url="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
+                    style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    Download All Permits
+                </button>
 
             </div>
         </div>
