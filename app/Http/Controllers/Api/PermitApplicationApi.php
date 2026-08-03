@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use ZipArchive;
+use setasign\Fpdi\Fpdi;
 
 
 class PermitApplicationApi extends Controller
@@ -797,6 +798,83 @@ class PermitApplicationApi extends Controller
     //     }
     // }
 
+    // public function downloadPermits(Request $request, int $onsite)
+    // {
+    //     set_time_limit(120);
+
+    //     try {
+    //         $applicants = PermitApplication::with([
+    //             'permitCategory',
+    //             'signOffs',
+    //             'testResults'
+    //         ])->where('establishment_clinic_id', $onsite)->where('sign_off_status', 1)->get();
+
+    //         if ($applicants->isEmpty()) {
+    //             return $this->failResponse($request, 'No permits found for this establishment.');
+    //         }
+
+    //         // Ensure a temp directory exists for building the zip
+    //         $tempDir = storage_path('app/temp');
+    //         if (!file_exists($tempDir)) {
+    //             mkdir($tempDir, 0755, true);
+    //         }
+
+    //         $zipFileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.zip';
+    //         $zipPath = $tempDir . '/' . $zipFileName;
+
+    //         $zip = new ZipArchive();
+
+    //         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+    //             throw new \Exception('Could not create ZIP archive.');
+    //         }
+
+    //         $addedCount = 0;
+
+    //         foreach ($applicants as $applicant) {
+    //             try {
+    //                 $qrImage = $this->generateQrImage($applicant);
+
+    //                 $pdf = Pdf::loadView('verify.onsiteCardPdf', [
+    //                     'applicants' => [
+    //                         ['applicant' => $applicant, 'qrImage' => $qrImage],
+    //                     ],
+    //                 ])->setPaper('A4');
+
+    //                 $permitFileName = 'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf';
+
+    //                 $zip->addFromString($permitFileName, $pdf->output());
+    //                 $addedCount++;
+    //             } catch (\Throwable $innerException) {
+    //                 Log::error('Failed to generate individual PDF for permit', [
+    //                     'permit_no' => $applicant->permit_no ?? null,
+    //                     'establishment_clinic_id' => $onsite,
+    //                     'error' => $innerException->getMessage(),
+    //                 ]);
+    //                 continue;
+    //             }
+    //         }
+
+    //         $zip->close();
+
+    //         if ($addedCount === 0) {
+    //             @unlink($zipPath);
+    //             return $this->failResponse($request, 'Unable to generate any permits for this establishment.');
+    //         }
+
+    //         return response()->download($zipPath, $zipFileName, [
+    //             'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+    //         ])->deleteFileAfterSend(true);
+    //     } catch (\Throwable $e) {
+    //         Log::error('Failed to download permits', [
+    //             'establishment_clinic_id' => $onsite,
+    //             'error' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString(),
+    //         ]);
+
+    //         return $this->failResponse($request, 'Something went wrong while generating the permits. Please try again.');
+    //     }
+    // }
+
     public function downloadPermits(Request $request, int $onsite)
     {
         set_time_limit(120);
@@ -812,39 +890,18 @@ class PermitApplicationApi extends Controller
                 return $this->failResponse($request, 'No permits found for this establishment.');
             }
 
-            // Ensure a temp directory exists for building the zip
-            $tempDir = storage_path('app/temp');
-            if (!file_exists($tempDir)) {
-                mkdir($tempDir, 0755, true);
-            }
-
-            $zipFileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.zip';
-            $zipPath = $tempDir . '/' . $zipFileName;
-
-            $zip = new ZipArchive();
-
-            if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-                throw new \Exception('Could not create ZIP archive.');
-            }
-
-            $addedCount = 0;
+            $applicantsData = [];
 
             foreach ($applicants as $applicant) {
                 try {
                     $qrImage = $this->generateQrImage($applicant);
 
-                    $pdf = Pdf::loadView('verify.onsiteCardPdf', [
-                        'applicants' => [
-                            ['applicant' => $applicant, 'qrImage' => $qrImage],
-                        ],
-                    ])->setPaper('A4');
-
-                    $permitFileName = 'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf';
-
-                    $zip->addFromString($permitFileName, $pdf->output());
-                    $addedCount++;
+                    $applicantsData[] = [
+                        'applicant' => $applicant,
+                        'qrImage' => $qrImage,
+                    ];
                 } catch (\Throwable $innerException) {
-                    Log::error('Failed to generate individual PDF for permit', [
+                    Log::error('Failed to generate QR code for permit', [
                         'permit_no' => $applicant->permit_no ?? null,
                         'establishment_clinic_id' => $onsite,
                         'error' => $innerException->getMessage(),
@@ -853,12 +910,68 @@ class PermitApplicationApi extends Controller
                 }
             }
 
-            $zip->close();
-
-            if ($addedCount === 0) {
-                @unlink($zipPath);
+            if (empty($applicantsData)) {
                 return $this->failResponse($request, 'Unable to generate any permits for this establishment.');
             }
+
+            $tempDir = storage_path('app/temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+
+            // ---- Render ONCE: a single combined multi-page PDF ----
+            $pdf = Pdf::loadView('verify.onsiteCardPdf', [
+                'applicants' => $applicantsData,
+            ])->setPaper('A4');
+
+            $combinedPath = $tempDir . '/combined_' . $onsite . '_' . now()->timestamp . '.pdf';
+            file_put_contents($combinedPath, $pdf->output());
+
+            // ---- Split the combined PDF into one file per applicant ----
+            $zipFileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.zip';
+            $zipPath = $tempDir . '/' . $zipFileName;
+
+            $zip = new ZipArchive();
+            if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                @unlink($combinedPath);
+                throw new \Exception('Could not create ZIP archive.');
+            }
+
+            $sourcePageCount = (new Fpdi())->setSourceFile($combinedPath);
+
+            if ($sourcePageCount !== count($applicantsData)) {
+                Log::warning('Page count does not match applicant count — some certificates may span multiple pages.', [
+                    'establishment_clinic_id' => $onsite,
+                    'expected' => count($applicantsData),
+                    'actual_pages' => $sourcePageCount,
+                ]);
+            }
+
+            foreach ($applicantsData as $index => $data) {
+                $pageNumber = $index + 1;
+                if ($pageNumber > $sourcePageCount) {
+                    break; // safety guard if page counts ever mismatch
+                }
+
+                $splitPdf = new Fpdi();
+                $splitPdf->setSourceFile($combinedPath);
+                $template = $splitPdf->importPage($pageNumber);
+                $size = $splitPdf->getTemplateSize($template);
+
+                $splitPdf->AddPage(
+                    $size['orientation'],
+                    [$size['width'], $size['height']]
+                );
+                $splitPdf->useTemplate($template);
+
+                $permitNo = $data['applicant']->permit_no ?? "permit_{$pageNumber}";
+                $permitFileName = 'Food_Handlers_Permit_' . $permitNo . '.pdf';
+
+                $zip->addFromString($permitFileName, $splitPdf->Output('S'));
+            }
+
+            $zip->close();
+            @unlink($combinedPath);
 
             return response()->download($zipPath, $zipFileName, [
                 'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
