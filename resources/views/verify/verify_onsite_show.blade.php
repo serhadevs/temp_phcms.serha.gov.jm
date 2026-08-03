@@ -483,7 +483,7 @@
                                 </td>
                                 <td>{{ $permit->trn ?? 'N/A' }}</td>
                                 <td>
-                                    {{ $permit->sign_Off?->expiry_date ? \Carbon\Carbon::parse($permit->sign_Off->expiry_date)->format('d/m/Y') : 'N/A' }}
+                                    {{ $permit->sigOff?->expiry_date ? \Carbon\Carbon::parse($permit->signOff->expiry_date)->format('d/m/Y') : 'N/A' }}
                                 </td>
                                 <td>
                                     <div style="display: flex; align-items: center; gap: 8px;">
