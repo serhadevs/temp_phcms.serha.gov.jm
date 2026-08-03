@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 
 class PermitApplicationApi extends Controller
 {
@@ -671,17 +672,82 @@ class PermitApplicationApi extends Controller
         }
     }
 
+    // public function downloadPermits(Request $request, int $onsite)
+    // {
+    //     set_time_limit(120);
+    //     try {
+    //         $applicants = PermitApplication::with([
+    //             'permitCategory',
+    //             'signOffs',
+    //             'testResults'
+    //         ])->where('establishment_clinic_id', $onsite)->where('sign_off_status', 1)->get();
+
+    //         //dd($applicants->sign_off_status);
+
+    //         if ($applicants->isEmpty()) {
+    //             return $this->failResponse($request, 'No permits found for this establishment.');
+    //         }
+
+    //         $applicantsData = [];
+
+    //         foreach ($applicants as $applicant) {
+    //             try {
+    //                 $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
+
+    //                 $qrImage = base64_encode(
+    //                     QrCode::format('png')
+    //                         ->size(160)
+    //                         ->margin(1)
+    //                         ->generate($qrUrl)
+    //                 );
+
+    //                 $applicantsData[] = [
+    //                     'applicant' => $applicant,
+    //                     'qrImage' => $qrImage,
+    //                 ];
+    //             } catch (\Throwable $innerException) {
+    //                 Log::error('Failed to generate QR code for permit', [
+    //                     'permit_no' => $applicant->permit_no ?? null,
+    //                     'establishment_clinic_id' => $onsite,
+    //                     'error' => $innerException->getMessage(),
+    //                 ]);
+    //                 continue;
+    //             }
+    //         }
+
+    //         if (empty($applicantsData)) {
+    //             return $this->failResponse($request, 'Unable to generate any permits for this establishment.');
+    //         }
+
+    //         $pdf = Pdf::loadView('verify.onsiteCardPdf', [
+    //             'applicants' => $applicantsData,
+    //         ])->setPaper('A4');
+
+    //         $fileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.pdf';
+
+    //         return $pdf->download($fileName)
+    //             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    //     } catch (\Throwable $e) {
+    //         Log::error('Failed to download permits', [
+    //             'establishment_clinic_id' => $onsite,
+    //             'error' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString(),
+    //         ]);
+
+    //         return $this->failResponse($request, 'Something went wrong while generating the permits. Please try again.');
+    //     }
+    // }
+
     public function downloadPermits(Request $request, int $onsite)
     {
         set_time_limit(120);
+
         try {
             $applicants = PermitApplication::with([
                 'permitCategory',
                 'signOffs',
                 'testResults'
             ])->where('establishment_clinic_id', $onsite)->where('sign_off_status', 1)->get();
-
-            //dd($applicants->sign_off_status);
 
             if ($applicants->isEmpty()) {
                 return $this->failResponse($request, 'No permits found for this establishment.');
@@ -691,14 +757,7 @@ class PermitApplicationApi extends Controller
 
             foreach ($applicants as $applicant) {
                 try {
-                    $qrUrl = url('/api/verify-permit/' . $applicant->permit_no);
-
-                    $qrImage = base64_encode(
-                        QrCode::format('png')
-                            ->size(160)
-                            ->margin(1)
-                            ->generate($qrUrl)
-                    );
+                    $qrImage = $this->generateQrImage($applicant);
 
                     $applicantsData[] = [
                         'applicant' => $applicant,
