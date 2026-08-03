@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Food Handling Permit Certificate - Ministry of Health and Wellness Jamaica">
-    <meta name="author" content="Ministry of Health and Wellness">
+    <meta name="description" content="Food Handling Permit Certificate - South East Regional Health Authority">
+    <meta name="author" content="South East Regional Health Authority">
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="theme-color" content="#0b4ea2">
