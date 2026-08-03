@@ -424,12 +424,12 @@
                             <th>Photo</th>
                             <th>Permit No.</th>
                             <th>Name &amp; Address</th>
-                            <th>Occupation</th>
+                            {{-- <th>Occupation</th> --}}
                             <th>TRN</th>
 
-                            <th>Gender</th>
-                            <th>DOB</th>
-                            {{-- <th>View Permit</th> --}}
+                            {{-- <th>Gender</th> --}}
+                            <th>Expiry Date</th>
+                            <th>Approved</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -460,18 +460,30 @@
                                     <div class="text-xs" style="color: hsl(var(--muted-foreground));">
                                         {{ $permit->address ?? 'N/A' }}</div>
                                 </td>
-                                <td>{{ $permit->occupation ?? 'N/A' }}</td>
+                                {{-- <td>{{ $permit->occupation ?? 'N/A' }}</td> --}}
                                 <td>{{ $permit->trn ?? 'N/A' }}</td>
 
-                                <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td>
+                                {{-- <td class="capitalize">{{ $permit->gender ?? 'N/A' }}</td> --}}
                                 <td>
-                                    {{ $permit->date_of_birth ? \Carbon\Carbon::parse($permit->date_of_birth)->format('d/m/Y') : 'N/A' }}
+                                    {{ $permit->sign_Offs->expiry_date ? \Carbon\Carbon::parse($permit->sign_Offs->expiry_date)->format('d/m/Y') : 'N/A' }}
                                 </td>
-                                {{-- <td>
-                                    <a href="#" class="sc-btn" title="View">
-                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                    </a>
-                                </td> --}}
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        @if ($permit->sign_off_status == 1)
+                                            <span class="sc-badge"
+                                                style="background: #E9F9EF; color: #1ea44c; border: 1px solid #1ea44c;">
+                                                <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Signed Off
+                                            </span>
+                                        @else
+                                            <span class="sc-badge"
+                                                style="background: #FEF2F2; color: #d92d20; border: 1px solid #d92d20;">
+                                                <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending Sign Off
+                                            </span>
+                                        @endif
+
+
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
