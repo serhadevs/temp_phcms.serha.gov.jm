@@ -630,6 +630,8 @@ class PermitApplicationApi extends Controller
             $onsite = EstablishmentClinics::with(['permits', 'signOff'])
                 ->findOrFail($onsite);
 
+                //dd($onsite);
+
             return view('verify.verify_onsite_show', compact('onsite'));
         } catch (ModelNotFoundException $e) {
             Log::error('Onsite verification record not found: ' . $e->getMessage(), [
@@ -659,6 +661,8 @@ class PermitApplicationApi extends Controller
                 'signOffs',
                 'testResults'
             ])->where('establishment_clinic_id', $onsite)->get();
+
+            dd($applicants);
 
             if ($applicants->isEmpty()) {
                 return $this->failResponse($request, 'No permits found for this establishment.');
