@@ -258,8 +258,7 @@
                     </span>
                 @endif --}}
 
-
-                @if ($onsite->permits && $onsite->permits->count() > 0)
+                @if ($onsite->permits->count() > 0 && $onsite->permits->every(fn($permit) => $permit->sign_off_status == 1))
                     <button type="button" id="download-permits-btn"
                         data-url="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
                         style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));">
@@ -267,6 +266,7 @@
                         Download All Permits
                     </button>
                 @endif
+
             </div>
         </div>
 
