@@ -894,7 +894,7 @@ class PermitApplicationApi extends Controller
                 'middlename',
                 'lastname',
                 'photo_upload',
-                'permit_category_id', // foreign key required for the permitCategory relation to resolve
+                // 'permit_category_id', // foreign key required for the permitCategory relation to resolve
                 'sign_off_status',
             ])
                 ->with([
