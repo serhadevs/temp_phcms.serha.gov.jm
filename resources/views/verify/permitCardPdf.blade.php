@@ -239,7 +239,7 @@
                         <img src="{{ public_path('images/coatofarms2.png') }}" style="height:55px;">
                     </td>
                     <td width="70%" align="center">
-                        <h1 class="card-title">MINISTRY. OF HEALTH AND WELLNESS</h1>
+                        <h1 class="card-title">MINISTRY OF HEALTH AND WELLNESS</h1>
                         <p class="card-subtitle">
                             Public Health (Food Handling 1998) Regulations<br>
                             26,27,28,29,30 & 31

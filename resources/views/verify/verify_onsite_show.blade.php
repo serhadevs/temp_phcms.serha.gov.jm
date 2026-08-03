@@ -265,6 +265,10 @@
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         Download All Permits
                     </button>
+                    @else
+                    <span class="sc-badge sc-badge-warning">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> Your application has not yet been signed off 
+                    </span>
                 @endif
 
             </div>
@@ -341,7 +345,7 @@
             </div>
 
             {{-- Payment Details --}}
-            <div class="tab-panel p-5 hidden" data-tab-panel="payment">
+            {{-- <div class="tab-panel p-5 hidden" data-tab-panel="payment">
                 @php
                     $amountDue = $onsite->due_payments ?? 0;
                     $hasWaiver = !is_null($onsite->waiver_establishment_id);
@@ -385,10 +389,8 @@
                     </div>
                 </div>
 
-                {{-- NOTE: only `due_payments` and `waiver_establishment_id` were available on the
-                     sample record used to build this page. If invoices, receipts, or payment
-                     method are tracked via a separate relationship, wire that in here instead. --}}
-            </div>
+              
+            </div> --}}
 
         </div>
 
@@ -422,7 +424,7 @@
 
                             <th>Gender</th>
                             <th>DOB</th>
-                            <th>View Permit</th>
+                            {{-- <th>View Permit</th> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -460,11 +462,11 @@
                                 <td>
                                     {{ optional($permit->date_of_birth)->format('M d, Y') ?? 'N/A' }}
                                 </td>
-                                <td>
+                                {{-- <td>
                                     <a href="#" class="sc-btn" title="View">
                                         <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                     </a>
-                                </td>
+                                </td> --}}
                             </tr>
                         @empty
                             <tr>
