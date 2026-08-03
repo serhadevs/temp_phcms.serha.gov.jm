@@ -253,7 +253,7 @@
                     @if ($earliestExpiry && $latestExpiry)
                         &middot; Expires {{ $earliestExpiry->format('d/m/Y') }}
                         @if (!$earliestExpiry->equalTo($latestExpiry))
-                            – {{ $latestExpiry->format('d/m/Y') }}
+                            - {{ $latestExpiry->format('d/m/Y') }}
                         @endif
                     @endif
                 </p>
