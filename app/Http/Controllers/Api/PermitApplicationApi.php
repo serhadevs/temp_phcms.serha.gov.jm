@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use ZipArchive;
 
 
 class PermitApplicationApi extends Controller
@@ -738,6 +739,64 @@ class PermitApplicationApi extends Controller
     //     }
     // }
 
+    // public function downloadPermits(Request $request, int $onsite)
+    // {
+    //     set_time_limit(120);
+
+    //     try {
+    //         $applicants = PermitApplication::with([
+    //             'permitCategory',
+    //             'signOffs',
+    //             'testResults'
+    //         ])->where('establishment_clinic_id', $onsite)->where('sign_off_status', 1)->get();
+
+    //         if ($applicants->isEmpty()) {
+    //             return $this->failResponse($request, 'No permits found for this establishment.');
+    //         }
+
+    //         $applicantsData = [];
+
+    //         foreach ($applicants as $applicant) {
+    //             try {
+    //                 $qrImage = $this->generateQrImage($applicant);
+
+    //                 $applicantsData[] = [
+    //                     'applicant' => $applicant,
+    //                     'qrImage' => $qrImage,
+    //                 ];
+    //             } catch (\Throwable $innerException) {
+    //                 Log::error('Failed to generate QR code for permit', [
+    //                     'permit_no' => $applicant->permit_no ?? null,
+    //                     'establishment_clinic_id' => $onsite,
+    //                     'error' => $innerException->getMessage(),
+    //                 ]);
+    //                 continue;
+    //             }
+    //         }
+
+    //         if (empty($applicantsData)) {
+    //             return $this->failResponse($request, 'Unable to generate any permits for this establishment.');
+    //         }
+
+    //         $pdf = Pdf::loadView('verify.onsiteCardPdf', [
+    //             'applicants' => $applicantsData,
+    //         ])->setPaper('A4');
+
+    //         $fileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.pdf';
+
+    //         return $pdf->download($fileName)
+    //             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    //     } catch (\Throwable $e) {
+    //         Log::error('Failed to download permits', [
+    //             'establishment_clinic_id' => $onsite,
+    //             'error' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString(),
+    //         ]);
+
+    //         return $this->failResponse($request, 'Something went wrong while generating the permits. Please try again.');
+    //     }
+    // }
+
     public function downloadPermits(Request $request, int $onsite)
     {
         set_time_limit(120);
@@ -753,18 +812,39 @@ class PermitApplicationApi extends Controller
                 return $this->failResponse($request, 'No permits found for this establishment.');
             }
 
-            $applicantsData = [];
+            // Ensure a temp directory exists for building the zip
+            $tempDir = storage_path('app/temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+
+            $zipFileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.zip';
+            $zipPath = $tempDir . '/' . $zipFileName;
+
+            $zip = new ZipArchive();
+
+            if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                throw new \Exception('Could not create ZIP archive.');
+            }
+
+            $addedCount = 0;
 
             foreach ($applicants as $applicant) {
                 try {
                     $qrImage = $this->generateQrImage($applicant);
 
-                    $applicantsData[] = [
-                        'applicant' => $applicant,
-                        'qrImage' => $qrImage,
-                    ];
+                    $pdf = Pdf::loadView('verify.onsiteCardPdf', [
+                        'applicants' => [
+                            ['applicant' => $applicant, 'qrImage' => $qrImage],
+                        ],
+                    ])->setPaper('A4');
+
+                    $permitFileName = 'Food_Handlers_Permit_' . $applicant->permit_no . '.pdf';
+
+                    $zip->addFromString($permitFileName, $pdf->output());
+                    $addedCount++;
                 } catch (\Throwable $innerException) {
-                    Log::error('Failed to generate QR code for permit', [
+                    Log::error('Failed to generate individual PDF for permit', [
                         'permit_no' => $applicant->permit_no ?? null,
                         'establishment_clinic_id' => $onsite,
                         'error' => $innerException->getMessage(),
@@ -773,18 +853,16 @@ class PermitApplicationApi extends Controller
                 }
             }
 
-            if (empty($applicantsData)) {
+            $zip->close();
+
+            if ($addedCount === 0) {
+                @unlink($zipPath);
                 return $this->failResponse($request, 'Unable to generate any permits for this establishment.');
             }
 
-            $pdf = Pdf::loadView('verify.onsiteCardPdf', [
-                'applicants' => $applicantsData,
-            ])->setPaper('A4');
-
-            $fileName = 'Food_Handlers_Permits_' . $onsite . '_' . now()->timestamp . '.pdf';
-
-            return $pdf->download($fileName)
-                ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+            return response()->download($zipPath, $zipFileName, [
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            ])->deleteFileAfterSend(true);
         } catch (\Throwable $e) {
             Log::error('Failed to download permits', [
                 'establishment_clinic_id' => $onsite,
