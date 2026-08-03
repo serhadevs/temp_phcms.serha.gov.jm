@@ -680,7 +680,7 @@ class PermitApplicationApi extends Controller
                 'testResults'
             ])->where('establishment_clinic_id', $onsite)->where('sign_off_status', 1)->get();
 
-            dd($applicants->sign_off_status);
+            //dd($applicants->sign_off_status);
 
             if ($applicants->isEmpty()) {
                 return $this->failResponse($request, 'No permits found for this establishment.');
