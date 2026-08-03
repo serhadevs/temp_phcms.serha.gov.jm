@@ -898,9 +898,9 @@ class PermitApplicationApi extends Controller
                 'sign_off_status',
             ])
                 ->with([
-                    'permitCategory:id,name',
-                    'signOffs:id,permit_application_id,sign_off_date,expiry_date',
-                    'testResults:id,permit_application_id,overall_score,test_date,test_location',
+                    'permitCategory',
+                    'signOffs',
+                    'testResults',
                 ])
                 ->where('establishment_clinic_id', $onsite)
                 ->where('sign_off_status', 1)
