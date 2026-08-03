@@ -312,10 +312,10 @@
                         <div class="sc-label">Fax</div>
                         <div class="sc-value">{{ $onsite->fax_no ?? 'N/A' }}</div>
                     </div>
-                    <div>
+                    {{-- <div>
                         <div class="sc-label">No. of Employees</div>
                         <div class="sc-value">{{ $onsite->no_of_employees ?? 'N/A' }}</div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
