@@ -509,7 +509,6 @@
                                     @else
                                         <span class="text-muted" title="No certificate available">
                                             <i data-lucide="file-x" class="w-3.5 h-3.5"></i>
-                                            Not available
                                         </span>
                                     @endif
                                 </td>
