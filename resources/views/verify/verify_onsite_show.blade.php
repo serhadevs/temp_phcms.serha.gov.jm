@@ -250,6 +250,12 @@
                 <h1 class="text-xl font-semibold tracking-tight">{{ $onsite->name ?? 'Unknown Establishment' }}</h1>
                 <p class="text-sm mt-0.5" style="color: hsl(var(--muted-foreground));">
                     Onsite Verification &middot; Application #{{ $onsite->id ?? 'N/A' }}
+                    @if ($earliestExpiry && $latestExpiry)
+                        &middot; Expires {{ $earliestExpiry->format('d/m/Y') }}
+                        @if (!$earliestExpiry->equalTo($latestExpiry))
+                            – {{ $latestExpiry->format('d/m/Y') }}
+                        @endif
+                    @endif
                 </p>
             </div>
             <div class="flex items-center gap-2 flex-wrap">

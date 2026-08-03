@@ -638,11 +638,19 @@ class PermitApplicationApi extends Controller
             $onsite = EstablishmentClinics::with(['permits.signOffs'])
                 ->findOrFail($onsite);
 
-                
 
-            $signedOffCount = $onsite->permits->where('sign_off_status',1)->count();
 
-            return view('verify.verify_onsite_show', compact('onsite','signedOffCount'));
+            $signedOffCount = $onsite->permits->where('sign_off_status', 1)->count();
+           $expiryDates = $onsite->permits
+        ->pluck('sign_Off.expiry_date')
+        ->filter()
+        ->map(fn($date) => \Carbon\Carbon::parse($date))
+        ->sort();
+
+                $earliestExpiry = $expiryDates->first();
+    $latestExpiry = $expiryDates->last();
+
+            return view('verify.verify_onsite_show', compact('onsite', 'signedOffCount','earliestExpiry','latestExpiry'));
         } catch (ModelNotFoundException $e) {
             Log::error('Onsite verification record not found: ' . $e->getMessage(), [
                 'establishment_id' => $onsite,
