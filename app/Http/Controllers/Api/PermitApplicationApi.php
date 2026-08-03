@@ -640,11 +640,13 @@ class PermitApplicationApi extends Controller
 
             $onsite = EstablishmentClinics::with([
                 'permits' => function ($query) {
-                    $query->limit(1);
+                    $query->limit(10);
                 },
                 'signOff'
             ])
                 ->findOrFail($onsite);
+
+                dd($onsite);
 
 
 
