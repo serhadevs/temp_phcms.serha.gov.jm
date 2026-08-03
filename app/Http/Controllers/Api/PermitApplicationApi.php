@@ -598,7 +598,7 @@ class PermitApplicationApi extends Controller
 
         // Require at least one search field to avoid unbounded/empty queries
         if (empty(array_filter($validated))) {
-            return back()->with('error', 'Please provide at least one search field.');
+            return back()->with('error', 'Please provide the name of your company and the application number.');
         }
 
         $onsite = EstablishmentClinics::with('permits', 'signOff')

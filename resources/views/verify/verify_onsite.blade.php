@@ -68,7 +68,7 @@
         }
 
         .logo-text {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.02em;
@@ -189,18 +189,24 @@
             margin-bottom: 20px;
             text-align: left;
         }
+
+        .section-text{
+            color: grey;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="card">
-        <div class="logo">
-            {{-- <span class="logo-mark"></span> --}}
+        <div class="logo"
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+            <img src="{{ asset('images/serha_logo.png') }}" alt="SERHA LOGO" width="50">
             <span class="logo-text">Food Handlers Permit Onsite Retreival</span>
         </div>
 
-        <h1>Welcome</h1>
+        <h2>Welcome</h2>
+        <p class="section-text">Please enter the name of your company and the application number that was provided by the Health Department</p>
         @if (session('error'))
             <div class="alert-error">
                 {{ session('error') }}
@@ -237,13 +243,13 @@
             </div>
 
 
-            <div class="field">
+            {{-- <div class="field">
                 <input type="email" name="email_address" placeholder="Email Address"
                     value="{{ old('email_address') }}" autofocus>
                 @error('email_address')
                     <div class="error">{{ $message }}</div>
                 @enderror
-            </div>
+            </div> --}}
 
             <button type="submit" class="submit">Retrieve Permits</button>
         </form>
