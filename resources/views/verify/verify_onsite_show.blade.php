@@ -499,14 +499,14 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td>
+                              
                                 <td>
                                     <a href="{{ route('verify.onsite.download', ['id' => $permit->id]) }}"
                                         class="sc-btn" title="Download Certificate">
                                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                                     </a>
                                 </td>
-                                </td>
+                                
                             </tr>
                         @empty
                             <tr>
