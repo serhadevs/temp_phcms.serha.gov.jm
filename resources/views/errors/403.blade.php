@@ -79,13 +79,23 @@
             Please return to the retrieval page and generate a new secure link.
         </div>
 
-         <div class="d-grid gap-2 mt-4">
-        
+        <div class="d-grid gap-2 mt-4">
 
+            {{-- 
         <a href="{{ url('/verify-permit/home') }}" class="btn btn-primary">
              Go to Retrieval Page
-        </a>
-    </div>
+        </a> --}}
+
+            @php
+                $backUrl = request()->is('verify-permit/company/show/*')
+                    ? url('/verify-permit/company')
+                    : url('/verify-permit/home');
+            @endphp
+
+            <a href="{{ $backUrl }}" class="btn btn-primary">
+                Go to Retrieval Page
+            </a>
+        </div>
 
         <hr class="my-4">
 
