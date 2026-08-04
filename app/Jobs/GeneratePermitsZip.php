@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class GeneratePermitsZip implements ShouldQueue
 {
@@ -20,6 +21,11 @@ class GeneratePermitsZip implements ShouldQueue
     public int $timeout = 300;   // max seconds a single attempt is allowed to run
     public int $tries = 3;       // how many times Laravel will attempt this job
     public int $backoff = 10;
+
+    // Resized photo target dimensions (fits the .card-photo box in onsiteCardPdf.blade.php)
+    private const PHOTO_MAX_WIDTH = 240;
+    private const PHOTO_MAX_HEIGHT = 260;
+    private const PHOTO_JPEG_QUALITY = 70;
 
     public function __construct(
         public int $establishmentId,
@@ -50,16 +56,20 @@ class GeneratePermitsZip implements ShouldQueue
             $totalApplicants = $applicants->count();
             $applicantsData = [];
 
-            // ---- Step 1: build QR codes for every applicant (cached, so repeat runs are fast) ----
+            // ---- Step 1: build QR codes + resized photo thumbnails for every applicant ----
+            // Both are cached to disk, so repeat runs for the same applicant are near-instant.
             foreach ($applicants as $index => $applicant) {
                 try {
                     $qrImage = $this->generateQrImage($applicant);
+                    $photoBase64 = $this->getResizedPhotoBase64($applicant);
+
                     $applicantsData[] = [
                         'applicant' => $applicant,
                         'qrImage' => $qrImage,
+                        'photoBase64' => $photoBase64,
                     ];
                 } catch (\Throwable $e) {
-                    Log::error('Failed to generate QR code for permit', [
+                    Log::error('Failed to prepare permit data', [
                         'permit_no' => $applicant->permit_no ?? null,
                         'establishment_clinic_id' => $this->establishmentId,
                         'error' => $e->getMessage(),
@@ -67,7 +77,7 @@ class GeneratePermitsZip implements ShouldQueue
                     continue;
                 }
 
-                // QR generation counts as the first 40% of progress
+                // QR + photo prep counts as the first 40% of progress
                 $progress = (int) round((($index + 1) / $totalApplicants) * 40);
                 $download->update(['progress' => $progress]);
             }
@@ -133,5 +143,117 @@ class GeneratePermitsZip implements ShouldQueue
                 );
             }
         );
+    }
+
+    /**
+     * Resize (and cache) an applicant's photo down to a small JPEG suitable for
+     * embedding in the PDF, then return it as a base64 string. This is what
+     * prevents the memory exhaustion / PCRE backtrack errors caused by embedding
+     * full-resolution camera photos directly.
+     *
+     * Uses PHP's built-in GD extension — no extra Composer dependency required.
+     */
+    private function getResizedPhotoBase64(PermitApplication $applicant): ?string
+    {
+        if (!$applicant->photo_upload) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        if (!$disk->exists($applicant->photo_upload)) {
+            return null;
+        }
+
+        $cacheDir = storage_path('app/photo-thumbs');
+        if (!file_exists($cacheDir)) {
+            mkdir($cacheDir, 0755, true);
+        }
+
+        $thumbPath = $cacheDir . '/' . $applicant->id . '.jpg';
+
+        // Reuse the cached thumbnail if it already exists — only generate once ever.
+        if (file_exists($thumbPath)) {
+            return base64_encode(file_get_contents($thumbPath));
+        }
+
+        $originalPath = $disk->path($applicant->photo_upload);
+
+        try {
+            $resized = $this->resizeImageWithGd(
+                $originalPath,
+                $thumbPath,
+                self::PHOTO_MAX_WIDTH,
+                self::PHOTO_MAX_HEIGHT,
+                self::PHOTO_JPEG_QUALITY
+            );
+
+            if (!$resized) {
+                return null;
+            }
+
+            return base64_encode(file_get_contents($thumbPath));
+
+        } catch (\Throwable $e) {
+            Log::error('Failed to resize applicant photo', [
+                'permit_application_id' => $applicant->id,
+                'photo_upload' => $applicant->photo_upload,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Resize an image file to fit within max width/height (preserving aspect ratio),
+     * re-encode as JPEG at the given quality, and save to $destPath.
+     *
+     * Returns true on success, false if the source image couldn't be read.
+     */
+    private function resizeImageWithGd(string $sourcePath, string $destPath, int $maxWidth, int $maxHeight, int $quality): bool
+    {
+        $imageInfo = @getimagesize($sourcePath);
+        if ($imageInfo === false) {
+            return false;
+        }
+
+        [$origWidth, $origHeight, $imageType] = $imageInfo;
+
+        $source = match ($imageType) {
+            IMAGETYPE_JPEG => @imagecreatefromjpeg($sourcePath),
+            IMAGETYPE_PNG => @imagecreatefrompng($sourcePath),
+            IMAGETYPE_GIF => @imagecreatefromgif($sourcePath),
+            IMAGETYPE_WEBP => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($sourcePath) : null,
+            default => null,
+        };
+
+        if (!$source) {
+            return false;
+        }
+
+        // Calculate new dimensions, preserving aspect ratio, never upscaling
+        $ratio = min($maxWidth / $origWidth, $maxHeight / $origHeight, 1);
+        $newWidth = (int) round($origWidth * $ratio);
+        $newHeight = (int) round($origHeight * $ratio);
+
+        $destImage = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Flatten transparency onto a white background (avoids black backgrounds for PNGs with alpha)
+        $white = imagecolorallocate($destImage, 255, 255, 255);
+        imagefill($destImage, 0, 0, $white);
+
+        imagecopyresampled(
+            $destImage, $source,
+            0, 0, 0, 0,
+            $newWidth, $newHeight,
+            $origWidth, $origHeight
+        );
+
+        $saved = imagejpeg($destImage, $destPath, $quality);
+
+        imagedestroy($source);
+        imagedestroy($destImage);
+
+        return $saved;
     }
 }

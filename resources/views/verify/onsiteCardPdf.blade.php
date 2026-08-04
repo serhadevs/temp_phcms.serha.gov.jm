@@ -274,7 +274,8 @@
                                     </tr>
                                     <tr>
                                         <td class="card-label">Name:</td>
-                                        <td>{{ strtoupper($applicant->lastname) }}, {{ strtoupper($applicant->firstname) }}</td>
+                                        <td>{{ strtoupper($applicant->lastname) }},
+                                            {{ strtoupper($applicant->firstname) }}</td>
                                     </tr>
                                     <tr>
                                         <td class="card-label">Permit#:</td>
@@ -293,8 +294,8 @@
                                 </table>
                             </td>
                             <td width="35%" align="right">
-                                @if ($applicant->photo_upload)
-                                    <img src="{{ public_path('storage/' . $applicant->photo_upload) }}" class="card-photo">
+                                @if (!empty($data['photoBase64']))
+                                    <img src="data:image/jpeg;base64,{{ $data['photoBase64'] }}" class="card-photo">
                                 @endif
                             </td>
                         </tr>
@@ -362,7 +363,8 @@
                     <div class="notice-block">
                         <strong>Data Protection Notice:</strong>
                         This document complies with the Jamaica Data Protection Act (2020).
-                        Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory
+                        Sensitive medical data has been minimized to protect applicant privacy while fulfilling the
+                        regulatory
                         requirements of the Food Safety Act (1998).
                     </div>
 
