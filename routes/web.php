@@ -106,6 +106,18 @@ Route::get('/onsite/{onsite}/permits/download', [PermitApplicationApi::class, 'd
     ->name('onsite.permits.download');
     Route::get('/verify-permit/company/download/{id}',[PermitApplicationApi::class, 'downloadCertificate'])->name('verify.onsite.download');
 
+
+  //Job to generate e-permits for establishments
+
+  Route::post('/onsite/{onsite}/permits/download/request', [PermitApplicationApi::class, 'requestPermitsDownload'])
+    ->name('permits.download.request');
+
+Route::get('/permits/download/status/{token}', [PermitApplicationApi::class, 'permitsDownloadStatus'])
+    ->name('permits.download.status');
+
+Route::get('/permits/download/file/{token}', [PermitApplicationApi::class, 'permitsDownloadFile'])
+    ->name('permits.download.file');
+
 //Food Establishment Licenses
 Route::get('/verify-establishments', [EstablishmentsApi::class, 'index'])->name('verify.establishments');
 Route::post('/verify-establishments/retreive', [EstablishmentsApi::class, 'viewLicense'])->name('verify.establishments.view');

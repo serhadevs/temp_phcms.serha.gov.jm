@@ -263,7 +263,7 @@
             <div class="flex items-center gap-2 flex-wrap">
 
                 @if ($signedOffCount > 0)
-                    <button type="button" id="download-permits-btn"
+                    {{-- <button type="button" id="download-permits-btn"
                         data-url="{{ route('onsite.permits.download', $onsite->id) }}" class="sc-btn"
                         style="background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground));">
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
@@ -273,6 +273,11 @@
                                 {{ $signedOffCount }} of {{ $onsite->permits->count() }} ready
                             </span>
                         @endif
+                    </button> --}}
+                    <button type="button" id="download-permits-btn"
+                        data-request-url="{{ route('permits.download.request', $onsite->id) }}" class="sc-btn">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        Download All Permits
                     </button>
                 @else
                     <span class="sc-badge sc-badge-warning">
@@ -699,7 +704,7 @@
         });
     </script>
 
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const bulkBtn = document.getElementById('download-permits-btn');
             const modal = document.getElementById('permits-loading-modal');
@@ -842,6 +847,55 @@
                 if (e.target === modal) hideModal();
             });
         });
+    </script> --}}
+
+    <script>
+        async function handleQueuedDownload(triggerEl, requestUrl) {
+            setLoadingState('Preparing Your Download', 'This may take a moment for larger establishments.');
+            showModal();
+            triggerEl.disabled = true;
+
+            try {
+                // Step 1: kick off the job
+                const startResp = await fetch(requestUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                });
+                const {
+                    status_url
+                } = await startResp.json();
+
+                // Step 2: poll every 2 seconds until ready or failed
+                const poll = setInterval(async () => {
+                    const statusResp = await fetch(status_url, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const data = await statusResp.json();
+
+                    if (data.status === 'ready') {
+                        clearInterval(poll);
+                        window.location.href = data.download_url; // triggers browser download
+                        setSuccessState('Your permits are ready and downloading now.');
+                        triggerEl.disabled = false;
+                    } else if (data.status === 'failed') {
+                        clearInterval(poll);
+                        setErrorState(data.error);
+                        triggerEl.disabled = false;
+                    }
+                    // else: still pending/processing — keep polling
+                }, 2000);
+
+            } catch (err) {
+                console.error(err);
+                setErrorState('A network error occurred. Please try again.');
+                triggerEl.disabled = false;
+            }
+        }
     </script>
 </body>
 
