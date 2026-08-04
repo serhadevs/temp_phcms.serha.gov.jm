@@ -12,7 +12,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use ZipArchive;
 
 class GeneratePermitsZip implements ShouldQueue
 {
@@ -48,45 +47,19 @@ class GeneratePermitsZip implements ShouldQueue
                 return;
             }
 
-            $tempDir = storage_path('app/temp');
-            if (!file_exists($tempDir)) {
-                mkdir($tempDir, 0755, true);
-            }
-
-            $zipFileName = 'Food_Handlers_Permits_' . $this->establishmentId . '_' . now()->timestamp . '.zip';
-            $storedZipPath = 'permit-downloads/' . $this->downloadToken . '.zip';
-            $fullZipPath = storage_path('app/' . $storedZipPath);
-
-            if (!file_exists(dirname($fullZipPath))) {
-                mkdir(dirname($fullZipPath), 0755, true);
-            }
-
-            $zip = new ZipArchive();
-            $zip->open($fullZipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
             $totalApplicants = $applicants->count();
-            $addedCount = 0;
+            $applicantsData = [];
 
+            // ---- Step 1: build QR codes for every applicant (cached, so repeat runs are fast) ----
             foreach ($applicants as $index => $applicant) {
                 try {
                     $qrImage = $this->generateQrImage($applicant);
-
-                    // Render just THIS applicant — one small PDF at a time, via mPDF
-                    $pdfContent = PdfGenerator::renderFromView('verify.onsiteCardPdf', [
-                        'applicants' => [
-                            ['applicant' => $applicant, 'qrImage' => $qrImage],
-                        ],
-                    ]);
-
-                    $permitNo = $applicant->permit_no ?? "permit_{$applicant->id}";
-                    $zip->addFromString("Food_Handlers_Permit_{$permitNo}.pdf", $pdfContent);
-                    $addedCount++;
-
-                    // Explicitly release memory before the next iteration
-                    unset($pdfContent, $qrImage);
-                    gc_collect_cycles();
+                    $applicantsData[] = [
+                        'applicant' => $applicant,
+                        'qrImage' => $qrImage,
+                    ];
                 } catch (\Throwable $e) {
-                    Log::error('Failed to generate individual PDF for permit', [
+                    Log::error('Failed to generate QR code for permit', [
                         'permit_no' => $applicant->permit_no ?? null,
                         'establishment_clinic_id' => $this->establishmentId,
                         'error' => $e->getMessage(),
@@ -94,14 +67,12 @@ class GeneratePermitsZip implements ShouldQueue
                     continue;
                 }
 
-                $progress = (int) round((($index + 1) / $totalApplicants) * 100);
-                $download->update(['progress' => min($progress, 99)]);
+                // QR generation counts as the first 40% of progress
+                $progress = (int) round((($index + 1) / $totalApplicants) * 40);
+                $download->update(['progress' => $progress]);
             }
 
-            $zip->close();
-
-            if ($addedCount === 0) {
-                @unlink($fullZipPath);
+            if (empty($applicantsData)) {
                 $download->update([
                     'status' => 'failed',
                     'error_message' => 'Unable to generate any permits for this establishment.',
@@ -109,15 +80,36 @@ class GeneratePermitsZip implements ShouldQueue
                 return;
             }
 
+            $download->update(['progress' => 50]);
+
+            // ---- Step 2: render everyone into ONE combined multi-page PDF ----
+            $pdfContent = PdfGenerator::renderFromView('verify.onsiteCardPdf', [
+                'applicants' => $applicantsData,
+            ]);
+
+            $download->update(['progress' => 90]);
+
+            $fileName = 'Food_Handlers_Permits_' . $this->establishmentId . '_' . now()->timestamp . '.pdf';
+            $storedPath = 'permit-downloads/' . $this->downloadToken . '.pdf';
+            $fullPath = storage_path('app/' . $storedPath);
+
+            if (!file_exists(dirname($fullPath))) {
+                mkdir(dirname($fullPath), 0755, true);
+            }
+
+            file_put_contents($fullPath, $pdfContent);
+            unset($pdfContent);
+            gc_collect_cycles();
+
             $download->update([
                 'status' => 'ready',
                 'progress' => 100,
-                'file_path' => $storedZipPath,
-                'file_name' => $zipFileName,
+                'file_path' => $storedPath,
+                'file_name' => $fileName,
                 'expires_at' => now()->addHours(2),
             ]);
         } catch (\Throwable $e) {
-            Log::error('Permit ZIP generation job failed', [
+            Log::error('Permit PDF generation job failed', [
                 'establishment_clinic_id' => $this->establishmentId,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
