@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>PHCMS - Onsite Verification - Powered By ID Pro</title>
 
     <!-- Tailwind CDN (utility classes only — used here to hand-build a shadcn/ui-style surface) -->
@@ -850,36 +851,95 @@
     </script> --}}
 
     <script>
-        async function handleQueuedDownload(triggerEl, requestUrl) {
-            setLoadingState('Preparing Your Download', 'This may take a moment for larger establishments.');
-            showModal();
-            triggerEl.disabled = true;
+document.addEventListener('DOMContentLoaded', function () {
+    const bulkBtn = document.getElementById('download-permits-btn');
+    const modal = document.getElementById('permits-loading-modal');
+    const icon = document.getElementById('permits-modal-icon');
+    const title = document.getElementById('permits-modal-title');
+    const message = document.getElementById('permits-modal-message');
+    const closeBtn = document.getElementById('permits-modal-close');
 
-            try {
-                // Step 1: kick off the job
-                const startResp = await fetch(requestUrl, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                    },
-                });
-                const {
-                    status_url
-                } = await startResp.json();
+    if (!modal || !icon || !title || !message || !closeBtn) {
+        console.error('[permits-modal] Modal markup missing from this page.');
+        return;
+    }
 
-                // Step 2: poll every 2 seconds until ready or failed
-                const poll = setInterval(async () => {
+    function showModal() {
+        modal.classList.remove('hidden');
+    }
+
+    function hideModal() {
+        modal.classList.add('hidden');
+        setLoadingState();
+    }
+
+    function setLoadingState(customTitle, customMessage) {
+        icon.innerHTML = `
+            <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+        `;
+        title.textContent = customTitle || 'Generating Permits';
+        message.textContent = customMessage || 'Please wait while we prepare your PDF. This may take a moment.';
+        closeBtn.classList.add('hidden');
+    }
+
+    function setSuccessState(customMessage) {
+        icon.innerHTML = `
+            <svg class="h-10 w-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+        `;
+        title.textContent = 'Download Ready';
+        message.textContent = customMessage || 'Your file has started downloading.';
+        closeBtn.classList.remove('hidden');
+    }
+
+    function setErrorState(errorMessage) {
+        icon.innerHTML = `
+            <svg class="h-10 w-10 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        `;
+        title.textContent = 'Generation Failed';
+        message.textContent = errorMessage || 'Something went wrong. Please try again.';
+        closeBtn.classList.remove('hidden');
+    }
+
+    async function handleQueuedDownload(triggerEl, requestUrl) {
+        setLoadingState('Preparing Your Download', 'This may take a moment for larger establishments.');
+        showModal();
+        triggerEl.disabled = true;
+
+        try {
+            const startResp = await fetch(requestUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                },
+            });
+
+            if (!startResp.ok) {
+                const data = await startResp.json().catch(() => ({}));
+                setErrorState(data.error || 'Could not start the download. Please try again.');
+                triggerEl.disabled = false;
+                return;
+            }
+
+            const { status_url } = await startResp.json();
+
+            const poll = setInterval(async () => {
+                try {
                     const statusResp = await fetch(status_url, {
-                        headers: {
-                            'Accept': 'application/json'
-                        }
+                        headers: { 'Accept': 'application/json' },
                     });
                     const data = await statusResp.json();
 
                     if (data.status === 'ready') {
                         clearInterval(poll);
-                        window.location.href = data.download_url; // triggers browser download
+                        window.location.href = data.download_url;
                         setSuccessState('Your permits are ready and downloading now.');
                         triggerEl.disabled = false;
                     } else if (data.status === 'failed') {
@@ -887,16 +947,38 @@
                         setErrorState(data.error);
                         triggerEl.disabled = false;
                     }
-                    // else: still pending/processing — keep polling
-                }, 2000);
+                } catch (pollErr) {
+                    clearInterval(poll);
+                    console.error('[permits-modal] Poll error:', pollErr);
+                    setErrorState('Lost connection while checking status. Please try again.');
+                    triggerEl.disabled = false;
+                }
+            }, 2000);
 
-            } catch (err) {
-                console.error(err);
-                setErrorState('A network error occurred. Please try again.');
-                triggerEl.disabled = false;
-            }
+        } catch (err) {
+            console.error('[permits-modal] Download request error:', err);
+            setErrorState('A network error occurred. Please try again.');
+            triggerEl.disabled = false;
         }
-    </script>
+    }
+
+    // ---- Wire up the bulk download button ----
+    if (bulkBtn) {
+        bulkBtn.addEventListener('click', function () {
+            handleQueuedDownload(bulkBtn, bulkBtn.dataset.requestUrl);
+        });
+    } else {
+        console.warn('[permits-modal] #download-permits-btn not found on this page.');
+    }
+
+    closeBtn.addEventListener('click', hideModal);
+
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) hideModal();
+    });
+});
+</script>
+  
 </body>
 
 </html>
