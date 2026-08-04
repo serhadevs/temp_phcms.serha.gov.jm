@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class GeneratePermitsZip implements ShouldQueue
 {
@@ -53,23 +54,52 @@ class GeneratePermitsZip implements ShouldQueue
                 return;
             }
 
-            $totalApplicants = $applicants->count();
-            $applicantsData = [];
+            $tempDir = storage_path('app/temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
 
-            // ---- Step 1: build QR codes + resized photo thumbnails for every applicant ----
-            // Both are cached to disk, so repeat runs for the same applicant are near-instant.
+            $zipFileName = 'Food_Handlers_Permits_' . $this->establishmentId . '_' . now()->timestamp . '.zip';
+            $storedZipPath = 'permit-downloads/' . $this->downloadToken . '.zip';
+            $fullZipPath = storage_path('app/' . $storedZipPath);
+
+            if (!file_exists(dirname($fullZipPath))) {
+                mkdir(dirname($fullZipPath), 0755, true);
+            }
+
+            $zip = new ZipArchive();
+            $zip->open($fullZipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+            $totalApplicants = $applicants->count();
+            $addedCount = 0;
+
             foreach ($applicants as $index => $applicant) {
                 try {
                     $qrImage = $this->generateQrImage($applicant);
                     $photoBase64 = $this->getResizedPhotoBase64($applicant);
 
-                    $applicantsData[] = [
-                        'applicant' => $applicant,
-                        'qrImage' => $qrImage,
-                        'photoBase64' => $photoBase64,
-                    ];
+                    // Render just THIS applicant — one small PDF at a time, via mPDF.
+                    // Since each call only ever processes one person's markup, this has
+                    // no scaling ceiling as establishment size grows (unlike one combined PDF).
+                    $pdfContent = PdfGenerator::renderFromView('verify.onsiteCardPdf', [
+                        'applicants' => [
+                            [
+                                'applicant' => $applicant,
+                                'qrImage' => $qrImage,
+                                'photoBase64' => $photoBase64,
+                            ],
+                        ],
+                    ]);
+
+                    $permitNo = $applicant->permit_no ?? "permit_{$applicant->id}";
+                    $zip->addFromString("Food_Handlers_Permit_{$permitNo}.pdf", $pdfContent);
+                    $addedCount++;
+
+                    // Explicitly release memory before the next iteration
+                    unset($pdfContent, $qrImage, $photoBase64);
+                    gc_collect_cycles();
                 } catch (\Throwable $e) {
-                    Log::error('Failed to prepare permit data', [
+                    Log::error('Failed to generate individual PDF for permit', [
                         'permit_no' => $applicant->permit_no ?? null,
                         'establishment_clinic_id' => $this->establishmentId,
                         'error' => $e->getMessage(),
@@ -77,12 +107,14 @@ class GeneratePermitsZip implements ShouldQueue
                     continue;
                 }
 
-                // QR + photo prep counts as the first 40% of progress
-                $progress = (int) round((($index + 1) / $totalApplicants) * 40);
-                $download->update(['progress' => $progress]);
+                $progress = (int) round((($index + 1) / $totalApplicants) * 100);
+                $download->update(['progress' => min($progress, 99)]);
             }
 
-            if (empty($applicantsData)) {
+            $zip->close();
+
+            if ($addedCount === 0) {
+                @unlink($fullZipPath);
                 $download->update([
                     'status' => 'failed',
                     'error_message' => 'Unable to generate any permits for this establishment.',
@@ -90,36 +122,15 @@ class GeneratePermitsZip implements ShouldQueue
                 return;
             }
 
-            $download->update(['progress' => 50]);
-
-            // ---- Step 2: render everyone into ONE combined multi-page PDF ----
-            $pdfContent = PdfGenerator::renderFromView('verify.onsiteCardPdf', [
-                'applicants' => $applicantsData,
-            ]);
-
-            $download->update(['progress' => 90]);
-
-            $fileName = 'Food_Handlers_Permits_' . $this->establishmentId . '_' . now()->timestamp . '.pdf';
-            $storedPath = 'permit-downloads/' . $this->downloadToken . '.pdf';
-            $fullPath = storage_path('app/' . $storedPath);
-
-            if (!file_exists(dirname($fullPath))) {
-                mkdir(dirname($fullPath), 0755, true);
-            }
-
-            file_put_contents($fullPath, $pdfContent);
-            unset($pdfContent);
-            gc_collect_cycles();
-
             $download->update([
                 'status' => 'ready',
                 'progress' => 100,
-                'file_path' => $storedPath,
-                'file_name' => $fileName,
+                'file_path' => $storedZipPath,
+                'file_name' => $zipFileName,
                 'expires_at' => now()->addHours(2),
             ]);
         } catch (\Throwable $e) {
-            Log::error('Permit PDF generation job failed', [
+            Log::error('Permit ZIP generation job failed', [
                 'establishment_clinic_id' => $this->establishmentId,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -147,11 +158,8 @@ class GeneratePermitsZip implements ShouldQueue
 
     /**
      * Resize (and cache) an applicant's photo down to a small JPEG suitable for
-     * embedding in the PDF, then return it as a base64 string. This is what
-     * prevents the memory exhaustion / PCRE backtrack errors caused by embedding
-     * full-resolution camera photos directly.
-     *
-     * Uses PHP's built-in GD extension — no extra Composer dependency required.
+     * embedding in the PDF, then return it as a base64 string. Cached to disk so
+     * repeat runs for the same applicant reuse the thumbnail instantly.
      */
     private function getResizedPhotoBase64(PermitApplication $applicant): ?string
     {
@@ -172,7 +180,6 @@ class GeneratePermitsZip implements ShouldQueue
 
         $thumbPath = $cacheDir . '/' . $applicant->id . '.jpg';
 
-        // Reuse the cached thumbnail if it already exists — only generate once ever.
         if (file_exists($thumbPath)) {
             return base64_encode(file_get_contents($thumbPath));
         }
@@ -207,8 +214,6 @@ class GeneratePermitsZip implements ShouldQueue
     /**
      * Resize an image file to fit within max width/height (preserving aspect ratio),
      * re-encode as JPEG at the given quality, and save to $destPath.
-     *
-     * Returns true on success, false if the source image couldn't be read.
      */
     private function resizeImageWithGd(string $sourcePath, string $destPath, int $maxWidth, int $maxHeight, int $quality): bool
     {
@@ -231,14 +236,12 @@ class GeneratePermitsZip implements ShouldQueue
             return false;
         }
 
-        // Calculate new dimensions, preserving aspect ratio, never upscaling
         $ratio = min($maxWidth / $origWidth, $maxHeight / $origHeight, 1);
         $newWidth = (int) round($origWidth * $ratio);
         $newHeight = (int) round($origHeight * $ratio);
 
         $destImage = imagecreatetruecolor($newWidth, $newHeight);
 
-        // Flatten transparency onto a white background (avoids black backgrounds for PNGs with alpha)
         $white = imagecolorallocate($destImage, 255, 255, 255);
         imagefill($destImage, 0, 0, $white);
 
