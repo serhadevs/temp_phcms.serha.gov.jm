@@ -19,8 +19,9 @@ class GeneratePermitsZip implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $timeout = 300; // 5 minutes — safe now since it's off the web request entirely
-    public int $tries = 2;
+    public int $timeout = 300;   // max seconds a single attempt is allowed to run
+    public int $tries = 3;       // how many times Laravel will attempt this job
+    public int $backoff = 10;
 
     public function __construct(
         public int $establishmentId,
