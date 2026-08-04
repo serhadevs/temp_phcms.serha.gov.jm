@@ -5,14 +5,13 @@ namespace App\Jobs;
 use App\Models\EstablishmentClinics;
 use App\Models\PermitApplication;
 use App\Models\PermitDownload;
+use App\Services\PdfGenerator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Barryvdh\DomPDF\Facade\Pdf;
-use setasign\Fpdi\Fpdi;
 use ZipArchive;
 
 class GeneratePermitsZip implements ShouldQueue
@@ -72,19 +71,19 @@ class GeneratePermitsZip implements ShouldQueue
                 try {
                     $qrImage = $this->generateQrImage($applicant);
 
-                    // Render just THIS applicant — one small PDF at a time
-                    $pdf = Pdf::loadView('verify.onsiteCardPdf', [
+                    // Render just THIS applicant — one small PDF at a time, via mPDF
+                    $pdfContent = PdfGenerator::renderFromView('verify.onsiteCardPdf', [
                         'applicants' => [
                             ['applicant' => $applicant, 'qrImage' => $qrImage],
                         ],
-                    ])->setPaper('A4');
+                    ]);
 
                     $permitNo = $applicant->permit_no ?? "permit_{$applicant->id}";
-                    $zip->addFromString("Food_Handlers_Permit_{$permitNo}.pdf", $pdf->output());
+                    $zip->addFromString("Food_Handlers_Permit_{$permitNo}.pdf", $pdfContent);
                     $addedCount++;
 
                     // Explicitly release memory before the next iteration
-                    unset($pdf, $qrImage);
+                    unset($pdfContent, $qrImage);
                     gc_collect_cycles();
                 } catch (\Throwable $e) {
                     Log::error('Failed to generate individual PDF for permit', [
