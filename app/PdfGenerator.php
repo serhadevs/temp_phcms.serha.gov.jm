@@ -24,7 +24,17 @@ class PdfGenerator
             'margin_right' => 10,
         ]);
 
+        $mpdf->SetDefaultBodyCSS('border', '0');
+
         $mpdf->WriteHTML($html);
+
+        $pageCount = $mpdf->page;
+        for ($i = 1; $i <= $pageCount; $i++) {
+            $mpdf->page = $i;
+            $mpdf->SetLineWidth(1); // ~3px equivalent in mPDF's unit system
+            $mpdf->SetDrawColor(11, 78, 162); // #0b4ea2 in RGB
+            $mpdf->Rect(4, 4, $mpdf->w - 8, $mpdf->h - 8);
+        }
 
         return $mpdf->Output('', Destination::STRING_RETURN);
     }
