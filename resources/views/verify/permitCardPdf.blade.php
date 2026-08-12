@@ -350,7 +350,7 @@
                 <strong>Data Protection Notice:</strong>
                 This document complies with the Jamaica Data Protection Act (2020).
                 Sensitive medical data has been minimized to protect applicant privacy while fulfilling the regulatory
-                requirements of the Food Safety Act (1998).
+                requirements of The Public Health (Food Handling) Regulations, 1998,.
             </div>
 
         </footer>
