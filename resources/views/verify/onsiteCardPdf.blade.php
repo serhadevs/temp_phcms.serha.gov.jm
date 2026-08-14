@@ -50,15 +50,6 @@
             }
         }
 
-        /* Each certificate starts on its own page, except the first */
-        .cert-page {
-            position: relative;
-            page-break-before: always;
-        }
-
-        .cert-page:first-child {
-            page-break-before: auto;
-        }
 
         /* ===== CONTENT WRAPPER ===== */
         .page-wrapper {
@@ -213,6 +204,7 @@
             gap: 6px;
             font-size: 11px;
         }
+
     </style>
 </head>
 
