@@ -177,6 +177,15 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'check.default.pa
   Route::get('/permit/application/edit/{id}', [PermitApplicationController::class, 'editView'])->name('permit.application.view.edit');
   Route::delete('/permit/application/delete/{id}', [PermitApplicationController::class, 'destroy'])->name('permit.application.delete');
 
+  //Permit Application View - Lazy Loaded Tab Data
+  Route::get('/permit/view/{id}/tab/permit', [PermitApplicationController::class, 'viewPermitTab'])->name('permit.application.view.tab.permit');
+  Route::get('/permit/view/{id}/tab/appointment', [PermitApplicationController::class, 'viewAppointmentTab'])->name('permit.application.view.tab.appointment');
+  Route::get('/permit/view/{id}/tab/test-results', [PermitApplicationController::class, 'viewTestResultsTab'])->name('permit.application.view.tab.test');
+  Route::get('/permit/view/{id}/tab/health-interview', [PermitApplicationController::class, 'viewHealthInterviewTab'])->name('permit.application.view.tab.health');
+  Route::get('/permit/view/{id}/tab/messages', [PermitApplicationController::class, 'viewMessagesTab'])->name('permit.application.view.tab.messages');
+  Route::get('/permit/view/{id}/tab/card-info', [PermitApplicationController::class, 'viewCardInfoTab'])->name('permit.application.view.tab.card');
+  Route::get('/permit/view/{id}/tab/transactions', [PermitApplicationController::class, 'viewTransactionsTab'])->name('permit.application.view.tab.transactions');
+
 
   //Barber Cosmetics Routes
   Route::get('/barber-cosmet/create', [BarberCosmetApplicationsController::class, 'create'])->name('barber-cosmet.create');

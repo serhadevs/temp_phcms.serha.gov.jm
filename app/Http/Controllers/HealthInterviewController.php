@@ -328,6 +328,9 @@ class HealthInterviewController extends Controller
                     return redirect()->route('health-interview.index', ['id' => 0])->with('error', 'Error processing health interview');
                 }
             }
+            if ($request->app_type_id == "1" && str_contains($request->previous_url, 'permit/view')) {
+                return redirect()->route('permit.application.view', ['id' => $request->application_id])->with('success', 'Health Interview has been processed successfully.');
+            }
             return redirect()->route('health-interview.index', ['id' => 0])->with('success', 'Health Interview has been processed successfully.');
         } else {
             return redirect()->route('health-interview.index', ['id' => 0])->with('error', 'Error processing health interview');

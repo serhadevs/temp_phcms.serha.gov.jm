@@ -95,383 +95,6 @@
                                         <input type="file" class="form-control mx-auto w-75 mt-1" id="photo_upload"
                                             name="photo_upload" style="display:none">
                                     </div>
-                                    <div class="card mt-2">
-                                        <div class="card-header">
-                                            <div class="row justify-content-between">
-                                                <div class="col text-start d-flex">
-                                                    <h5 class="text-muted mb-0 align-self-center">
-                                                        Test Results
-                                                    </h5>
-                                                </div>
-                                                @if (empty($permit_application->testResults))
-                                                    <div class="col col-auto">
-                                                        <a
-                                                            href="/test-results/permits/{{ $permit_application->id }}/create">
-                                                            <i
-                                                                class="bi bi-plus-square-fill text-primary fs-3 p-0 mt-0"></i>
-                                                        </a>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            @if (!empty($permit_application->testResults))
-                                                <ul class="list-group">
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Exam Site
-                                                        <span class="badge text-bg-primary rounded-pill text-wrap"
-                                                            style="white-space: normal;">
-                                                            {{ $permit_application->testResults?->test_location }}
-                                                        </span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Trainer(s)
-                                                        <span class="badge text-bg-primary rounded-pill">
-                                                            {{ $permit_application->testResults?->staff_contact }}</span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Test Score
-                                                        <span class="badge text-bg-primary rounded-pill">
-                                                            {{ $permit_application->testResults?->overall_score }}</span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Comments
-                                                        <span class="badge text-bg-primary rounded-pill">
-                                                            {{ $permit_application->testResults?->comments }}</span>
-                                                    </li>
-                                                </ul>
-                                            @else
-                                                <div class="text-start">
-                                                    No Test Results Available
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="card mt-2">
-                                        <div class="card-header">
-                                            <div class="row">
-                                                <div class="col d-flex">
-                                                    <h5 class="text-muted text-start align-self-center">
-                                                        Health Interview Results
-                                                    </h5>
-                                                </div>
-                                                @if (empty($permit_application->healthInterviews))
-                                                    <div class="col col-auto">
-                                                        <a href="/health-interview/create/1/{{ $permit_application->id }}">
-                                                            <i
-                                                                class="bi bi-plus-square-fill text-primary fs-3 p-0 mt-0"></i>
-                                                        </a>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-
-
-                                        <div class="card-body">
-                                            @if (!empty($permit_application->healthInterviews))
-                                                <ul class="list-group">
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Literacy
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->literate == '1' ? 'success' : 'danger' }}">
-                                                            {{ $permit_application->healthInterviews?->literate == '1' ? 'YES' : 'NO' }}
-                                                        </span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Typhiod
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->typhoid == '1' ? 'success' : 'danger' }}">
-                                                            {{ $permit_application->healthInterviews?->typhoid == '1' ? 'YES' : 'NO' }}
-                                                        </span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Whitlow
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->whitlow == 'absent' ? 'success' : 'danger' }}">
-                                                            {{ strtoupper($permit_application->healthInterviews?->whitlow) }}
-                                                        </span>
-                                                    </li>
-
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Hands
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->hands_condition == 'satisfactory' ? 'success' : 'danger' }}">
-                                                            {{ strtoupper($permit_application->healthInterviews?->hands_condition) }}
-                                                        </span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Fingernails
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->fingernails_condition == 'satisfactory' ? 'success' : 'danger' }}">
-                                                            {{ strtoupper($permit_application->healthInterviews?->fingernails_condition) }}
-                                                        </span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Teeth
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->teeth_condition == 'satisfactory' ? 'success' : 'danger' }}">
-                                                            {{ strtoupper($permit_application->healthInterviews?->teeth_condition) }}
-                                                        </span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Lived Abroad
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->lived_abroad == '1' ? 'success' : 'danger' }}">
-                                                            {{ $permit_application->healthInterviews?->lived_abroad == '1' ? 'YES' : 'NO' }}
-                                                        </span>
-                                                    </li>
-
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Travelled Abroad
-                                                        <span
-                                                            class="badge text-bg-{{ $permit_application->healthInterviews?->travel_abroad == '1' ? 'success' : 'danger' }}">
-                                                            {{ $permit_application->healthInterviews?->travel_abroad == '1' ? 'YES' : 'NO' }}
-                                                        </span>
-                                                    </li>
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        Symptoms
-                                                        @foreach ($permit_application->healthInterviews->healthInterviewSymptom as $symp)
-                                                            {{ $symp->symptoms?->name }}<br />
-                                                        @endforeach
-                                                    </li>
-
-                                                </ul>
-                                            @else
-                                                <li
-                                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                                    No Health Interview Information Available
-                                                </li>
-
-                                            @endif
-                                        </div>
-                                    </div>
-
-
-                                    <div class="card mt-2">
-                                        <h5 class="card-header text-start text-muted">
-                                            Messages
-                                        </h5>
-                                        @if (!$permit_application->email)
-                                            <div class="card-body text-start">
-                                                No Email Address for {{ $permit_application->firstname }}
-                                                {{ $permit_application->lastname }}
-                                            </div>
-                                        @elseif($permit_application->messages->isEmpty())
-                                            <div class="card-body text-start">
-                                                No Messages Sent to {{ $permit_application->firstname }}
-                                                {{ $permit_application->lastname }}
-                                            </div>
-                                        @else
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered table-sm nowrap table-responsive"
-                                                        style="max-width: 100%">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Type</th>
-                                                                {{-- <th>Status</th> --}}
-                                                                <th>View</th>
-                                                                <th>Resend</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-
-                                                            @foreach ($permit_application->messages as $message)
-                                                                <tr>
-                                                                    <td><span
-                                                                            class="badge text-bg-primary">{{ strtoupper($message->emailtypes->name) ?? 'N/A' }}</span>
-                                                                    </td>
-                                                                    {{-- <td><span
-                                                                            class = "badge text-bg-success">{{ strtoupper($message->status) }}</span>
-                                                                    </td>
-                                                                    <td> <span
-                                                                            class="badge text-bg-primary">{{ \Carbon\Carbon::parse($message->sent_at)->format('d F y') }}</span>
-                                                                    </td> --}}
-
-                                                                    <td><button type="button" class="btn btn-primary"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#exampleModal"
-                                                                            onclick="populateResendEmailModal({{ json_encode($message) }}, {{ json_encode($permit_application) }})">
-                                                                            <i class="bi bi-eye"></i>
-                                                                        </button></td>
-                                                                    <td>
-                                                                        @if ($message->emailtypes->name === 'Payment')
-                                                                            <a href="#"></a>
-                                                                        @else
-                                                                            <a href="{{ url('/messaging/resend', ['id' => $message->permit_application_id]) }}"
-                                                                                class="btn btn-primary"><i
-                                                                                    class="bi bi-envelope-arrow-up"></i></a>
-                                                                        @endif
-
-
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                @include('partials.modals.modal')
-                                            </div>
-
-                                        @endif
-                                    </div>
-
-                                    <div class="card mt-2">
-                                        <h5 class="card-header text-muted text-start">
-                                            Printed Card Information
-                                        </h5>
-
-                                        @if ($permit_application->printedcard && $permit_application->printedcard?->created_at)
-                                            <div class="card-body">
-                                                The Card was printed on
-                                                {{ \Carbon\Carbon::parse($permit_application->printedcard->created_at)->format('d F Y') }}
-                                            </div>
-                                        @elseif($permit_application->signOffs && $permit_application->signOffs?->created_at)
-                                            <div class="card-body">
-                                                The Card was signed off but not yet printed.
-                                            </div>
-                                        @else
-                                            <div class="card-body text-start">
-                                                No Card Information is available
-                                            </div>
-                                        @endif
-                                    </div>
-                                    {{-- Card Collected --}}
-
-
-
-
-                                    <div class="card mt-2">
-                                        <h5 class="card-header text-muted text-start">
-                                            Permit Processing Tracker
-                                        </h5>
-
-                                        <div class="card-body">
-                                            <ul class="list-group">
-                                                <li
-                                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Days between Application and Appointment Date
-                                                    <span class="badge bg-primary rounded-pill">
-
-                                                        @if ($permit_application->establishmentClinics)
-                                                            {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->created_at)) }}
-                                                        @elseif($permit_application->appointment->isNotEmpty())
-                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)) }}
-                                                        @else
-                                                            0
-                                                        @endif
-
-
-                                                    </span>
-                                                </li>
-                                                {{-- <li
-                                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Days between Test Completed and Test Score Uploaded
-                                                    <span class="badge bg-primary rounded-pill">
-
-                                                        @if ($permit_application->establishmentClinics)
-                                                            {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
-                                                        @elseif(
-                                                            $permit_application->testResults &&
-                                                                $permit_application->testResults->created_at &&
-                                                                $permit_application->appointment->isNotEmpty())
-                                                            {{ \Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
-                                                        @else
-                                                            0
-                                                        @endif
-
-                                                    </span>
-
-                                                </li> --}}
-
-                                                <li
-                                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Days between Test Completed and Test Score Uploaded
-                                                    <span class="badge bg-primary rounded-pill">
-                                                        @if ($permit_application->testResults && $permit_application->testResults->created_at)
-                                                            @if ($permit_application->establishmentClinics && $permit_application->establishmentClinics->proposed_date)
-                                                                {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
-                                                            @elseif (
-                                                                $permit_application->appointment &&
-                                                                    $permit_application->appointment->isNotEmpty() &&
-                                                                    $permit_application->appointment->first()->appointment_date)
-                                                                {{ \Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->testResults->created_at)) }}
-                                                            @else
-                                                                0
-                                                            @endif
-                                                        @else
-                                                            0
-                                                        @endif
-                                                    </span>
-                                                </li>
-                                                <li
-                                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Days between Test Completed and Medical Interview
-                                                    <span class="badge bg-primary rounded-pill">
-
-                                                        @if (
-                                                            $permit_application->healthInterviews &&
-                                                                $permit_application->healthInterviews?->created_at &&
-                                                                $permit_application->appointment->isNotEmpty())
-                                                            {{ \Carbon\Carbon::parse($permit_application->appointment->first()->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->healthInterviews?->created_at)) }}
-                                                        @else
-                                                            0
-                                                        @endif
-                                                    </span>
-                                                </li>
-                                                <li
-                                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Days between Test Completed and Sign Off Completed
-                                                    <span class="badge bg-primary rounded-pill">
-
-                                                        @if ($permit_application->establishmentClinics)
-                                                            {{ \Carbon\Carbon::parse($permit_application->establishmentClinics->proposed_date)->diffInDays(\Carbon\Carbon::parse($permit_application->signOffs?->created_at)) }}
-                                                        @elseif (
-                                                            $permit_application->signOffs &&
-                                                                $permit_application->signOffs?->created_at &&
-                                                                $permit_application->appointment->isNotEmpty())
-                                                            {{ \Carbon\Carbon::parse($permit_application->appointment[0]->appointment_date)->diffInDays(\Carbon\Carbon::parse($permit_application->signOffs?->created_at)) }}
-                                                        @else
-                                                            0
-                                                        @endif
-                                                    </span>
-                                                </li>
-
-
-                                                <li
-                                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Total Days from Application to Printing of Card
-                                                    <span class="badge bg-primary rounded-pill">
-                                                        @if ($permit_application->printedcard && $permit_application->printedcard?->created_at)
-                                                            {{ \Carbon\Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at)) }}
-                                                        @else
-                                                            0
-                                                        @endif
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        </div>
-
-                                    </div>
-
-
-
-
-
                                 </div>
                             </div>
                             <div class="col col-md-9">
@@ -479,12 +102,53 @@
                                 {{-- method="POST">
                                     @csrf
                                     @method('PUT') --}}
-                                <div class="card">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="text-muted mb-0">Applicant Information</h4>
-                                        {{-- <a href = "{{ route('printed.applications',['id'=>$permit_application->id]) }}" class="btn btn-danger btn-sm">Print Application</a> --}}
-                                    </div>
-                                    <input type="text" name="previous_url" value={{ url()->previous() }} hidden>
+                                <input type="text" name="previous_url" value={{ url()->previous() }} hidden>
+
+                                <ul class="nav nav-tabs" id="permitTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="tab-applicant-btn" data-bs-toggle="tab"
+                                            data-bs-target="#tab-applicant" type="button" role="tab">Applicant
+                                            Information</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="tab-permit-btn" data-bs-toggle="tab"
+                                            data-bs-target="#tab-permit" type="button" role="tab">Permit
+                                            Application</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="tab-appointment-btn" data-bs-toggle="tab"
+                                            data-bs-target="#tab-appointment" type="button" role="tab">Appointment</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="tab-test-btn" data-bs-toggle="tab"
+                                            data-bs-target="#tab-test" type="button" role="tab">Test Results</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="tab-health-btn" data-bs-toggle="tab"
+                                            data-bs-target="#tab-health" type="button" role="tab">Health
+                                            Interview</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="tab-messages-btn" data-bs-toggle="tab"
+                                            data-bs-target="#tab-messages" type="button" role="tab">Messages</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="tab-card-btn" data-bs-toggle="tab"
+                                            data-bs-target="#tab-card" type="button" role="tab">Card Info</button>
+                                    </li>
+                                    @if ($permit_application->editTransactions()->exists())
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="tab-transactions-btn" data-bs-toggle="tab"
+                                                data-bs-target="#tab-transactions" type="button" role="tab">Transactions</button>
+                                        </li>
+                                    @endif
+                                </ul>
+
+                                <div class="tab-content border border-top-0 p-3 mb-3" id="permitTabContent">
+
+                                    {{-- Applicant Information --}}
+                                    <div class="tab-pane fade show active" id="tab-applicant" role="tabpanel">
+                                    <div class="card border-0">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col">
@@ -670,208 +334,98 @@
                                             <i class="bi bi-pencil-square"></i>
                                             Update Applicant Information
                                         </button>
-                                    </div>
-                                </div>
-
-                                {{-- </form> --}}
-
-                                <div class="card mt-3">
-                                    <h4 class="text-muted card-header">
-                                        Permit Application Information
-                                    </h4>
-                                    <div class="card-body">
-                                        {{-- <div class="mt-3"> --}}
-                                        <div class="row">
-                                            <div class="col">
-                                                <label for="" class="form-label">Application Number</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ $permit_application->id }}" disabled>
-                                            </div>
-                                            <div class="col">
-                                                <label for="" class="form-label">Permit Number</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ $permit_application->permit_no }}" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col mt-3">
-                                                <label for="" class="form-label">Granted</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ strtoupper($permit_application->granted === 1 ? 'GRANTED' : ($permit_application->granted === 0 ? 'NOT GRANTED' : 'N/A')) }}"
-                                                    disabled>
-                                            </div>
-                                            <div class="col mt-3">
-                                                @if (optional($permit_application->signOffs)->expiry_date &&
-                                                        \Carbon\Carbon::parse($permit_application->signOffs?->expiry_date)->isPast())
-                                                    <div class="mt-3">
-                                                        <div class="alert alert-danger" role="alert">
-                                                            Card has expired on
-                                                            {{ \Carbon\Carbon::parse($permit_application->signOffs?->expiry_date)->format('d F Y') }}
-                                                        </div>
-                                                    </div>
-                                                @elseif(optional($permit_application->signOffs)->expiry_date)
-                                                    <div class="mt-3">
-                                                        <label for="expiry-date" class="form-label">Expiry Date</label>
-                                                        <input type="text" id="expiry-date" class="form-control"
-                                                            value="{{ \Carbon\Carbon::parse($permit_application->signOffs?->expiry_date)->format('d F Y') }}"
-                                                            disabled>
-                                                    </div>
-                                                @else
-                                                    <div class="mt-3">
-                                                        <div class="alert alert-warning" role="alert">
-                                                            No expiry date available.
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-
-
-                                        <div class="row mt-2">
-                                            <div class="col col-md-3">
-                                                <label for="" class="form-label">Sign Off Status</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ strtoupper($permit_application->sign_off_status === 1 ? 'SIGNED OFF' : 'NOT SIGNED OFF') }}"
-                                                    disabled>
-                                            </div>
-
-                                            @if ($permit_application && $permit_application->sign_off_status === 1)
-                                                <div class="col col-md-3">
-                                                    <label for="" class="form-label">Signed Off Date</label>
-                                                    <input type="text" class="form-control"
-                                                        value="{{ \Carbon\Carbon::parse(optional($permit_application->signOffs)?->created_at)->format('d F Y') }}"
-                                                        disabled>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <label for="" class="form-label">Signed Off By</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ strtoupper(optional($permit_application->signOffs?->user)->firstname) }} {{ strtoupper(optional($permit_application->signOffs?->user)->lastname) }}"
-                                                                disabled>
-                                                        </div>
-                                                        @if (in_array(auth()->user()->role_id, [1, 5, 10]) && empty($permit_application->printedcard))
-                                                            <div class="col col-md-5 mx-auto" style="align-self:end">
-                                                                <button class="btn btn-danger" type="button"
-                                                                    style="align-items:center"
-                                                                    onclick="requestSignoffReversal({{ json_encode($permit_application->id) }})">
-                                                                    <i class="bi bi-skip-backward-circle fs-6"></i>
-                                                                    Request Reverse Sign Off
-                                                                </button>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        </div>
-
-
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-3">
-                                                <label for="" class="form-label">Applied Before</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ $permit_application->applied_before == 1 ? 'YES' : 'NO' }}"
-                                                    disabled>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label for="" class="form-label">Establishment</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ strtoupper(empty($permit_application->establishmentClinics) ? '' : $permit_application->establishmentClinics?->name) }}"
-                                                    disabled>
-                                            </div>
-                                            <div class="col">
-                                                <div class="row">
-                                                    <div
-                                                        class="col {{ !empty($permit_application->payment) ? 'col-md-7' : '' }}">
-                                                        <label for="" class="form-label">Payment Status</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ empty($permit_application->payment) ? 'NOT PAID' : 'PAID' }}"
-                                                            disabled>
-                                                    </div>
-                                                    @if (!empty($permit_application->payment))
-                                                        <div class="col col-md-5 mx-auto" style="align-self:end">
-                                                            <button class="btn btn-success" style="align-items:center"
-                                                                type="button" data-bs-toggle="modal"
-                                                                data-bs-target="#staticBackdrop2"
-                                                                onclick="populatePaymentModal({{ json_encode($permit_application->payment) }}, {{ json_encode($permit_application?->appointment?->first()?->appointment_date) }}, {{ json_encode(!empty($permit_application->establishmentClinics) ? $permit_application->establishmentClinics?->proposed_date : '') }} )">
-                                                                <i class="bi bi-coin fs-6"></i>
-                                                                View Payment
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col">
-                                                <label for="" class="form-label">Added By</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ $permit_application->user?->firstname . ' ' . $permit_application->user?->lastname }}"
-                                                    disabled>
-                                            </div>
-                                            <div class="col">
-                                                <label for="" class="form-label">Application Date</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ \Carbon\Carbon::parse($permit_application->application_date)->format('d F Y') }}"
-                                                    disabled>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3">
-                                            <label for="" class="form-label">Reason for refusal (if
-                                                any)</label>
-                                            <textarea class="form-control" disabled>{{ $permit_application->reason }}</textarea>
-                                        </div>
-                                        {{-- </div> --}}
-                                    </div>
-                                </div>
-
-                                <div class="mt-3">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="text-muted row justify-content-between">
-                                                <div class="col">
-                                                    Appointment Information
-                                                </div>
-                                                <div class="col-auto">
-                                                    @if ($permit_application->establishment_clinic_id == '' && count($appointments) == 0)
-                                                        <button type="button" class="btn btn-primary"
-                                                            onclick="addAppointment({{ json_encode($appointment_available) }}, {{ json_encode($permit_application->id) }} )">
-                                                            Add Appointment
-                                                        </button>
-                                                    @endif
-                                                </div>
-                                            </h4>
-                                        </div>
-
-                                        <div class="card-body">
-                                            @include('partials.tables.permit_applications_appointments_table')
+                                        <div class="class mt-4">
+                                            <a class="btn btn-warning" id="btnEdit">
+                                                Edit Application
+                                            </a>
+                                            <a class="btn btn-danger mx-2" id="btnCancelEdit" onclick="cancelEdit()">
+                                                Cancel
+                                            </a>
                                         </div>
                                     </div>
-                                </div>
-                                @if (!empty($permit_application->editTransactions))
-                                    <div class="card mt-3">
-                                        <div class="card-header">
-                                            <h4 class="text-muted">
-                                                Transactions
-                                            </h4>
-                                        </div>
-                                        <div class="card-body">
-                                            @include('partials.tables.edit_transactions_table')
+                                    </div>
+                                    </div>
+                                    {{-- /Applicant Information --}}
+
+                                    {{-- Permit Application Information --}}
+                                    <div class="tab-pane fade" id="tab-permit" role="tabpanel"
+                                        data-tab-url="{{ route('permit.application.view.tab.permit', ['id' => $permit_application->id]) }}">
+                                        <div class="text-center py-5 tab-loading-placeholder">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
                                         </div>
                                     </div>
-                                @endif
+                                    {{-- /Permit Application Information --}}
 
-                                <div class="class mt-4">
-                                    <a class="btn btn-warning" id="btnEdit">
-                                        Edit Application
-                                    </a>
-                                    <a class="btn btn-danger mx-2" onclick="history.back()">
-                                        Cancel
-                                    </a>
+                                    {{-- Appointment Information --}}
+                                    <div class="tab-pane fade" id="tab-appointment" role="tabpanel"
+                                        data-tab-url="{{ route('permit.application.view.tab.appointment', ['id' => $permit_application->id]) }}">
+                                        <div class="text-center py-5 tab-loading-placeholder">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- /Appointment Information --}}
+
+                                    {{-- Test Results --}}
+                                    <div class="tab-pane fade" id="tab-test" role="tabpanel"
+                                        data-tab-url="{{ route('permit.application.view.tab.test', ['id' => $permit_application->id]) }}">
+                                        <div class="text-center py-5 tab-loading-placeholder">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- /Test Results --}}
+
+                                    {{-- Health Interview Results --}}
+                                    <div class="tab-pane fade" id="tab-health" role="tabpanel"
+                                        data-tab-url="{{ route('permit.application.view.tab.health', ['id' => $permit_application->id]) }}">
+                                        <div class="text-center py-5 tab-loading-placeholder">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- /Health Interview Results --}}
+
+                                    {{-- Messages --}}
+                                    <div class="tab-pane fade" id="tab-messages" role="tabpanel"
+                                        data-tab-url="{{ route('permit.application.view.tab.messages', ['id' => $permit_application->id]) }}">
+                                        <div class="text-center py-5 tab-loading-placeholder">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- /Messages --}}
+
+                                    {{-- Card Info --}}
+                                    <div class="tab-pane fade" id="tab-card" role="tabpanel"
+                                        data-tab-url="{{ route('permit.application.view.tab.card', ['id' => $permit_application->id]) }}">
+                                        <div class="text-center py-5 tab-loading-placeholder">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- /Card Info --}}
+
+                                    @if ($permit_application->editTransactions()->exists())
+                                        <div class="tab-pane fade" id="tab-transactions" role="tabpanel"
+                                            data-tab-url="{{ route('permit.application.view.tab.transactions', ['id' => $permit_application->id]) }}">
+                                            <div class="text-center py-5 tab-loading-placeholder">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                 </div>
-
+                                {{-- /tab-content --}}
 
                     </form>
                     {{-- @include('food_handlers_permit.partials.collectCard') --}}
@@ -1012,6 +566,7 @@
             $('#permit_type').removeAttr("disabled");
             $('#no_of_years').removeAttr("disabled");
             document.getElementById("updBtn").style.display = "";
+            document.getElementById("btnEdit").style.display = "none";
             document.getElementById('reason_for_edit').style.display = "";
             // if ($("#applicant_img").attr('src') == undefined) {
             document.getElementById("photo_upload").style.display = "";
@@ -1020,6 +575,28 @@
                 top: 0,
                 behavior: 'smooth'
             });
+        }
+
+        function cancelEdit() {
+            $("#firstname").attr("disabled", true);
+            $("#lastname").attr("disabled", true);
+            $("#middlename").attr("disabled", true);
+            $("#date_of_birth").attr("disabled", true);
+            $("#address").attr("disabled", true);
+            $("#cell_phone").attr("disabled", true);
+            $("#home_phone").attr("disabled", true);
+            $("#work_phone").attr("disabled", true);
+            $("#trn").attr("disabled", true);
+            $("#gender").attr("disabled", true);
+            $("#email").attr("disabled", true);
+            $('#permit_cat_id').attr("disabled", true);
+            $('#permit_type').attr("disabled", true);
+            $('#no_of_years').attr("disabled", true);
+            document.getElementById('edit_mode').value = "0";
+            document.getElementById("updBtn").style.display = "none";
+            document.getElementById("btnEdit").style.display = "";
+            document.getElementById('reason_for_edit').style.display = "none";
+            document.getElementById("photo_upload").style.display = "none";
         }
     </script>
     <script>
@@ -1035,6 +612,51 @@
             document.getElementById('payment_amt_paid').innerHTML = payment_info['amount_paid'];
             document.getElementById('payment_change').innerHTML = payment_info['change_amt'];
         }
+    </script>
+
+    {{-- Lazy-load Tab Data --}}
+    <script>
+        function loadPermitTab(pane) {
+            if (pane.dataset.loaded === "1" || !pane.dataset.tabUrl) {
+                return;
+            }
+
+            fetch(pane.dataset.tabUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    pane.innerHTML = html;
+                    pane.dataset.loaded = "1";
+
+                    // Re-run any <script> tags included in the fetched partial
+                    // (innerHTML does not execute them automatically).
+                    pane.querySelectorAll('script').forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        for (const attr of oldScript.attributes) {
+                            newScript.setAttribute(attr.name, attr.value);
+                        }
+                        newScript.async = false;
+                        newScript.textContent = oldScript.textContent;
+                        oldScript.replaceWith(newScript);
+                    });
+                })
+                .catch(() => {
+                    pane.innerHTML =
+                        '<div class="alert alert-danger">Failed to load this tab. Please try again.</div>';
+                });
+        }
+
+        document.querySelectorAll('#permitTab button[data-bs-target]').forEach(tabButton => {
+            tabButton.addEventListener('shown.bs.tab', event => {
+                const pane = document.querySelector(event.target.getAttribute('data-bs-target'));
+                if (pane) {
+                    loadPermitTab(pane);
+                }
+            });
+        });
     </script>
 
     {{-- Resend Email Javascript --}}
