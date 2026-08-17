@@ -70,6 +70,7 @@
                             </select>
                             <input type="text" name="application_type_id" value="1" hidden>
                             <input type="text" name="application_id" value="{{ $permit_application->id }}" hidden>
+                            <input type="text" name="previous_url" value="{{ url()->previous() }}" hidden>
                         </div>
 
                         <div class="row mt-3">

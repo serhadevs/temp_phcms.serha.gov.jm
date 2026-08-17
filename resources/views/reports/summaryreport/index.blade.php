@@ -31,7 +31,7 @@
                             </div>
                             <div class="col"
 
-                                style="display:{{ in_array(auth()->user()->facility_id, [1,2,3]) ? (in_array(auth()->user()->role_id, [1, 4, 9]) ? '' : 'none') : 'none' }}">
+                                style="display:{{ in_array(auth()->user()->facility_id, [1,2,3]) ? (in_array(auth()->user()->role_id, [1, 4, 9, 11]) ? '' : 'none') : 'none' }}">
                                 {{-- <div class="col"> --}}
                                 <label for="" class="form-label">Payment Type</label>
 

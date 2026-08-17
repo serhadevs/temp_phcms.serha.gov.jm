@@ -57,6 +57,7 @@
                             @error('application_id')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
+                            <input type="text" name="previous_url" value="{{ url()->previous() }}" hidden>
                             {{-- Determines if test reaults have been entered for this permit application --}}
                             {{-- 0 - No test results have been entered --}}
                             {{-- 1 - Test Results have been entered --}}

@@ -109,114 +109,40 @@ class PermitApplicationController extends Controller
     public function viewApplication(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with(
-            'permitCategory',
-            'payment',
-            'user',
-            'establishmentClinics',
-            'signOffs',
-            'testResults',
-            'healthInterviews.healthInterviewSymptom.symptoms',
-            'appointment.editTransactions',
-            'messages',
-            'messages.user',
-            'printedcard',
-            'collected_cards',
-            'signOffs.user:id,firstname,lastname'
-        )
-            ->find($application_id);
-        //dd($permit_application);
-
-        //dd($permit_application);
+        $permit_application = PermitApplication::with('permitCategory')->find($application_id);
 
         $categories = PermitCategory::all();
 
-        $appointments = Appointments::with('examDate.examSites')
-            ->where('facility_id', auth()->user()->facility_id)
-            ->where('permit_application_id', $application_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $appointment_available = [];
-        $app_type_id = 1;
-        $system_operation_type_id = 6;
-
-        foreach (
-            ExamDates::with('examSites', 'permitCategory')
-                ->where('facility_id', auth()->user()->facility_id)
-                ->where('application_type_id', 1)
-                ->where('permit_category_id', $permit_application->permit_category_id)
-                ->get() as $appointment
-        ) {
-            $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
-        }
-
-        // if($permit_application->printedcard && $permit_application->printedcard?->created_at){
-        //     $tdbetwappandprint = Carbon::parse($permit_application->application_date)->diffInDays(\Carbon\Carbon::parse($permit_application->printedcard?->created_at));
-        // }else{
-        //     $tdbetwappandprint = 0;
-        // }
-
-        //Check to see if the card was collected before
-
-        //dd($permit_application);
-
-        $isAvailable = false;
-        $alreadyPickup = false;
-        $downloaded = false;
-        $pickup_details = null;
-
-        $zipped = ZippedApplications::where([
-            'application_type_id' => 1,
-            'application_id'      => $permit_application->id,
-        ])->first();
-
-        if ($zipped) {
-            // Fix: Check Downloads using the correct foreign key
-            $downloaded = Downloads::where('id', $zipped->id)->exists();
-
-            // Simplified: exists() already returns boolean
-            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
-            $isAvailable = true;
-        }
-
-        // Check if the card is expired
-        $card_expired = false;
-        $permit_expiry_date = $permit_application->signOffs?->expiry_date;
-
-        if ($permit_expiry_date && Carbon::now()->greaterThan(Carbon::parse($permit_expiry_date))) {
-            $card_expired = true;
-        }
-
-        // Get pickup details
-        $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
-
-        // dd($tdbetwappandprint);
-        // $id_types = IdentificationTypes::all();
         Log::channel('systemOperations')->info('Permit Application view called', ['user_id' => auth()->user()->id]);
-        return view('food_handlers_permit.view', compact(
-            'permit_application',
-            'appointments',
-            'appointment_available',
-            'categories',
-            'app_type_id',
-            'system_operation_type_id',
-            'isAvailable',
-            'card_expired',
-            'pickup_details',
-            'alreadyPickup'
-        ));
+        return view('food_handlers_permit.view', compact('permit_application', 'categories'));
     }
 
     public function editView(Request $request)
     {
         $application_id = $request->route('id');
-        $permit_application = PermitApplication::with('permitCategory', 'payment', 'user', 'establishmentClinics', 'signOffs', 'testResults', 'healthInterviews.healthInterviewSymptom.symptoms', 'appointment.editTransactions')
-            ->find($application_id);
+        $permit_application = PermitApplication::with('permitCategory')->find($application_id);
 
         $categories = PermitCategory::all();
-        $app_type_id = 1;
-        $system_operation_type_id = 6;
+        $edit_mode = 1;
+
+        Log::channel('systemOperations')->info('Permit Application edit called', ['user_id' => auth()->user()->id, 'application_id' => $application_id]);
+
+        return view('food_handlers_permit.view', compact('permit_application', 'categories', 'edit_mode'));
+    }
+
+    public function viewPermitTab(Request $request)
+    {
+        $application_id = $request->route('id');
+        $permit_application = PermitApplication::with('payment', 'establishmentClinics', 'user', 'signOffs.user', 'printedcard', 'appointment')
+            ->find($application_id);
+
+        return view('food_handlers_permit.partials.tabs.permit', compact('permit_application'));
+    }
+
+    public function viewAppointmentTab(Request $request)
+    {
+        $application_id = $request->route('id');
+        $permit_application = PermitApplication::find($application_id);
 
         $appointments = Appointments::with('examDate.examSites')
             ->where('facility_id', auth()->user()->facility_id)
@@ -236,40 +162,50 @@ class PermitApplicationController extends Controller
             $appointment_available[$appointment->id] = strtoupper($appointment->permitCategory?->name) . ' - ' . strtoupper($appointment->exam_day) . ' - ' . strtoupper($appointment->exam_start_time) . ' - ' . strtoupper($appointment->examSites?->name);
         }
 
-        $edit_mode = 1;
+        return view('food_handlers_permit.partials.tabs.appointment', compact('permit_application', 'appointments', 'appointment_available'));
+    }
 
-        $isAvailable = false;
-        $alreadyPickup = false;
-        $downloaded = false;
-        $pickup_details = null;
+    public function viewTestResultsTab(Request $request)
+    {
+        $application_id = $request->route('id');
+        $permit_application = PermitApplication::with('testResults')->find($application_id);
 
-        $zipped = ZippedApplications::where([
-            'application_type_id' => 1,
-            'application_id'      => $permit_application->id,
-        ])->first();
+        return view('food_handlers_permit.partials.tabs.test_results', compact('permit_application'));
+    }
 
-        if ($zipped) {
-            // Fix: Check Downloads using the correct foreign key
-            $downloaded = Downloads::where('id', $zipped->id)->exists();
+    public function viewHealthInterviewTab(Request $request)
+    {
+        $application_id = $request->route('id');
+        $permit_application = PermitApplication::with('healthInterviews.healthInterviewSymptom.symptoms')->find($application_id);
 
-            // Simplified: exists() already returns boolean
-            $alreadyPickup = CollectedCards::where('app_id', $permit_application->id)->exists();
-            $isAvailable = true;
-        }
+        return view('food_handlers_permit.partials.tabs.health_interview', compact('permit_application'));
+    }
 
-        // Check if the card is expired
-        $card_expired = false;
-        $permit_expiry_date = $permit_application->signOffs?->expiry_date;
+    public function viewMessagesTab(Request $request)
+    {
+        $application_id = $request->route('id');
+        $permit_application = PermitApplication::with('messages.user')->find($application_id);
 
-        if ($permit_expiry_date && Carbon::now()->greaterThan(Carbon::parse($permit_expiry_date))) {
-            $card_expired = true;
-        }
+        return view('food_handlers_permit.partials.tabs.messages', compact('permit_application'));
+    }
 
-        // Get pickup details
-        $pickup_details = CollectedCards::where('app_id', $permit_application->id)->first();
-        Log::channel('systemOperations')->info('Permit Application edit called', ['user_id' => auth()->user()->id, 'application_id' => $application_id]);
+    public function viewCardInfoTab(Request $request)
+    {
+        $application_id = $request->route('id');
+        $permit_application = PermitApplication::with('printedcard', 'signOffs', 'establishmentClinics', 'appointment', 'testResults', 'healthInterviews')
+            ->find($application_id);
 
-        return view('food_handlers_permit.view', compact('permit_application', 'appointments', 'appointment_available', 'edit_mode', 'categories', 'app_type_id', 'system_operation_type_id'));
+        return view('food_handlers_permit.partials.tabs.card_info', compact('permit_application'));
+    }
+
+    public function viewTransactionsTab(Request $request)
+    {
+        $application_id = $request->route('id');
+        $permit_application = PermitApplication::with('editTransactions', 'appointment.editTransactions')->find($application_id);
+        $app_type_id = 1;
+        $system_operation_type_id = 6;
+
+        return view('food_handlers_permit.partials.tabs.transactions', compact('permit_application', 'app_type_id', 'system_operation_type_id'));
     }
 
     public function updateApplication(Request $request, $id)

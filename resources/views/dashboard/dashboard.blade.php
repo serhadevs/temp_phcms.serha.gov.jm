@@ -51,7 +51,7 @@
                         </p>
 
                         <div class="card-body py-3">
-                            @if (in_array(auth()->user()->role_id, [1, 3, 10]))
+                            @if (in_array(auth()->user()->role_id, [1, 3, 10, 11]))
                                 <div class="row">
                                     <!-- Food Permit Applications -->
                                     <div class="col-12 col-md-4 mb-3">
@@ -130,7 +130,7 @@
                                 </div>
                             @endif
 
-                            @if (in_array(auth()->user()->role_id, [4]))
+                            @if (in_array(auth()->user()->role_id, [4, 11]))
                                 <div class="row">
                                     <div class="col-12 col-md-4 mb-3">
                                         <div class="card h-100">
@@ -150,7 +150,7 @@
                             @endif
                         </div>
                         <div class="card-body py-3">
-                            @if (in_array(auth()->user()->role_id, [1, 3, 10, 7, 8]))
+                            @if (in_array(auth()->user()->role_id, [1, 3, 10, 7, 8, 11]))
                                 {{-- <div class="row">
                                     <!-- Food Establishments that are expiring -->
                                     <div class="col mb-3">
@@ -268,7 +268,7 @@
                                 </div>
                             @endif
 
-                            @if (in_array(auth()->user()->role_id, [4]))
+                            @if (in_array(auth()->user()->role_id, [4, 11]))
                                 <div class="row">
                                     <div class="col-12 col-md-4 mb-3">
                                         <div class="card h-100">

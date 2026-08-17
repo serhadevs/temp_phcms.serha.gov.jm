@@ -194,6 +194,10 @@ class PermitTestResultsController extends Controller
             return redirect()->route('test-results.permit.index', ['id' => 0])->with('error', 'Test Results could not be added');
         }
 
+        if (str_contains($request->previous_url, 'permit/view')) {
+            return redirect()->route('permit.application.view', ['id' => $request->application_id])->with('success', 'Test Results successfully added');
+        }
+
         return redirect()->route('test-results.permit.index', ['id' => 0])->with('success', 'Test Results successfully added');
     }
 
