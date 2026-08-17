@@ -33,7 +33,7 @@
                                     <option value="4" {{ old('module') == '4' ? 'selected' : '' }}>Health Interview
                                     </option>
                                 @endif
-                                @if (in_array(auth()->user()->role_id, [1, 4, 5, 8, 9]))
+                                @if (in_array(auth()->user()->role_id, [1, 4, 5, 8, 9, 11]))
                                     <option value="5" {{ old('module') == '5' ? 'selected' : '' }}>Payments</option>
                                 @endif
                             </select>
