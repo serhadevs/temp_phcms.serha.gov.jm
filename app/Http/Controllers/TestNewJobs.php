@@ -185,9 +185,8 @@ class TestNewJobs extends Controller
                         $zip->close();
 
                         if (empty($content)) {
-                            foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                                $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
-                            }
+                            ZippedApplications::where('download_id', $create_download->id)
+                                ->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                             $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                         }
                     }
@@ -338,9 +337,8 @@ class TestNewJobs extends Controller
                         $zip->close();
 
                         if (empty($content)) {
-                            foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                                $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
-                            }
+                            ZippedApplications::where('download_id', $create_download->id)
+                                ->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                             $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                         }
                     }
@@ -410,9 +408,8 @@ class TestNewJobs extends Controller
                     $zip->close();
 
                     if (empty($content)) {
-                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                            $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
-                        }
+                        ZippedApplications::where('download_id', $create_download->id)
+                            ->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                         $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                     }
                 }
@@ -457,9 +454,8 @@ class TestNewJobs extends Controller
                     $zip->close();
 
                     if (empty($content)) {
-                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                            $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
-                        }
+                        ZippedApplications::where('download_id', $create_download->id)
+                            ->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                         $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                     }
                 }
@@ -504,9 +500,8 @@ class TestNewJobs extends Controller
                     $zip->close();
 
                     if (empty($content)) {
-                        foreach (ZippedApplications::where('download_id', $create_download->id) as $zippedApp) {
-                            $zippedApp->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
-                        }
+                        ZippedApplications::where('download_id', $create_download->id)
+                            ->update(['deleted_at' => \Carbon\Carbon::now()->toDateTimeString()]);
                         $create_download->update(["deleted_at" => \Carbon\Carbon::now()->toDateTimeString()]);
                     }
                 }
